@@ -1,8 +1,27 @@
-export default function DocumentsPage() {
+import { createClient } from "@/lib/supabase/server"
+import { DocumentsClient } from "./DocumentsClient"
+
+export const dynamic = "force-dynamic"
+
+export default async function DocumentsPage(props: { params: Promise<{ projectId: string }> }) {
+  const params = await props.params
+  const { projectId } = params
+
+  const { supabaseAdmin } = await import("@/lib/supabase/admin")
+  
+  const { data: documents } = await supabaseAdmin
+    .from("project_documents")
+    .select("*")
+    .eq("project_id", projectId)
+    .order("uploaded_at", { ascending: false })
+
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold text-gray-900">Documents</h1>
-      <p className="text-gray-500 mt-2">Coming soon</p>
+    <div className="p-8 max-w-7xl mx-auto ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+      <DocumentsClient 
+        projectId={projectId} 
+        initialDocuments={documents || []} 
+      />
     </div>
   )
 }
+

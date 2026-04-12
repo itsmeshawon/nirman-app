@@ -22,13 +22,20 @@ export async function POST(
     catch { return NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
 
     const body = await request.json()
-    const { shareholder_id, schedule_item_id, amount, method, reference_no, notes, attachment_path } = body
+    
+    // Server-side validation with Zod
+    const { paymentSchema } = await import("@/lib/validations")
+    const validated = paymentSchema.safeParse(body)
 
-    if (!shareholder_id || !amount || !method) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
+    if (!validated.success) {
+      return NextResponse.json({ 
+        error: "Validation failed", 
+        details: validated.error.errors[0].message 
+      }, { status: 400 })
     }
 
-    const payAmount = parseFloat(amount)
+    const { shareholder_id, schedule_item_id, amount, method, reference_no, notes, attachment_path } = validated.data
+    const payAmount = amount
 
     // 1. Generate Receipt No (NRM-[PROJECT]-YYYYMMDD-[SEQ])
     const todayStr = new Date().toISOString().slice(0, 10).replace(/-/g, '')

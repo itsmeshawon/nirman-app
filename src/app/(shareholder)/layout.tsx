@@ -116,10 +116,32 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
           <div className="flex-1" />
           <NotificationBell />
         </header>
-        <main className="flex-1 p-4 md:p-6">
+        <main className="flex-1 p-4 md:p-6 pb-24 md:pb-6">
           {children}
         </main>
       </div>
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-2 py-3 flex items-center justify-around z-30 shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
+        {navItems.map(({ href, label, icon: Icon }) => {
+          const isActive = pathname === href || pathname.startsWith(href + "/")
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`flex flex-col items-center gap-1 min-w-[64px] transition-colors ${
+                isActive ? "text-teal-700 font-semibold" : "text-gray-400"
+              }`}
+            >
+              <div className={`p-1.5 rounded-xl transition-colors ${isActive ? "bg-teal-50" : ""}`}>
+                <Icon className="w-5 h-5" />
+              </div>
+              <span className="text-[10px] tracking-tight">{label.split(' ')[0]}</span>
+            </Link>
+          )
+        })}
+      </nav>
     </div>
   )
 }
+

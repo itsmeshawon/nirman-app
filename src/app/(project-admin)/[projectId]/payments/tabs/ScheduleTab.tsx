@@ -7,7 +7,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
-import { Plus } from "lucide-react"
+import { Plus, Calendar as CalendarIcon } from "lucide-react"
+import { EmptyState } from "@/components/EmptyState"
 
 export function ScheduleTab({ projectId, scheduleItems, payments, milestones, shareholders }: { projectId: string, scheduleItems: any[], payments: any[], milestones: any[], shareholders: any[] }) {
   const router = useRouter()
@@ -118,7 +119,16 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
           <TableBody>
             {filteredItems.length === 0 ? (
                <TableRow>
-                 <TableCell colSpan={7} className="text-center py-8 text-gray-500">No scheduled collections found</TableCell>
+                 <TableCell colSpan={7} className="p-0 border-0">
+                    <EmptyState
+                      icon={CalendarIcon}
+                      title="No payment schedules yet"
+                      description="Create payment obligations for shareholders based on milestones or custom dates."
+                      actionLabel="Add Collection"
+                      onAction={() => setIsModalOpen(true)}
+                      className="border-0 rounded-none shadow-none"
+                    />
+                 </TableCell>
                </TableRow>
             ) : (
                filteredItems.map(item => {

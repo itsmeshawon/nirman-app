@@ -32,6 +32,7 @@ import { MoreHorizontal, Pencil, Search, ToggleLeft, ToggleRight, UserPlus, User
 import { ShareholderDialog } from "./ShareholdersForms"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import { EmptyState } from "@/components/EmptyState"
 
 interface ShareholdersTableProps {
   projectId: string
@@ -235,11 +236,18 @@ export function ShareholdersTable({ projectId, data }: ShareholdersTableProps) {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  <div className="flex flex-col items-center justify-center text-gray-500">
-                    <Users className="h-8 w-8 text-gray-400 mb-2" />
-                    <p>No shareholders found.</p>
-                  </div>
+                <TableCell colSpan={columns.length} className="h-auto p-0 border-0">
+                  <EmptyState
+                    icon={Users}
+                    title="No shareholders yet"
+                    description="Add your first shareholder to start managing project unit owners."
+                    actionLabel="Add Shareholder"
+                    onAction={() => {
+                      setEditingShareholder(null)
+                      setIsDialogOpen(true)
+                    }}
+                    className="border-0 rounded-none"
+                  />
                 </TableCell>
               </TableRow>
             )}

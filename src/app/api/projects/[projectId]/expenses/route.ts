@@ -57,12 +57,19 @@ export async function POST(
     catch { return NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
 
     const body = await request.json()
-    const { milestone_id, title, category_id, amount, date, vat_amount, invoice_no, notes } = body
     
-    // Server-side validation
-    if (!milestone_id || !title || !category_id || amount === undefined || !date) {
-        return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
+    // Server-side validation with Zod
+    const { expenseSchema } = await import("@/lib/validations")
+    const validated = expenseSchema.safeParse(body)
+
+    if (!validated.success) {
+      return NextResponse.json({ 
+        error: "Validation failed", 
+        details: validated.error.errors[0].message 
+      }, { status: 400 })
     }
+
+    const { milestone_id, title, category_id, amount, date, vat_amount, invoice_no, notes } = validated.data
 
     const { data: expense, error } = await supabase
       .from("expenses")
@@ -71,11 +78,11 @@ export async function POST(
         milestone_id,
         category_id,
         title,
-        amount: parseFloat(amount),
-        date: new Date(date).toISOString(),
-        vat_amount: vat_amount ? parseFloat(vat_amount) : 0,
-        invoice_no: invoice_no || null,
-        notes: notes || null,
+        amount,
+        date,
+        vat_amount,
+        invoice_no,
+        notes,
         status: "DRAFT", // Always draft on creation
         created_by_id: user.id
       })

@@ -112,11 +112,19 @@ export async function POST(
     catch { return NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
 
     const body = await request.json()
-    const { title, description, media_url, media_type, tags, milestone_id } = body
+    
+    // Server-side validation with Zod
+    const { postSchema } = await import("@/lib/validations")
+    const validated = postSchema.safeParse(body)
 
-    if (!description) {
-      return NextResponse.json({ error: "description is required" }, { status: 400 })
+    if (!validated.success) {
+      return NextResponse.json({ 
+        error: "Validation failed", 
+        details: validated.error.errors[0].message 
+      }, { status: 400 })
     }
+
+    const { title, description, media_url, media_type, tags, milestone_id } = validated.data
 
     const { data: post, error: insertError } = await supabaseAdmin
       .from("activity_posts")

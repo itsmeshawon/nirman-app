@@ -2,11 +2,12 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Plus, CheckCircle, FileText, SendHorizontal, AlertCircle, RefreshCw, XCircle, Eye, Edit2, Trash2 } from "lucide-react"
+import { Plus, CheckCircle, FileText, SendHorizontal, AlertCircle, RefreshCw, XCircle, Eye, Edit2, Trash2, Receipt as ReceiptIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { toast } from "sonner"
 import { ExpenseForm } from "./ExpenseForm"
+import { EmptyState } from "@/components/EmptyState"
 import Link from "next/link"
 
 interface ExpensesClientProps {
@@ -160,8 +161,15 @@ export function ExpensesClient({ projectId, expenses, milestones, categories }: 
             <TableBody>
               {filteredExpenses.length === 0 ? (
                  <TableRow>
-                   <TableCell colSpan={7} className="h-32 text-center text-gray-500">
-                      No expenses found for this view.
+                   <TableCell colSpan={7} className="p-0 border-0">
+                      <EmptyState
+                        icon={ReceiptIcon}
+                        title="No expenses recorded yet"
+                        description="Start by creating your first expense entry to track project expenditures."
+                        actionLabel="Add Expense"
+                        onAction={openAddForm}
+                        className="border-0 rounded-none shadow-none"
+                      />
                    </TableCell>
                  </TableRow>
               ) : (

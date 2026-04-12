@@ -1,8 +1,44 @@
-export default function ShareholderDocumentsPage() {
+import { createClient } from "@/lib/supabase/server"
+import { ShareholderDocsClient } from "./ShareholderDocsClient"
+import { redirect } from "next/navigation"
+
+export const dynamic = "force-dynamic"
+
+export default async function ShareholderDocumentsPage() {
+  const supabase = await createClient()
+
+  // 1. Get current user
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return redirect("/login")
+
+  // 2. Find shareholder project
+  const { data: shareholder } = await supabase
+    .from("shareholders")
+    .select("project_id")
+    .eq("user_id", user.id)
+    .single()
+
+  if (!shareholder) {
+    return (
+      <div className="p-8 text-center text-gray-500">
+        Project not found for your account.
+      </div>
+    )
+  }
+
+  const { supabaseAdmin } = await import("@/lib/supabase/admin")
+  
+  // 3. Fetch project documents
+  const { data: documents } = await supabaseAdmin
+    .from("project_documents")
+    .select("*")
+    .eq("project_id", shareholder.project_id)
+    .order("uploaded_at", { ascending: false })
+
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold text-gray-900">Documents</h1>
-      <p className="text-gray-500 mt-2">Coming soon</p>
+    <div className="p-6 md:p-8 max-w-7xl mx-auto">
+      <ShareholderDocsClient documents={documents || []} />
     </div>
   )
 }
+

@@ -3,6 +3,8 @@
 import { useState } from "react"
 import { CreatePostForm } from "./CreatePostForm"
 import { AdminPostCard } from "./AdminPostCard"
+import { EmptyState } from "@/components/EmptyState"
+import { Bell as BellIcon } from "lucide-react"
 
 interface FeedClientProps {
   projectId: string
@@ -102,14 +104,16 @@ export function FeedClient({ projectId, initialPosts, milestones, userId }: Feed
 
       {/* Posts List */}
       {filteredPosts.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
-          <p className="text-lg font-medium">No posts found.</p>
-          <p className="text-sm mt-1">
-            {filterMedia || filterStatus === "hidden"
-              ? "Try changing your filters."
-              : "Create the first update above."}
-          </p>
-        </div>
+        <EmptyState
+          icon={BellIcon}
+          title={filterMedia || filterStatus === "hidden" ? "No matches found" : "No project updates yet"}
+          description={
+            filterMedia || filterStatus === "hidden"
+              ? "Try adjusting your filters to see more results."
+              : "Share construction progress, site photos, or community updates with your shareholders."
+          }
+          className="bg-gray-50/50"
+        />
       ) : (
         <div className="space-y-4">
           {filteredPosts.map((post) => (

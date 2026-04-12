@@ -14,31 +14,33 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
 
 const PASSWORD = "test1234"
 
+// Realistic Bengali Names
+const BENGALI_NAMES = [
+  "Abdur Rahim", "Fatema Begum", "Tariq Ahmed", "Nasreen Akter", "Jamal Uddin",
+  "Runa Laila", "Mahmudul Hasan", "Selina Hossain", "Anwar Ali", "Khaleda Zia",
+  "Mustafa Kamal", "Rokeya Sakhawat", "Humayun Azad", "Begum Sufia", "Zulfiqar Ali",
+  "Sayed Ahmed", "Jahanara Imam", "Mofizur Rahman", "Farhana Islam", "Kamrul Hassan"
+]
+
+const SH_EMAILS = BENGALI_NAMES.map((name, i) => ({
+  email: `shareholder${i + 1}@nirman.app`,
+  name,
+  unit: `${Math.floor(i / 2) + 1}${i % 2 === 0 ? 'A' : 'B'}`
+}))
+
 const USERS = [
-  { email: "admin@nirman.app", name: "Nirman Admin", role: "SUPER_ADMIN" },
+  { email: "admin@nirman.app", name: "Super Admin", role: "SUPER_ADMIN" },
   { email: "kamal@greenvalley.com", name: "Kamal Hossain", role: "PROJECT_ADMIN" },
-  { email: "rahim@email.com", name: "Abdur Rahim", role: "SHAREHOLDER", unit: "3A" },
-  { email: "fatema@email.com", name: "Fatema Begum", role: "SHAREHOLDER", unit: "3B" },
-  { email: "tariq@email.com", name: "Tariq Ahmed", role: "SHAREHOLDER", unit: "5A" },
-  { email: "nasreen@email.com", name: "Nasreen Akter", role: "SHAREHOLDER", unit: "5B" },
-  { email: "jamal@email.com", name: "Jamal Uddin", role: "SHAREHOLDER", unit: "7A" },
+  ...SH_EMAILS.map(s => ({ ...s, role: "SHAREHOLDER" }))
 ]
 
 async function createOrGetUser(email: string, name: string, role: string): Promise<string> {
-  // First check if user already exists
   const { data: list, error: listError } = await supabase.auth.admin.listUsers()
-  if (listError) {
-    console.error(`  ❌ Failed to list users:`, listError)
-    throw listError
-  }
+  if (listError) throw listError
 
   const existing = list?.users.find((u) => u.email === email)
-  if (existing) {
-    console.log(`  ⚠️  User already exists: ${email} (${existing.id})`)
-    return existing.id
-  }
+  if (existing) return existing.id
 
-  // User doesn't exist — create them
   const { data, error } = await supabase.auth.admin.createUser({
     email,
     password: PASSWORD,
@@ -46,17 +48,11 @@ async function createOrGetUser(email: string, name: string, role: string): Promi
     user_metadata: { name, role },
   })
 
-  if (error) {
-    console.error(`  ❌ Failed to create user ${email}:`, error)
-    throw error
-  }
-
-  console.log(`  ✅ Created user: ${email} (${data.user.id})`)
+  if (error) throw error
   return data.user.id
 }
 
 async function upsertProfile(id: string, name: string, role: string) {
-  // profiles columns: id, name, role, email, phone, avatar_url, is_active
   const { error } = await supabase.from("profiles").upsert(
     { id, name, role },
     { onConflict: "id" }
@@ -65,207 +61,178 @@ async function upsertProfile(id: string, name: string, role: string) {
 }
 
 async function main() {
-  console.log("\n🌱 Starting NirmaN seed...\n")
+  console.log("\n🌱 Starting NirmaN Pilot Seed...\n")
 
-  // ─── Create Auth Users ───────────────────────────────────────────────────
-  console.log("👤 Creating users...")
+  // 1. Create Users
+  console.log("👤 Creating 22 users...")
   const userIds: Record<string, string> = {}
-
   for (const u of USERS) {
     const id = await createOrGetUser(u.email, u.name, u.role)
     userIds[u.email] = id
     await upsertProfile(id, u.name, u.role)
   }
 
-  // ─── Create Project ───────────────────────────────────────────────────────
-  console.log("\n🏗️  Creating project...")
-  const { data: existingProjects } = await supabase
+  // 2. Create Project
+  console.log("\n🏗️  Creating project: Green Valley Heights...")
+  const { data: project, error: pErr } = await supabase
     .from("projects")
+    .upsert({
+      name: "Green Valley Heights",
+      address: "Bashundhara R/A, Block-G, Dhaka",
+      status: "ACTIVE",
+    }, { onConflict: "name" })
     .select("id")
-    .eq("name", "Green Valley Heights")
-    .limit(1)
+    .single()
 
-  let projectId: string
+  if (pErr || !project) throw new Error(`Project error: ${pErr?.message}`)
+  const projectId = project.id
 
-  if (existingProjects && existingProjects.length > 0) {
-    projectId = existingProjects[0].id
-    console.log(`  ⚠️  Project already exists (${projectId})`)
-  } else {
-    // projects columns: id, name, address, area, start_date, expected_handover, status, building_meta
-    const { data: project, error } = await supabase
-      .from("projects")
-      .insert({
-        name: "Green Valley Heights",
-        address: "Bashundhara R/A, Dhaka",
-        status: "PILOT",
-      })
-      .select("id")
-      .single()
-
-    if (error || !project) {
-      console.error("  ❌ Failed to create project:", error)
-      throw new Error(`Failed to create project: ${error?.message}`)
-    }
-    projectId = project.id
-    console.log(`  ✅ Created project: Green Valley Heights (${projectId})`)
-  }
-
-  // ─── Link Project Admin ───────────────────────────────────────────────────
-  console.log("\n👔 Linking project admin...")
+  // 3. Link Admin
   const kamalId = userIds["kamal@greenvalley.com"]
-  // project_admins columns: id, user_id, project_id
-  const { error: adminError } = await supabase.from("project_admins").upsert(
-    { project_id: projectId, user_id: kamalId },
-    { onConflict: "project_id,user_id" }
-  )
-  if (adminError) console.warn(`  ⚠️  project_admins:`, adminError.message)
-  else console.log("  ✅ Kamal linked as project admin")
+  await supabase.from("project_admins").upsert({ project_id: projectId, user_id: kamalId }, { onConflict: "project_id,user_id" })
 
-  // ─── Create Shareholders ─────────────────────────────────────────────────
-  console.log("\n👥 Creating shareholders...")
-  const shareholderEmails = [
-    { email: "rahim@email.com", unit: "3A" },
-    { email: "fatema@email.com", unit: "3B" },
-    { email: "tariq@email.com", unit: "5A" },
-    { email: "nasreen@email.com", unit: "5B" },
-    { email: "jamal@email.com", unit: "7A" },
-  ]
-
-  // shareholderIds maps email → shareholders.id (used by committee_members)
+  // 4. Create Shareholders
+  console.log("\n👥 Creating 20 shareholders...")
   const shareholderIds: Record<string, string> = {}
-
-  for (const s of shareholderEmails) {
+  for (const s of SH_EMAILS) {
     const userId = userIds[s.email]
-
-    const { data: existing } = await supabase
+    const { data: sh } = await supabase
       .from("shareholders")
-      .select("id")
-      .eq("project_id", projectId)
-      .eq("user_id", userId)
-      .single()
-
-    if (existing) {
-      shareholderIds[s.email] = existing.id
-      console.log(`  ⚠️  Shareholder already exists: ${s.email} (${existing.id})`)
-      continue
-    }
-
-    // shareholders columns: id, user_id, project_id, unit_flat, ownership_pct, opening_balance, status
-    const { data: sh, error } = await supabase
-      .from("shareholders")
-      .insert({ project_id: projectId, user_id: userId, unit_flat: s.unit })
+      .upsert({ 
+        project_id: projectId, 
+        user_id: userId, 
+        unit_flat: s.unit,
+        ownership_pct: 100 / SH_EMAILS.length,
+        status: "ACTIVE"
+      }, { onConflict: "project_id,user_id" })
       .select("id")
       .single()
-
-    if (error || !sh) {
-      console.warn(`  ⚠️  Failed to create shareholder ${s.email}:`, error?.message)
-    } else {
-      shareholderIds[s.email] = sh.id
-      console.log(`  ✅ Shareholder created: ${s.email} (Unit ${s.unit})`)
-    }
+    if (sh) shareholderIds[s.email] = sh.id
   }
 
-  // ─── Create Committee Members ────────────────────────────────────────────
-  console.log("\n🏛️  Adding committee members...")
-  const committeeEmails = ["rahim@email.com", "fatema@email.com"]
-
-  for (const email of committeeEmails) {
-    const userId = userIds[email]
-    const shareholderId = shareholderIds[email]
-
-    if (!shareholderId) {
-      console.warn(`  ⚠️  No shareholder record found for ${email}, skipping committee insert`)
-      continue
-    }
-
-    // committee_members columns: id, shareholder_id, project_id, user_id, is_active
-    const { error } = await supabase.from("committee_members").upsert(
-      { project_id: projectId, user_id: userId, shareholder_id: shareholderId, is_active: true },
-      { onConflict: "project_id,user_id" }
-    )
-    if (error) console.warn(`  ⚠️  Committee member ${email}:`, error.message)
-    else console.log(`  ✅ Committee member: ${email}`)
+  // 5. Committee Members (Top 3)
+  const committee = SH_EMAILS.slice(0, 3)
+  for (const s of committee) {
+    await supabase.from("committee_members").upsert({
+      project_id: projectId,
+      user_id: userIds[s.email],
+      shareholder_id: shareholderIds[s.email],
+      is_active: true
+    }, { onConflict: "project_id,user_id" })
   }
 
-  // ─── Expense Categories ───────────────────────────────────────────────────
+  // 6. Expense Categories
   console.log("\n📂 Creating expense categories...")
-  const categories = [
-    "Materials",
-    "Labor",
-    "Equipment",
-    "Transport",
-    "Professional Fees",
-    "Utilities",
-    "Miscellaneous",
-  ]
-
+  const categories = ["Materials", "Labor", "Equipment", "Legal & Permits", "Architectural", "Utilities"]
+  const categoryIds: Record<string, string> = {}
   for (const name of categories) {
-    // expense_categories columns: id, project_id, name
-    const { error } = await supabase.from("expense_categories").upsert(
-      { project_id: projectId, name },
-      { onConflict: "project_id,name" }
-    )
-    if (error) console.warn(`  ⚠️  Category "${name}":`, error.message)
-    else console.log(`  ✅ Category: ${name}`)
+    const { data: cat } = await supabase.from("expense_categories").upsert({ project_id: projectId, name }, { onConflict: "project_id,name" }).select("id").single()
+    if (cat) categoryIds[name] = cat.id
   }
 
-  // ─── Milestones ───────────────────────────────────────────────────────────
+  // 7. Milestones
   console.log("\n🏁 Creating milestones...")
   const milestones = [
-    { name: "Foundation", status: "COMPLETED", sort_order: 1 },
-    { name: "Ground Floor", status: "IN_PROGRESS", sort_order: 2 },
-    { name: "1st Floor Slab", status: "UPCOMING", sort_order: 3 },
+    { name: "Piling & Foundation", status: "COMPLETED", sort_order: 1 },
+    { name: "Basement & Ground Floor", status: "IN_PROGRESS", sort_order: 2 },
+    { name: "1st - 3rd Floor Slab", status: "UPCOMING", sort_order: 3 },
+    { name: "Finishing & Interior", status: "UPCOMING", sort_order: 4 }
   ]
-
+  const milestoneIds: Record<string, string> = {}
   for (const m of milestones) {
-    const { data: existing } = await supabase
-      .from("milestones")
-      .select("id")
-      .eq("project_id", projectId)
-      .eq("name", m.name)   // column is "name" not "title"
-      .single()
-
-    if (existing) {
-      console.log(`  ⚠️  Milestone already exists: ${m.name}`)
-      continue
-    }
-
-    // milestones columns: id, project_id, name, sort_order, target_date, status
-    const { error } = await supabase.from("milestones").insert({
-      project_id: projectId,
-      name: m.name,
-      status: m.status,
-      sort_order: m.sort_order,
-    })
-    if (error) console.warn(`  ⚠️  Milestone "${m.name}":`, error.message)
-    else console.log(`  ✅ Milestone: ${m.name} (${m.status})`)
+    const { data: mile } = await supabase.from("milestones").upsert({ project_id: projectId, ...m }, { onConflict: "project_id,name" }).select("id").single()
+    if (mile) milestoneIds[m.name] = mile.id
   }
 
-  // ─── Approval Config ──────────────────────────────────────────────────────
-  console.log("\n⚙️  Setting approval config...")
-  // approval_configs columns: id, project_id, rule
-  const { error: configError } = await supabase.from("approval_configs").upsert(
-    { project_id: projectId, rule: "MAJORITY" },
-    { onConflict: "project_id" }
-  )
-  if (configError) console.warn(`  ⚠️  Approval config:`, configError.message)
-  else console.log("  ✅ Approval config: MAJORITY")
+  // 8. Expense Pipeline
+  console.log("\n💰 Seeding expense pipeline...")
+  const expenses = [
+    { title: "Cement Procurement (2000 bags)", amount: 1200000, status: "PUBLISHED", cat: "Materials", m: "Piling & Foundation" },
+    { title: "Reinforcement Steel (40 tons)", amount: 3500000, status: "PUBLISHED", cat: "Materials", m: "Piling & Foundation" },
+    { title: "Excavation Labor", amount: 450000, status: "PUBLISHED", cat: "Labor", m: "Piling & Foundation" },
+    { title: "Foundation Casting Labor", amount: 250000, status: "APPROVED", cat: "Labor", m: "Basement & Ground Floor" },
+    { title: "Bricks for Basement", amount: 800000, status: "SUBMITTED", cat: "Materials", m: "Basement & Ground Floor" },
+    { title: "Legal Consultant Fee", amount: 50000, status: "DRAFT", cat: "Legal & Permits", m: "Piling & Foundation" }
+  ]
+  for (const e of expenses) {
+    await supabase.from("expenses").insert({
+      project_id: projectId,
+      title: e.title,
+      amount: e.amount,
+      status: e.status,
+      category_id: categoryIds[e.cat],
+      milestone_id: milestoneIds[e.m],
+      date: new Date().toISOString(),
+      created_by_id: userIds["kamal@greenvalley.com"]
+    })
+  }
 
-  // ─── Done ─────────────────────────────────────────────────────────────────
-  console.log("\n✅ Seed complete!\n")
-  console.log("Test credentials (password: test1234)")
-  console.log("─────────────────────────────────────────")
-  console.log("Super Admin   admin@nirman.app")
-  console.log("Project Admin kamal@greenvalley.com")
-  console.log("Shareholder   rahim@email.com       (Unit 3A, Committee)")
-  console.log("Shareholder   fatema@email.com      (Unit 3B, Committee)")
-  console.log("Shareholder   tariq@email.com       (Unit 5A)")
-  console.log("Shareholder   nasreen@email.com     (Unit 5B)")
-  console.log("Shareholder   jamal@email.com       (Unit 7A)")
-  console.log("")
+  // 9. Payment Schedules & Payments
+  console.log("\n💳 Seeding payments & schedules...")
+  for (const [email, shId] of Object.entries(shareholderIds)) {
+    // Each shareholder has 2 installments so far
+    const sched1 = await supabase.from("schedule_items").insert({
+      shareholder_id: shId,
+      milestone_id: milestoneIds["Piling & Foundation"],
+      amount: 500000,
+      due_date: "2026-01-15",
+      status: "PAID",
+      project_id: projectId
+    }).select("id").single()
+
+    if (sched1.data) {
+      await supabase.from("payments").insert({
+        shareholder_id: shId,
+        schedule_item_id: sched1.data.id,
+        amount: 500000,
+        method: "BANK_TRANSFER",
+        receipt_no: `NRM-SEED-2601-${shId.slice(0,4)}`,
+        recorded_by_id: userIds["kamal@greenvalley.com"]
+      })
+    }
+
+    const { data: sched2 } = await supabase.from("schedule_items").insert({
+      shareholder_id: shId,
+      milestone_id: milestoneIds["Basement & Ground Floor"],
+      amount: 300000,
+      due_date: "2026-03-20",
+      status: Math.random() > 0.3 ? "PAID" : "OVERDUE",
+      project_id: projectId
+    }).select("id").single()
+
+    if (sched2 && sched2.status === "PAID") {
+      await supabase.from("payments").insert({
+        shareholder_id: shId,
+        schedule_item_id: sched2.id,
+        amount: 300000,
+        method: "BKASH",
+        receipt_no: `NRM-SEED-2603-${shId.slice(0,4)}`,
+        recorded_by_id: userIds["kamal@greenvalley.com"]
+      })
+    }
+  }
+
+  // 10. Documents
+  console.log("\n📄 Seeding documents...")
+  const docs = [
+    { name: "Land Deed - Block G", category: "Land Documents" },
+    { name: "Master Floor Plan", category: "Floor Plans" },
+    { name: "Electrical Wiring Dia.", category: "Electrical Drawings" },
+    { name: "Soil Test Report", category: "Other" }
+  ]
+  for (const d of docs) {
+    await supabase.from("project_documents").insert({
+      project_id: projectId,
+      name: d.name,
+      category: d.category,
+      file_path: `seed/${d.name.replace(/\s+/g, '_')}.pdf`,
+      file_type: "application/pdf"
+    })
+  }
+
+  console.log("\n✅ Pilot Seed Complete!")
+  console.log("Admin: kamal@greenvalley.com / test1234")
+  console.log("Shareholders: shareholder1@nirman.app to shareholder20@nirman.app / test1234")
 }
 
-main().catch((err) => {
-  console.error("❌ Seed failed:", err)
-  process.exit(1)
-})
+main().catch(e => console.error("❌ Seed failed:", e))
