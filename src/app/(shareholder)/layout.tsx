@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { LayoutDashboard, CreditCard, FileText, Bell, Menu, X, Receipt, LogOut } from "lucide-react"
+import NotificationBell from "@/components/NotificationBell"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 
@@ -113,9 +114,7 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
           </button>
           <h1 className="text-base font-semibold text-gray-800 md:hidden">NirmaN My Portal</h1>
           <div className="flex-1" />
-          <Link href="/my/feed" className="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100">
-            <Bell className="w-5 h-5" />
-          </Link>
+          <NotificationBell />
         </header>
         <main className="flex-1 p-4 md:p-6">
           {children}

@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
 import { requireProjectAdmin } from "@/lib/permissions"
+import { createNotificationsForMany } from "@/lib/notifications"
 
 export async function POST(
   request: Request,
@@ -58,6 +60,27 @@ export async function POST(
       entityId: id,
       details: { title: expense.title, attachmentsCount: count }
     })
+
+    // Notify active committee members
+    try {
+      const { data: committeeMembers } = await supabaseAdmin
+        .from("committee_members")
+        .select("user_id")
+        .eq("project_id", projectId)
+        .eq("is_active", true)
+
+      const userIds = (committeeMembers || []).map((m: any) => m.user_id).filter(Boolean)
+
+      await createNotificationsForMany(userIds, {
+        projectId,
+        type: "EXPENSE_SUBMITTED",
+        title: "Expense submitted for review",
+        body: expense.title,
+        linkUrl: "/review",
+      })
+    } catch (notifErr) {
+      console.error("[notifications] Failed to notify committee members:", notifErr)
+    }
 
     return NextResponse.json({ success: true, status: "SUBMITTED" }, { status: 200 })
 

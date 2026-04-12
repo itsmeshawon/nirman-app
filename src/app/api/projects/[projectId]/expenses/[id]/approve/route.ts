@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
+import { createNotification } from "@/lib/notifications"
 
 export async function POST(
   request: Request,
@@ -104,6 +106,43 @@ export async function POST(
       entityId: id,
       details: { reviewAction: action, comment }
     })
+
+    // Notify project admins about the review decision
+    try {
+      const { data: expense } = await supabaseAdmin
+        .from("expenses")
+        .select("title")
+        .eq("id", id)
+        .single()
+
+      const { data: admins } = await supabaseAdmin
+        .from("project_admins")
+        .select("user_id")
+        .eq("project_id", projectId)
+
+      const notifType =
+        action === "APPROVED" ? "EXPENSE_APPROVED" :
+        action === "REJECTED" ? "EXPENSE_REJECTED" :
+        "EXPENSE_CHANGES_REQUESTED"
+
+      const notifTitle =
+        action === "APPROVED" ? "Expense approved" :
+        action === "REJECTED" ? "Expense rejected" :
+        "Changes requested on expense"
+
+      for (const admin of (admins || [])) {
+        await createNotification({
+          userId: admin.user_id,
+          projectId,
+          type: notifType,
+          title: notifTitle,
+          body: expense?.title || undefined,
+          linkUrl: `/${projectId}/expenses/${id}`,
+        })
+      }
+    } catch (notifErr) {
+      console.error("[notifications] Failed to notify project admins:", notifErr)
+    }
 
     return NextResponse.json({ success: true, newStatus: newStatus || "SUBMITTED" }, { status: 200 })
 

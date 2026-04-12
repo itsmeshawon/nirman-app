@@ -19,8 +19,8 @@ import {
   LogOut,
   Menu,
   X,
-  Bell,
 } from "lucide-react"
+import NotificationBell from "@/components/NotificationBell"
 
 interface ProjectAdminShellProps {
   children: React.ReactNode
@@ -189,10 +189,7 @@ export default function ProjectAdminShell({
                 <span className="text-sm text-gray-500">Project:</span>
                 <span className="text-sm font-medium text-gray-900">{projectName}</span>
             </div>
-             <button className="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0F766E] focus:ring-offset-2">
-              <span className="sr-only">View notifications</span>
-              <Bell className="h-6 w-6" />
-            </button>
+            <NotificationBell projectId={projectId} />
             <div className="hidden md:flex items-center gap-2 border-l pl-4 border-gray-200">
               <span className="text-sm font-medium text-gray-700">{profileName.split(' ')[0]}</span>
             </div>

@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
 import { requireProjectAdmin } from "@/lib/permissions"
+import { createNotificationsForMany } from "@/lib/notifications"
 
 export async function POST(
   request: Request,
@@ -50,6 +52,26 @@ export async function POST(
       entityId: id,
       details: { title: existing.title, status: "PUBLISHED" }
     })
+
+    // Notify all shareholders
+    try {
+      const { data: shareholders } = await supabaseAdmin
+        .from("shareholders")
+        .select("user_id")
+        .eq("project_id", projectId)
+
+      const userIds = (shareholders || []).map((s: any) => s.user_id).filter(Boolean)
+
+      await createNotificationsForMany(userIds, {
+        projectId,
+        type: "EXPENSE_PUBLISHED",
+        title: "Project expense published",
+        body: existing.title,
+        linkUrl: "/my/expenses",
+      })
+    } catch (notifErr) {
+      console.error("[notifications] Failed to notify shareholders:", notifErr)
+    }
 
     return NextResponse.json({ success: true }, { status: 200 })
 

@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
 import { requireProjectAdmin } from "@/lib/permissions"
+import { createNotification } from "@/lib/notifications"
 
 export async function POST(
   request: Request,
@@ -94,6 +96,28 @@ export async function POST(
        entityId: payment.id,
        details: { amount: payAmount, method, receipt_no }
     })
+
+    // 5. Notify the shareholder who received the payment
+    try {
+      const { data: shareholder } = await supabaseAdmin
+        .from("shareholders")
+        .select("user_id")
+        .eq("id", shareholder_id)
+        .single()
+
+      if (shareholder?.user_id) {
+        await createNotification({
+          userId: shareholder.user_id,
+          projectId,
+          type: "PAYMENT_RECORDED",
+          title: "Payment recorded",
+          body: `৳${payAmount.toLocaleString()} received via ${method}`,
+          linkUrl: "/my/payments",
+        })
+      }
+    } catch (notifErr) {
+      console.error("[notifications] Failed to notify shareholder about payment:", notifErr)
+    }
 
     return NextResponse.json({ success: true, payment }, { status: 200 })
 
