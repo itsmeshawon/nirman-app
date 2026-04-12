@@ -28,7 +28,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Pencil, Search, ToggleLeft, ToggleRight, UserPlus } from "lucide-react"
+import { MoreHorizontal, Pencil, Search, ToggleLeft, ToggleRight, UserPlus, Users } from "lucide-react"
 import { ShareholderDialog } from "./ShareholdersForms"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"

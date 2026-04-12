@@ -157,7 +157,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
            <div className="space-y-4 mt-4">
               <div className="space-y-2">
                  <Label>Shareholder *</Label>
-                 <Select value={shareholderId} onValueChange={setShareholderId}>
+                 <Select value={shareholderId} onValueChange={(v) => setShareholderId(v ?? "")}>
                    <SelectTrigger>
                       <span className="flex-1 text-left truncate">
                         {shareholderId ? shareholders.find(s => s.id === shareholderId)?.profiles?.name : "Select shareholder"}
@@ -173,7 +173,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
 
               <div className="space-y-2">
                  <Label>Target Milestone (Optional)</Label>
-                 <Select value={milestoneId} onValueChange={setMilestoneId}>
+                 <Select value={milestoneId} onValueChange={(v) => setMilestoneId(v ?? "")}>
                    <SelectTrigger>
                       <span className="flex-1 text-left truncate">
                         {milestoneId ? milestones.find(m => m.id === milestoneId)?.name : "General / Non-milestone"}

@@ -254,7 +254,7 @@ export function ProjectSettingsClient({
                 <form onSubmit={handleSavePaymentModel} className="space-y-6 border-b pb-6">
                   <div className="grid gap-2">
                     <Label>Model Type</Label>
-                    <Select value={paymentType} onValueChange={setPaymentType}>
+                    <Select value={paymentType} onValueChange={(v) => setPaymentType(v ?? "")}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -318,7 +318,7 @@ export function ProjectSettingsClient({
 
                   <div className="grid gap-2">
                     <Label>Penalty Type</Label>
-                    <Select value={penaltyType} onValueChange={setPenaltyType}>
+                    <Select value={penaltyType} onValueChange={(v) => setPenaltyType(v ?? "")}>
                       <SelectTrigger className="max-w-[300px]">
                         <SelectValue />
                       </SelectTrigger>

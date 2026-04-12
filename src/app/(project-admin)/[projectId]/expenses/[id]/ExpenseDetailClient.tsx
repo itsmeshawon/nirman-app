@@ -85,11 +85,9 @@ export function ExpenseDetailClient({ projectId, expense, milestones, categories
       {/* Header */}
       <div className="flex items-center justify-between">
          <div className="flex items-center gap-4">
-           <Button asChild variant="ghost" size="icon" className="hover:bg-gray-100 rounded-full">
-             <Link href={`/${projectId}/expenses`}>
-                <ArrowLeft className="w-5 h-5 text-gray-600" />
-             </Link>
-           </Button>
+           <Link href={`/${projectId}/expenses`} className="inline-flex items-center justify-center rounded-full p-1.5 hover:bg-gray-100 transition-colors">
+             <ArrowLeft className="w-5 h-5 text-gray-600" />
+           </Link>
            <h1 className="text-2xl font-bold text-gray-900">Expense Details</h1>
            <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusUI?.color}`}>
              {statusUI?.label}

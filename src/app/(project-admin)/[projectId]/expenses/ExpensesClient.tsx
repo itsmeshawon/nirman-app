@@ -201,11 +201,9 @@ export function ExpensesClient({ projectId, expenses, milestones, categories }: 
                                   <Edit2 className="w-4 h-4" />
                                </Button>
                              )}
-                             <Button asChild variant="ghost" size="icon" className="hover:text-teal-800 hover:bg-teal-50 w-8 h-8 rounded-full" title="View Details">
-                                <Link href={`/${projectId}/expenses/${expense.id}`}>
-                                   <Eye className="w-4 h-4" />
-                                </Link>
-                             </Button>
+                             <Link href={`/${projectId}/expenses/${expense.id}`} className="inline-flex items-center justify-center w-8 h-8 rounded-full hover:text-teal-800 hover:bg-teal-50 transition-colors" title="View Details">
+                               <Eye className="w-4 h-4" />
+                             </Link>
                              <Button variant="ghost" size="icon" onClick={() => handleDelete(expense.id)} className="text-red-500 hover:text-red-700 hover:bg-red-50 w-8 h-8 rounded-full" title="Delete Expense">
                                 <Trash2 className="w-4 h-4" />
                              </Button>

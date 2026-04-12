@@ -276,7 +276,7 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
 
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
-              <Select value={status} onValueChange={setStatus}>
+              <Select value={status} onValueChange={(v) => setStatus(v ?? "")}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>

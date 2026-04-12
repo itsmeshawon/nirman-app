@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -61,7 +61,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
   })
 
   // Reset form when opened with new data
-  useState(() => {
+  useEffect(() => {
     if (isOpen) {
         reset({
             name: shareholder?.profiles?.name || "",

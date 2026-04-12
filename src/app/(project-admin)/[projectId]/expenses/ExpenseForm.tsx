@@ -183,7 +183,7 @@ export function ExpenseForm({ projectId, isOpen, onClose, milestones, categories
            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Phase / Milestone *</Label>
-                <Select value={milestoneId} onValueChange={setMilestoneId}>
+                <Select value={milestoneId} onValueChange={(v) => setMilestoneId(v ?? "")}>
                   <SelectTrigger>
                      <span className="flex-1 text-left truncate">
                        {selectedMilestone ? selectedMilestone.name : <span className="text-muted-foreground">Select Milestone</span>}
@@ -198,7 +198,7 @@ export function ExpenseForm({ projectId, isOpen, onClose, milestones, categories
               </div>
               <div className="space-y-2">
                 <Label>Category *</Label>
-                <Select value={categoryId} onValueChange={setCategoryId}>
+                <Select value={categoryId} onValueChange={(v) => setCategoryId(v ?? "")}>
                   <SelectTrigger>
                      <span className="flex-1 text-left truncate">
                        {selectedCategory ? selectedCategory.name : <span className="text-muted-foreground">Select Category</span>}

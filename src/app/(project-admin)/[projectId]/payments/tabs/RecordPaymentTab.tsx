@@ -75,7 +75,7 @@ export function RecordPaymentTab({ projectId, scheduleItems, shareholders }: { p
       <div className="space-y-6">
          <div className="space-y-2">
             <Label>Select Shareholder *</Label>
-            <Select value={shareholderId} onValueChange={setShareholderId}>
+            <Select value={shareholderId} onValueChange={(v) => setShareholderId(v ?? "")}>
                <SelectTrigger>
                   <span className="flex-1 text-left truncate">
                     {shName ? shName : <span className="text-muted-foreground">Select a shareholder</span>}
@@ -92,7 +92,7 @@ export function RecordPaymentTab({ projectId, scheduleItems, shareholders }: { p
          {shareholderId && (
             <div className="space-y-2 p-4 bg-gray-50 border rounded-lg">
                <Label className="text-gray-700">Link to Expected Schedule (Optional)</Label>
-               <Select value={scheduleItemId} onValueChange={setScheduleItemId}>
+               <Select value={scheduleItemId} onValueChange={(v) => setScheduleItemId(v ?? "")}>
                  <SelectTrigger>
                    <span className="flex-1 text-left truncate">
                       {scheduleItemId ? `Schedule Link Active` : <span className="text-muted-foreground">Manual Ad-hoc Payment</span>}
@@ -118,7 +118,7 @@ export function RecordPaymentTab({ projectId, scheduleItems, shareholders }: { p
             </div>
             <div className="space-y-2">
                <Label>Method *</Label>
-               <Select value={method} onValueChange={setMethod}>
+               <Select value={method} onValueChange={(v) => setMethod(v ?? "")}>
                  <SelectTrigger>
                     <span className="flex-1 text-left truncate capitalize">{methodName.toLowerCase()}</span>
                  </SelectTrigger>
