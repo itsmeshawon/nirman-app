@@ -8,13 +8,15 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
 import { formatDateTime } from "@/lib/utils"
-import { Eye, EyeOff, Edit2, X, Check, Tag } from "lucide-react"
+import { Eye, EyeOff, Edit2, X, Check, Tag, Trash2, Upload, Music, Video, Image as ImageIcon } from "lucide-react"
+import { useCallback, useRef } from "react"
 
 interface AdminPostCardProps {
   post: any
   projectId: string
   onHide: (id: string, status: string) => void
   onEdit: (post: any) => void
+  onDelete: (id: string) => void
 }
 
 const PREDEFINED_TAGS = [
@@ -26,10 +28,23 @@ const PREDEFINED_TAGS = [
   "Inspection",
 ]
 
-export function AdminPostCard({ post, projectId, onHide, onEdit }: AdminPostCardProps) {
+function detectMediaType(file: File): "IMAGE" | "VIDEO" | "AUDIO" | null {
+  if (file.type.startsWith("image/")) return "IMAGE"
+  if (file.type.startsWith("video/")) return "VIDEO"
+  if (file.type.startsWith("audio/")) return "AUDIO"
+  return null
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: AdminPostCardProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isToggling, setIsToggling] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   // Edit state
   const [editTitle, setEditTitle] = useState(post.title || "")
@@ -37,6 +52,15 @@ export function AdminPostCard({ post, projectId, onHide, onEdit }: AdminPostCard
   const [editTags, setEditTags] = useState<string[]>(post.tags || [])
   const [customTagInput, setCustomTagInput] = useState("")
 
+  // Media edit state
+  const [mediaFile, setMediaFile] = useState<File | null>(null)
+  const [mediaPreview, setMediaPreview] = useState<string | null>(null)
+  const [mediaPath, setMediaPath] = useState<string | null>(post.media_url || null)
+  const [mediaUploading, setMediaUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
+
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
 
   const mediaUrl = post.media_url
@@ -62,10 +86,104 @@ export function AdminPostCard({ post, projectId, onHide, onEdit }: AdminPostCard
     }
   }
 
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete this post? This action cannot be undone.")) return
+
+    setIsDeleting(true)
+    try {
+      const res = await fetch(`/api/projects/${projectId}/posts/${post.id}`, {
+        method: "DELETE",
+      })
+      if (!res.ok) throw new Error("Failed to delete post.")
+
+      onDelete(post.id)
+      toast.success("Post deleted.")
+    } catch (err: any) {
+      toast.error(err.message)
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
+  const handleFileSelect = useCallback(async (file: File) => {
+    const mediaType = detectMediaType(file)
+    if (!mediaType) {
+      toast.error("Unsupported file type.")
+      return
+    }
+
+    const maxSizeMB = mediaType === "IMAGE" ? 10 : mediaType === "VIDEO" ? 50 : 20
+    if (file.size > maxSizeMB * 1024 * 1024) {
+      toast.error(`File too large. Max ${maxSizeMB}MB.`)
+      return
+    }
+
+    setMediaFile(file)
+    if (mediaType === "IMAGE") {
+      setMediaPreview(URL.createObjectURL(file))
+    }
+
+    setMediaUploading(true)
+    setUploadProgress(0)
+
+    const progressInterval = setInterval(() => {
+      setUploadProgress((prev) => (prev >= 90 ? 90 : prev + 10))
+    }, 150)
+
+    try {
+      const safeName = file.name.replace(/\s+/g, "_")
+      const path = `${projectId}/posts/${crypto.randomUUID()}/${safeName}`
+
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("path", path)
+
+      const res = await fetch(`/api/projects/${projectId}/posts/media`, {
+        method: "POST",
+        body: formData
+      })
+
+      const data = await res.json()
+      clearInterval(progressInterval)
+
+      if (!res.ok) throw new Error(data.error || "Upload failed.")
+
+      setUploadProgress(100)
+      setMediaPath(data.path)
+      toast.success("Media uploaded.")
+    } catch (err: any) {
+      clearInterval(progressInterval)
+      setMediaFile(null)
+      setMediaPreview(null)
+      toast.error(err.message)
+    } finally {
+      setMediaUploading(false)
+    }
+  }, [projectId])
+
+  const handleRemoveMedia = async () => {
+    if (mediaPath && !mediaPath.includes(post.media_url)) {
+      try {
+        await fetch(`/api/projects/${projectId}/posts/media`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ path: mediaPath })
+        })
+      } catch {}
+    }
+    setMediaFile(null)
+    setMediaPreview(null)
+    setMediaPath(null)
+    setUploadProgress(0)
+  }
+
   const openEdit = () => {
     setEditTitle(post.title || "")
     setEditDesc(post.description || "")
     setEditTags(post.tags || [])
+    setMediaPath(post.media_url || null)
+    setMediaPreview(null)
+    setMediaFile(null)
     setIsEditing(true)
   }
 
@@ -91,6 +209,8 @@ export function AdminPostCard({ post, projectId, onHide, onEdit }: AdminPostCard
 
     setIsSaving(true)
     try {
+      const mediaType = mediaFile ? detectMediaType(mediaFile) : post.media_type
+
       const res = await fetch(`/api/projects/${projectId}/posts/${post.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -99,6 +219,8 @@ export function AdminPostCard({ post, projectId, onHide, onEdit }: AdminPostCard
           description: editDesc.trim(),
           tags: editTags.length > 0 ? editTags : null,
           milestone_id: post.milestone_id || null,
+          media_url: mediaPath,
+          media_type: mediaType,
         }),
       })
       const data = await res.json()
@@ -158,6 +280,14 @@ export function AdminPostCard({ post, projectId, onHide, onEdit }: AdminPostCard
                 <EyeOff className="w-3.5 h-3.5" />
               )}
             </button>
+            <button
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="w-7 h-7 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-red-600 hover:border-red-300 transition-colors shadow-sm"
+              title="Delete post"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
           </>
         )}
       </div>
@@ -165,21 +295,21 @@ export function AdminPostCard({ post, projectId, onHide, onEdit }: AdminPostCard
       {/* Media */}
       {mediaUrl && !isEditing && (
         <div className="w-full">
-          {post.media_type === "image" && (
+          {post.media_type === "IMAGE" && (
             <img
               src={mediaUrl}
               alt={post.title || "Post media"}
               className="w-full max-h-72 object-cover rounded-t-xl"
             />
           )}
-          {post.media_type === "video" && (
+          {post.media_type === "VIDEO" && (
             <video controls className="w-full rounded-t-xl bg-black max-h-72">
               <source src={mediaUrl} />
             </video>
           )}
-          {post.media_type === "audio" && (
+          {post.media_type === "AUDIO" && (
             <div className="px-5 pt-4">
-              <audio controls className="w-full">
+              <audio controls className="w-full text-xs">
                 <source src={mediaUrl} />
               </audio>
             </div>
@@ -254,6 +384,46 @@ export function AdminPostCard({ post, projectId, onHide, onEdit }: AdminPostCard
                   <Tag className="w-3 h-3" />
                 </Button>
               </div>
+            </div>
+
+            {/* Media editing */}
+            <div className="space-y-1.5">
+              <Label className="text-xs text-gray-500">Media</Label>
+              {!mediaPath ? (
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50 transition-colors"
+                >
+                  <Upload className="w-5 h-5 text-gray-400 mx-auto mb-1" />
+                  <p className="text-xs text-gray-500">Click to upload new media</p>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    className="hidden"
+                    accept="image/*,video/mp4,video/webm,audio/mpeg,audio/wav"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) handleFileSelect(file)
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="border rounded-lg p-2 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-500 truncate max-w-[200px]">
+                      {mediaFile ? mediaFile.name : "Current media"}
+                    </span>
+                    <button onClick={handleRemoveMedia} className="text-xs text-red-500 hover:text-red-700">
+                      Remove
+                    </button>
+                  </div>
+                  {mediaUploading && (
+                    <div className="w-full bg-gray-100 rounded-full h-1 overflow-hidden">
+                      <div className="bg-teal-500 h-1 transition-all" style={{ width: `${uploadProgress}%` }} />
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="flex justify-end gap-2 pt-2 border-t">

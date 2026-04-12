@@ -12,13 +12,17 @@ export default async function FeedPage(props: { params: Promise<{ projectId: str
   // 1. Current user
   const { data: { user } } = await supabase.auth.getUser()
 
+  const { supabaseAdmin } = await import("@/lib/supabase/admin")
+  
   // 2. Fetch all posts (admin sees all statuses)
-  const { data: posts } = await supabase
+  const { data: posts, error: postsError } = await supabaseAdmin
     .from("activity_posts")
-    .select("*, author:profiles(name), milestone:milestones(name)")
+    .select("*, author:profiles!author_id(name), milestone:milestones!milestone_id(name)")
     .eq("project_id", projectId)
     .order("created_at", { ascending: false })
     .limit(30)
+
+  if (postsError) console.error("[FeedPage] Fetch posts error:", postsError)
 
   const allPosts = posts || []
 

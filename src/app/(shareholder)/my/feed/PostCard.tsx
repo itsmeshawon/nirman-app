@@ -177,7 +177,7 @@ export function PostCard({
         {/* Media */}
         {mediaUrl && (
           <div className="mt-3">
-            {post.media_type === "image" && (
+            {post.media_type === "IMAGE" && (
               <img
                 src={mediaUrl}
                 alt={post.title || "Post image"}
@@ -186,7 +186,7 @@ export function PostCard({
                 onClick={() => setLightboxOpen(true)}
               />
             )}
-            {post.media_type === "video" && (
+            {post.media_type === "VIDEO" && (
               <video
                 controls
                 className="w-full rounded-xl mx-auto"
@@ -196,7 +196,7 @@ export function PostCard({
                 Your browser does not support the video tag.
               </video>
             )}
-            {post.media_type === "audio" && (
+            {post.media_type === "AUDIO" && (
               <div className="px-4">
                 <audio controls className="w-full rounded-xl">
                   <source src={mediaUrl} />
@@ -264,7 +264,7 @@ export function PostCard({
       </div>
 
       {/* Image lightbox */}
-      {lightboxOpen && mediaUrl && post.media_type === "image" && (
+      {lightboxOpen && mediaUrl && post.media_type === "IMAGE" && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 cursor-zoom-out p-4"
           onClick={() => setLightboxOpen(false)}

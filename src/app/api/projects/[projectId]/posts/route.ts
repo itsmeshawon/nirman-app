@@ -48,7 +48,7 @@ export async function GET(
         hidden_by_id,
         created_at,
         updated_at,
-        profiles!activity_posts_author_id_fkey ( id, full_name ),
+        profiles!activity_posts_author_id_fkey ( id, name ),
         reactions ( reaction_type ),
         post_views ( id )
       `)

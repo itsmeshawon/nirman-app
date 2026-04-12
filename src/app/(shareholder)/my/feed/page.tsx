@@ -32,14 +32,18 @@ export default async function ShareholderFeedPage() {
 
   const projectId: string = shareholder.project.id
 
+  const { supabaseAdmin } = await import("@/lib/supabase/admin")
+  
   // 3. Fetch PUBLISHED posts
-  const { data: posts } = await supabase
+  const { data: posts, error: postsError } = await supabaseAdmin
     .from("activity_posts")
-    .select("*, author:profiles(name), milestone:milestones(name)")
+    .select("*, author:profiles!author_id(name), milestone:milestones!milestone_id(name)")
     .eq("project_id", projectId)
     .eq("status", "PUBLISHED")
     .order("created_at", { ascending: false })
     .limit(20)
+
+  if (postsError) console.error("[ShareholderFeedPage] Fetch posts error:", postsError)
 
   const allPosts = posts || []
   const postIds = allPosts.map((p: any) => p.id)

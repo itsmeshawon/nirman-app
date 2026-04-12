@@ -25,10 +25,10 @@ const PREDEFINED_TAGS = [
   "Inspection",
 ]
 
-function detectMediaType(file: File): "image" | "video" | "audio" | null {
-  if (file.type.startsWith("image/")) return "image"
-  if (file.type.startsWith("video/")) return "video"
-  if (file.type.startsWith("audio/")) return "audio"
+function detectMediaType(file: File): "IMAGE" | "VIDEO" | "AUDIO" | null {
+  if (file.type.startsWith("image/")) return "IMAGE"
+  if (file.type.startsWith("video/")) return "VIDEO"
+  if (file.type.startsWith("audio/")) return "AUDIO"
   return null
 }
 
@@ -75,14 +75,14 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
     }
 
     // Size validation
-    const maxSizeMB = mediaType === "image" ? 10 : mediaType === "video" ? 50 : 20
+    const maxSizeMB = mediaType === "IMAGE" ? 10 : mediaType === "VIDEO" ? 50 : 20
     if (file.size > maxSizeMB * 1024 * 1024) {
-      toast.error(`File too large. Maximum size for ${mediaType} is ${maxSizeMB}MB.`)
+      toast.error(`File too large. Maximum size for ${mediaType.toLowerCase()} is ${maxSizeMB}MB.`)
       return
     }
 
     setMediaFile(file)
-    if (mediaType === "image") {
+    if (mediaType === "IMAGE") {
       setMediaPreview(URL.createObjectURL(file))
     }
 
@@ -102,17 +102,22 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
     }, 150)
 
     try {
-      const supabase = createClient()
       const safeName = file.name.replace(/\s+/g, "_")
       const path = `${projectId}/posts/${crypto.randomUUID()}/${safeName}`
 
-      const { data, error } = await supabase.storage
-        .from("activity-media")
-        .upload(path, file)
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("path", path)
 
+      const res = await fetch(`/api/projects/${projectId}/posts/media`, {
+        method: "POST",
+        body: formData
+      })
+
+      const data = await res.json()
       clearInterval(progressInterval)
 
-      if (error) throw error
+      if (!res.ok) throw new Error(data.error || "Failed to upload media.")
 
       setUploadProgress(100)
       setMediaPath(data.path)
@@ -131,8 +136,11 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
   const handleRemoveMedia = async () => {
     if (mediaPath) {
       try {
-        const supabase = createClient()
-        await supabase.storage.from("activity-media").remove([mediaPath])
+        await fetch(`/api/projects/${projectId}/posts/media`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ path: mediaPath })
+        })
       } catch {
         // Non-critical — don't block UI
       }

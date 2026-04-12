@@ -35,17 +35,21 @@ export function FeedClient({ projectId, initialPosts, milestones, userId }: Feed
     )
   }
 
+  const handleDelete = (postId: string) => {
+    setPosts((prev) => prev.filter((p) => p.id !== postId))
+  }
+
   const filteredPosts = posts.filter((post) => {
     if (filterStatus === "hidden" && post.status !== "HIDDEN") return false
     if (filterMedia && post.media_type !== filterMedia) return false
     return true
   })
 
-  const mediaFilters: { label: string; value: FilterMedia }[] = [
+  const mediaFilters: { label: string; value: string | null }[] = [
     { label: "All", value: null },
-    { label: "Images", value: "image" },
-    { label: "Videos", value: "video" },
-    { label: "Audio", value: "audio" },
+    { label: "Images", value: "IMAGE" },
+    { label: "Videos", value: "VIDEO" },
+    { label: "Audio", value: "AUDIO" },
   ]
 
   return (
@@ -115,6 +119,7 @@ export function FeedClient({ projectId, initialPosts, milestones, userId }: Feed
               projectId={projectId}
               onHide={handleHide}
               onEdit={handleEdit}
+              onDelete={handleDelete}
             />
           ))}
         </div>
