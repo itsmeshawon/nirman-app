@@ -1,8 +1,25 @@
 import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
+import { Plus } from "lucide-react"
 
-export function ScheduleTab({ scheduleItems, payments }: { scheduleItems: any[], payments: any[] }) {
+export function ScheduleTab({ projectId, scheduleItems, payments, milestones, shareholders }: { projectId: string, scheduleItems: any[], payments: any[], milestones: any[], shareholders: any[] }) {
+  const router = useRouter()
   const [filterStatus, setFilterStatus] = useState("")
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Form State
+  const [shareholderId, setShareholderId] = useState("")
+  const [milestoneId, setMilestoneId] = useState("")
+  const [amount, setAmount] = useState("")
+  const [dueDate, setDueDate] = useState("")
 
   const getPaidAmount = (scheduleId: string) => {
     return payments
@@ -15,6 +32,44 @@ export function ScheduleTab({ scheduleItems, payments }: { scheduleItems: any[],
     return item.penalties
       .filter((p: any) => !p.is_waived)
       .reduce((sum: number, p: any) => sum + (parseFloat(p.amount) || 0), 0)
+  }
+
+  const handleCreate = async () => {
+    if (!shareholderId || !amount || !dueDate) {
+      toast.error("Please fill in shareholder, amount, and due date.")
+      return
+    }
+
+    setIsSubmitting(true)
+    try {
+      const res = await fetch(`/api/projects/${projectId}/schedules`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+           shareholder_id: shareholderId,
+           milestone_id: milestoneId || null,
+           amount,
+           due_date: dueDate
+        })
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      
+      toast.success("Schedule collection created successfully!")
+      setIsModalOpen(false)
+      
+      // reset form
+      setShareholderId("")
+      setMilestoneId("")
+      setAmount("")
+      setDueDate("")
+
+      router.refresh()
+    } catch (err: any) {
+      toast.error(err.message)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const statusConfig: Record<string, string> = {
@@ -31,7 +86,7 @@ export function ScheduleTab({ scheduleItems, payments }: { scheduleItems: any[],
 
   return (
     <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
-       <div className="p-4 border-b bg-gray-50 flex gap-4 items-center">
+       <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
          <select 
            value={filterStatus}
            onChange={(e) => setFilterStatus(e.target.value)}
@@ -44,6 +99,9 @@ export function ScheduleTab({ scheduleItems, payments }: { scheduleItems: any[],
            <option value="PARTIALLY_PAID">Partially Paid</option>
            <option value="PAID">Paid</option>
          </select>
+         <Button onClick={() => setIsModalOpen(true)} className="bg-[#0F766E] hover:bg-teal-800 text-sm h-9">
+            <Plus className="w-4 h-4 mr-2" /> Add Custom Collection
+         </Button>
        </div>
        <Table>
           <TableHeader>
@@ -88,6 +146,68 @@ export function ScheduleTab({ scheduleItems, payments }: { scheduleItems: any[],
             )}
           </TableBody>
        </Table>
+
+       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+         <DialogContent className="sm:max-w-[450px]">
+           <DialogHeader>
+             <DialogTitle>Add Collection Requirement</DialogTitle>
+             <DialogDescription>Assign a custom payment obligation to a shareholder.</DialogDescription>
+           </DialogHeader>
+
+           <div className="space-y-4 mt-4">
+              <div className="space-y-2">
+                 <Label>Shareholder *</Label>
+                 <Select value={shareholderId} onValueChange={setShareholderId}>
+                   <SelectTrigger>
+                      <span className="flex-1 text-left truncate">
+                        {shareholderId ? shareholders.find(s => s.id === shareholderId)?.profiles?.name : "Select shareholder"}
+                      </span>
+                   </SelectTrigger>
+                   <SelectContent>
+                     {shareholders.map(s => (
+                       <SelectItem key={s.id} value={s.id}>{s.profiles?.name} (Unit: {s.unit_flat})</SelectItem>
+                     ))}
+                   </SelectContent>
+                 </Select>
+              </div>
+
+              <div className="space-y-2">
+                 <Label>Target Milestone (Optional)</Label>
+                 <Select value={milestoneId} onValueChange={setMilestoneId}>
+                   <SelectTrigger>
+                      <span className="flex-1 text-left truncate">
+                        {milestoneId ? milestones.find(m => m.id === milestoneId)?.name : "General / Non-milestone"}
+                      </span>
+                   </SelectTrigger>
+                   <SelectContent>
+                     <SelectItem value="none">General</SelectItem>
+                     {milestones.map(m => (
+                       <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
+                     ))}
+                   </SelectContent>
+                 </Select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                 <div className="space-y-2">
+                    <Label>Expected Amount (৳) *</Label>
+                    <Input type="number" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0.00" />
+                 </div>
+                 <div className="space-y-2">
+                    <Label>Due Date *</Label>
+                    <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+                 </div>
+              </div>
+
+              <div className="pt-4 flex justify-end gap-2">
+                 <Button variant="outline" onClick={() => setIsModalOpen(false)} disabled={isSubmitting}>Cancel</Button>
+                 <Button onClick={handleCreate} disabled={isSubmitting} className="bg-teal-700 hover:bg-teal-800">
+                    {isSubmitting ? "Creating..." : "Schedule Collection"}
+                 </Button>
+              </div>
+           </div>
+         </DialogContent>
+       </Dialog>
     </div>
   )
 }

@@ -62,6 +62,12 @@ export default async function PaymentsPage(props: { params: Promise<{ projectId:
     .in("shareholder_id", shareholderIds.length ? shareholderIds : ['00000000-0000-0000-0000-000000000000'])
     .order("created_at", { ascending: false })
 
+  const { data: milestones } = await supabase
+    .from("milestones")
+    .select("id, name")
+    .eq("project_id", projectId)
+    .order("sort_order", { ascending: true })
+
   return (
     <div className="max-w-7xl mx-auto py-6 space-y-6">
        <PaymentsClient 
@@ -69,6 +75,7 @@ export default async function PaymentsPage(props: { params: Promise<{ projectId:
           scheduleItems={activeScheduleItems || []}
           payments={activePayments || []}
           shareholders={projectShareholders || []}
+          milestones={milestones || []}
        />
     </div>
   )
