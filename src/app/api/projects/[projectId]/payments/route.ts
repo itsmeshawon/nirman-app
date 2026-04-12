@@ -1,0 +1,104 @@
+import { NextResponse } from "next/server"
+import { createClient } from "@/lib/supabase/server"
+import { logAction } from "@/lib/audit"
+import { requireProjectAdmin } from "@/lib/permissions"
+
+export async function POST(
+  request: Request,
+  props: { params: Promise<{ projectId: string }> }
+) {
+  const params = await props.params;
+  const { projectId } = params;
+
+  try {
+    const supabase = await createClient()
+
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+    try { await requireProjectAdmin(supabase, projectId) } 
+    catch { return NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
+
+    const body = await request.json()
+    const { shareholder_id, schedule_item_id, amount, method, reference_no, notes, attachment_path } = body
+
+    if (!shareholder_id || !amount || !method) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
+    }
+
+    const payAmount = parseFloat(amount)
+
+    // 1. Generate Receipt No (NRM-[PROJECT]-YYYYMMDD-[SEQ])
+    const todayStr = new Date().toISOString().slice(0, 10).replace(/-/g, '')
+    const { count } = await supabase
+      .from('payments')
+      .select('*', { count: 'exact', head: true })
+      .like('receipt_no', `NRM-${projectId.slice(0,4).toUpperCase()}-${todayStr}-%`)
+
+    const seq = String((count || 0) + 1).padStart(3, '0')
+    const receipt_no = `NRM-${projectId.slice(0,4).toUpperCase()}-${todayStr}-${seq}`
+
+    // 2. Insert Payment
+    const { data: payment, error: pErr } = await supabase
+      .from("payments")
+      .insert({
+         shareholder_id,
+         schedule_item_id: schedule_item_id || null, // null if manual ad-hoc payment
+         amount: payAmount,
+         method,
+         reference_no: reference_no || null,
+         notes: notes || null,
+         attachment_path: attachment_path || null,
+         receipt_no,
+         recorded_by_id: user.id
+      })
+      .select()
+      .single()
+
+    if (pErr) return NextResponse.json({ error: pErr.message }, { status: 400 })
+
+    // 3. Update ScheduleItem sequentially if linked
+    if (schedule_item_id) {
+       // get all payments for this schedule item to calculate total paid
+       const { data: allPayments } = await supabase
+         .from("payments")
+         .select("amount")
+         .eq("schedule_item_id", schedule_item_id)
+         
+       const totalPaid = allPayments?.reduce((sum, p) => sum + parseFloat(p.amount), 0) || payAmount
+
+       // get expected amount to determine new status
+       const { data: scheduleItem } = await supabase
+         .from("schedule_items")
+         .select("amount")
+         .eq("id", schedule_item_id)
+         .single()
+
+       let newStatus = "PARTIALLY_PAID"
+       if (scheduleItem && totalPaid >= parseFloat(scheduleItem.amount)) {
+          newStatus = "PAID"
+       }
+
+       await supabase
+         .from("schedule_items")
+         .update({ status: newStatus })
+         .eq("id", schedule_item_id)
+    }
+
+    // 4. Log Action
+    await logAction({
+       projectId,
+       userId: user.id,
+       action: "RECORD_PAYMENT",
+       entityType: "payment",
+       entityId: payment.id,
+       details: { amount: payAmount, method, receipt_no }
+    })
+
+    return NextResponse.json({ success: true, payment }, { status: 200 })
+
+  } catch (err: any) {
+    console.error("Payment error:", err)
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
+  }
+}
