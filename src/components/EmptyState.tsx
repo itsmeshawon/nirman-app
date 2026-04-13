@@ -24,7 +24,7 @@ export function EmptyState({
       "flex flex-col items-center justify-center text-center p-8 py-12 bg-white rounded-2xl border border-dashed border-gray-200",
       className
     )}>
-      <div className="p-4 rounded-full bg-teal-50 text-teal-600 mb-4">
+      <div className="p-4 rounded-full bg-indigo-50 text-indigo-600 mb-4">
         <Icon size={32} />
       </div>
       <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
@@ -34,7 +34,7 @@ export function EmptyState({
       {actionLabel && onAction && (
         <Button 
           onClick={onAction}
-          className="bg-teal-700 hover:bg-teal-800"
+          className="bg-indigo-700 hover:bg-indigo-800"
         >
           {actionLabel}
         </Button>

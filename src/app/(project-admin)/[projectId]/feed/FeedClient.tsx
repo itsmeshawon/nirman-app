@@ -79,8 +79,8 @@ export function FeedClient({ projectId, initialPosts, milestones, userId }: Feed
               onClick={() => setFilterMedia(value as FilterMedia)}
               className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
                 filterMedia === value
-                  ? "bg-teal-700 text-white border-teal-700"
-                  : "bg-white text-gray-600 border-gray-200 hover:border-teal-300 hover:text-teal-700"
+                  ? "bg-indigo-700 text-white border-indigo-700"
+                  : "bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-700"
               }`}
             >
               {label}

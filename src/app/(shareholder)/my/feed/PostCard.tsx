@@ -146,7 +146,7 @@ export function PostCard({
       >
         {/* Header */}
         <div className="px-4 pt-4 pb-0 flex items-start gap-3">
-          <div className="w-9 h-9 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-semibold text-sm shrink-0">
+          <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-semibold text-sm shrink-0">
             {authorInitials}
           </div>
           <div className="flex-1 min-w-0">
@@ -154,7 +154,7 @@ export function PostCard({
               <span className="text-sm font-semibold text-gray-900 leading-tight">
                 {post.author?.name || "Project Admin"}
               </span>
-              <span className="px-1.5 py-0.5 bg-teal-50 text-teal-700 text-xs rounded-full border border-teal-100 font-medium">
+              <span className="px-1.5 py-0.5 bg-indigo-50 text-indigo-700 text-xs rounded-full border border-indigo-100 font-medium">
                 Project Admin
               </span>
             </div>
@@ -213,7 +213,7 @@ export function PostCard({
             {post.tags.map((tag: string) => (
               <span
                 key={tag}
-                className="px-2 py-0.5 bg-teal-50 text-teal-700 text-xs rounded-full border border-teal-100"
+                className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-xs rounded-full border border-indigo-100"
               >
                 {tag}
               </span>
@@ -243,7 +243,7 @@ export function PostCard({
                   disabled={isReacting}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs border transition-all duration-150 active:scale-110 ${
                     isActive
-                      ? "bg-teal-50 text-teal-700 border-teal-200 font-semibold"
+                      ? "bg-indigo-50 text-indigo-700 border-indigo-200 font-semibold"
                       : "text-gray-500 border-transparent hover:bg-gray-50 hover:border-gray-200"
                   }`}
                   aria-label={label}

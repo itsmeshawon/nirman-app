@@ -55,7 +55,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
               <h1 className="text-2xl font-bold text-gray-900 mb-2">My Payments</h1>
               <p className="text-gray-500">Track your financial obligations for Unit: {shareholder.unit_flat}</p>
            </div>
-           <Button onClick={() => window.open("/my/payments/statement", "_blank")} variant="outline" className="text-[#0F766E] border-[#0F766E] hover:bg-teal-50">
+           <Button onClick={() => window.open("/my/payments/statement", "_blank")} variant="outline" className="text-[#4F46E5] border-[#4F46E5] hover:bg-indigo-50">
                <FileDown className="w-4 h-4 mr-2" /> Download Full Statement
            </Button>
        </div>
@@ -64,7 +64,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="border rounded-xl p-5 bg-white shadow-sm">
              <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">Total Paid</p>
-             <p className="text-2xl font-bold text-teal-700">৳ {formatBD(totalPaid)}</p>
+             <p className="text-2xl font-bold text-indigo-700">৳ {formatBD(totalPaid)}</p>
           </div>
           <div className="border rounded-xl p-5 bg-white shadow-sm">
              <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">Total Outstanding</p>
@@ -87,10 +87,10 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
 
        <div className="border-b border-gray-200">
          <nav className="flex space-x-8">
-            <button onClick={() => setActiveTab("SCHEDULE")} className={`py-4 border-b-2 font-medium text-sm transition-colors ${activeTab === "SCHEDULE" ? "border-[#0F766E] text-[#0F766E]" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
+            <button onClick={() => setActiveTab("SCHEDULE")} className={`py-4 border-b-2 font-medium text-sm transition-colors ${activeTab === "SCHEDULE" ? "border-[#4F46E5] text-[#4F46E5]" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
                My Collection Schedule
             </button>
-            <button onClick={() => setActiveTab("HISTORY")} className={`py-4 border-b-2 font-medium text-sm transition-colors ${activeTab === "HISTORY" ? "border-[#0F766E] text-[#0F766E]" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
+            <button onClick={() => setActiveTab("HISTORY")} className={`py-4 border-b-2 font-medium text-sm transition-colors ${activeTab === "HISTORY" ? "border-[#4F46E5] text-[#4F46E5]" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
                My Payment History
             </button>
          </nav>
@@ -128,7 +128,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
                                <TableCell className="text-sm font-medium">{new Date(item.due_date).toLocaleDateString()}</TableCell>
                                <TableCell className="text-sm text-gray-500">{item.milestone?.name || 'General'}</TableCell>
                                <TableCell className="text-right font-medium text-gray-900">{parseFloat(item.amount).toLocaleString('en-IN')}</TableCell>
-                               <TableCell className="text-right text-sm text-teal-700">{paid.toLocaleString('en-IN')}</TableCell>
+                               <TableCell className="text-right text-sm text-indigo-700">{paid.toLocaleString('en-IN')}</TableCell>
                                <TableCell className="text-right text-sm text-red-600">{pen.toLocaleString('en-IN')}</TableCell>
                                <TableCell>
                                   <span className={`px-2 py-0.5 rounded text-xs font-semibold ${uiStyle}`}>
@@ -137,7 +137,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
                                </TableCell>
                                <TableCell className="text-right">
                                   {(paid > 0 && associatedPayment) ? (
-                                    <Button variant="ghost" size="icon" onClick={() => handleDownloadReceipt(associatedPayment.id)} className="text-[#0F766E]">
+                                    <Button variant="ghost" size="icon" onClick={() => handleDownloadReceipt(associatedPayment.id)} className="text-[#4F46E5]">
                                        <Download className="w-4 h-4" />
                                     </Button>
                                   ) : "-"}
@@ -176,9 +176,9 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
                              <TableCell className="font-mono text-xs font-semibold text-gray-700">{p.receipt_no}</TableCell>
                              <TableCell className="text-sm">{p.method.replace("_", " ")}</TableCell>
                              <TableCell className="text-sm text-gray-500 font-mono text-xs">{p.reference_no || "N/A"}</TableCell>
-                             <TableCell className="text-right font-medium text-teal-700">{parseFloat(p.amount).toLocaleString('en-IN')}</TableCell>
+                             <TableCell className="text-right font-medium text-indigo-700">{parseFloat(p.amount).toLocaleString('en-IN')}</TableCell>
                              <TableCell className="text-right">
-                                <Button variant="ghost" size="sm" onClick={() => handleDownloadReceipt(p.id)} className="text-[#0F766E] hover:text-teal-800 hover:bg-teal-50">
+                                <Button variant="ghost" size="sm" onClick={() => handleDownloadReceipt(p.id)} className="text-[#4F46E5] hover:text-indigo-800 hover:bg-indigo-50">
                                    <FileText className="w-4 h-4 mr-2" /> Receipt
                                 </Button>
                              </TableCell>

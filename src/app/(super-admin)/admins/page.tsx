@@ -333,7 +333,7 @@ export default function AdminsPage() {
             <Button 
                 onClick={handleResetPassword} 
                 disabled={isUpdating || !newPassword}
-                className="bg-[#0F766E] hover:bg-teal-800 text-white"
+                className="bg-[#4F46E5] hover:bg-indigo-800 text-white"
             >
               {isUpdating ? "Updating..." : "Update Password"}
             </Button>

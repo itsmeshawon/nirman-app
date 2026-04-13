@@ -259,7 +259,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
           <>
             <button
               onClick={openEdit}
-              className="w-7 h-7 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-teal-700 hover:border-teal-300 transition-colors shadow-sm"
+              className="w-7 h-7 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-indigo-700 hover:border-indigo-300 transition-colors shadow-sm"
               title="Edit post"
             >
               <Edit2 className="w-3.5 h-3.5" />
@@ -269,7 +269,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
               disabled={isToggling}
               className={`w-7 h-7 rounded-full bg-white border flex items-center justify-center transition-colors shadow-sm ${
                 isHidden
-                  ? "border-teal-300 text-teal-600 hover:bg-teal-50"
+                  ? "border-indigo-300 text-indigo-600 hover:bg-indigo-50"
                   : "border-gray-200 text-gray-500 hover:text-red-600 hover:border-red-300"
               }`}
               title={isHidden ? "Unhide post" : "Hide post"}
@@ -353,8 +353,8 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
                     onClick={() => toggleEditTag(tag)}
                     className={`px-2 py-0.5 rounded-full text-xs font-medium border transition-all ${
                       editTags.includes(tag)
-                        ? "bg-teal-600 text-white border-teal-600"
-                        : "bg-white text-gray-600 border-gray-200 hover:border-teal-300"
+                        ? "bg-indigo-600 text-white border-indigo-600"
+                        : "bg-white text-gray-600 border-gray-200 hover:border-indigo-300"
                     }`}
                   >
                     {tag}
@@ -419,7 +419,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
                   </div>
                   {mediaUploading && (
                     <div className="w-full bg-gray-100 rounded-full h-1 overflow-hidden">
-                      <div className="bg-teal-500 h-1 transition-all" style={{ width: `${uploadProgress}%` }} />
+                      <div className="bg-indigo-500 h-1 transition-all" style={{ width: `${uploadProgress}%` }} />
                     </div>
                   )}
                 </div>
@@ -440,7 +440,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
                 size="sm"
                 onClick={handleSaveEdit}
                 disabled={isSaving}
-                className="bg-teal-700 hover:bg-teal-800 text-white"
+                className="bg-indigo-700 hover:bg-indigo-800 text-white"
               >
                 <Check className="w-3.5 h-3.5 mr-1" />
                 {isSaving ? "Saving..." : "Save Changes"}
@@ -455,7 +455,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
                 {post.tags.map((tag: string) => (
                   <span
                     key={tag}
-                    className="px-2 py-0.5 bg-teal-50 text-teal-700 text-xs rounded-full border border-teal-100"
+                    className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-xs rounded-full border border-indigo-100"
                   >
                     {tag}
                   </span>
@@ -487,7 +487,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
             {/* Footer */}
             <div className="flex items-center justify-between mt-4 pt-3 border-t">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 text-xs font-semibold">
+                <div className="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 text-xs font-semibold">
                   {post.author?.name ? post.author.name.charAt(0).toUpperCase() : "A"}
                 </div>
                 <div>

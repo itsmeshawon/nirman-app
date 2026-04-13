@@ -217,31 +217,31 @@ export function ProjectSettingsClient({
           <TabsList className="flex flex-col h-auto bg-transparent p-2 space-y-1 w-full m-0 items-stretch">
             <TabsTrigger 
               value="profile" 
-              className="justify-start gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-[#0F766E] data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200"
+              className="justify-start gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200"
             >
               <Building className="h-4 w-4" /> Profile
             </TabsTrigger>
             <TabsTrigger 
               value="payment" 
-              className="justify-start gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-[#0F766E] data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200"
+              className="justify-start gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200"
             >
               <Banknote className="h-4 w-4" /> Payment Model
             </TabsTrigger>
             <TabsTrigger 
               value="penalties" 
-              className="justify-start gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-[#0F766E] data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200"
+              className="justify-start gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200"
             >
               <CalendarClock className="h-4 w-4" /> Penalties
             </TabsTrigger>
             <TabsTrigger
               value="notifications"
-              className="justify-start gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-[#0F766E] data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200"
+              className="justify-start gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200"
             >
               <Bell className="h-4 w-4" /> Notifications
             </TabsTrigger>
             <TabsTrigger
               value="profile-me"
-              className="justify-start gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-[#0F766E] data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200"
+              className="justify-start gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200"
             >
               <User className="h-4 w-4 mr-1.5" />My Profile
             </TabsTrigger>
@@ -254,8 +254,8 @@ export function ProjectSettingsClient({
           <TabsContent value="profile" className="m-0 focus:outline-none">
              <div className="max-w-2xl">
                 <div className="mb-6 pb-6 border-b border-gray-100 flex items-center gap-4">
-                  <div className="p-3 bg-teal-100/50 rounded-xl">
-                    <LayoutGrid className="w-8 h-8 text-teal-700" />
+                  <div className="p-3 bg-indigo-100/50 rounded-xl">
+                    <LayoutGrid className="w-8 h-8 text-indigo-700" />
                   </div>
                   <div>
                     <h3 className="text-lg font-medium text-gray-900">Project Details</h3>
@@ -282,7 +282,7 @@ export function ProjectSettingsClient({
                         <Input id="handover" type="date" value={handover} onChange={(e) => setHandover(e.target.value)} />
                       </div>
                   </div>
-                  <Button type="submit" disabled={isLoading} className="mt-4 bg-[#0F766E] hover:bg-teal-800">
+                  <Button type="submit" disabled={isLoading} className="mt-4 bg-[#4F46E5] hover:bg-indigo-800">
                     {isLoading ? "Saving..." : "Save Profile"}
                   </Button>
                 </form>
@@ -331,7 +331,7 @@ export function ProjectSettingsClient({
                     </div>
                   )}
 
-                  <Button type="submit" disabled={isLoading} className="mt-4 bg-[#0F766E] hover:bg-teal-800">
+                  <Button type="submit" disabled={isLoading} className="mt-4 bg-[#4F46E5] hover:bg-indigo-800">
                     {isLoading ? "Saving Setup..." : "Save Setup"}
                   </Button>
                 </form>
@@ -382,7 +382,7 @@ export function ProjectSettingsClient({
                     </div>
                   )}
 
-                  <Button type="submit" disabled={isLoading} className="mt-4 bg-[#0F766E] hover:bg-teal-800">
+                  <Button type="submit" disabled={isLoading} className="mt-4 bg-[#4F46E5] hover:bg-indigo-800">
                     {isLoading ? "Saving..." : "Save Penalty Config"}
                   </Button>
                 </form>
@@ -431,7 +431,7 @@ export function ProjectSettingsClient({
                       </div>
                   </div>
 
-                  <Button type="submit" disabled={isLoading} className="mt-4 bg-[#0F766E] hover:bg-teal-800">
+                  <Button type="submit" disabled={isLoading} className="mt-4 bg-[#4F46E5] hover:bg-indigo-800">
                     {isLoading ? "Saving..." : "Save Notifications"}
                   </Button>
                 </form>
@@ -481,7 +481,7 @@ export function ProjectSettingsClient({
                   <Textarea value={myAddress} onChange={e => setMyAddress(e.target.value)} placeholder="Your current residential or office address" className="h-20" />
                 </div>
                 <div className="flex justify-end pt-2">
-                  <Button onClick={handleSaveAdminProfile} disabled={isLoading} className="bg-[#0F766E] hover:bg-teal-800">
+                  <Button onClick={handleSaveAdminProfile} disabled={isLoading} className="bg-[#4F46E5] hover:bg-indigo-800">
                     {isLoading ? "Saving..." : "Save Profile"}
                   </Button>
                 </div>

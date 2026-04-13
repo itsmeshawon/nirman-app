@@ -58,10 +58,10 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
              <p className="text-2xl font-bold text-gray-900">৳ {formatBD(totalScheduled)}</p>
            </div>
            
-           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-teal-50 border-teal-100 shadow-sm flex flex-col justify-center">
-             <p className="text-xs font-semibold text-teal-800 uppercase tracking-widest mb-2">Total Collected</p>
-             <p className="text-2xl font-bold text-teal-900">৳ {formatBD(totalCollected)}</p>
-             <p className="text-xs font-medium text-teal-700 mt-1">{collectionRate.toFixed(1)}% Rate</p>
+           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-indigo-50 border-indigo-100 shadow-sm flex flex-col justify-center">
+             <p className="text-xs font-semibold text-indigo-800 uppercase tracking-widest mb-2">Total Collected</p>
+             <p className="text-2xl font-bold text-indigo-900">৳ {formatBD(totalCollected)}</p>
+             <p className="text-xs font-medium text-indigo-700 mt-1">{collectionRate.toFixed(1)}% Rate</p>
            </div>
            
            <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-blue-50 border-blue-100 shadow-sm flex flex-col justify-center">
@@ -82,7 +82,7 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
          <nav className="flex space-x-8">
             <button
                onClick={() => setActiveTab("SCHEDULE")}
-               className={`py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm transition-colors ${activeTab === "SCHEDULE" ? "border-[#0F766E] text-[#0F766E]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
+               className={`py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm transition-colors ${activeTab === "SCHEDULE" ? "border-[#4F46E5] text-[#4F46E5]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
             >
                <Calendar className="w-4 h-4" /> Collection Schedule
             </button>
@@ -100,7 +100,7 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
             </button>
             <button
                onClick={() => setActiveTab("HISTORY")}
-               className={`py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm transition-colors ${activeTab === "HISTORY" ? "border-[#0F766E] text-[#0F766E]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
+               className={`py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm transition-colors ${activeTab === "HISTORY" ? "border-[#4F46E5] text-[#4F46E5]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
             >
                <History className="w-4 h-4" /> Payment History
             </button>

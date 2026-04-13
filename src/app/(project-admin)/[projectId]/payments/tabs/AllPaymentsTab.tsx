@@ -46,9 +46,9 @@ export function AllPaymentsTab({ projectId, payments }: { projectId: string, pay
                     </TableCell>
                     <TableCell className="text-sm">{p.method.replace("_", " ")}</TableCell>
                     <TableCell className="text-sm text-gray-500 font-mono text-xs">{p.reference_no || "N/A"}</TableCell>
-                    <TableCell className="text-right font-medium text-teal-700">{parseFloat(p.amount).toLocaleString('en-IN')}</TableCell>
+                    <TableCell className="text-right font-medium text-indigo-700">{parseFloat(p.amount).toLocaleString('en-IN')}</TableCell>
                     <TableCell className="text-right">
-                       <Button variant="ghost" size="sm" onClick={() => handleDownloadReceipt(p.id)} className="text-[#0F766E] hover:text-teal-800 hover:bg-teal-50">
+                       <Button variant="ghost" size="sm" onClick={() => handleDownloadReceipt(p.id)} className="text-[#4F46E5] hover:text-indigo-800 hover:bg-indigo-50">
                           <FileText className="w-4 h-4 mr-2" /> Receipt
                        </Button>
                     </TableCell>

@@ -73,7 +73,7 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
     <div className="space-y-6">
       {expenses.length === 0 ? (
         <div className="bg-white border rounded-xl p-12 text-center text-gray-500 shadow-sm">
-           <CheckCircle className="w-12 h-12 text-teal-200 mx-auto mb-4" />
+           <CheckCircle className="w-12 h-12 text-indigo-200 mx-auto mb-4" />
            <p>All caught up! No expenses currently require your review.</p>
         </div>
       ) : (
@@ -87,7 +87,7 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
                <div key={expense.id} className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col md:flex-row">
                  {/* Left Details */}
                  <div className="p-6 flex-1 border-b md:border-b-0 md:border-r border-gray-100">
-                    <div className="flex items-center gap-2 text-xs font-semibold text-[#0F766E] uppercase tracking-widest mb-3">
+                    <div className="flex items-center gap-2 text-xs font-semibold text-[#4F46E5] uppercase tracking-widest mb-3">
                       <Building className="w-4 h-4" />
                       {expense.projectName}
                     </div>
@@ -117,7 +117,7 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
                              const isImage = att.file_type.startsWith("image/")
                              return (
                                <a key={att.id} href={urlData.publicUrl} target="_blank" rel="noopener noreferrer" 
-                                  className="flex-shrink-0 relative group rounded-md overflow-hidden border border-gray-200 bg-gray-50 hover:ring-2 hover:ring-teal-500 transition-all w-24 h-16 sm:w-32 sm:h-20"
+                                  className="flex-shrink-0 relative group rounded-md overflow-hidden border border-gray-200 bg-gray-50 hover:ring-2 hover:ring-indigo-500 transition-all w-24 h-16 sm:w-32 sm:h-20"
                                >
                                   {isImage ? (
                                     <img src={urlData.publicUrl} alt={att.file_name} className="w-full h-full object-cover" />
@@ -143,7 +143,7 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
                     <div>
                       <p className="text-sm font-medium text-gray-900 mb-3">Approval Progress</p>
                       <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-                         <div className="bg-teal-500 h-2 rounded-full" style={{ width: `${progressPct}%` }}></div>
+                         <div className="bg-indigo-500 h-2 rounded-full" style={{ width: `${progressPct}%` }}></div>
                       </div>
                       <p className="text-xs text-gray-500">
                         {expense.totalApprovals} of {expense.totalMembers} active members approved (Majority rules)
@@ -154,7 +154,7 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
                        <Button 
                          onClick={() => handleAction(expense.id, expense.project_id, "APPROVED")} 
                          disabled={isProcessing === expense.id}
-                         className="w-full bg-[#0F766E] hover:bg-teal-800 h-12"
+                         className="w-full bg-[#4F46E5] hover:bg-indigo-800 h-12"
                        >
                          <CheckCircle className="w-5 h-5 mr-2" /> Approve
                        </Button>
@@ -201,7 +201,7 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
                 value={comment} 
                 onChange={(e) => setComment(e.target.value)} 
                 placeholder="Type your reasoning here..."
-                className="h-24 focus-visible:ring-teal-500"
+                className="h-24 focus-visible:ring-indigo-500"
               />
            </div>
            <DialogFooter className="mt-6 flex gap-2 sm:justify-end">

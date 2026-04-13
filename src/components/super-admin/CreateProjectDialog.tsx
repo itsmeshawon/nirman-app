@@ -323,7 +323,7 @@ export default function ProjectDialog({ open, onOpenChange, onSuccess, project }
             <Button
               type="submit"
               disabled={loading}
-              className="bg-[#0F766E] hover:bg-[#14B8A6] text-white"
+              className="bg-[#4F46E5] hover:bg-[#14B8A6] text-white"
             >
               {!isEdit && <Plus className="h-4 w-4" />}
               {loading ? (isEdit ? "Saving..." : "Creating...") : (isEdit ? "Save Changes" : "Create Project")}

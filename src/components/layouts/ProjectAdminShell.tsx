@@ -97,7 +97,7 @@ export default function ProjectAdminShell({
         {/* Sidebar Header */}
         <div className="flex h-16 shrink-0 items-center justify-between px-6 border-b border-gray-200">
           <Link href={`/${projectId}/dashboard`} className="flex items-center gap-2">
-            <span className="text-xl font-black text-[#0F766E] tracking-tight">NirmaN</span>
+            <span className="text-xl font-black text-[#4F46E5] tracking-tight">NirmaN</span>
           </Link>
           <button className="lg:hidden" onClick={() => setIsMobileMenuOpen(false)}>
             <X className="h-5 w-5 text-gray-500" />
@@ -128,14 +128,14 @@ export default function ProjectAdminShell({
                 href={item.href}
                 className={`group flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                   isActive
-                    ? "bg-[#F0FDFA] text-[#0F766E] border-l-4 border-[#0F766E]"
+                    ? "bg-[#F0FDFA] text-[#4F46E5] border-l-4 border-[#4F46E5]"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 border-l-4 border-transparent"
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <item.icon
                   className={`mr-3 h-5 w-5 flex-shrink-0 ${
-                    isActive ? "text-[#0F766E]" : "text-gray-400 group-hover:text-gray-500"
+                    isActive ? "text-[#4F46E5]" : "text-gray-400 group-hover:text-gray-500"
                   }`}
                   aria-hidden="true"
                 />
@@ -149,16 +149,16 @@ export default function ProjectAdminShell({
         <div className="border-t border-gray-200 p-4">
           <div className="flex items-center justify-between">
             <Link href="/profile" className="flex flex-col truncate group cursor-pointer p-1 -m-1 rounded hover:bg-gray-50 transition-colors">
-              <span className="text-sm font-medium text-gray-900 truncate group-hover:text-[#0F766E] transition-colors">
+              <span className="text-sm font-medium text-gray-900 truncate group-hover:text-[#4F46E5] transition-colors">
                 {profileName || user?.email}
               </span>
-              <span className="mt-0.5 inline-flex items-center w-fit rounded-full bg-teal-100 px-2 py-0.5 text-[10px] font-medium text-teal-800 group-hover:bg-teal-200 transition-colors">
+              <span className="mt-0.5 inline-flex items-center w-fit rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-medium text-indigo-800 group-hover:bg-indigo-200 transition-colors">
                 Project Admin
               </span>
             </Link>
             <button
               onClick={handleSignOut}
-              className="ml-2 rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
+              className="ml-2 rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#4F46E5]"
               title="Sign Out"
             >
               <LogOut className="h-5 w-5" />

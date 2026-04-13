@@ -91,7 +91,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
          <select 
            value={filterStatus}
            onChange={(e) => setFilterStatus(e.target.value)}
-           className="border-gray-300 rounded text-sm focus:ring-teal-500 focus:border-teal-500 block p-2 px-3 bg-white"
+           className="border-gray-300 rounded text-sm focus:ring-indigo-500 focus:border-indigo-500 block p-2 px-3 bg-white"
          >
            <option value="">All Statuses</option>
            <option value="DUE">Due</option>
@@ -100,7 +100,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
            <option value="PARTIALLY_PAID">Partially Paid</option>
            <option value="PAID">Paid</option>
          </select>
-         <Button onClick={() => setIsModalOpen(true)} className="bg-[#0F766E] hover:bg-teal-800 text-sm h-9">
+         <Button onClick={() => setIsModalOpen(true)} className="bg-[#4F46E5] hover:bg-indigo-800 text-sm h-9">
             <Plus className="w-4 h-4 mr-2" /> Add Custom Collection
          </Button>
        </div>
@@ -143,7 +143,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
                       </TableCell>
                       <TableCell className="text-sm text-gray-500">{item.milestone?.name || 'General'}</TableCell>
                       <TableCell className="text-right font-medium text-gray-900">{parseFloat(item.amount).toLocaleString('en-IN')}</TableCell>
-                      <TableCell className="text-right text-sm text-teal-700">{getPaidAmount(item.id).toLocaleString('en-IN')}</TableCell>
+                      <TableCell className="text-right text-sm text-indigo-700">{getPaidAmount(item.id).toLocaleString('en-IN')}</TableCell>
                       <TableCell className="text-right text-sm text-red-600">{getPenalty(item).toLocaleString('en-IN')}</TableCell>
                       <TableCell>
                          <span className={`px-2 py-0.5 rounded text-xs font-semibold ${uiStyle}`}>
@@ -211,7 +211,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
 
               <div className="pt-4 flex justify-end gap-2">
                  <Button variant="outline" onClick={() => setIsModalOpen(false)} disabled={isSubmitting}>Cancel</Button>
-                 <Button onClick={handleCreate} disabled={isSubmitting} className="bg-teal-700 hover:bg-teal-800">
+                 <Button onClick={handleCreate} disabled={isSubmitting} className="bg-indigo-700 hover:bg-indigo-800">
                     {isSubmitting ? "Creating..." : "Schedule Collection"}
                  </Button>
               </div>

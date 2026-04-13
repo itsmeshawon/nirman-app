@@ -73,7 +73,7 @@ export function ExpenseDetailClient({ projectId, expense, milestones, categories
     SUBMITTED: { label: "Submitted for Review", color: "bg-blue-100 text-blue-700" },
     CHANGES_REQUESTED: { label: "Changes Requested", color: "bg-orange-100 text-orange-700" },
     APPROVED: { label: "Approved by Committee", color: "bg-green-100 text-green-700" },
-    PUBLISHED: { label: "Published Ledger", color: "bg-teal-100 text-teal-800" },
+    PUBLISHED: { label: "Published Ledger", color: "bg-indigo-100 text-indigo-800" },
     REJECTED: { label: "Rejected", color: "bg-red-100 text-red-700" }
   }
 
@@ -100,7 +100,7 @@ export function ExpenseDetailClient({ projectId, expense, milestones, categories
            </Button>
 
            {(expense.status === "DRAFT" || expense.status === "CHANGES_REQUESTED") && (
-             <Button onClick={() => setIsEditFormOpen(true)} disabled={isProcessing} variant="outline" className="text-teal-700 border-teal-200 bg-teal-50 hover:bg-teal-100">
+             <Button onClick={() => setIsEditFormOpen(true)} disabled={isProcessing} variant="outline" className="text-indigo-700 border-indigo-200 bg-indigo-50 hover:bg-indigo-100">
                <Edit className="w-4 h-4 mr-2" /> Edit Expense
              </Button>
            )}
@@ -115,7 +115,7 @@ export function ExpenseDetailClient({ projectId, expense, milestones, categories
                </Button>
            )}
            {expense.status === "APPROVED" && (
-              <Button onClick={handlePublish} disabled={isProcessing} className="bg-[#0F766E] hover:bg-teal-800">
+              <Button onClick={handlePublish} disabled={isProcessing} className="bg-[#4F46E5] hover:bg-indigo-800">
                  <CheckCircle className="w-4 h-4 mr-2" /> Publish Now
               </Button>
            )}
@@ -177,7 +177,7 @@ export function ExpenseDetailClient({ projectId, expense, milestones, categories
                    const isImage = att.file_type.startsWith("image/")
 
                    return (
-                     <a key={att.id} href={urlData.publicUrl} target="_blank" rel="noopener noreferrer" className="group relative block w-full rounded-lg border border-gray-200 bg-white p-3 shadow-sm hover:border-teal-500 hover:ring-1 hover:ring-teal-500 transition-all">
+                     <a key={att.id} href={urlData.publicUrl} target="_blank" rel="noopener noreferrer" className="group relative block w-full rounded-lg border border-gray-200 bg-white p-3 shadow-sm hover:border-indigo-500 hover:ring-1 hover:ring-indigo-500 transition-all">
                         <div className="flex items-center gap-3">
                            {isImage ? (
                              <img src={urlData.publicUrl} alt={att.file_name} className="w-10 h-10 rounded object-cover border" />
@@ -190,7 +190,7 @@ export function ExpenseDetailClient({ projectId, expense, milestones, categories
                               <p className="text-sm font-medium text-gray-900 truncate">{att.file_name}</p>
                               <p className="text-xs text-gray-500">{(att.file_size / 1024).toFixed(1)} KB</p>
                            </div>
-                           <Download className="w-4 h-4 text-gray-400 group-hover:text-teal-600" />
+                           <Download className="w-4 h-4 text-gray-400 group-hover:text-indigo-600" />
                         </div>
                      </a>
                    )
@@ -247,7 +247,7 @@ export function ExpenseDetailClient({ projectId, expense, milestones, categories
                 {/* Published Log */}
                 {expense.published_at && (
                   <div className="relative pl-6">
-                     <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-teal-600 ring-4 ring-white" />
+                     <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-indigo-600 ring-4 ring-white" />
                      <p className="text-sm font-semibold text-gray-900">Published to Ledger</p>
                      <p className="text-xs text-gray-500 mt-0.5">{new Date(expense.published_at).toLocaleString()}</p>
                   </div>

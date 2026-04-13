@@ -42,7 +42,7 @@ export default function SuperAdminShell({ children, userName }: SuperAdminShellP
     <div className="flex h-full flex-col">
       {/* Logo */}
       <div className="px-5 py-5 border-b border-gray-100">
-        <p className="text-xl font-bold text-[#0F766E] tracking-tight">NirmaN</p>
+        <p className="text-xl font-bold text-[#4F46E5] tracking-tight">NirmaN</p>
         <p className="text-xs text-gray-400 mt-0.5">Platform Admin</p>
       </div>
 
@@ -59,11 +59,11 @@ export default function SuperAdminShell({ children, userName }: SuperAdminShellP
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
                 isActive
-                  ? "border-l-2 border-[#0F766E] bg-teal-50 text-[#0F766E] ml-0 pl-[10px]"
+                  ? "border-l-2 border-[#4F46E5] bg-indigo-50 text-[#4F46E5] ml-0 pl-[10px]"
                   : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
               )}
             >
-              <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-[#0F766E]" : "text-gray-400")} />
+              <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-[#4F46E5]" : "text-gray-400")} />
               {item.label}
             </Link>
           )
@@ -76,12 +76,12 @@ export default function SuperAdminShell({ children, userName }: SuperAdminShellP
           href="/profile" 
           className="flex items-center gap-3 mb-3 p-2 -mx-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer group"
         >
-          <div className="h-8 w-8 rounded-full bg-teal-100 flex items-center justify-center text-[#0F766E] text-sm font-semibold shrink-0 group-hover:bg-[#0F766E] group-hover:text-white transition-colors">
+          <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-[#4F46E5] text-sm font-semibold shrink-0 group-hover:bg-[#4F46E5] group-hover:text-white transition-colors">
             {userName?.charAt(0)?.toUpperCase() ?? "A"}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-gray-900 truncate group-hover:text-[#0F766E] transition-colors">{userName}</p>
-            <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-xs font-medium text-[#0F766E]">
+            <p className="text-sm font-medium text-gray-900 truncate group-hover:text-[#4F46E5] transition-colors">{userName}</p>
+            <span className="inline-flex items-center rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-[#4F46E5]">
               Super Admin
             </span>
           </div>
@@ -140,7 +140,7 @@ export default function SuperAdminShell({ children, userName }: SuperAdminShellP
           >
             <Menu className="h-5 w-5" />
           </button>
-          <p className="text-lg font-bold text-[#0F766E]">NirmaN</p>
+          <p className="text-lg font-bold text-[#4F46E5]">NirmaN</p>
           <div className="ml-auto">
             <button
               onClick={handleLogout}

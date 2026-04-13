@@ -56,8 +56,8 @@ const typeConfig: Record<
   EXPENSE_APPROVED:          { Icon: CheckCircle,   bg: "bg-green-100",  text: "text-green-600"  },
   EXPENSE_REJECTED:          { Icon: XCircle,       bg: "bg-red-100",    text: "text-red-600"    },
   EXPENSE_CHANGES_REQUESTED: { Icon: RefreshCw,     bg: "bg-orange-100", text: "text-orange-600" },
-  EXPENSE_PUBLISHED:         { Icon: Megaphone,     bg: "bg-teal-100",   text: "text-teal-600"   },
-  ACTIVITY_POST:             { Icon: Camera,        bg: "bg-teal-100",   text: "text-teal-600"   },
+  EXPENSE_PUBLISHED:         { Icon: Megaphone,     bg: "bg-indigo-100",   text: "text-indigo-600"   },
+  ACTIVITY_POST:             { Icon: Camera,        bg: "bg-indigo-100",   text: "text-indigo-600"   },
   PENALTY_APPLIED:           { Icon: AlertTriangle, bg: "bg-orange-100", text: "text-orange-600" },
 }
 
@@ -170,7 +170,7 @@ export default function NotificationBell({ projectId }: NotificationBellProps) {
       {/* Bell button */}
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0F766E] focus:ring-offset-2"
+        className="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4F46E5] focus:ring-offset-2"
         aria-label="View notifications"
       >
         {/* Re-key wrapper triggers animate-bounce when unread count changes */}
@@ -195,7 +195,7 @@ export default function NotificationBell({ projectId }: NotificationBellProps) {
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
-                className="text-xs text-teal-600 hover:text-teal-700 font-medium transition-colors"
+                className="text-xs text-indigo-600 hover:text-indigo-700 font-medium transition-colors"
               >
                 Mark All Read
               </button>
@@ -218,7 +218,7 @@ export default function NotificationBell({ projectId }: NotificationBellProps) {
                       onClick={() => handleNotificationClick(notification)}
                       className={`w-full text-left flex items-start gap-3 px-4 py-3 transition-colors hover:bg-gray-50 ${
                         !notification.is_read
-                          ? "border-l-2 border-teal-500 bg-teal-50/30"
+                          ? "border-l-2 border-indigo-500 bg-indigo-50/30"
                           : "border-l-2 border-transparent bg-white"
                       }`}
                     >

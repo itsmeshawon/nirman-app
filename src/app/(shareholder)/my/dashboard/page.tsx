@@ -95,25 +95,25 @@ export default async function ShareholderDashboardPage() {
         </div>
       )}
       {/* Hero card — banking style */}
-      <div className="rounded-2xl bg-gradient-to-br from-teal-700 via-teal-600 to-teal-500 p-6 text-white shadow-lg relative overflow-hidden">
+      <div className="rounded-2xl bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 p-6 text-white shadow-lg relative overflow-hidden">
         <div className="absolute top-0 right-0 w-48 h-48 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/4" />
         <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full bg-white/5 translate-y-1/2 -translate-x-1/4" />
         <div className="relative">
-          <p className="text-teal-100 text-sm mb-1">Welcome back</p>
+          <p className="text-indigo-100 text-sm mb-1">Welcome back</p>
           <h2 className="text-2xl font-bold">{profile?.name}</h2>
-          <p className="text-teal-200 text-sm mt-1">{shareholder.project?.name} — Unit {shareholder.unit_flat}</p>
+          <p className="text-indigo-200 text-sm mt-1">{shareholder.project?.name} — Unit {shareholder.unit_flat}</p>
           <div className="mt-4 flex flex-wrap gap-4">
             <div>
-              <p className="text-teal-200 text-xs">Ownership</p>
+              <p className="text-indigo-200 text-xs">Ownership</p>
               <p className="text-xl font-semibold">{shareholder.ownership_pct}%</p>
             </div>
             <div className="border-l border-white/20 pl-4">
-              <p className="text-teal-200 text-xs">Total Paid</p>
+              <p className="text-indigo-200 text-xs">Total Paid</p>
               <p className="text-xl font-semibold">{formatBDT(totalPaid)}</p>
             </div>
             {shareholder.project?.expected_handover && (
               <div className="border-l border-white/20 pl-4">
-                <p className="text-teal-200 text-xs">Expected Handover</p>
+                <p className="text-indigo-200 text-xs">Expected Handover</p>
                 <p className="text-xl font-semibold">{formatDate(shareholder.project.expected_handover)}</p>
               </div>
             )}
@@ -127,33 +127,33 @@ export default async function ShareholderDashboardPage() {
           label="Total Due"
           value={formatBDT(totalDue)}
           sub={`${scheduleItems?.filter(i => i.status === "PAID").length || 0} of ${scheduleItems?.length || 0} paid`}
-          icon={<CreditCard className="w-5 h-5 text-blue-600" />}
-          bg="bg-blue-50"
-          accent="border-blue-100"
+          icon={<CreditCard className="w-6 h-6 text-indigo-600" />}
+          bg="bg-indigo-50"
+          accent="border-indigo-100"
         />
         <SummaryCard
           label="Overdue"
           value={formatBDT(totalOverdue)}
           sub={`${scheduleItems?.filter(i => i.status === "OVERDUE").length || 0} installment(s)`}
-          icon={<AlertCircle className="w-5 h-5 text-red-500" />}
-          bg="bg-red-50"
-          accent={totalOverdue > 0 ? "border-red-200" : "border-red-100"}
+          icon={<AlertCircle className="w-6 h-6 text-rose-600" />}
+          bg="bg-rose-50"
+          accent={totalOverdue > 0 ? "border-rose-200" : "border-rose-100"}
         />
         <SummaryCard
           label="Active Penalties"
           value={formatBDT(activePenaltiesTotal)}
           sub={`${penalties?.length || 0} active fine(s)`}
-          icon={<TrendingUp className="w-5 h-5 text-orange-500" />}
-          bg="bg-orange-50"
-          accent="border-orange-100"
+          icon={<TrendingUp className="w-6 h-6 text-amber-600" />}
+          bg="bg-amber-50"
+          accent="border-amber-100"
         />
         <SummaryCard
           label="Next Installment"
           value={nextDue ? formatBDT(nextDue.amount) : "—"}
           sub={nextDue ? formatDate(nextDue.due_date) : "No upcoming dues"}
-          icon={<CalendarClock className="w-5 h-5 text-teal-600" />}
-          bg="bg-teal-50"
-          accent="border-teal-100"
+          icon={<CalendarClock className="w-6 h-6 text-emerald-600" />}
+          bg="bg-emerald-50"
+          accent="border-emerald-100"
         />
       </div>
 
@@ -187,7 +187,7 @@ export default async function ShareholderDashboardPage() {
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
             <h3 className="text-sm font-semibold text-gray-900">Recent Payments</h3>
-            <Link href="/my/payments" className="text-xs text-teal-600 hover:underline flex items-center gap-1">
+            <Link href="/my/payments" className="text-xs text-indigo-600 hover:underline flex items-center gap-1">
               View All <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
@@ -217,7 +217,7 @@ export default async function ShareholderDashboardPage() {
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
             <h3 className="text-sm font-semibold text-gray-900">Project Expenses (Published)</h3>
-            <Link href="/my/expenses" className="text-xs text-teal-600 hover:underline flex items-center gap-1">
+            <Link href="/my/expenses" className="text-xs text-indigo-600 hover:underline flex items-center gap-1">
               View All <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
@@ -246,13 +246,13 @@ function SummaryCard({ label, value, sub, icon, bg, accent }: {
   label: string; value: string; sub: string; icon: React.ReactNode; bg: string; accent: string
 }) {
   return (
-    <div className={`bg-white rounded-xl border ${accent} shadow-sm p-4`}>
-      <div className={`w-9 h-9 rounded-lg ${bg} flex items-center justify-center mb-3`}>
+    <div className={`bg-white rounded-2xl border ${accent} shadow-eos-sm p-5 hover:shadow-eos transition-all duration-300 group cursor-default`}>
+      <div className={`w-12 h-12 rounded-xl ${bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
         {icon}
       </div>
-      <p className="text-xs text-gray-500 mb-0.5">{label}</p>
-      <p className="text-lg font-bold text-gray-900 leading-tight">{value}</p>
-      <p className="text-xs text-gray-400 mt-0.5">{sub}</p>
+      <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">{label}</p>
+      <p className="text-2xl font-black text-gray-900 leading-tight tracking-tight">{value}</p>
+      <p className="text-xs text-gray-500 mt-1 font-medium">{sub}</p>
     </div>
   )
 }

@@ -118,11 +118,11 @@ export function ShareholderDocsClient({ documents }: ShareholderDocsClientProps)
           <TableBody>
             {filteredDocs.length > 0 ? (
               filteredDocs.map((doc, idx) => (
-                <TableRow key={doc.id} className="group hover:bg-teal-50/30 transition-colors">
+                <TableRow key={doc.id} className="group hover:bg-indigo-50/30 transition-colors">
                   <TableCell className="pl-6 text-gray-400 font-medium">{idx + 1}</TableCell>
                   <TableCell>
                     <div className="flex items-center">
-                      <div className="p-2 rounded-lg bg-teal-50 text-teal-600 mr-3 group-hover:bg-teal-100 transition-colors">
+                      <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600 mr-3 group-hover:bg-indigo-100 transition-colors">
                         <FileIcon className="w-4 h-4" />
                       </div>
                       <div className="flex flex-col">
@@ -146,7 +146,7 @@ export function ShareholderDocsClient({ documents }: ShareholderDocsClientProps)
                       size="icon" 
                       variant="ghost" 
                       onClick={() => handleDownload(doc)}
-                      className="text-teal-600 hover:bg-teal-100 hover:text-teal-700 rounded-xl"
+                      className="text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 rounded-xl"
                     >
                       <Download className="w-5 h-5" />
                     </Button>

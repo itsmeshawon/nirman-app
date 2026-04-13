@@ -31,9 +31,9 @@ const reportTypes = [
     title: "Expense Ledger",
     description: "All published expenses with categories, amounts, VAT and invoice numbers.",
     icon: FileSpreadsheet,
-    color: "text-teal-600",
-    bg: "bg-teal-50",
-    border: "border-teal-100 hover:border-teal-400",
+    color: "text-indigo-600",
+    bg: "bg-indigo-50",
+    border: "border-indigo-100 hover:border-indigo-400",
   },
   {
     id: "collection-summary",
@@ -111,36 +111,54 @@ export function ReportsClient({ projectId, chartData, summary }: ReportsClientPr
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "Total Scheduled", value: formatBDTShort(summary.totalScheduled), color: "text-gray-900" },
-          { label: "Total Collected", value: formatBDTShort(summary.totalPaid), color: "text-teal-700" },
-          { label: "Total Expenses", value: formatBDTShort(summary.totalExpenses), color: "text-purple-700" },
-          { label: "Collection Rate", value: `${summary.collectionRate}%`, color: summary.collectionRate >= 80 ? "text-green-700" : "text-red-700" },
+          { label: "Total Collected", value: formatBDTShort(summary.totalPaid), color: "text-indigo-600" },
+          { label: "Total Expenses", value: formatBDTShort(summary.totalExpenses), color: "text-purple-600" },
+          { label: "Collection Rate", value: `${summary.collectionRate}%`, color: summary.collectionRate >= 80 ? "text-emerald-700" : "text-rose-700" },
         ].map(s => (
-          <div key={s.label} className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-            <p className="text-xs text-gray-500 mb-1">{s.label}</p>
-            <p className={`text-xl font-bold ${s.color}`}>{s.value}</p>
+          <div key={s.label} className="bg-white rounded-[1.25rem] border border-gray-100 shadow-eos-sm p-5 hover:shadow-eos transition-all duration-300">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">{s.label}</p>
+            <p className={`text-2xl font-black tracking-tight ${s.color}`}>{s.value}</p>
           </div>
         ))}
       </div>
 
       {/* Bar Chart */}
       {chartData.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-          <div className="flex items-center gap-2 mb-6">
-            <BarChart2 className="w-5 h-5 text-teal-600" />
-            <h3 className="text-sm font-semibold text-gray-900">Collections vs Expenses by Milestone</h3>
+        <div className="bg-white rounded-[1.25rem] border border-gray-100 shadow-eos p-8">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center">
+              <BarChart2 className="w-5 h-5 text-indigo-600" />
+            </div>
+            <h3 className="text-base font-bold text-gray-900">Collections vs Expenses</h3>
           </div>
-          <ResponsiveContainer width="100%" height={260}>
+          <ResponsiveContainer width="100%" height={280}>
             <BarChart data={chartData} margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#6b7280" }} tickLine={false} />
-              <YAxis tickFormatter={formatBDTShort} tick={{ fontSize: 11, fill: "#6b7280" }} tickLine={false} axisLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+              <XAxis 
+                dataKey="name" 
+                tick={{ fontSize: 11, fill: "#94a3b8", fontWeight: 500 }} 
+                tickLine={false} 
+                axisLine={false}
+                dy={10}
+              />
+              <YAxis 
+                tickFormatter={formatBDTShort} 
+                tick={{ fontSize: 11, fill: "#94a3b8", fontWeight: 500 }} 
+                tickLine={false} 
+                axisLine={false} 
+              />
               <Tooltip
                 formatter={(value: any, name: any) => [formatBDTShort(Number(value) || 0), name === "collected" ? "Collected" : "Expenses"] as [string, string]}
-                contentStyle={{ borderRadius: "8px", border: "1px solid #e5e7eb", fontSize: 12 }}
+                contentStyle={{ borderRadius: "12px", border: "none", boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)", fontSize: 12 }}
+                cursor={{ fill: '#f8fafc' }}
               />
-              <Legend wrapperStyle={{ fontSize: 12 }} formatter={(v) => v === "collected" ? "Collected" : "Published Expenses"} />
-              <Bar dataKey="collected" fill="#0f766e" radius={[4, 4, 0, 0]} name="collected" />
-              <Bar dataKey="expenses" fill="#7c3aed" radius={[4, 4, 0, 0]} name="expenses" />
+              <Legend 
+                wrapperStyle={{ paddingTop: 20, fontSize: 12, fontWeight: 500 }} 
+                formatter={(v) => v === "collected" ? "Collected" : "Expenses"}
+                iconType="circle"
+              />
+              <Bar dataKey="collected" fill="#4f46e5" radius={[6, 6, 0, 0]} name="collected" barSize={32} />
+              <Bar dataKey="expenses" fill="#c084fc" radius={[6, 6, 0, 0]} name="expenses" barSize={32} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -149,33 +167,33 @@ export function ReportsClient({ projectId, chartData, summary }: ReportsClientPr
       {/* Download Cards */}
       <div>
         <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">Download Reports</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {reportTypes.map((report) => {
             const Icon = report.icon
             const isLoading = loading === report.id
             return (
               <div
                 key={report.id}
-                className={`bg-white rounded-xl border ${report.border} shadow-sm p-5 flex items-start gap-4 transition-all`}
+                className={`bg-white rounded-[1.25rem] border border-indigo-50/50 shadow-eos-sm p-6 flex items-start gap-4 transition-all hover:shadow-eos`}
               >
-                <div className={`w-11 h-11 rounded-xl ${report.bg} flex items-center justify-center flex-shrink-0`}>
+                <div className={`w-12 h-12 rounded-xl ${report.bg} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
                   <Icon className={`w-5 h-5 ${report.color}`} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-semibold text-gray-900">{report.title}</h4>
-                  <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{report.description}</p>
+                  <h4 className="text-base font-bold text-gray-900">{report.title}</h4>
+                  <p className="text-xs text-gray-500 mt-1 leading-relaxed font-medium">{report.description}</p>
                 </div>
                 <button
                   onClick={() => handleDownload(report.id)}
                   disabled={isLoading}
-                  className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 text-xs font-medium text-gray-700 transition-colors disabled:opacity-50"
+                  className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#4f46e5]/5 hover:bg-[#4f46e5]/10 text-xs font-bold text-indigo-600 transition-colors disabled:opacity-50 border border-transparent hover:border-indigo-100"
                 >
                   {isLoading ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   ) : (
                     <Download className="w-3.5 h-3.5" />
                   )}
-                  CSV
+                  Export
                 </button>
               </div>
             )

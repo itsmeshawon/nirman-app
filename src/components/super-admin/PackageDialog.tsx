@@ -177,12 +177,12 @@ export default function PackageDialog({ open, onOpenChange, onSuccess, pkg }: Pa
                   onClick={() => toggleFeature(key)}
                   className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
                     selectedFeatures.has(key)
-                      ? "border-teal-500 bg-teal-50"
+                      ? "border-indigo-500 bg-indigo-50"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
                   <div className={`mt-0.5 h-4 w-4 rounded border-2 flex items-center justify-center shrink-0 ${
-                    selectedFeatures.has(key) ? "border-teal-600 bg-teal-600" : "border-gray-300"
+                    selectedFeatures.has(key) ? "border-indigo-600 bg-indigo-600" : "border-gray-300"
                   }`}>
                     {selectedFeatures.has(key) && <Check className="h-2.5 w-2.5 text-white" />}
                   </div>
@@ -209,7 +209,7 @@ export default function PackageDialog({ open, onOpenChange, onSuccess, pkg }: Pa
             type="button"
             onClick={handleSubmit}
             disabled={loading}
-            className="bg-[#0F766E] hover:bg-[#14B8A6] text-white"
+            className="bg-[#4F46E5] hover:bg-[#14B8A6] text-white"
           >
             {!isEdit && <Plus className="h-4 w-4" />}
             {loading

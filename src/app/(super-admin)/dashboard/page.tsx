@@ -114,8 +114,8 @@ export default async function SuperAdminDashboardPage() {
           label="Total Projects"
           value={stats.totalProjects}
           icon={FolderOpen}
-          iconBg="bg-teal-50"
-          iconColor="text-[#0F766E]"
+          iconBg="bg-indigo-50"
+          iconColor="text-[#4F46E5]"
         />
         <StatCard
           label="Active Projects"

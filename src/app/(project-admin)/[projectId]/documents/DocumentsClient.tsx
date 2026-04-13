@@ -159,7 +159,7 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
 
         <Dialog open={isUploadOpen} onOpenChange={setIsUploadOpen}>
           <DialogTrigger>
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-teal-700 hover:bg-teal-800 text-white text-sm font-medium cursor-pointer">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-indigo-700 hover:bg-indigo-800 text-white text-sm font-medium cursor-pointer">
               <Plus className="w-4 h-4" />
               Upload Document
             </span>
@@ -208,7 +208,7 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
               <div className="flex justify-end pt-4">
                 <Button 
                   type="submit" 
-                  className="bg-teal-700 hover:bg-teal-800 w-full"
+                  className="bg-indigo-700 hover:bg-indigo-800 w-full"
                   disabled={isUploading}
                 >
                   {isUploading ? (
@@ -255,12 +255,12 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
                   <TableCell className="font-medium text-gray-500">{idx + 1}</TableCell>
                   <TableCell>
                     <div className="flex items-center">
-                      <FileIcon className="w-4 h-4 mr-2 text-teal-600" />
+                      <FileIcon className="w-4 h-4 mr-2 text-indigo-600" />
                       <span className="font-medium text-gray-900">{doc.name}</span>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className="bg-teal-50 text-teal-700 border-teal-100">
+                    <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-100">
                       {doc.category}
                     </Badge>
                   </TableCell>
@@ -278,7 +278,7 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
                       <Button 
                         variant="ghost" 
                         size="sm" 
-                        className="text-teal-700 hover:text-teal-800 hover:bg-teal-50"
+                        className="text-indigo-700 hover:text-indigo-800 hover:bg-indigo-50"
                         onClick={() => handleDownload(doc)}
                       >
                         <Download className="w-4 h-4" />

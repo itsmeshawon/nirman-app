@@ -119,7 +119,7 @@ function ProfileCard({ profile, badge }: { profile: AdminProfile; badge: string 
       <div className="flex items-start justify-between mb-4">
         <div>
           <h4 className="text-lg font-semibold text-gray-900">{profile.name || "—"}</h4>
-          <span className="text-xs bg-teal-50 text-teal-700 border border-teal-100 px-2 py-0.5 rounded-full font-medium">
+          <span className="text-xs bg-indigo-50 text-indigo-700 border border-indigo-100 px-2 py-0.5 rounded-full font-medium">
             {badge}
           </span>
         </div>
@@ -260,7 +260,7 @@ export default function SuperAdminProjectDetailPage() {
 
       {/* Page header */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-        <div className="h-12 w-12 rounded-lg bg-teal-50 flex items-center justify-center text-[#0F766E] shrink-0">
+        <div className="h-12 w-12 rounded-lg bg-indigo-50 flex items-center justify-center text-[#4F46E5] shrink-0">
           <Building2 className="h-6 w-6" />
         </div>
         <div className="flex-1 min-w-0">
@@ -281,7 +281,7 @@ export default function SuperAdminProjectDetailPage() {
       {/* ------------------------------------------------------------------ */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
         <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
-          <LayoutGrid className="h-4 w-4 text-[#0F766E]" />
+          <LayoutGrid className="h-4 w-4 text-[#4F46E5]" />
           <h2 className="text-base font-semibold text-gray-900">Project Info</h2>
         </div>
         <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-5">
@@ -291,7 +291,7 @@ export default function SuperAdminProjectDetailPage() {
             <div className="sm:col-span-2">
               <p className="text-xs text-gray-400 uppercase tracking-wide mb-1.5">Package</p>
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-semibold text-gray-800 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-lg">
+                <span className="text-sm font-semibold text-gray-800 bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-lg">
                   {project.package.name}
                 </span>
                 {project.package.features?.map((f: string) => (
@@ -360,7 +360,7 @@ export default function SuperAdminProjectDetailPage() {
       {/* ------------------------------------------------------------------ */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
         <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
-          <ShieldCheck className="h-4 w-4 text-[#0F766E]" />
+          <ShieldCheck className="h-4 w-4 text-[#4F46E5]" />
           <h2 className="text-base font-semibold text-gray-900">
             Project Admin
             <span className="ml-2 text-xs font-normal text-gray-400">({admins.length})</span>
@@ -385,7 +385,7 @@ export default function SuperAdminProjectDetailPage() {
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
         <div className="px-5 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center gap-3">
           <div className="flex items-center gap-2 flex-1">
-            <Users className="h-4 w-4 text-[#0F766E]" />
+            <Users className="h-4 w-4 text-[#4F46E5]" />
             <h2 className="text-base font-semibold text-gray-900">
               Shareholders
               <span className="ml-2 text-xs font-normal text-gray-400">({shareholders.length})</span>
@@ -398,7 +398,7 @@ export default function SuperAdminProjectDetailPage() {
               placeholder="Search by name or unit…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+              className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
           </div>
         </div>
@@ -453,7 +453,7 @@ export default function SuperAdminProjectDetailPage() {
                         <button
                           type="button"
                           onClick={() => setDetailShareholder(sh)}
-                          className="flex items-center gap-1.5 font-medium text-gray-900 hover:text-[#0F766E] transition-colors group text-left"
+                          className="flex items-center gap-1.5 font-medium text-gray-900 hover:text-[#4F46E5] transition-colors group text-left"
                         >
                           {committeeShareholderIds.has(sh.id) && (
                             <span title="Committee Member"><Crown className="h-3.5 w-3.5 text-amber-400 shrink-0" /></span>
@@ -498,7 +498,7 @@ export default function SuperAdminProjectDetailPage() {
             return (
               <>
                 {/* Hero */}
-                <div className="bg-gradient-to-br from-teal-700 to-teal-500 px-6 pt-10 pb-6 text-white">
+                <div className="bg-gradient-to-br from-indigo-700 to-indigo-500 px-6 pt-10 pb-6 text-white">
                   <div className="flex items-start gap-4">
                     <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-2xl font-bold shrink-0">
                       {initials}
@@ -512,7 +512,7 @@ export default function SuperAdminProjectDetailPage() {
                           </span>
                         )}
                       </div>
-                      <p className="text-teal-100 text-sm mt-0.5">Unit {detailShareholder.unit_flat || "—"}</p>
+                      <p className="text-indigo-100 text-sm mt-0.5">Unit {detailShareholder.unit_flat || "—"}</p>
                       <span className={`mt-2 inline-block text-xs font-semibold px-2 py-0.5 rounded-full ${isActive ? "bg-green-400/20 text-green-100 border border-green-400/30" : "bg-gray-400/20 text-gray-200 border border-gray-400/30"}`}>
                         {isActive ? "Active" : "Inactive"}
                       </span>

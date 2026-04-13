@@ -107,7 +107,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
         <button
           type="button"
           onClick={() => setDetailShareholder(info.row.original)}
-          className="flex items-center gap-1.5 font-medium text-gray-900 hover:text-[#0F766E] transition-colors text-left group"
+          className="flex items-center gap-1.5 font-medium text-gray-900 hover:text-[#4F46E5] transition-colors text-left group"
         >
           {committeeSet.has(info.row.original.id) && (
             <span title="Committee Member">
@@ -236,7 +236,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
             setEditingShareholder(null)
             setIsDialogOpen(true)
           }} 
-          className="bg-[#0F766E] hover:bg-teal-800"
+          className="bg-[#4F46E5] hover:bg-indigo-800"
         >
           <UserPlus className="mr-2 h-4 w-4" />
           Add Shareholder
@@ -357,7 +357,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
             return (
               <>
                 {/* Hero */}
-                <div className="bg-gradient-to-br from-teal-700 to-teal-500 px-6 pt-10 pb-6 text-white">
+                <div className="bg-gradient-to-br from-indigo-700 to-indigo-500 px-6 pt-10 pb-6 text-white">
                   <div className="flex items-start gap-4">
                     <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-2xl font-bold shrink-0">
                       {initials}
@@ -371,7 +371,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
                           </span>
                         )}
                       </div>
-                      <p className="text-teal-100 text-sm mt-0.5">Unit {detailShareholder.unit_flat || "—"}</p>
+                      <p className="text-indigo-100 text-sm mt-0.5">Unit {detailShareholder.unit_flat || "—"}</p>
                       <span className={`mt-2 inline-block text-xs font-semibold px-2 py-0.5 rounded-full ${isActive ? "bg-green-400/20 text-green-100 border border-green-400/30" : "bg-gray-400/20 text-gray-200 border border-gray-400/30"}`}>
                         {isActive ? "Active" : "Inactive"}
                       </span>
@@ -423,7 +423,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
                   <div className="flex gap-2 pb-2">
                     <button
                       onClick={() => { setEditingShareholder(detailShareholder); setIsDialogOpen(true); setDetailShareholder(null) }}
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium transition-colors"
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors"
                     >
                       <Pencil className="h-4 w-4" /> Edit Profile
                     </button>

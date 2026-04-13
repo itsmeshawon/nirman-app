@@ -117,7 +117,7 @@ export default function ProjectsPage() {
       ),
       cell: ({ row }) => (
         <Link href={`/projects/${row.original.id}`} className="block group">
-          <p className="font-bold text-gray-900 group-hover:text-[#0F766E] transition-colors">
+          <p className="font-bold text-gray-900 group-hover:text-[#4F46E5] transition-colors">
             {row.original.name}
           </p>
           {(row.original.area || row.original.address) && (
@@ -131,7 +131,7 @@ export default function ProjectsPage() {
       header: "Package",
       cell: ({ row }) => (
         row.original.package_name ? (
-          <span className="inline-flex items-center rounded-full bg-teal-50 border border-teal-200 px-2.5 py-0.5 text-xs font-medium text-teal-700">
+          <span className="inline-flex items-center rounded-full bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 text-xs font-medium text-indigo-700">
             {row.original.package_name}
           </span>
         ) : (
@@ -258,7 +258,7 @@ export default function ProjectsPage() {
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-[#0F766E] hover:text-teal-700 hover:bg-teal-50"
+              className="h-8 w-8 text-[#4F46E5] hover:text-indigo-700 hover:bg-indigo-50"
               onClick={() =>
                 setAdminDialog({ open: true, projectId: project.id, projectName: project.name })
               }
@@ -303,7 +303,7 @@ export default function ProjectsPage() {
               setEditingProject(null)
               setDialogOpen(true)
             }}
-            className="bg-[#0F766E] hover:bg-[#14B8A6] text-white shrink-0 min-h-[44px]"
+            className="bg-[#4F46E5] hover:bg-[#14B8A6] text-white shrink-0 min-h-[44px]"
           >
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">Create Project</span>
@@ -361,7 +361,7 @@ export default function ProjectsPage() {
                   Create your first construction project to get started.
                 </p>
                 <Button
-                  className="mt-5 bg-[#0F766E] hover:bg-[#14B8A6] text-white"
+                  className="mt-5 bg-[#4F46E5] hover:bg-[#14B8A6] text-white"
                   onClick={() => {
                     setEditingProject(null)
                     setDialogOpen(true)

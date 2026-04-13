@@ -39,7 +39,7 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
             onClick={() => setMobileOpen(false)}
             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
               isActive
-                ? "bg-teal-700 text-white"
+                ? "bg-indigo-700 text-white"
                 : "text-gray-300 hover:bg-white/10 hover:text-white"
             }`}
           >
@@ -54,11 +54,11 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
   return (
     <div className="min-h-screen bg-[#F0F4F8] flex">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex w-56 flex-col bg-[#0F4C45] fixed inset-y-0 left-0 z-30">
+      <aside className="hidden md:flex w-56 flex-col bg-[#0F172A] fixed inset-y-0 left-0 z-30">
         {/* Logo */}
         <div className="flex items-center h-16 px-4 border-b border-white/10 flex-shrink-0">
           <span className="text-white font-bold text-lg tracking-tight">NirmaN</span>
-          <span className="ml-1.5 text-xs bg-teal-500/30 text-teal-200 px-1.5 py-0.5 rounded font-medium">My Portal</span>
+          <span className="ml-1.5 text-xs bg-indigo-500/30 text-indigo-200 px-1.5 py-0.5 rounded font-medium">My Portal</span>
         </div>
         {/* Nav */}
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
@@ -80,7 +80,7 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
       {mobileOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
-          <aside className="absolute left-0 top-0 bottom-0 w-64 bg-[#0F4C45] flex flex-col">
+          <aside className="absolute left-0 top-0 bottom-0 w-64 bg-[#0F172A] flex flex-col">
             <div className="flex items-center justify-between h-16 px-4 border-b border-white/10">
               <span className="text-white font-bold text-lg">NirmaN</span>
               <button onClick={() => setMobileOpen(false)} className="text-gray-300 hover:text-white">
@@ -131,10 +131,10 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
               key={href}
               href={href}
               className={`flex flex-col items-center gap-1 min-w-[64px] transition-colors ${
-                isActive ? "text-teal-700 font-semibold" : "text-gray-400"
+                isActive ? "text-indigo-700 font-semibold" : "text-gray-400"
               }`}
             >
-              <div className={`p-1.5 rounded-xl transition-colors ${isActive ? "bg-teal-50" : ""}`}>
+              <div className={`p-1.5 rounded-xl transition-colors ${isActive ? "bg-indigo-50" : ""}`}>
                 <Icon className="w-5 h-5" />
               </div>
               <span className="text-[10px] tracking-tight">{label.split(' ')[0]}</span>

@@ -22,7 +22,7 @@ const statusConfig: Record<string, { label: string, color: string, icon: any }> 
   SUBMITTED: { label: "Submitted", color: "bg-blue-100 text-blue-700 border-blue-200", icon: SendHorizontal },
   CHANGES_REQUESTED: { label: "Changes Req.", color: "bg-orange-100 text-orange-700 border-orange-200", icon: RefreshCw },
   APPROVED: { label: "Approved", color: "bg-green-100 text-green-700 border-green-200", icon: CheckCircle },
-  PUBLISHED: { label: "Published", color: "bg-teal-100 text-teal-800 border-teal-200", icon: CheckCircle },
+  PUBLISHED: { label: "Published", color: "bg-indigo-100 text-indigo-800 border-indigo-200", icon: CheckCircle },
   REJECTED: { label: "Rejected", color: "bg-red-100 text-red-700 border-red-200", icon: XCircle }
 }
 
@@ -115,7 +115,7 @@ export function ExpensesClient({ projectId, expenses, milestones, categories }: 
               <button
                 key={statusKey}
                 onClick={() => setFilterStatus(active ? null : statusKey)}
-                className={`flex flex-col min-w-[120px] p-3 rounded-xl border transition-all text-left ${active ? 'ring-2 ring-teal-500 shadow-sm bg-white' : 'bg-gray-50/50 hover:bg-gray-50 border-gray-200'}`}
+                className={`flex flex-col min-w-[120px] p-3 rounded-xl border transition-all text-left ${active ? 'ring-2 ring-indigo-500 shadow-sm bg-white' : 'bg-gray-50/50 hover:bg-gray-50 border-gray-200'}`}
               >
                 <div className="flex justify-between items-center w-full mb-1">
                   <Icon className={`w-4 h-4 ${config.color.split(' ')[1]}`} />
@@ -134,11 +134,11 @@ export function ExpensesClient({ projectId, expenses, milestones, categories }: 
          </div>
          <div className="flex gap-2">
             {selectedIds.size > 0 && filterStatus === "APPROVED" && (
-              <Button onClick={handleBulkPublish} disabled={isPublishing} className="bg-teal-700 hover:bg-teal-800">
+              <Button onClick={handleBulkPublish} disabled={isPublishing} className="bg-indigo-700 hover:bg-indigo-800">
                  {isPublishing ? "Publishing..." : `Publish Selected (${selectedIds.size})`}
               </Button>
             )}
-            <Button onClick={openAddForm} className="bg-[#0F766E] hover:bg-teal-800">
+            <Button onClick={openAddForm} className="bg-[#4F46E5] hover:bg-indigo-800">
                <Plus className="w-4 h-4 mr-2" /> Add Expense
             </Button>
          </div>
@@ -183,13 +183,13 @@ export function ExpensesClient({ projectId, expenses, milestones, categories }: 
                               type="checkbox" 
                               checked={selectedIds.has(expense.id)}
                               onChange={() => toggleSelect(expense.id)}
-                              className="rounded border-gray-300 text-teal-600 focus:ring-teal-600"
+                              className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
                             />
                           )}
                         </TableCell>
                         <TableCell className="text-sm">{new Date(expense.date).toLocaleDateString()}</TableCell>
                         <TableCell className="font-medium text-gray-900">
-                           <Link href={`/${projectId}/expenses/${expense.id}`} className="hover:text-teal-600 hover:underline">
+                           <Link href={`/${projectId}/expenses/${expense.id}`} className="hover:text-indigo-600 hover:underline">
                              {expense.title}
                            </Link>
                         </TableCell>
@@ -203,13 +203,13 @@ export function ExpensesClient({ projectId, expenses, milestones, categories }: 
                            </span>
                         </TableCell>
                         <TableCell className="text-right">
-                           <div className="flex justify-end gap-1 text-[#0F766E]">
+                           <div className="flex justify-end gap-1 text-[#4F46E5]">
                              {(expense.status === "DRAFT" || expense.status === "CHANGES_REQUESTED") && (
-                               <Button variant="ghost" size="icon" onClick={() => openEditForm(expense)} className="hover:text-teal-800 hover:bg-teal-50 w-8 h-8 rounded-full" title="Edit Expense">
+                               <Button variant="ghost" size="icon" onClick={() => openEditForm(expense)} className="hover:text-indigo-800 hover:bg-indigo-50 w-8 h-8 rounded-full" title="Edit Expense">
                                   <Edit2 className="w-4 h-4" />
                                </Button>
                              )}
-                             <Link href={`/${projectId}/expenses/${expense.id}`} className="inline-flex items-center justify-center w-8 h-8 rounded-full hover:text-teal-800 hover:bg-teal-50 transition-colors" title="View Details">
+                             <Link href={`/${projectId}/expenses/${expense.id}`} className="inline-flex items-center justify-center w-8 h-8 rounded-full hover:text-indigo-800 hover:bg-indigo-50 transition-colors" title="View Details">
                                <Eye className="w-4 h-4" />
                              </Link>
                              <Button variant="ghost" size="icon" onClick={() => handleDelete(expense.id)} className="text-red-500 hover:text-red-700 hover:bg-red-50 w-8 h-8 rounded-full" title="Delete Expense">

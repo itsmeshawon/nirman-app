@@ -224,10 +224,10 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
         onClick={() => setIsExpanded(true)}
       >
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-semibold text-sm shrink-0">
+          <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-semibold text-sm shrink-0">
             PA
           </div>
-          <div className="flex-1 bg-gray-50 rounded-lg px-4 py-2.5 text-sm text-gray-400 border border-gray-100 hover:border-teal-200 transition-colors">
+          <div className="flex-1 bg-gray-50 rounded-lg px-4 py-2.5 text-sm text-gray-400 border border-gray-100 hover:border-indigo-200 transition-colors">
             Share a project update...
           </div>
         </div>
@@ -236,7 +236,7 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
   }
 
   return (
-    <div className="bg-white rounded-xl border border-teal-200 shadow-sm p-5 space-y-4">
+    <div className="bg-white rounded-xl border border-indigo-200 shadow-sm p-5 space-y-4">
       {/* Title */}
       <div className="space-y-1.5">
         <Label htmlFor="post-title" className="text-xs text-gray-500 font-medium">
@@ -279,8 +279,8 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
             onClick={() => fileInputRef.current?.click()}
             className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
               isDragging
-                ? "border-teal-400 bg-teal-50"
-                : "border-gray-200 hover:border-teal-300 hover:bg-gray-50"
+                ? "border-indigo-400 bg-indigo-50"
+                : "border-gray-200 hover:border-indigo-300 hover:bg-gray-50"
             }`}
           >
             <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
@@ -325,7 +325,7 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
               <div className="space-y-1">
                 <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
                   <div
-                    className="bg-teal-500 h-1.5 rounded-full transition-all duration-300"
+                    className="bg-indigo-500 h-1.5 rounded-full transition-all duration-300"
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
@@ -334,7 +334,7 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
             )}
 
             {!mediaUploading && mediaPath && (
-              <p className="text-xs text-teal-600 font-medium">Upload complete</p>
+              <p className="text-xs text-indigo-600 font-medium">Upload complete</p>
             )}
 
             <button
@@ -361,8 +361,8 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
               onClick={() => toggleTag(tag)}
               className={`px-2.5 py-0.5 rounded-full text-xs font-medium border transition-all ${
                 tags.includes(tag)
-                  ? "bg-teal-600 text-white border-teal-600"
-                  : "bg-white text-gray-600 border-gray-200 hover:border-teal-300"
+                  ? "bg-indigo-600 text-white border-indigo-600"
+                  : "bg-white text-gray-600 border-gray-200 hover:border-indigo-300"
               }`}
             >
               {tag}
@@ -429,7 +429,7 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
             id="post-milestone"
             value={milestoneId}
             onChange={(e) => setMilestoneId(e.target.value)}
-            className="w-full h-8 rounded-md border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+            className="w-full h-8 rounded-md border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
           >
             <option value="">No milestone</option>
             {milestones.map((m) => (
@@ -456,7 +456,7 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
           type="button"
           onClick={handlePublish}
           disabled={isSubmitting || mediaUploading}
-          className="bg-teal-700 hover:bg-teal-800 text-white"
+          className="bg-indigo-700 hover:bg-indigo-800 text-white"
         >
           {isSubmitting ? "Publishing..." : "Publish Post"}
         </Button>

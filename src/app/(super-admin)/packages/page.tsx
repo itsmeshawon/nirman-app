@@ -117,7 +117,7 @@ export default function PackagesPage() {
               setEditingPackage(null)
               setCreateDialogOpen(true)
             }}
-            className="bg-[#0F766E] hover:bg-[#14B8A6] text-white shrink-0 min-h-[44px]"
+            className="bg-[#4F46E5] hover:bg-[#14B8A6] text-white shrink-0 min-h-[44px]"
           >
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">Create Package</span>
@@ -141,7 +141,7 @@ export default function PackagesPage() {
                   Create your first feature package to assign to projects.
                 </p>
                 <Button
-                  className="mt-5 bg-[#0F766E] hover:bg-[#14B8A6] text-white"
+                  className="mt-5 bg-[#4F46E5] hover:bg-[#14B8A6] text-white"
                   onClick={() => {
                     setEditingPackage(null)
                     setCreateDialogOpen(true)
@@ -182,7 +182,7 @@ export default function PackagesPage() {
                               {visible.map((key) => (
                                 <span
                                   key={key}
-                                  className="inline-flex items-center rounded-full bg-teal-50 border border-teal-200 px-2 py-0.5 text-xs font-medium text-teal-700"
+                                  className="inline-flex items-center rounded-full bg-indigo-50 border border-indigo-200 px-2 py-0.5 text-xs font-medium text-indigo-700"
                                 >
                                   {FEATURE_LABELS[key]?.label ?? key}
                                 </span>

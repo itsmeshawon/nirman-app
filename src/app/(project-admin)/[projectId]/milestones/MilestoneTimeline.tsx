@@ -149,7 +149,7 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
           <h2 className="text-xl font-bold text-gray-900">Project Milestones</h2>
           <p className="text-sm text-gray-500 mt-1">Track the major phases of your construction.</p>
         </div>
-        <Button onClick={() => openDialog()} className="bg-[#0F766E] hover:bg-teal-800">
+        <Button onClick={() => openDialog()} className="bg-[#4F46E5] hover:bg-indigo-800">
           <Plus className="mr-2 h-4 w-4" />
           Add Milestone
         </Button>
@@ -229,7 +229,7 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
                           variant="outline" 
                           size="sm" 
                           onClick={() => openDialog(milestone)}
-                          className="text-gray-600 hover:text-[#0F766E] border-gray-200"
+                          className="text-gray-600 hover:text-[#4F46E5] border-gray-200"
                         >
                           <Pencil className="h-4 w-4 mr-2" />
                           Edit
@@ -292,7 +292,7 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
               <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
-               <Button type="submit" disabled={isLoading} className="bg-[#0F766E] hover:bg-teal-800">
+               <Button type="submit" disabled={isLoading} className="bg-[#4F46E5] hover:bg-indigo-800">
                 {isLoading ? "Saving..." : "Save"}
               </Button>
             </DialogFooter>

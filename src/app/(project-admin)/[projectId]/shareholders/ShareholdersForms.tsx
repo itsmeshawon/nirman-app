@@ -188,7 +188,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
                 )}
               </PDFDownloadLink>
             )}
-            <Button onClick={handleCloseCreds} className="bg-[#0F766E] hover:bg-teal-800 w-full sm:w-auto">Done</Button>
+            <Button onClick={handleCloseCreds} className="bg-[#4F46E5] hover:bg-indigo-800 w-full sm:w-auto">Done</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -277,7 +277,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
             <Button variant="outline" type="button" onClick={onClose} disabled={isLoading}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading} className="bg-[#0F766E] hover:bg-teal-800">
+            <Button type="submit" disabled={isLoading} className="bg-[#4F46E5] hover:bg-indigo-800">
               {isLoading ? "Saving..." : isEdit ? "Save Changes" : "Add Shareholder"}
             </Button>
           </DialogFooter>

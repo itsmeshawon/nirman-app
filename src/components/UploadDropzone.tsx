@@ -65,13 +65,13 @@ export function UploadDropzone({ onFilesSelected, maxFiles = 5, maxSizeMB = 10, 
   return (
     <div className="w-full">
       <div 
-        className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center transition-colors cursor-pointer ${isDragOver ? "border-teal-500 bg-teal-50" : "border-gray-300 bg-gray-50 hover:bg-gray-100"}`}
+        className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center transition-colors cursor-pointer ${isDragOver ? "border-indigo-500 bg-indigo-50" : "border-gray-300 bg-gray-50 hover:bg-gray-100"}`}
         onDragOver={(e) => { e.preventDefault(); setIsDragOver(true) }}
         onDragLeave={(e) => { e.preventDefault(); setIsDragOver(false) }}
         onDrop={handleDrop}
         onClick={() => document.getElementById("file-upload")?.click()}
       >
-        <UploadCloud className="h-8 w-8 text-teal-600 mb-2" />
+        <UploadCloud className="h-8 w-8 text-indigo-600 mb-2" />
         <p className="text-sm text-gray-700 font-medium mb-1">Click to upload or drag and drop</p>
         <p className="text-xs text-gray-500">JPG, PNG, PDF up to {maxSizeMB}MB (max {maxFiles})</p>
         <input 

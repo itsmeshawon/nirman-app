@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { ArrowLeft, User, Mail, Phone, Building2, Briefcase, MapPin, MessageCircle } from "lucide-react"
+import { ArrowLeft, User, Mail, Phone, Building2, Briefcase, MapPin, MessageCircle, Camera } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -130,21 +130,42 @@ export default function MyProfilePage() {
         </Button>
       </header>
 
-      <main className="max-w-3xl mx-auto p-4 md:p-8 pb-24">
-        <div className="mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <User className="w-8 h-8 text-[#0F766E]" />
-            My Profile
-          </h1>
-          <p className="text-gray-500 mt-2">View and update your personal information.</p>
+      <main className="max-w-4xl mx-auto p-4 md:p-8 pb-24">
+        <div className="mb-10 text-center">
+          <h1 className="text-3xl font-extrabold text-[#0F172A] tracking-tight">Account Settings</h1>
+          <p className="text-gray-500 mt-2">Manage your construction profile and contact details.</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-teal-50 to-teal-100/50 px-6 py-4 border-b border-gray-100">
-            <h2 className="font-semibold text-teal-800">Personal Information</h2>
+        <div className="bg-white rounded-[1.25rem] shadow-eos-xl border border-indigo-50/50 overflow-hidden">
+          {/* Cover/Header area */}
+          <div className="h-32 bg-gradient-to-r from-indigo-600 to-violet-600 relative">
+            <div className="absolute -bottom-12 left-8 md:left-12">
+              <div className="relative group">
+                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-white bg-indigo-50 flex items-center justify-center text-indigo-600 text-3xl font-bold shadow-sm overflow-hidden">
+                  {initialData?.name?.charAt(0)?.toUpperCase() || "U"}
+                </div>
+                <button className="absolute bottom-1 right-1 bg-white p-1.5 rounded-full shadow-md text-gray-600 hover:text-indigo-600 transition-colors border border-gray-100">
+                  <Camera className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-16 pb-6 px-8 md:px-12 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">{initialData?.name}</h2>
+              <p className="text-sm text-gray-500">{initialData?.role?.replace('_', ' ')}</p>
+            </div>
+            {isDirty && (
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 rounded-full border border-amber-100">
+                <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                <span className="text-xs font-semibold text-amber-700 uppercase tracking-wider">Unsaved Changes</span>
+              </div>
+            )}
           </div>
           
-          <form onSubmit={handleSubmit(onSubmit)} className="p-6 md:p-8 space-y-6">
+          <div className="px-8 md:px-12 pb-8">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
@@ -233,17 +254,17 @@ export default function MyProfilePage() {
               </div>
             </div>
 
-            <div className="pt-6 flex justify-end items-center gap-4">
-              {isDirty && <span className="text-sm text-amber-600 font-medium">Unsaved changes</span>}
+            <div className="pt-8 flex justify-end items-center gap-4">
               <Button 
                 type="submit" 
                 disabled={isSaving || !isDirty}
-                className="bg-[#0F766E] hover:bg-teal-800 min-w-[140px] shadow-sm"
+                className="bg-[#4F46E5] hover:bg-indigo-700 min-w-[160px] h-11 rounded-xl shadow-eos font-semibold transition-all active:scale-[0.98]"
               >
                 {isSaving ? "Saving..." : "Save Changes"}
               </Button>
             </div>
           </form>
+          </div>
         </div>
       </main>
     </div>

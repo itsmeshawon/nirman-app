@@ -129,7 +129,7 @@ export default async function StatementPrintPage() {
                         <td className="py-2 font-mono text-gray-600">{p.receipt_no}</td>
                         <td className="py-2 text-gray-600">{new Date(p.created_at).toLocaleDateString()}</td>
                         <td className="py-2 text-gray-600">{p.method.replace("_", " ")}</td>
-                        <td className="py-2 text-right font-medium text-teal-700">{parseFloat(p.amount).toLocaleString('en-IN')}</td>
+                        <td className="py-2 text-right font-medium text-indigo-700">{parseFloat(p.amount).toLocaleString('en-IN')}</td>
                      </tr>
                    ))}
                 </tbody>

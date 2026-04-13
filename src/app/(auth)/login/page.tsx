@@ -74,7 +74,7 @@ export default function LoginPage() {
   return (
     <div className="w-full max-w-sm px-4">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-[#0F766E] tracking-tight">NirmaN</h1>
+        <h1 className="text-3xl font-bold text-[#4F46E5] tracking-tight">NirmaN</h1>
         <p className="text-sm text-gray-500 mt-1">Construction Transparency Platform</p>
       </div>
 
@@ -121,7 +121,7 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className="w-full h-10 bg-[#0F766E] hover:bg-[#14B8A6] text-white"
+              className="w-full h-10 bg-[#4F46E5] hover:bg-[#14B8A6] text-white"
               disabled={loading}
             >
               {loading ? "Signing in..." : "Sign In"}

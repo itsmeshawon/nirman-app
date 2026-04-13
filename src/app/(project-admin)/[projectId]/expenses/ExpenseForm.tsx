@@ -245,7 +245,7 @@ export function ExpenseForm({ projectId, isOpen, onClose, milestones, categories
              <Button variant="secondary" onClick={() => handleSave(false)} disabled={isSubmitting}>
                Save {isEditing ? "Changes" : "as Draft"}
              </Button>
-             <Button onClick={() => handleSave(true)} disabled={isSubmitting} className="bg-[#0F766E] hover:bg-teal-800">
+             <Button onClick={() => handleSave(true)} disabled={isSubmitting} className="bg-[#4F46E5] hover:bg-indigo-800">
                {isSubmitting ? "Processing..." : "Submit for Approval"}
              </Button>
            </div>

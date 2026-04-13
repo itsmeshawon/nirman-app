@@ -100,7 +100,7 @@ export function CommitteeClient({
       <section className="bg-white border rounded-xl shadow-sm overflow-hidden">
         <div className="p-6 border-b bg-slate-50/50">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-teal-100 text-teal-700 rounded-lg">
+            <div className="p-2 bg-indigo-100 text-indigo-700 rounded-lg">
               <ShieldCheck className="h-6 w-6" />
             </div>
             <div>
@@ -114,7 +114,7 @@ export function CommitteeClient({
           <div className="grid sm:grid-cols-2 gap-4">
             <label
               className={`relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none ${
-                rule === "MAJORITY" ? "border-[#0F766E] ring-1 ring-[#0F766E]" : "border-gray-300"
+                rule === "MAJORITY" ? "border-[#4F46E5] ring-1 ring-[#4F46E5]" : "border-gray-300"
               }`}
             >
               <input
@@ -134,14 +134,14 @@ export function CommitteeClient({
                 </span>
               </span>
               <ShieldCheck
-                className={`h-5 w-5 ${rule === "MAJORITY" ? "text-[#0F766E]" : "text-transparent"}`}
+                className={`h-5 w-5 ${rule === "MAJORITY" ? "text-[#4F46E5]" : "text-transparent"}`}
                 aria-hidden="true"
               />
             </label>
 
             <label
               className={`relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none ${
-                rule === "ANY_SINGLE" ? "border-[#0F766E] ring-1 ring-[#0F766E]" : "border-gray-300"
+                rule === "ANY_SINGLE" ? "border-[#4F46E5] ring-1 ring-[#4F46E5]" : "border-gray-300"
               }`}
             >
               <input
@@ -161,7 +161,7 @@ export function CommitteeClient({
                 </span>
               </span>
               <ShieldCheck
-                 className={`h-5 w-5 ${rule === "ANY_SINGLE" ? "text-[#0F766E]" : "text-transparent"}`}
+                 className={`h-5 w-5 ${rule === "ANY_SINGLE" ? "text-[#4F46E5]" : "text-transparent"}`}
                 aria-hidden="true"
               />
             </label>
@@ -170,7 +170,7 @@ export function CommitteeClient({
             <Button
               onClick={handleSaveRule}
               disabled={isSavingRule || rule === currentRule}
-              className="bg-[#0F766E] hover:bg-teal-800"
+              className="bg-[#4F46E5] hover:bg-indigo-800"
             >
               {isSavingRule ? "Saving..." : "Save Rule"}
             </Button>
@@ -191,7 +191,7 @@ export function CommitteeClient({
            </div>
           <Button 
             onClick={() => setIsAddDialogOpen(true)}
-            className="bg-white text-[#0F766E] border border-[#0F766E] hover:bg-teal-50"
+            className="bg-white text-[#4F46E5] border border-[#4F46E5] hover:bg-indigo-50"
           >
             <UserPlus className="mr-2 h-4 w-4" />
             Add Member
@@ -260,7 +260,7 @@ export function CommitteeClient({
           <div className="mt-4 space-y-3 max-h-[300px] overflow-y-auto">
             {availableShareholders.length > 0 ? (
               availableShareholders.map((sh) => (
-                <div key={sh.id} className="flex items-center justify-between p-3 border rounded-lg hover:border-teal-500 transition-colors">
+                <div key={sh.id} className="flex items-center justify-between p-3 border rounded-lg hover:border-indigo-500 transition-colors">
                   <div>
                     <h4 className="font-medium text-sm text-gray-900">{sh.profiles?.name || "Unknown"}</h4>
                     <p className="text-xs text-gray-500">Unit: {sh.unit_flat} | {sh.profiles?.email || "No email"}</p>
@@ -268,7 +268,7 @@ export function CommitteeClient({
                   <Button
                     size="sm"
                     disabled={isAddingMember}
-                    className="bg-[#0F766E] hover:bg-teal-800"
+                    className="bg-[#4F46E5] hover:bg-indigo-800"
                     onClick={() => handleAddMember(sh.id, sh.user_id)}
                   >
                     Add

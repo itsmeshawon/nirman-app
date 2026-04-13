@@ -37,11 +37,11 @@ export function ShareholderExpensesClient({ expenses }: ShareholderExpensesClien
     <div className="space-y-6">
        
        {/* Summary Card */}
-       <div className="bg-gradient-to-r from-teal-500 to-[#0F766E] rounded-xl shadow-md overflow-hidden text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center">
+       <div className="bg-gradient-to-r from-indigo-500 to-[#4F46E5] rounded-xl shadow-md overflow-hidden text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center">
           <div>
-            <p className="text-teal-100 font-medium uppercase tracking-widest text-sm mb-1">Total Published Expenses</p>
+            <p className="text-indigo-100 font-medium uppercase tracking-widest text-sm mb-1">Total Published Expenses</p>
             <h2 className="text-4xl font-bold">৳ {totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</h2>
-            <p className="text-sm text-teal-100 flex items-center mt-3 bg-teal-800/40 w-max px-3 py-1 rounded-full">
+            <p className="text-sm text-indigo-100 flex items-center mt-3 bg-indigo-800/40 w-max px-3 py-1 rounded-full">
                <CheckCircle className="w-4 h-4 mr-2" />
                Transparency guaranteed: All items fully approved.
             </p>
@@ -55,7 +55,7 @@ export function ShareholderExpensesClient({ expenses }: ShareholderExpensesClien
              <div className="relative">
                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                <select 
-                 className="pl-9 pr-8 py-2 border rounded-md text-sm border-gray-200 outline-none focus:border-teal-500 bg-transparent appearance-none"
+                 className="pl-9 pr-8 py-2 border rounded-md text-sm border-gray-200 outline-none focus:border-indigo-500 bg-transparent appearance-none"
                  value={filterCategory}
                  onChange={(e) => setFilterCategory(e.target.value)}
                >
@@ -152,8 +152,8 @@ export function ShareholderExpensesClient({ expenses }: ShareholderExpensesClien
                               {selectedExpense.attachments.map((att: any) => {
                                  const { data: urlData } = supabase.storage.from("expense-proofs").getPublicUrl(att.file_path)
                                  return (
-                                    <a key={att.id} href={urlData.publicUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-2 rounded border hover:bg-gray-50 hover:border-teal-400 group">
-                                       <FileText className="w-5 h-5 text-gray-400 group-hover:text-teal-600" />
+                                    <a key={att.id} href={urlData.publicUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-2 rounded border hover:bg-gray-50 hover:border-indigo-400 group">
+                                       <FileText className="w-5 h-5 text-gray-400 group-hover:text-indigo-600" />
                                        <span className="text-sm font-medium truncate flex-1">{att.file_name}</span>
                                        <Download className="w-4 h-4 text-gray-400" />
                                     </a>
