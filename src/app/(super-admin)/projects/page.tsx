@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useMemo } from "react"
 import {
   useReactTable,
   getCoreRowModel,
@@ -10,7 +10,7 @@ import {
   type SortingState,
   flexRender,
 } from "@tanstack/react-table"
-import { Plus, Search, Building2, ArrowUpDown, UserPlus, Pencil, ToggleLeft, ToggleRight, Archive } from "lucide-react"
+import { Plus, Search, Building2, ArrowUpDown, UserPlus, Pencil, ToggleLeft, ToggleRight, Archive, ArchiveRestore } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -55,6 +55,7 @@ export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [globalFilter, setGlobalFilter] = useState("")
+  const [activeTab, setActiveTab] = useState("active")
   const [sorting, setSorting] = useState<SortingState>([])
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editingProject, setEditingProject] = useState<Project | null>(null)
@@ -230,16 +231,16 @@ export default function ProjectsPage() {
               <div className="h-8 w-8" />
             )}
 
-            {/* Archive */}
+            {/* Archive / Unarchive */}
             {isArchived ? (
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-gray-300 cursor-not-allowed"
-                disabled
-                title="Already archived"
+                className="h-8 w-8 text-blue-500 hover:text-blue-600 hover:bg-blue-50"
+                onClick={() => handleStatusChange(project.id, "PILOT")}
+                title="Unarchive Project"
               >
-                <Archive className="h-3.5 w-3.5" />
+                <ArchiveRestore className="h-3.5 w-3.5" />
               </Button>
             ) : (
               <Button
@@ -271,8 +272,14 @@ export default function ProjectsPage() {
     },
   ]
 
+  const displayedProjects = useMemo(() => {
+    return projects.filter((p) =>
+      activeTab === "archived" ? p.status === "ARCHIVED" : p.status !== "ARCHIVED"
+    )
+  }, [projects, activeTab])
+
   const table = useReactTable({
-    data: projects,
+    data: displayedProjects,
     columns,
     state: { sorting, globalFilter },
     onSortingChange: setSorting,
@@ -302,6 +309,27 @@ export default function ProjectsPage() {
             <span className="hidden sm:inline">Create Project</span>
             <span className="sm:hidden">New</span>
           </Button>
+        </div>
+
+        <div className="flex bg-gray-100/50 p-1 rounded-lg w-fit mb-4 border border-gray-200">
+          <button
+            onClick={() => setActiveTab("active")}
+            className={cn(
+              "px-4 py-1.5 rounded-md text-sm font-medium transition-colors",
+              activeTab === "active" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-900"
+            )}
+          >
+            Active Projects
+          </button>
+          <button
+            onClick={() => setActiveTab("archived")}
+            className={cn(
+              "px-4 py-1.5 rounded-md text-sm font-medium transition-colors",
+              activeTab === "archived" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-900"
+            )}
+          >
+            Archived
+          </button>
         </div>
 
         <Card className="bg-white shadow-sm border border-gray-100">

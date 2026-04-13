@@ -13,7 +13,7 @@ export default async function ShareholdersPage(props: { params: Promise<{ projec
   // Fetch shareholders with their profile data
   const { data: shareholders, error } = await supabase
     .from("shareholders")
-    .select(`*, profiles (name, email, phone)`)
+    .select(`*, profiles (*)`)
     .eq("project_id", projectId)
     .order("unit_flat", { ascending: true })
 

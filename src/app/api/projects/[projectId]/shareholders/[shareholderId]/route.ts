@@ -29,7 +29,7 @@ export async function PATCH(
     const body = await request.json()
     // Don't allow changing project_id, user_id from this endpoint
     const { unit_flat, ownership_pct, opening_balance, status } = body
-    const { profession, designation, organization, present_address, whatsapp_no } = body
+    const { name, phone, profession, designation, organization, present_address, whatsapp_no } = body
 
     // 2. Update the shareholder record
     const { data: shData, error: updateError } = await supabase
@@ -53,6 +53,8 @@ export async function PATCH(
 
     // 2b. Update associated profile fields if any were provided
     const profileUpdate: Record<string, any> = {}
+    if (name !== undefined) profileUpdate.name = name
+    if (phone !== undefined) profileUpdate.phone = phone
     if (profession !== undefined) profileUpdate.profession = profession
     if (designation !== undefined) profileUpdate.designation = designation
     if (organization !== undefined) profileUpdate.organization = organization
