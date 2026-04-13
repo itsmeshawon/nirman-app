@@ -96,6 +96,9 @@ export default function MyProfilePage() {
       toast.success("Profile updated successfully")
       // Reset isDirty state by re-setting the form with the new data
       reset(data)
+      
+      // Refresh the Next.js router so parent layouts reflect the new name instantly
+      router.refresh()
     } catch (error: any) {
       toast.error(error.message)
     } finally {
