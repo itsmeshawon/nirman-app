@@ -29,6 +29,7 @@ export async function POST(
 
     const body = await request.json()
     const { name, email, phone, unit_flat, ownership_pct, opening_balance } = body
+    const { profession, designation, organization, present_address, whatsapp_no } = body
 
     if (!name || !email || !unit_flat) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
@@ -72,7 +73,12 @@ export async function POST(
          name,
          email,
          phone: phone || null,
-         role: 'SHAREHOLDER'
+         role: 'SHAREHOLDER',
+         profession: profession || null,
+         designation: designation || null,
+         organization: organization || null,
+         present_address: present_address || null,
+         whatsapp_no: whatsapp_no || null,
       })
     }
 

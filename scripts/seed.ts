@@ -52,9 +52,9 @@ async function createOrGetUser(email: string, name: string, role: string): Promi
   return data.user.id
 }
 
-async function upsertProfile(id: string, name: string, role: string) {
+async function upsertProfile(id: string, name: string, role: string, email: string) {
   const { error } = await supabase.from("profiles").upsert(
-    { id, name, role },
+    { id, name, role, email },
     { onConflict: "id" }
   )
   if (error) console.warn(`  ⚠️  Profile upsert for ${name}:`, error.message)
@@ -69,56 +69,88 @@ async function main() {
   for (const u of USERS) {
     const id = await createOrGetUser(u.email, u.name, u.role)
     userIds[u.email] = id
-    await upsertProfile(id, u.name, u.role)
+    await upsertProfile(id, u.name, u.role, u.email)
   }
 
   // 2. Create Project
   console.log("\n🏗️  Creating project: Green Valley Heights...")
-  const { data: project, error: pErr } = await supabase
+  let { data: project, error: pErr } = await supabase
     .from("projects")
-    .upsert({
-      name: "Green Valley Heights",
-      address: "Bashundhara R/A, Block-G, Dhaka",
-      status: "ACTIVE",
-    }, { onConflict: "name" })
     .select("id")
-    .single()
+    .eq("name", "Green Valley Heights")
+    .maybeSingle()
 
-  if (pErr || !project) throw new Error(`Project error: ${pErr?.message}`)
-  const projectId = project.id
+  if (pErr) throw new Error(`Project query error: ${pErr.message}`)
+
+  if (!project) {
+    const { data: newProject, error: createError } = await supabase
+      .from("projects")
+      .insert({
+        name: "Green Valley Heights",
+        address: "Bashundhara R/A, Block-G, Dhaka",
+        status: "ACTIVE",
+      })
+      .select("id")
+      .single()
+    
+    if (createError) throw new Error(`Project creation error: ${createError.message}`)
+    project = newProject
+  }
+
+  const projectId = project?.id
+  if (!projectId) throw new Error("Failed to resolve project ID")
 
   // 3. Link Admin
   const kamalId = userIds["kamal@greenvalley.com"]
-  await supabase.from("project_admins").upsert({ project_id: projectId, user_id: kamalId }, { onConflict: "project_id,user_id" })
+  const { data: existingAdmin } = await supabase.from("project_admins").select("id").eq("project_id", projectId).eq("user_id", kamalId).maybeSingle()
+  if (!existingAdmin) {
+    await supabase.from("project_admins").insert({ project_id: projectId, user_id: kamalId })
+  }
 
   // 4. Create Shareholders
   console.log("\n👥 Creating 20 shareholders...")
   const shareholderIds: Record<string, string> = {}
   for (const s of SH_EMAILS) {
     const userId = userIds[s.email]
-    const { data: sh } = await supabase
+    
+    let { data: sh } = await supabase
       .from("shareholders")
-      .upsert({ 
-        project_id: projectId, 
-        user_id: userId, 
-        unit_flat: s.unit,
-        ownership_pct: 100 / SH_EMAILS.length,
-        status: "ACTIVE"
-      }, { onConflict: "project_id,user_id" })
       .select("id")
-      .single()
+      .eq("project_id", projectId)
+      .eq("user_id", userId)
+      .maybeSingle()
+    
+    if (!sh) {
+      const { data: newSh } = await supabase
+        .from("shareholders")
+        .insert({ 
+          project_id: projectId, 
+          user_id: userId, 
+          unit_flat: s.unit,
+          ownership_pct: 100 / SH_EMAILS.length,
+          status: "ACTIVE"
+        })
+        .select("id")
+        .single()
+      sh = newSh
+    }
     if (sh) shareholderIds[s.email] = sh.id
   }
 
   // 5. Committee Members (Top 3)
   const committee = SH_EMAILS.slice(0, 3)
   for (const s of committee) {
-    await supabase.from("committee_members").upsert({
-      project_id: projectId,
-      user_id: userIds[s.email],
-      shareholder_id: shareholderIds[s.email],
-      is_active: true
-    }, { onConflict: "project_id,user_id" })
+    const userId = userIds[s.email]
+    const shId = shareholderIds[s.email]
+    const { data: existingComm } = await supabase.from("committee_members").select("id").eq("project_id", projectId).eq("user_id", userId).maybeSingle()
+    if (!existingComm) {
+      await supabase.from("committee_members").insert({
+        project_id: projectId,
+        user_id: userId,
+        shareholder_id: shId,
+        is_active: true
+      })
+    }
   }
 
   // 6. Expense Categories
@@ -126,7 +158,11 @@ async function main() {
   const categories = ["Materials", "Labor", "Equipment", "Legal & Permits", "Architectural", "Utilities"]
   const categoryIds: Record<string, string> = {}
   for (const name of categories) {
-    const { data: cat } = await supabase.from("expense_categories").upsert({ project_id: projectId, name }, { onConflict: "project_id,name" }).select("id").single()
+    let { data: cat } = await supabase.from("expense_categories").select("id").eq("project_id", projectId).eq("name", name).maybeSingle()
+    if (!cat) {
+      const { data: newCat } = await supabase.from("expense_categories").insert({ project_id: projectId, name }).select("id").single()
+      cat = newCat
+    }
     if (cat) categoryIds[name] = cat.id
   }
 
@@ -140,7 +176,11 @@ async function main() {
   ]
   const milestoneIds: Record<string, string> = {}
   for (const m of milestones) {
-    const { data: mile } = await supabase.from("milestones").upsert({ project_id: projectId, ...m }, { onConflict: "project_id,name" }).select("id").single()
+    let { data: mile } = await supabase.from("milestones").select("id").eq("project_id", projectId).eq("name", m.name).maybeSingle()
+    if (!mile) {
+      const { data: newMile } = await supabase.from("milestones").insert({ project_id: projectId, ...m }).select("id").single()
+      mile = newMile
+    }
     if (mile) milestoneIds[m.name] = mile.id
   }
 

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { formatDistanceToNow } from "date-fns"
 import { Building2, Users, Activity, FolderOpen } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -23,19 +24,44 @@ async function getPlatformStats() {
 }
 
 async function getRecentProjects(): Promise<ProjectRow[]> {
-  const supabase = await createClient()
-  const { data } = await supabase
+  const { data: projects } = await supabaseAdmin
     .from("projects")
-    .select("id, name, status, created_at, shareholders(id)")
+    .select("id, name, address, area, status, start_date, created_at, package_id, building_meta, packages(id, name, features)")
     .order("created_at", { ascending: false })
-    .limit(10)
+    .limit(5)
 
-  return (data ?? []).map((p) => ({
+  if (!projects?.length) return []
+
+  const projectIds = projects.map((p: any) => p.id)
+
+  const [{ data: shareholders }, { data: projectAdmins }] = await Promise.all([
+    supabaseAdmin.from("shareholders").select("project_id").in("project_id", projectIds),
+    supabaseAdmin.from("project_admins").select("project_id").in("project_id", projectIds),
+  ])
+
+  const shCountMap: Record<string, number> = {}
+  for (const s of shareholders ?? []) {
+    shCountMap[s.project_id] = (shCountMap[s.project_id] ?? 0) + 1
+  }
+  const adminCountMap: Record<string, number> = {}
+  for (const a of projectAdmins ?? []) {
+    adminCountMap[a.project_id] = (adminCountMap[a.project_id] ?? 0) + 1
+  }
+
+  return (projects as any[]).map((p) => ({
     id: p.id,
     name: p.name,
+    address: p.address ?? null,
+    area: p.area ?? null,
     status: p.status,
-    shareholderCount: Array.isArray(p.shareholders) ? p.shareholders.length : 0,
+    start_date: p.start_date ?? null,
     created_at: p.created_at,
+    package_id: p.package_id ?? null,
+    package_name: p.packages?.name ?? null,
+    package_features: p.packages?.features ?? [],
+    salesperson_name: p.building_meta?.salesperson_name ?? null,
+    shareholderCount: shCountMap[p.id] ?? 0,
+    adminCount: adminCountMap[p.id] ?? 0,
   }))
 }
 

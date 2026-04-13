@@ -37,9 +37,10 @@ interface Props {
   onOpenChange: (open: boolean) => void
   projectId: string
   projectName: string
+  onSuccess?: () => void
 }
 
-export default function CreateAdminDialog({ open, onOpenChange, projectId, projectName }: Props) {
+export default function CreateAdminDialog({ open, onOpenChange, projectId, projectName, onSuccess }: Props) {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState<SuccessData | null>(null)
   const [copied, setCopied] = useState(false)
@@ -65,6 +66,7 @@ export default function CreateAdminDialog({ open, onOpenChange, projectId, proje
 
       setSuccess({ name: values.name, email: values.email, password: values.password })
       toast.success("Project Admin created!")
+      onSuccess?.()
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     } finally {

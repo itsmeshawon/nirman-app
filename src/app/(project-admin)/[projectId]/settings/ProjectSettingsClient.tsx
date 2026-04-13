@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Building, Banknote, CalendarClock, Bell, LayoutGrid } from "lucide-react"
+import { Building, Banknote, CalendarClock, Bell, LayoutGrid, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Textarea } from "@/components/ui/textarea"
 
 interface ProjectSettingsClientProps {
   projectId: string
@@ -22,6 +23,7 @@ interface ProjectSettingsClientProps {
   paymentSchedule: any
   penaltyConfig: any
   notificationConfig: any
+  adminProfile: any
 }
 
 export function ProjectSettingsClient({
@@ -30,6 +32,7 @@ export function ProjectSettingsClient({
   paymentSchedule,
   penaltyConfig,
   notificationConfig,
+  adminProfile,
 }: ProjectSettingsClientProps) {
   const [isLoading, setIsLoading] = useState(false)
   const isSetup = project.status === "SETUP"
@@ -49,6 +52,15 @@ export function ProjectSettingsClient({
   const [graceDays, setGraceDays] = useState(penaltyConfig?.grace_days?.toString() || "5")
   const [penaltyType, setPenaltyType] = useState(penaltyConfig?.penalty_type || "NONE")
   const [fixedAmount, setFixedAmount] = useState(penaltyConfig?.fixed_amount?.toString() || "")
+
+  // -- Tab 5: My Profile --
+  const [myName, setMyName] = useState(adminProfile?.name || "")
+  const [myPhone, setMyPhone] = useState(adminProfile?.phone || "")
+  const [myProfession, setMyProfession] = useState(adminProfile?.profession || "")
+  const [myDesignation, setMyDesignation] = useState(adminProfile?.designation || "")
+  const [myOrganization, setMyOrganization] = useState(adminProfile?.organization || "")
+  const [myAddress, setMyAddress] = useState(adminProfile?.present_address || "")
+  const [myWhatsapp, setMyWhatsapp] = useState(adminProfile?.whatsapp_no || "")
 
   // -- Tab 4: Notifications --
   const rawReminders = Array.isArray(notificationConfig?.reminder_days) ? notificationConfig.reminder_days : []
@@ -165,6 +177,34 @@ export function ProjectSettingsClient({
     }
   }
 
+  const handleSaveAdminProfile = async () => {
+    setIsLoading(true)
+    try {
+      const res = await fetch(`/api/profiles/${adminProfile?.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: myName,
+          phone: myPhone,
+          profession: myProfession,
+          designation: myDesignation,
+          organization: myOrganization,
+          present_address: myAddress,
+          whatsapp_no: myWhatsapp,
+        })
+      })
+      if (!res.ok) {
+        const d = await res.json()
+        throw new Error(d.error)
+      }
+      toast.success("Profile updated successfully.")
+    } catch (err: any) {
+      toast.error(err.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
       <div className="p-6 border-b border-gray-200">
@@ -193,11 +233,17 @@ export function ProjectSettingsClient({
             >
               <CalendarClock className="h-4 w-4" /> Penalties
             </TabsTrigger>
-            <TabsTrigger 
-              value="notifications" 
+            <TabsTrigger
+              value="notifications"
               className="justify-start gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-[#0F766E] data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200"
             >
               <Bell className="h-4 w-4" /> Notifications
+            </TabsTrigger>
+            <TabsTrigger
+              value="profile-me"
+              className="justify-start gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-[#0F766E] data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200"
+            >
+              <User className="h-4 w-4 mr-1.5" />My Profile
             </TabsTrigger>
           </TabsList>
         </div>
@@ -390,6 +436,57 @@ export function ProjectSettingsClient({
                   </Button>
                 </form>
              </div>
+          </TabsContent>
+
+          {/* TAB 5: MY PROFILE */}
+          <TabsContent value="profile-me" className="m-0 focus:outline-none">
+            <div className="max-w-2xl">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-base font-semibold text-gray-900">My Profile</h3>
+                  <p className="text-sm text-gray-500 mt-1">Update your personal information visible to shareholders and the Super Admin.</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <Label>Full Name</Label>
+                    <Input value={myName} onChange={e => setMyName(e.target.value)} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Phone</Label>
+                    <Input value={myPhone} onChange={e => setMyPhone(e.target.value)} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <Label>Profession</Label>
+                    <Input value={myProfession} onChange={e => setMyProfession(e.target.value)} placeholder="e.g. Civil Engineer" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Designation</Label>
+                    <Input value={myDesignation} onChange={e => setMyDesignation(e.target.value)} placeholder="e.g. Project Manager" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <Label>Organization</Label>
+                    <Input value={myOrganization} onChange={e => setMyOrganization(e.target.value)} placeholder="Company or firm name" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>WhatsApp No.</Label>
+                    <Input value={myWhatsapp} onChange={e => setMyWhatsapp(e.target.value)} placeholder="+880..." />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Present Address</Label>
+                  <Textarea value={myAddress} onChange={e => setMyAddress(e.target.value)} placeholder="Your current residential or office address" className="h-20" />
+                </div>
+                <div className="flex justify-end pt-2">
+                  <Button onClick={handleSaveAdminProfile} disabled={isLoading} className="bg-[#0F766E] hover:bg-teal-800">
+                    {isLoading ? "Saving..." : "Save Profile"}
+                  </Button>
+                </div>
+              </div>
+            </div>
           </TabsContent>
 
         </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/select"
 
 const schema = z.object({
+  package_id: z.string().min(1, "Please select a package"),
   name: z.string().min(3, "Project name must be at least 3 characters"),
   address: z.string().optional(),
   area: z.string().optional(),
@@ -37,6 +38,7 @@ const schema = z.object({
   status: z.enum(["PILOT", "ACTIVE"]),
   floors: z.string().optional(),
   units: z.string().optional(),
+  salesperson_name: z.string().optional(),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -44,49 +46,100 @@ type FormValues = z.infer<typeof schema>
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onCreated: (project: { id: string; name: string }) => void
+  onSuccess: (project: { id: string; name: string }) => void
+  project?: any // If provided, it's Edit mode
 }
 
-export default function CreateProjectDialog({ open, onOpenChange, onCreated }: Props) {
+export default function ProjectDialog({ open, onOpenChange, onSuccess, project }: Props) {
+  const isEdit = !!project
   const [loading, setLoading] = useState(false)
   const [startOpen, setStartOpen] = useState(false)
   const [handoverOpen, setHandoverOpen] = useState(false)
+  const [packages, setPackages] = useState<Array<{ id: string; name: string; features: string[]; is_active: boolean }>>([])
+  const [packagesLoading, setPackagesLoading] = useState(false)
 
   const { register, handleSubmit, control, reset, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { status: "PILOT" },
   })
 
+  // Fetch packages when dialog opens — include current package even if inactive
+  useEffect(() => {
+    if (open) {
+      setPackagesLoading(true)
+      fetch("/api/packages")
+        .then(r => r.json())
+        .then((data: any[]) => {
+          const all = data || []
+          const active = all.filter((p) => p.is_active)
+          // When editing, ensure the currently-assigned package is in the list
+          // even if it was deactivated since assignment
+          if (project?.package_id && !active.find((p) => p.id === project.package_id)) {
+            const current = all.find((p) => p.id === project.package_id)
+            if (current) active.unshift(current)
+          }
+          setPackages(active)
+        })
+        .catch(() => {})
+        .finally(() => setPackagesLoading(false))
+    }
+  }, [open, project?.package_id])
+
+  // Pre-populate if editing
+  useEffect(() => {
+    if (project && open) {
+      reset({
+        package_id: project.package_id || "",
+        name: project.name,
+        address: project.address || "",
+        area: project.area || "",
+        status: project.status,
+        start_date: project.start_date ? new Date(project.start_date) : undefined,
+        expected_handover: project.expected_handover ? new Date(project.expected_handover) : undefined,
+        floors: project.building_meta?.floors?.toString() || "",
+        units: project.building_meta?.units?.toString() || "",
+        salesperson_name: project.building_meta?.salesperson_name || "",
+      })
+    } else if (open && !isEdit) {
+      reset({ status: "PILOT", name: "", address: "", area: "", floors: "", units: "", salesperson_name: "", package_id: "" })
+    }
+  }, [project, open, reset, isEdit])
+
   async function onSubmit(values: FormValues) {
     setLoading(true)
     try {
       const payload = {
+        package_id: values.package_id,
         name: values.name,
-        address: values.address || undefined,
-        area: values.area || undefined,
-        start_date: values.start_date ? format(values.start_date, "yyyy-MM-dd") : undefined,
-        expected_handover: values.expected_handover ? format(values.expected_handover, "yyyy-MM-dd") : undefined,
+        address: values.address || null,
+        area: values.area || null,
+        start_date: values.start_date ? format(values.start_date, "yyyy-MM-dd") : null,
+        expected_handover: values.expected_handover ? format(values.expected_handover, "yyyy-MM-dd") : null,
         status: values.status,
-        floors: values.floors ? parseInt(values.floors) : undefined,
-        units: values.units ? parseInt(values.units) : undefined,
+        floors: values.floors ? parseInt(values.floors) : null,
+        units: values.units ? parseInt(values.units) : null,
+        salesperson_name: values.salesperson_name || null,
       }
 
-      const res = await fetch("/api/projects", {
-        method: "POST",
+      const url = isEdit ? `/api/projects/${project.id}/settings` : "/api/projects"
+      const method = isEdit ? "PUT" : "POST"
+
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       })
 
       if (!res.ok) {
         const err = await res.json()
-        throw new Error(err.error?.message ?? "Failed to create project")
+        throw new Error(err.error?.message ?? `Failed to ${isEdit ? 'update' : 'create'} project`)
       }
 
-      const project = await res.json()
-      toast.success("Project created successfully!")
-      reset()
+      const data = await res.json()
+      toast.success(`Project ${isEdit ? 'updated' : 'created'} successfully!`)
+      if (!isEdit) reset()
       onOpenChange(false)
-      onCreated({ id: project.id, name: project.name })
+      onSuccess({ id: isEdit ? project.id : data.id, name: values.name })
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     } finally {
@@ -98,10 +151,48 @@ export default function CreateProjectDialog({ open, onOpenChange, onCreated }: P
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Create New Project</DialogTitle>
+          <DialogTitle>{isEdit ? "Edit Project Details" : "Create New Project"}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-2">
+          {/* Package */}
+          <div className="space-y-1.5">
+            <Label>Package <span className="text-red-500">*</span></Label>
+            <Controller
+              name="package_id"
+              control={control}
+              render={({ field }) => {
+                const selectedPkg = field.value ? packages.find(p => p.id === field.value) : null
+                return (
+                  <Select value={field.value} onValueChange={(v) => field.onChange(v ?? "")}>
+                    <SelectTrigger className="w-full">
+                      {/* Base UI Select.Value doesn't auto-resolve controlled UUID → label,
+                          so we render the label manually from local state */}
+                      <span className={cn(
+                        "flex flex-1 text-left text-sm truncate",
+                        !selectedPkg && "text-muted-foreground"
+                      )}>
+                        {packagesLoading
+                          ? "Loading packages..."
+                          : selectedPkg
+                            ? `${selectedPkg.name} (${selectedPkg.features?.length ?? 0} features)`
+                            : "Select a package"}
+                      </span>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {packages.map(pkg => (
+                        <SelectItem key={pkg.id} value={pkg.id}>
+                          {pkg.name} ({pkg.features?.length ?? 0} features)
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )
+              }}
+            />
+            {errors.package_id && <p className="text-xs text-red-600">{errors.package_id.message}</p>}
+          </div>
+
           {/* Project Name */}
           <div className="space-y-1.5">
             <Label htmlFor="name">
@@ -214,6 +305,12 @@ export default function CreateProjectDialog({ open, onOpenChange, onCreated }: P
             </div>
           </div>
 
+          {/* Salesperson */}
+          <div className="space-y-1.5">
+            <Label htmlFor="salesperson_name">Salesperson's Name</Label>
+            <Input id="salesperson_name" placeholder="e.g. Rafiqul Islam" {...register("salesperson_name")} />
+          </div>
+
           <DialogFooter className="pt-2">
             <Button
               type="button"
@@ -228,8 +325,8 @@ export default function CreateProjectDialog({ open, onOpenChange, onCreated }: P
               disabled={loading}
               className="bg-[#0F766E] hover:bg-[#14B8A6] text-white"
             >
-              <Plus className="h-4 w-4" />
-              {loading ? "Creating..." : "Create Project"}
+              {!isEdit && <Plus className="h-4 w-4" />}
+              {loading ? (isEdit ? "Saving..." : "Creating...") : (isEdit ? "Save Changes" : "Create Project")}
             </Button>
           </DialogFooter>
         </form>

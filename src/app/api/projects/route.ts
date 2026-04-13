@@ -18,6 +18,8 @@ const createProjectSchema = z.object({
   status: z.enum(["PILOT", "ACTIVE"]).default("PILOT"),
   floors: z.number().int().min(1).optional(),
   units: z.number().int().min(1).optional(),
+  salesperson_name: z.string().optional().nullable(),
+  package_id: z.string().uuid().optional().nullable(),
 })
 
 export async function GET() {
@@ -32,18 +34,44 @@ export async function GET() {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
-    // Fetch projects with shareholder counts via a join
+    // Fetch projects with package info
     const { data: projects, error } = await supabase
       .from("projects")
-      .select("*, shareholders(id)")
+      .select("*, packages(id, name, features)")
       .order("created_at", { ascending: false })
 
     if (error) throw error
 
-    const result = (projects ?? []).map((p) => ({
+    const projectIds = (projects ?? []).map((p: any) => p.id)
+
+    // Use supabaseAdmin to bypass RLS — Super Admin needs cross-project counts
+    const [{ data: shareholders }, { data: projectAdmins }] = await Promise.all([
+      projectIds.length
+        ? supabaseAdmin.from("shareholders").select("project_id").in("project_id", projectIds)
+        : Promise.resolve({ data: [] }),
+      projectIds.length
+        ? supabaseAdmin.from("project_admins").select("project_id").in("project_id", projectIds)
+        : Promise.resolve({ data: [] }),
+    ])
+
+    // Build count maps
+    const shareholderCountMap: Record<string, number> = {}
+    for (const s of shareholders ?? []) {
+      shareholderCountMap[s.project_id] = (shareholderCountMap[s.project_id] ?? 0) + 1
+    }
+    const adminCountMap: Record<string, number> = {}
+    for (const a of projectAdmins ?? []) {
+      adminCountMap[a.project_id] = (adminCountMap[a.project_id] ?? 0) + 1
+    }
+
+    const result = (projects ?? []).map((p: any) => ({
       ...p,
-      shareholderCount: Array.isArray(p.shareholders) ? p.shareholders.length : 0,
-      shareholders: undefined,
+      shareholderCount: shareholderCountMap[p.id] ?? 0,
+      adminCount: adminCountMap[p.id] ?? 0,
+      salesperson_name: p.building_meta?.salesperson_name ?? null,
+      package_name: p.packages?.name ?? null,
+      package_features: p.packages?.features ?? [],
+      packages: undefined,
     }))
 
     return NextResponse.json(result)
@@ -71,11 +99,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
     }
 
-    const { name, address, area, start_date, expected_handover, status, floors, units } = parsed.data
+    const { name, address, area, start_date, expected_handover, status, floors, units, salesperson_name, package_id } = parsed.data
 
-    const building_meta: Record<string, number> = {}
+    const building_meta: Record<string, any> = {}
     if (floors) building_meta.floors = floors
     if (units) building_meta.units = units
+    if (salesperson_name) building_meta.salesperson_name = salesperson_name
 
     // Create the project
     const { data: project, error: projectError } = await supabaseAdmin
@@ -88,6 +117,7 @@ export async function POST(request: NextRequest) {
         expected_handover: expected_handover ?? null,
         status,
         building_meta: Object.keys(building_meta).length > 0 ? building_meta : null,
+        package_id: package_id ?? null,
       })
       .select()
       .single()

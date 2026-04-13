@@ -10,11 +10,11 @@ import {
   type SortingState,
   flexRender,
 } from "@tanstack/react-table"
-import { formatDistanceToNow } from "date-fns"
-import { Plus, Search, Building2, ArrowUpDown, UserPlus } from "lucide-react"
+import { Plus, Search, Building2, ArrowUpDown, UserPlus, Pencil, ToggleLeft, ToggleRight, Archive } from "lucide-react"
 import { toast } from "sonner"
-import { cn, formatDate } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -26,7 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import CreateProjectDialog from "@/components/super-admin/CreateProjectDialog"
+import ProjectDialog from "@/components/super-admin/CreateProjectDialog"
 import CreateAdminDialog from "@/components/super-admin/CreateAdminDialog"
 
 interface Project {
@@ -38,6 +38,11 @@ interface Project {
   start_date: string | null
   created_at: string
   shareholderCount: number
+  adminCount: number
+  salesperson_name: string | null
+  package_name: string | null
+  package_features: string[]
+  package_id: string | null
 }
 
 const STATUS_STYLES: Record<string, string> = {
@@ -51,7 +56,8 @@ export default function ProjectsPage() {
   const [loading, setLoading] = useState(true)
   const [globalFilter, setGlobalFilter] = useState("")
   const [sorting, setSorting] = useState<SortingState>([])
-  const [createOpen, setCreateOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editingProject, setEditingProject] = useState<Project | null>(null)
   const [adminDialog, setAdminDialog] = useState<{ open: boolean; projectId: string; projectName: string }>({
     open: false,
     projectId: "",
@@ -73,10 +79,28 @@ export default function ProjectsPage() {
 
   useEffect(() => { fetchProjects() }, [fetchProjects])
 
-  function handleProjectCreated(project: { id: string; name: string }) {
+  function handleProjectSuccess(project: { id: string; name: string }) {
     fetchProjects()
-    // Prompt to assign an admin
-    setAdminDialog({ open: true, projectId: project.id, projectName: project.name })
+    if (!editingProject) {
+      setAdminDialog({ open: true, projectId: project.id, projectName: project.name })
+    }
+    setEditingProject(null)
+  }
+
+  async function handleStatusChange(projectId: string, status: string) {
+    const toastId = toast.loading("Updating project status…")
+    try {
+      const res = await fetch(`/api/projects/${projectId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      })
+      if (!res.ok) throw new Error("Failed to update status")
+      toast.success("Project status updated", { id: toastId })
+      await fetchProjects()
+    } catch {
+      toast.error("Failed to update project status", { id: toastId })
+    }
   }
 
   const columns: ColumnDef<Project>[] = [
@@ -87,16 +111,31 @@ export default function ProjectsPage() {
           className="flex items-center gap-1 text-xs uppercase tracking-wide text-gray-500 hover:text-gray-800"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Name <ArrowUpDown className="h-3.5 w-3.5" />
+          Name of Project <ArrowUpDown className="h-3.5 w-3.5" />
         </button>
       ),
       cell: ({ row }) => (
-        <div>
-          <p className="font-medium text-gray-900">{row.original.name}</p>
+        <Link href={`/projects/${row.original.id}`} className="block group">
+          <p className="font-bold text-gray-900 group-hover:text-[#0F766E] transition-colors">
+            {row.original.name}
+          </p>
           {(row.original.area || row.original.address) && (
             <p className="text-xs text-gray-400 mt-0.5">{row.original.area ?? row.original.address}</p>
           )}
-        </div>
+        </Link>
+      ),
+    },
+    {
+      accessorKey: "package_name",
+      header: "Package",
+      cell: ({ row }) => (
+        row.original.package_name ? (
+          <span className="inline-flex items-center rounded-full bg-teal-50 border border-teal-200 px-2.5 py-0.5 text-xs font-medium text-teal-700">
+            {row.original.package_name}
+          </span>
+        ) : (
+          <span className="text-xs text-gray-400">—</span>
+        )
       ),
     },
     {
@@ -117,51 +156,118 @@ export default function ProjectsPage() {
       ),
     },
     {
-      accessorKey: "start_date",
-      header: "Start Date",
+      accessorKey: "adminCount",
+      header: "No. of Project Admin",
       cell: ({ row }) => (
-        <span className="text-sm text-gray-600">
-          {row.original.start_date ? formatDate(row.original.start_date) : "—"}
-        </span>
+        <span className="text-sm text-gray-600">{row.original.adminCount}</span>
       ),
     },
     {
       accessorKey: "shareholderCount",
-      header: "Shareholders",
+      header: "No. of Shareholders",
       cell: ({ row }) => (
         <span className="text-sm text-gray-600">{row.original.shareholderCount}</span>
       ),
     },
     {
-      accessorKey: "created_at",
-      header: ({ column }) => (
-        <button
-          className="flex items-center gap-1 text-xs uppercase tracking-wide text-gray-500 hover:text-gray-800"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Created <ArrowUpDown className="h-3.5 w-3.5" />
-        </button>
-      ),
+      accessorKey: "salesperson_name",
+      header: "Salesperson's Name",
       cell: ({ row }) => (
-        <span className="text-sm text-gray-500">
-          {formatDate(row.original.created_at)}
-        </span>
+        row.original.salesperson_name ? (
+          <span className="text-sm text-gray-700">{row.original.salesperson_name}</span>
+        ) : (
+          <span className="text-xs text-gray-400">—</span>
+        )
       ),
     },
     {
       id: "actions",
-      header: "",
-      cell: ({ row }) => (
-        <button
-          onClick={() =>
-            setAdminDialog({ open: true, projectId: row.original.id, projectName: row.original.name })
-          }
-          className="flex items-center gap-1.5 text-xs text-[#0F766E] hover:underline font-medium min-h-[44px] px-1"
-        >
-          <UserPlus className="h-3.5 w-3.5" />
-          Assign Admin
-        </button>
-      ),
+      header: () => <div className="text-right">Quick Actions</div>,
+      cell: ({ row }) => {
+        const project = row.original
+        const isActive = project.status === "ACTIVE"
+        const isArchived = project.status === "ARCHIVED"
+
+        return (
+          <div className="flex justify-end items-center gap-1">
+            {/* Edit */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+              onClick={() => {
+                setEditingProject(project)
+                setDialogOpen(true)
+              }}
+              title="Edit Project Details"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
+
+            {/* Active/Inactive toggle */}
+            {isActive ? (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50"
+                onClick={() => handleStatusChange(project.id, "PILOT")}
+                title="Set Inactive → PILOT"
+              >
+                <ToggleLeft className="h-4 w-4" />
+              </Button>
+            ) : !isArchived ? (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-gray-400 hover:text-gray-600 hover:bg-gray-50"
+                onClick={() => handleStatusChange(project.id, "ACTIVE")}
+                title="Set Active"
+              >
+                <ToggleRight className="h-4 w-4" />
+              </Button>
+            ) : (
+              /* Placeholder to keep layout stable when archived */
+              <div className="h-8 w-8" />
+            )}
+
+            {/* Archive */}
+            {isArchived ? (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-gray-300 cursor-not-allowed"
+                disabled
+                title="Already archived"
+              >
+                <Archive className="h-3.5 w-3.5" />
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-orange-500 hover:text-red-600 hover:bg-red-50"
+                onClick={() => handleStatusChange(project.id, "ARCHIVED")}
+                title="Archive Project"
+              >
+                <Archive className="h-3.5 w-3.5" />
+              </Button>
+            )}
+
+            {/* Assign Admin */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-[#0F766E] hover:text-teal-700 hover:bg-teal-50"
+              onClick={() =>
+                setAdminDialog({ open: true, projectId: project.id, projectName: project.name })
+              }
+              title="Assign Admin"
+            >
+              <UserPlus className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        )
+      },
     },
   ]
 
@@ -186,7 +292,10 @@ export default function ProjectsPage() {
             <p className="text-sm text-gray-500 mt-0.5">Manage all NirmaN construction projects</p>
           </div>
           <Button
-            onClick={() => setCreateOpen(true)}
+            onClick={() => {
+              setEditingProject(null)
+              setDialogOpen(true)
+            }}
             className="bg-[#0F766E] hover:bg-[#14B8A6] text-white shrink-0 min-h-[44px]"
           >
             <Plus className="h-4 w-4" />
@@ -217,7 +326,6 @@ export default function ProjectsPage() {
                 ))}
               </div>
             ) : projects.length === 0 ? (
-              /* Empty state */
               <div className="flex flex-col items-center justify-center py-20 text-center px-4">
                 <Building2 className="h-14 w-14 text-gray-200 mb-4" />
                 <p className="text-lg font-semibold text-gray-700">No projects yet</p>
@@ -226,7 +334,10 @@ export default function ProjectsPage() {
                 </p>
                 <Button
                   className="mt-5 bg-[#0F766E] hover:bg-[#14B8A6] text-white"
-                  onClick={() => setCreateOpen(true)}
+                  onClick={() => {
+                    setEditingProject(null)
+                    setDialogOpen(true)
+                  }}
                 >
                   <Plus className="h-4 w-4" />
                   Create Project
@@ -272,10 +383,11 @@ export default function ProjectsPage() {
         </Card>
       </div>
 
-      <CreateProjectDialog
-        open={createOpen}
-        onOpenChange={setCreateOpen}
-        onCreated={handleProjectCreated}
+      <ProjectDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onSuccess={handleProjectSuccess}
+        project={editingProject}
       />
 
       <CreateAdminDialog

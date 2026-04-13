@@ -16,8 +16,20 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import { Download } from "lucide-react"
+import dynamic from "next/dynamic"
+
+const PDFDownloadLink = dynamic(
+  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
+  { ssr: false }
+)
+const CredentialPDF = dynamic(
+  () => import("@/components/CredentialPDF").then((mod) => mod.CredentialPDF),
+  { ssr: false }
+)
 
 const shareholderSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -26,6 +38,11 @@ const shareholderSchema = z.object({
   unit_flat: z.string().min(1, "Unit/Flat is required"),
   ownership_pct: z.string().optional(),
   opening_balance: z.string().optional(),
+  profession: z.string().optional(),
+  designation: z.string().optional(),
+  organization: z.string().optional(),
+  present_address: z.string().optional(),
+  whatsapp_no: z.string().optional(),
 })
 
 type ShareholderFormValues = z.infer<typeof shareholderSchema>
@@ -41,7 +58,12 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
   const isEdit = !!shareholder
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [tempCredentials, setTempCredentials] = useState<{email: string, pass: string} | null>(null)
+  const [tempCredentials, setTempCredentials] = useState<{email: string, pass: string, name: string} | null>(null)
+
+  const getProfile = (sh: any) => {
+    if (!sh?.profiles) return null
+    return Array.isArray(sh.profiles) ? sh.profiles[0] : sh.profiles
+  }
 
   const {
     register,
@@ -51,25 +73,36 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
   } = useForm<ShareholderFormValues>({
     resolver: zodResolver(shareholderSchema),
     defaultValues: {
-      name: shareholder?.profiles?.name || "",
-      email: shareholder?.profiles?.email || "",
-      phone: shareholder?.profiles?.phone || "",
+      name: getProfile(shareholder)?.name || "",
+      email: getProfile(shareholder)?.email || "",
+      phone: getProfile(shareholder)?.phone || "",
       unit_flat: shareholder?.unit_flat || "",
       ownership_pct: shareholder?.ownership_pct?.toString() || "",
       opening_balance: shareholder?.opening_balance?.toString() || "",
+      profession: getProfile(shareholder)?.profession || "",
+      designation: getProfile(shareholder)?.designation || "",
+      organization: getProfile(shareholder)?.organization || "",
+      present_address: getProfile(shareholder)?.present_address || "",
+      whatsapp_no: getProfile(shareholder)?.whatsapp_no || "",
     },
   })
 
   // Reset form when opened with new data
   useEffect(() => {
     if (isOpen) {
+        const profile = getProfile(shareholder)
         reset({
-            name: shareholder?.profiles?.name || "",
-            email: shareholder?.profiles?.email || "",
-            phone: shareholder?.profiles?.phone || "",
+            name: profile?.name || "",
+            email: profile?.email || "",
+            phone: profile?.phone || "",
             unit_flat: shareholder?.unit_flat || "",
             ownership_pct: shareholder?.ownership_pct?.toString() || "",
             opening_balance: shareholder?.opening_balance?.toString() || "",
+            profession: profile?.profession || "",
+            designation: profile?.designation || "",
+            organization: profile?.organization || "",
+            present_address: profile?.present_address || "",
+            whatsapp_no: profile?.whatsapp_no || "",
         })
     }
   }, [isOpen, shareholder, reset])
@@ -97,7 +130,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
       toast.success(`Shareholder ${isEdit ? "updated" : "added"} successfully!`)
       
       if (!isEdit && json.tempPassword) {
-        setTempCredentials({ email: data.email, pass: json.tempPassword })
+        setTempCredentials({ email: data.email, pass: json.tempPassword, name: data.name })
       } else {
         onClose()
       }
@@ -135,8 +168,27 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
               <Input id="temp-pass" value={tempCredentials.pass} readOnly className="col-span-3 font-mono" />
             </div>
           </div>
-          <DialogFooter>
-            <Button onClick={handleCloseCreds} className="bg-[#0F766E] hover:bg-teal-800">Done</Button>
+          <DialogFooter className="sm:justify-between gap-2">
+            {tempCredentials && (
+              <PDFDownloadLink
+                document={
+                  <CredentialPDF
+                    name={tempCredentials.name}
+                    email={tempCredentials.email}
+                    password={tempCredentials.pass}
+                  />
+                }
+                fileName={`credentials-${tempCredentials.name.toLowerCase().replace(/\s+/g, '-')}.pdf`}
+              >
+                {({ loading }) => (
+                  <Button variant="outline" className="w-full sm:w-auto" disabled={loading}>
+                    <Download className="w-4 h-4 mr-2" />
+                    {loading ? "Preparing PDF..." : "Download PDF"}
+                  </Button>
+                )}
+              </PDFDownloadLink>
+            )}
+            <Button onClick={handleCloseCreds} className="bg-[#0F766E] hover:bg-teal-800 w-full sm:w-auto">Done</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -145,7 +197,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[560px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{isEdit ? "Edit Shareholder" : "Add Shareholder"}</DialogTitle>
           <DialogDescription>
@@ -188,6 +240,36 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
             <div className="grid gap-2">
               <Label htmlFor="opening_balance">Opening Balance (৳)</Label>
               <Input id="opening_balance" type="number" step="0.01" placeholder="0" {...register("opening_balance")} disabled={isLoading} />
+            </div>
+          </div>
+
+          <div className="border-t pt-4">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Additional Info (Optional)</p>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="profession">Profession</Label>
+                  <Input id="profession" {...register("profession")} disabled={isLoading} />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="designation">Designation</Label>
+                  <Input id="designation" {...register("designation")} disabled={isLoading} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="organization">Organization</Label>
+                  <Input id="organization" {...register("organization")} disabled={isLoading} />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="whatsapp_no">WhatsApp No.</Label>
+                  <Input id="whatsapp_no" {...register("whatsapp_no")} disabled={isLoading} />
+                </div>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="present_address">Present Address</Label>
+                <Textarea id="present_address" rows={2} {...register("present_address")} disabled={isLoading} />
+              </div>
             </div>
           </div>
 

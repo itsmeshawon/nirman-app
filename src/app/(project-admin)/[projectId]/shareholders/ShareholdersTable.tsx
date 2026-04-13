@@ -28,23 +28,33 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Pencil, Search, ToggleLeft, ToggleRight, UserPlus, Users } from "lucide-react"
+import { CheckCircle2, Crown, Mail, MapPin, MoreHorizontal, Pencil, Phone, Search, ToggleLeft, ToggleRight, Trash2, UserPlus, Users, XCircle } from "lucide-react"
 import { ShareholderDialog } from "./ShareholdersForms"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { EmptyState } from "@/components/EmptyState"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet"
 
 interface ShareholdersTableProps {
   projectId: string
   data: any[]
+  committeeShareholderIds?: string[]
 }
 
-export function ShareholdersTable({ projectId, data }: ShareholdersTableProps) {
+export function ShareholdersTable({ projectId, data, committeeShareholderIds = [] }: ShareholdersTableProps) {
+  const committeeSet = new Set(committeeShareholderIds)
   const router = useRouter()
   const [sorting, setSorting] = useState<SortingState>([{ id: "unit_flat", desc: false }])
   const [globalFilter, setGlobalFilter] = useState("")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingShareholder, setEditingShareholder] = useState<any>(null)
+  const [detailShareholder, setDetailShareholder] = useState<any>(null)
 
   const handleStatusToggle = async (shareholder: any) => {
     const newStatus = shareholder.status === "ACTIVE" ? "INACTIVE" : "ACTIVE"
@@ -63,21 +73,59 @@ export function ShareholdersTable({ projectId, data }: ShareholdersTableProps) {
     }
   }
 
+  const handleDelete = async (shareholder: any) => {
+    if (!confirm(`Are you sure you want to delete ${shareholder.profiles?.name}? This action cannot be undone.`)) return
+
+    try {
+      const res = await fetch(`/api/projects/${projectId}/shareholders/${shareholder.id}`, {
+        method: "DELETE",
+      })
+
+      if (!res.ok) {
+        const json = await res.json()
+        throw new Error(json.error || "Failed to delete shareholder")
+      }
+
+      toast.success("Shareholder deleted successfully")
+      router.refresh()
+    } catch (err: any) {
+      toast.error(err.message)
+    }
+  }
+
+  const getProfile = (row: any) => {
+    if (!row?.profiles) return null
+    return Array.isArray(row.profiles) ? row.profiles[0] : row.profiles
+  }
+
   const columns: ColumnDef<any>[] = [
     {
-      accessorFn: (row) => row.profiles?.name,
+      accessorFn: (row) => getProfile(row)?.name,
       id: "name",
       header: "Name",
-      cell: (info) => <div className="font-medium text-gray-900">{info.getValue() as string}</div>,
+      cell: (info) => (
+        <button
+          type="button"
+          onClick={() => setDetailShareholder(info.row.original)}
+          className="flex items-center gap-1.5 font-medium text-gray-900 hover:text-[#0F766E] transition-colors text-left group"
+        >
+          {committeeSet.has(info.row.original.id) && (
+            <span title="Committee Member">
+              <Crown className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+            </span>
+          )}
+          <span className="group-hover:underline underline-offset-2">{info.getValue() as string}</span>
+        </button>
+      ),
     },
     {
-      accessorFn: (row) => row.profiles?.email,
+      accessorFn: (row) => getProfile(row)?.email,
       id: "email",
       header: "Email",
       cell: (info) => <div className="text-gray-500">{info.getValue() as string}</div>,
     },
     {
-      accessorFn: (row) => row.profiles?.phone,
+      accessorFn: (row) => getProfile(row)?.phone,
       id: "phone",
       header: "Phone",
       cell: (info) => <div className="text-gray-500">{info.getValue() as string || "—"}</div>,
@@ -110,38 +158,46 @@ export function ShareholdersTable({ projectId, data }: ShareholdersTableProps) {
     },
     {
       id: "actions",
+      header: () => <div className="text-right">Actions</div>,
       cell: ({ row }) => {
         const shareholder = row.original
         const isActive = shareholder.status === "ACTIVE"
 
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-slate-100 hover:text-slate-900 h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() => {
-                  setEditingShareholder(shareholder)
-                  setIsDialogOpen(true)
-                }}
-              >
-                <Pencil className="mr-2 h-4 w-4" />
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleStatusToggle(shareholder)}
-                className={isActive ? "text-red-600 focus:text-red-600" : "text-green-600 focus:text-green-600"}
-              >
-                {isActive ? (
-                  <><ToggleLeft className="mr-2 h-4 w-4" /> Deactivate</>
-                ) : (
-                  <><ToggleRight className="mr-2 h-4 w-4" /> Activate</>
-                )}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+              onClick={() => {
+                setEditingShareholder(shareholder)
+                setIsDialogOpen(true)
+              }}
+              title="Edit Shareholder"
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+            
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`h-8 w-8 ${isActive ? 'text-amber-600 hover:text-amber-700 hover:bg-amber-50' : 'text-green-600 hover:text-green-700 hover:bg-green-50'}`}
+              onClick={() => handleStatusToggle(shareholder)}
+              title={isActive ? "Deactivate" : "Activate"}
+            >
+              {isActive ? <ToggleLeft className="h-4 w-4" /> : <ToggleRight className="h-4 w-4" />}
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+              onClick={() => handleDelete(shareholder)}
+              title="Delete Shareholder"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
         )
       },
     },
@@ -281,12 +337,131 @@ export function ShareholdersTable({ projectId, data }: ShareholdersTableProps) {
         </div>
       </div>
 
-       <ShareholderDialog
-         projectId={projectId}
-         isOpen={isDialogOpen}
-         onClose={() => setIsDialogOpen(false)}
-         shareholder={editingShareholder}
-       />
+      <ShareholderDialog
+        projectId={projectId}
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        shareholder={editingShareholder}
+      />
+
+      {/* Shareholder Detail Sheet */}
+      <Sheet open={!!detailShareholder} onOpenChange={(open) => { if (!open) setDetailShareholder(null) }}>
+        <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto p-0">
+          {detailShareholder && (() => {
+            const profile = getProfile(detailShareholder)
+            const isCommittee = committeeSet.has(detailShareholder.id)
+            const isActive = detailShareholder.status === "ACTIVE"
+            const initials = profile?.name
+              ? profile.name.split(" ").map((n: string) => n[0]).slice(0, 2).join("").toUpperCase()
+              : "?"
+            return (
+              <>
+                {/* Hero */}
+                <div className="bg-gradient-to-br from-teal-700 to-teal-500 px-6 pt-10 pb-6 text-white">
+                  <div className="flex items-start gap-4">
+                    <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-2xl font-bold shrink-0">
+                      {initials}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h2 className="text-xl font-bold leading-tight">{profile?.name || "—"}</h2>
+                        {isCommittee && (
+                          <span title="Committee Member" className="flex items-center gap-1 text-xs bg-amber-400/20 text-amber-200 border border-amber-400/30 px-2 py-0.5 rounded-full font-medium">
+                            <Crown className="h-3 w-3" /> Committee
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-teal-100 text-sm mt-0.5">Unit {detailShareholder.unit_flat || "—"}</p>
+                      <span className={`mt-2 inline-block text-xs font-semibold px-2 py-0.5 rounded-full ${isActive ? "bg-green-400/20 text-green-100 border border-green-400/30" : "bg-gray-400/20 text-gray-200 border border-gray-400/30"}`}>
+                        {isActive ? "Active" : "Inactive"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Body */}
+                <div className="px-6 py-5 space-y-6">
+                  {/* Contact */}
+                  <section>
+                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Contact</h3>
+                    <div className="space-y-3">
+                      <DetailRow icon={<Mail className="h-4 w-4 text-gray-400" />} label="Email" value={profile?.email} />
+                      <DetailRow icon={<Phone className="h-4 w-4 text-gray-400" />} label="Phone" value={profile?.phone} />
+                      <DetailRow icon={<Phone className="h-4 w-4 text-gray-400" />} label="WhatsApp" value={profile?.whatsapp_no} />
+                      <DetailRow icon={<MapPin className="h-4 w-4 text-gray-400" />} label="Present Address" value={profile?.present_address} />
+                    </div>
+                  </section>
+
+                  <div className="border-t border-gray-100" />
+
+                  {/* Professional */}
+                  <section>
+                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Professional</h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      <StatField label="Profession" value={profile?.profession} />
+                      <StatField label="Designation" value={profile?.designation} />
+                      <StatField label="Organization" value={profile?.organization} className="col-span-2" />
+                    </div>
+                  </section>
+
+                  <div className="border-t border-gray-100" />
+
+                  {/* Shareholder Info */}
+                  <section>
+                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Shareholding</h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      <StatField label="Unit / Flat" value={detailShareholder.unit_flat} />
+                      <StatField label="Ownership" value={detailShareholder.ownership_pct != null ? `${detailShareholder.ownership_pct}%` : undefined} />
+                      <StatField label="Opening Balance" value={detailShareholder.opening_balance != null ? `৳${Number(detailShareholder.opening_balance).toLocaleString()}` : undefined} />
+                      <StatField label="Status" value={detailShareholder.status} />
+                    </div>
+                  </section>
+
+                  <div className="border-t border-gray-100" />
+
+                  {/* Quick actions */}
+                  <div className="flex gap-2 pb-2">
+                    <button
+                      onClick={() => { setEditingShareholder(detailShareholder); setIsDialogOpen(true); setDetailShareholder(null) }}
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium transition-colors"
+                    >
+                      <Pencil className="h-4 w-4" /> Edit Profile
+                    </button>
+                    <button
+                      onClick={() => { setDetailShareholder(null); handleStatusToggle(detailShareholder) }}
+                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors border ${isActive ? "border-amber-200 text-amber-700 hover:bg-amber-50" : "border-green-200 text-green-700 hover:bg-green-50"}`}
+                    >
+                      {isActive ? <ToggleLeft className="h-4 w-4" /> : <ToggleRight className="h-4 w-4" />}
+                      {isActive ? "Deactivate" : "Activate"}
+                    </button>
+                  </div>
+                </div>
+              </>
+            )
+          })()}
+        </SheetContent>
+      </Sheet>
+    </div>
+  )
+}
+
+function DetailRow({ icon, label, value }: { icon: React.ReactNode; label: string; value?: string | null }) {
+  return (
+    <div className="flex items-start gap-3">
+      <div className="mt-0.5 shrink-0">{icon}</div>
+      <div className="min-w-0">
+        <p className="text-xs text-gray-400">{label}</p>
+        <p className="text-sm text-gray-800 font-medium break-words">{value || "—"}</p>
+      </div>
+    </div>
+  )
+}
+
+function StatField({ label, value, className }: { label: string; value?: string | null; className?: string }) {
+  return (
+    <div className={className}>
+      <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">{label}</p>
+      <p className="text-sm font-semibold text-gray-800">{value || "—"}</p>
     </div>
   )
 }

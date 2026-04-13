@@ -158,11 +158,11 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
         </div>
 
         <Dialog open={isUploadOpen} onOpenChange={setIsUploadOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-teal-700 hover:bg-teal-800">
-              <Plus className="w-4 h-4 mr-2" />
+          <DialogTrigger>
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-teal-700 hover:bg-teal-800 text-white text-sm font-medium cursor-pointer">
+              <Plus className="w-4 h-4" />
               Upload Document
-            </Button>
+            </span>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
@@ -184,7 +184,7 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
               </div>
               <div className="space-y-2">
                 <Label htmlFor="category">Category</Label>
-                <Select value={uploadCategory} onValueChange={setUploadCategory} required>
+                <Select value={uploadCategory} onValueChange={(v) => setUploadCategory(v ?? "")} required>
                   <SelectTrigger>
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>

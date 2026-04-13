@@ -33,11 +33,19 @@ export default async function SettingsPage(props: { params: Promise<{ projectId:
     .eq("project_id", projectId)
     .single()
 
-  // 4. Fetch Notification Config 
+  // 4. Fetch Notification Config
   const { data: notify } = await supabase
     .from("notification_configs")
     .select("*")
     .eq("project_id", projectId)
+    .single()
+
+  // 5. Fetch Admin Profile
+  const { data: { user } } = await supabase.auth.getUser()
+  const { data: adminProfile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user!.id)
     .single()
 
   return (
@@ -47,6 +55,7 @@ export default async function SettingsPage(props: { params: Promise<{ projectId:
       paymentSchedule={paySched || {}}
       penaltyConfig={penalty || {}}
       notificationConfig={notify || {}}
+      adminProfile={adminProfile || {}}
     />
   )
 }

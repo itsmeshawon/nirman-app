@@ -76,7 +76,7 @@ export function FeedClient({ projectId, initialPosts, milestones, userId }: Feed
           {mediaFilters.map(({ label, value }) => (
             <button
               key={label}
-              onClick={() => setFilterMedia(value)}
+              onClick={() => setFilterMedia(value as FilterMedia)}
               className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
                 filterMedia === value
                   ? "bg-teal-700 text-white border-teal-700"

@@ -60,7 +60,13 @@ export async function POST(
 
     // Upsert profile with PROJECT_ADMIN role
     await supabaseAdmin.from("profiles").upsert(
-      { id: targetUserId, name, role: "PROJECT_ADMIN", phone: phone ?? null },
+      { 
+        id: targetUserId, 
+        name, 
+        email, 
+        role: "PROJECT_ADMIN", 
+        phone: phone ?? null 
+      },
       { onConflict: "id" }
     )
 
