@@ -72,11 +72,11 @@ export default async function ShareholderDashboardPage() {
   const activePenaltiesTotal = penalties?.reduce((sum, p) => sum + (p.amount || 0), 0) || 0
 
   return (
-    <div className="space-y-6 pb-12 max-w-5xl">
+    <div className="space-y-6 pb-12">
 
       {/* Incomplete Profile Banner */}
       {(!profile?.profession || !profile?.present_address) && (
-        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 flex items-center justify-between">
+        <div className="bg-indigo-50 border border-indigo-200 rounded-[1.25rem] p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
               <AlertCircle className="w-4 h-4 text-indigo-600" />
@@ -122,7 +122,7 @@ export default async function ShareholderDashboardPage() {
       </div>
 
       {/* 4 Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <SummaryCard
           label="Total Due"
           value={formatBDT(totalDue)}
@@ -159,7 +159,7 @@ export default async function ShareholderDashboardPage() {
 
       {/* Next Due Banner */}
       {nextDue && (
-        <div className={`rounded-xl p-4 flex items-center justify-between border ${totalOverdue > 0 ? "bg-red-50 border-red-200" : "bg-amber-50 border-amber-200"}`}>
+        <div className={`rounded-[1.25rem] p-4 flex items-center justify-between border ${totalOverdue > 0 ? "bg-red-50 border-red-200" : "bg-amber-50 border-amber-200"}`}>
           <div className="flex items-center gap-3">
             <div className={`w-10 h-10 rounded-full flex items-center justify-center ${totalOverdue > 0 ? "bg-red-100" : "bg-amber-100"}`}>
               <Clock className={`w-5 h-5 ${totalOverdue > 0 ? "text-red-600" : "text-amber-600"}`} />
@@ -184,7 +184,7 @@ export default async function ShareholderDashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Payments */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-[1.25rem] border border-gray-200 shadow-eos-sm overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
             <h3 className="text-sm font-semibold text-gray-900">Recent Payments</h3>
             <Link href="/my/payments" className="text-xs text-indigo-600 hover:underline flex items-center gap-1">
@@ -214,7 +214,7 @@ export default async function ShareholderDashboardPage() {
         </div>
 
         {/* Recent Published Expenses */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-[1.25rem] border border-gray-200 shadow-eos-sm overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
             <h3 className="text-sm font-semibold text-gray-900">Project Expenses (Published)</h3>
             <Link href="/my/expenses" className="text-xs text-indigo-600 hover:underline flex items-center gap-1">
@@ -247,7 +247,7 @@ function SummaryCard({ label, value, sub, icon, bg, accent }: {
 }) {
   return (
     <div className={`bg-white rounded-2xl border ${accent} shadow-eos-sm p-5 hover:shadow-eos transition-all duration-300 group cursor-default`}>
-      <div className={`w-12 h-12 rounded-xl ${bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+      <div className={`w-12 h-12 rounded-[1.25rem] ${bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
         {icon}
       </div>
       <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">{label}</p>

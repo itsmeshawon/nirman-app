@@ -25,14 +25,15 @@ export async function PATCH(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
-    const { name, target_date, status } = await request.json()
+    const { name, start_date, target_date, status } = await request.json()
 
     // 2. Update Milestone
     const { error: updateError } = await supabase
       .from("milestones")
       .update({
         name,
-        target_date,
+        start_date: start_date || null,
+        target_date: target_date || null,
         status,
         updated_at: new Date().toISOString()
       })

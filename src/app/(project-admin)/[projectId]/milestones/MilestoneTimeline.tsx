@@ -27,6 +27,7 @@ interface Milestone {
   id: string
   name: string
   status: string
+  start_date: string | null
   target_date: string | null
   sort_order: number
 }
@@ -46,6 +47,7 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
   // form state elements
   const [name, setName] = useState("")
   const [status, setStatus] = useState("UPCOMING")
+  const [startDate, setStartDate] = useState("")
   const [targetDate, setTargetDate] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
@@ -54,11 +56,13 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
       setEditingMilestone(milestone)
       setName(milestone.name)
       setStatus(milestone.status)
+      setStartDate(milestone.start_date ? milestone.start_date.split("T")[0] : "")
       setTargetDate(milestone.target_date ? milestone.target_date.split("T")[0] : "")
     } else {
       setEditingMilestone(null)
       setName("")
       setStatus("UPCOMING")
+      setStartDate("")
       setTargetDate("")
     }
     setIsDialogOpen(true)
@@ -81,8 +85,8 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
       }
 
       const body = isEdit 
-        ? { name, status, target_date: targetDate || null }
-        : { name, status, target_date: targetDate || null, sort_order: newSortOrder }
+        ? { name, status, start_date: startDate || null, target_date: targetDate || null }
+        : { name, status, start_date: startDate || null, target_date: targetDate || null, sort_order: newSortOrder }
 
       const res = await fetch(url, {
         method: isEdit ? "PATCH" : "POST",
@@ -90,7 +94,10 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
         body: JSON.stringify(body),
       })
 
-      if (!res.ok) throw new Error("Failed to save milestone")
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}))
+        throw new Error(errorData.error || "Failed to save milestone")
+      }
       
       toast.success(isEdit ? "Milestone updated" : "Milestone created")
       setIsDialogOpen(false)
@@ -196,11 +203,20 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
                         <h3 className={`text-lg font-medium ${isUpcoming ? 'text-gray-600' : 'text-gray-900'}`}>
                           {milestone.name}
                         </h3>
-                        {milestone.target_date && (
-                          <p className="text-sm text-gray-500 mt-1">
-                            Target: {new Date(milestone.target_date).toLocaleDateString()}
-                          </p>
-                        )}
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
+                          {milestone.start_date && (
+                            <p className="text-sm text-gray-500">
+                              <span className="text-xs uppercase font-semibold text-gray-400 mr-1">Start:</span>
+                              {new Date(milestone.start_date).toLocaleDateString()}
+                            </p>
+                          )}
+                          {milestone.target_date && (
+                            <p className="text-sm text-gray-500">
+                              <span className="text-xs uppercase font-semibold text-gray-400 mr-1">Target:</span>
+                              {new Date(milestone.target_date).toLocaleDateString()}
+                            </p>
+                          )}
+                        </div>
                         <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold mt-2
                           ${isCompleted ? 'bg-green-100 text-green-800' : ''}
                           ${isInProgress ? 'bg-blue-100 text-blue-800' : ''}
@@ -264,14 +280,25 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
               />
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="target_date">Target Date (Optional)</Label>
-              <Input 
-                id="target_date" 
-                type="date"
-                value={targetDate} 
-                onChange={(e) => setTargetDate(e.target.value)} 
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="start_date">Start Date</Label>
+                <Input 
+                  id="start_date" 
+                  type="date"
+                  value={startDate} 
+                  onChange={(e) => setStartDate(e.target.value)} 
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="target_date">Target Date</Label>
+                <Input 
+                  id="target_date" 
+                  type="date"
+                  value={targetDate} 
+                  onChange={(e) => setTargetDate(e.target.value)} 
+                />
+              </div>
             </div>
 
             <div className="space-y-2">

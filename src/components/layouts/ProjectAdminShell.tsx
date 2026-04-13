@@ -19,6 +19,7 @@ import {
   LogOut,
   Menu,
   X,
+  AlertTriangle
 } from "lucide-react"
 import NotificationBell from "@/components/NotificationBell"
 
@@ -53,6 +54,7 @@ export default function ProjectAdminShell({
     { label: "Milestones", href: `/${projectId}/milestones`, icon: Flag },
     { label: "Expenses", href: `/${projectId}/expenses`, icon: Receipt },
     { label: "Payments", href: `/${projectId}/payments`, icon: Banknote },
+    { label: "Defaulters", href: `/${projectId}/defaulters`, icon: AlertTriangle },
     { label: "Activity Feed", href: `/${projectId}/feed`, icon: MessageSquare },
     { label: "Documents", href: `/${projectId}/documents`, icon: FolderOpen },
     { label: "Reports", href: `/${projectId}/reports`, icon: BarChart3 },
@@ -66,7 +68,9 @@ export default function ProjectAdminShell({
 
   // Determine current page title
   const activeNavItem = navItems.find((item) => pathname?.includes(item.href))
-  const pageTitle = activeNavItem ? activeNavItem.label : "Dashboard"
+  let pageTitle = activeNavItem ? activeNavItem.label : "Dashboard"
+
+  if (pathname.endsWith("/profile")) pageTitle = "My Profile"
 
   const statusColor = (status: string) => {
     switch (status) {
@@ -150,7 +154,7 @@ export default function ProjectAdminShell({
         {/* Sidebar Footer (User Info) */}
         <div className="border-t border-gray-200 p-4">
           <div className="flex items-center justify-between">
-            <Link href="/profile" className="flex items-center gap-3 truncate group cursor-pointer p-1 -m-1 rounded hover:bg-gray-50 transition-colors">
+            <Link href={`/${projectId}/profile`} className="flex items-center gap-3 truncate group cursor-pointer p-1 -m-1 rounded hover:bg-gray-50 transition-colors">
               <div className="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 text-sm font-bold shrink-0 border border-indigo-100 overflow-hidden group-hover:border-indigo-300 transition-colors">
                 {avatarUrl ? (
                   <img src={avatarUrl} alt={profileName} className="w-full h-full object-cover" />
@@ -205,8 +209,10 @@ export default function ProjectAdminShell({
         </header>
 
         {/* Main Content Scroll Area */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-          {children}
+        <main className="flex-1 overflow-y-auto">
+          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+            {children}
+          </div>
         </main>
       </div>
     </div>

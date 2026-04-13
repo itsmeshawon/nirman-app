@@ -17,7 +17,7 @@ export default async function MyShareholderLayout({ children }: { children: Reac
   if (shareholder?.project && (shareholder.project as any).status === "ARCHIVED") {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-8 w-full">
-        <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-[0_4px_20px/-4px_rgba(0,0,0,0.05)] border border-gray-100">
+        <div className="max-w-md w-full bg-white p-8 rounded-[1.25rem] shadow-[0_4px_20px/-4px_rgba(0,0,0,0.05)] border border-gray-100">
           <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />

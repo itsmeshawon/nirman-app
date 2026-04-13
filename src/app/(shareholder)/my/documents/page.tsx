@@ -36,7 +36,7 @@ export default async function ShareholderDocumentsPage() {
     .order("uploaded_at", { ascending: false })
 
   return (
-    <div className="p-6 md:p-8 max-w-7xl mx-auto">
+    <div className="w-full">
       <ShareholderDocsClient documents={documents || []} />
     </div>
   )

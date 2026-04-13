@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
 import { requireProjectAdmin } from "@/lib/permissions"
 
@@ -31,15 +32,32 @@ export async function POST(
        return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
-    // 2. Add / Reactivate Committee Member (upsert to handle reactivating)
-    const { error: insertError } = await supabase
+    // 2. Add / Reactivate Committee Member
+    const { data: existing } = await supabaseAdmin
       .from("committee_members")
-      .upsert({
-        project_id: projectId,
-        shareholder_id,
-        user_id,
-        is_active: true
-      }, { onConflict: "project_id,user_id" })
+      .select("id")
+      .eq("project_id", projectId)
+      .eq("shareholder_id", shareholder_id)
+      .maybeSingle()
+
+    let insertError = null
+    if (existing) {
+      const { error } = await supabaseAdmin
+        .from("committee_members")
+        .update({ is_active: true, user_id })
+        .eq("id", existing.id)
+      insertError = error
+    } else {
+      const { error } = await supabaseAdmin
+        .from("committee_members")
+        .insert({
+          project_id: projectId,
+          shareholder_id,
+          user_id,
+          is_active: true
+        })
+      insertError = error
+    }
 
     if (insertError) {
       console.error("Committee member insert error:", insertError)

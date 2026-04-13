@@ -34,10 +34,29 @@ export async function POST(
       }, { status: 400 })
     }
 
-    const { shareholder_id, schedule_item_id, amount, method, reference_no, notes, attachment_path } = validated.data
+    const { shareholder_id, schedule_item_id, amount, method, reference_no, notes, attachment_path, waive_penalties } = validated.data
     const payAmount = amount
 
-    // 1. Generate Receipt No (NRM-[PROJECT]-YYYYMMDD-[SEQ])
+    // 1. Handle Penalty Waiving if requested
+    if (waive_penalties) {
+      // Find all schedule items for this shareholder
+      const { data: shItems } = await supabase
+        .from("schedule_items")
+        .select("id")
+        .eq("shareholder_id", shareholder_id)
+      
+      const shItemIds = shItems?.map(i => i.id) || []
+      
+      if (shItemIds.length > 0) {
+        await supabase
+          .from("penalties")
+          .update({ is_waived: true })
+          .in("schedule_item_id", shItemIds)
+          .eq("is_waived", false)
+      }
+    }
+
+    // 2. Generate Receipt No (NRM-[PROJECT]-YYYYMMDD-[SEQ])
     const todayStr = new Date().toISOString().slice(0, 10).replace(/-/g, '')
     const { count } = await supabase
       .from('payments')

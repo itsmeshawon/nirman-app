@@ -37,7 +37,7 @@ export function ShareholderExpensesClient({ expenses }: ShareholderExpensesClien
     <div className="space-y-6">
        
        {/* Summary Card */}
-       <div className="bg-gradient-to-r from-indigo-500 to-[#4F46E5] rounded-xl shadow-md overflow-hidden text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center">
+       <div className="bg-gradient-to-r from-indigo-500 to-[#4F46E5] rounded-[1.25rem] shadow-eos overflow-hidden text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center">
           <div>
             <p className="text-indigo-100 font-medium uppercase tracking-widest text-sm mb-1">Total Published Expenses</p>
             <h2 className="text-4xl font-bold">৳ {totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</h2>
@@ -50,7 +50,7 @@ export function ShareholderExpensesClient({ expenses }: ShareholderExpensesClien
        </div>
 
        {/* Filters */}
-       <div className="flex justify-between items-center bg-white p-4 rounded-lg border shadow-sm">
+       <div className="flex justify-between items-center bg-white p-4 rounded-lg border shadow-eos-sm">
           <div className="flex items-center gap-4">
              <div className="relative">
                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -67,7 +67,7 @@ export function ShareholderExpensesClient({ expenses }: ShareholderExpensesClien
        </div>
 
        {/* Table */}
-       <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
+       <div className="bg-white border rounded-[1.25rem] shadow-eos-sm overflow-hidden">
          <Table>
             <TableHeader>
               <TableRow className="bg-gray-50/50">

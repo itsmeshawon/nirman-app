@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 // --- Common Schemas ---
-export const moneySchema = z.number().min(0).max(99999999999999)
+export const moneySchema = z.coerce.number().min(0).max(99999999999999)
 export const dateSchema = z.string().transform((str) => new Date(str)).refine((date) => {
   const year = date.getFullYear()
   return year >= 2000 && year <= 2100
@@ -46,6 +46,7 @@ export const paymentSchema = z.object({
   reference_no: z.string().max(100).nullable().optional(),
   notes: z.string().max(2000).nullable().optional(),
   attachment_path: z.string().nullable().optional(),
+  waive_penalties: z.boolean().optional().default(false),
 })
 
 // --- Post Schema ---

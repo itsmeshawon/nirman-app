@@ -110,7 +110,7 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
       {/* Tab Panels */}
       <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
          {activeTab === "SCHEDULE" && <ScheduleTab projectId={projectId} scheduleItems={scheduleItems} payments={payments} milestones={milestones} shareholders={shareholders} />}
-         {activeTab === "RECORD" && <RecordPaymentTab projectId={projectId} scheduleItems={scheduleItems} shareholders={shareholders} />}
+         {activeTab === "RECORD" && <RecordPaymentTab projectId={projectId} scheduleItems={scheduleItems} shareholders={shareholders} payments={payments} />}
          {activeTab === "DEFAULTERS" && <DefaultersTab projectId={projectId} scheduleItems={scheduleItems} payments={payments} />}
          {activeTab === "HISTORY" && <AllPaymentsTab projectId={projectId} payments={payments} />}
       </div>

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { ReviewClient } from "./ReviewClient"
 import { redirect } from "next/navigation"
 
@@ -13,7 +14,7 @@ export default async function CommitteeReviewPage() {
   }
 
   // 1. Fetch projects where user is an active committee member
-  const { data: memberRecords } = await supabase
+  const { data: memberRecords } = await supabaseAdmin
     .from("committee_members")
     .select("project_id, project:projects(id, name)")
     .eq("user_id", user.id)
@@ -21,8 +22,8 @@ export default async function CommitteeReviewPage() {
 
   if (!memberRecords || memberRecords.length === 0) {
     return (
-      <div className="p-8 max-w-4xl mx-auto text-center mt-12 bg-white rounded-xl shadow-sm border py-24">
-         <h1 className="text-2xl font-bold text-gray-900">Governance Review</h1>
+      <div className="p-8 max-w-4xl mx-auto text-center mt-12 bg-white rounded-[1.25rem] shadow-eos-sm border py-24">
+         <h2 className="text-2xl font-bold text-gray-900">Governance Review</h2>
          <p className="text-gray-500 mt-2">You are not an active committee member on any projects.</p>
       </div>
     )
@@ -37,7 +38,7 @@ export default async function CommitteeReviewPage() {
   }, {} as Record<string, string>)
 
   // 2. Fetch SUBMITTED expenses for those projects
-  const { data: expenses } = await supabase
+  const { data: expenses } = await supabaseAdmin
     .from("expenses")
     .select(`
        *,
@@ -49,15 +50,14 @@ export default async function CommitteeReviewPage() {
     .order("updated_at", { ascending: true })
 
   // 3. Fetch all committee counts and active approvals for the progress indicators
-  // For each submitted expense, we need total active committee members in that project, and current approval count.
   const expensesWithProgress = await Promise.all((expenses || []).map(async (exp) => {
-     const { count: totalMembers } = await supabase
+     const { count: totalMembers } = await supabaseAdmin
        .from("committee_members")
        .select("*", { count: 'exact', head: true })
        .eq("project_id", exp.project_id)
        .eq("is_active", true)
 
-     const { count: totalApprovals } = await supabase
+     const { count: totalApprovals } = await supabaseAdmin
        .from("expense_approvals")
        .select("*", { count: 'exact', head: true })
        .eq("expense_id", exp.id)
@@ -72,9 +72,9 @@ export default async function CommitteeReviewPage() {
   }))
 
   return (
-    <div className="max-w-5xl mx-auto p-4 md:p-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Expense Reviews</h1>
+    <div className="space-y-6">
+      <div className="mb-2">
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Expense Reviews</h1>
         <p className="text-gray-500 mt-1">Review and approve expenditures across your committee assignments.</p>
       </div>
       <ReviewClient expenses={expensesWithProgress} />

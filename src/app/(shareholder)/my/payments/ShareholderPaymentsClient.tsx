@@ -61,20 +61,20 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
        </div>
 
        {/* Summary Cards */}
-       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="border rounded-xl p-5 bg-white shadow-sm">
+       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="border rounded-[1.25rem] p-5 bg-white shadow-eos-sm">
              <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">Total Paid</p>
              <p className="text-2xl font-bold text-indigo-700">৳ {formatBD(totalPaid)}</p>
           </div>
-          <div className="border rounded-xl p-5 bg-white shadow-sm">
+          <div className="border rounded-[1.25rem] p-5 bg-white shadow-eos-sm">
              <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">Total Outstanding</p>
              <p className="text-2xl font-bold text-blue-700">৳ {formatBD(totalDue)}</p>
           </div>
-          <div className="border rounded-xl p-5 bg-white shadow-sm">
+          <div className="border rounded-[1.25rem] p-5 bg-white shadow-eos-sm">
              <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">Penalty Balance</p>
              <p className="text-2xl font-bold text-red-600">৳ {formatBD(totalPenalties)}</p>
           </div>
-          <div className="border rounded-xl p-5 bg-orange-50 border-orange-100 shadow-sm">
+          <div className="border rounded-[1.25rem] p-5 bg-orange-50 border-orange-100 shadow-eos-sm">
              <p className="text-xs font-semibold text-orange-800 uppercase tracking-widest mb-2">Next Scheduled Due</p>
              <p className="text-2xl font-bold text-gray-900">
                {nextPayment ? `৳ ${formatBD(parseFloat(nextPayment.amount))}` : "None"}
@@ -86,7 +86,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
        </div>
 
        <div className="border-b border-gray-200">
-         <nav className="flex space-x-8">
+         <nav className="flex space-x-4 sm:space-x-8 overflow-x-auto whitespace-nowrap pb-1">
             <button onClick={() => setActiveTab("SCHEDULE")} className={`py-4 border-b-2 font-medium text-sm transition-colors ${activeTab === "SCHEDULE" ? "border-[#4F46E5] text-[#4F46E5]" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
                My Collection Schedule
             </button>
@@ -98,7 +98,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
 
       <div className="animate-in fade-in duration-300">
          {activeTab === "SCHEDULE" && (
-            <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
+            <div className="bg-white border rounded-[1.25rem] shadow-eos-sm overflow-hidden">
                <Table>
                   <TableHeader>
                     <TableRow>
@@ -152,7 +152,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
          )}
 
          {activeTab === "HISTORY" && (
-            <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
+            <div className="bg-white border rounded-[1.25rem] shadow-eos-sm overflow-hidden">
                <Table>
                   <TableHeader>
                     <TableRow>

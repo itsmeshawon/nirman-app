@@ -39,6 +39,12 @@ export default function SuperAdminShell({ children, userName, avatarUrl }: Super
     router.push("/login")
   }
 
+  // Determine current page title
+  const activeNavItem = NAV_ITEMS.find((item) => pathname === item.href || pathname.startsWith(item.href + "/"))
+  let pageTitle = activeNavItem ? activeNavItem.label : "Dashboard"
+
+  if (pathname === "/profile") pageTitle = "My Profile"
+
   const SidebarContent = () => (
     <div className="flex h-full flex-col">
       {/* Logo */}
@@ -137,34 +143,29 @@ export default function SuperAdminShell({ children, userName, avatarUrl }: Super
 
       {/* Main content area */}
       <div className="flex flex-1 flex-col min-w-0 overflow-hidden">
-        {/* Mobile Header */}
-        <header className="lg:hidden flex items-center gap-3 bg-white border-b border-gray-200 px-4 py-3 shrink-0">
-          <button
-            onClick={() => setMobileOpen(true)}
-            className="p-1.5 rounded-md text-gray-600 hover:bg-gray-100 min-h-[44px] min-w-[44px] flex items-center justify-center"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-          <p className="text-lg font-bold text-[#4F46E5]">NirmaN</p>
-          <div className="ml-auto">
+        {/* Top Header */}
+        <header className="flex h-16 items-center justify-between bg-white border-b border-gray-200 px-4 sm:px-6 shrink-0">
+          <div className="flex items-center">
             <button
-              onClick={handleLogout}
-              className="text-sm text-gray-500 hover:text-gray-700"
+              onClick={() => setMobileOpen(true)}
+              className="mr-3 text-gray-500 lg:hidden"
             >
-              Sign out
+              <span className="sr-only">Open sidebar</span>
+              <Menu className="h-6 w-6" />
             </button>
+            <h1 className="text-lg font-semibold text-gray-900">{pageTitle}</h1>
+          </div>
+          
+          <div className="flex items-center gap-4">
+             {/* Admin specific header items could go here */}
           </div>
         </header>
 
-        {/* Desktop Header */}
-        <header className="hidden lg:flex items-center justify-between bg-white border-b border-gray-200 px-6 py-3 shrink-0">
-          <div /> {/* spacer / breadcrumb placeholder */}
-          <div />
-        </header>
-
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
-          {children}
+        <main className="flex-1 overflow-y-auto">
+          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+            {children}
+          </div>
         </main>
       </div>
     </div>

@@ -142,7 +142,7 @@ export function PostCard({
     <>
       <div
         ref={cardRef}
-        className="bg-white rounded-2xl shadow-sm border border-gray-100 mb-4 overflow-hidden"
+        className="bg-white rounded-2xl shadow-eos-sm border border-gray-100 mb-4 overflow-hidden"
       >
         {/* Header */}
         <div className="px-4 pt-4 pb-0 flex items-start gap-3">
@@ -189,7 +189,7 @@ export function PostCard({
             {post.media_type === "VIDEO" && (
               <video
                 controls
-                className="w-full rounded-xl mx-auto"
+                className="w-full rounded-[1.25rem] mx-auto"
                 style={{ maxHeight: "24rem" }}
               >
                 <source src={mediaUrl} />
@@ -198,7 +198,7 @@ export function PostCard({
             )}
             {post.media_type === "AUDIO" && (
               <div className="px-4">
-                <audio controls className="w-full rounded-xl">
+                <audio controls className="w-full rounded-[1.25rem]">
                   <source src={mediaUrl} />
                   Your browser does not support the audio tag.
                 </audio>
@@ -272,7 +272,7 @@ export function PostCard({
           <img
             src={mediaUrl}
             alt={post.title || "Full size"}
-            className="max-w-full max-h-full rounded-xl object-contain shadow-2xl"
+            className="max-w-full max-h-full rounded-[1.25rem] object-contain shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           />
           <button

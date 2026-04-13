@@ -25,7 +25,7 @@ export default async function MilestonesPage(props: { params: Promise<{ projectI
   }
 
   return (
-    <div className="max-w-4xl">
+    <div className="w-full">
       <MilestoneTimeline projectId={projectId} initialMilestones={milestones || []} />
     </div>
   )

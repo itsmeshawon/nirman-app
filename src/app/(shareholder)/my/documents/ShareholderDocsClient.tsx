@@ -75,7 +75,7 @@ export function ShareholderDocsClient({ documents }: ShareholderDocsClientProps)
       </div>
 
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="flex-1 flex items-center space-x-2 bg-white rounded-xl border px-3 py-2 shadow-sm">
+        <div className="flex-1 flex items-center space-x-2 bg-white rounded-[1.25rem] border px-3 py-2 shadow-eos-sm">
           <Search className="w-4 h-4 text-gray-400" />
           <input 
             type="text" 
@@ -88,7 +88,7 @@ export function ShareholderDocsClient({ documents }: ShareholderDocsClientProps)
         
         <div className="w-full md:w-64">
           <Select value={categoryFilter} onValueChange={(v) => setCategoryFilter(v ?? "")}>
-            <SelectTrigger className="rounded-xl shadow-sm border-gray-200">
+            <SelectTrigger className="rounded-[1.25rem] shadow-eos-sm border-gray-200">
               <div className="flex items-center gap-2">
                 <Filter className="w-4 h-4 text-gray-400" />
                 <SelectValue placeholder="All Categories" />
@@ -104,7 +104,7 @@ export function ShareholderDocsClient({ documents }: ShareholderDocsClientProps)
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border shadow-md overflow-hidden transition-all duration-300">
+      <div className="bg-white rounded-2xl border shadow-eos overflow-hidden transition-all duration-300">
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-50/50 hover:bg-gray-50/50">
@@ -146,7 +146,7 @@ export function ShareholderDocsClient({ documents }: ShareholderDocsClientProps)
                       size="icon" 
                       variant="ghost" 
                       onClick={() => handleDownload(doc)}
-                      className="text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 rounded-xl"
+                      className="text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 rounded-[1.25rem]"
                     >
                       <Download className="w-5 h-5" />
                     </Button>

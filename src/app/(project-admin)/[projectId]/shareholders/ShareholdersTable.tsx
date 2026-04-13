@@ -1,10 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import {
   useReactTable,
   getCoreRowModel,
-  getPaginationRowModel,
   getFilteredRowModel,
   getSortedRowModel,
   flexRender,
@@ -55,6 +54,25 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingShareholder, setEditingShareholder] = useState<any>(null)
   const [detailShareholder, setDetailShareholder] = useState<any>(null)
+  const [visibleCount, setVisibleCount] = useState(15)
+  const loaderRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((prev) => prev + 15)
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [])
 
   const handleStatusToggle = async (shareholder: any) => {
     const newStatus = shareholder.status === "ACTIVE" ? "INACTIVE" : "ACTIVE"
@@ -207,7 +225,6 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     state: {
@@ -281,7 +298,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.slice(0, visibleCount).map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -310,31 +327,12 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
           </TableBody>
         </Table>
         
-        {/* Pagination Info */}
-        <div className="flex items-center justify-between px-4py-3 border-t">
-          <div className="flex-1 text-sm text-gray-500">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount() || 1}
+        {/* Infinite Scroll Loader */}
+        {table.getRowModel().rows.length > visibleCount && (
+          <div ref={loaderRef} className="py-6 flex items-center justify-center border-t">
+            <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-indigo-600"></div>
           </div>
-          <div className="space-x-2">
-             <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Next
-              </Button>
-          </div>
-        </div>
+        )}
       </div>
 
       <ShareholderDialog

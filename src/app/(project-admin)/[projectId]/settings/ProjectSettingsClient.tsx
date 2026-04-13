@@ -139,7 +139,10 @@ export function ProjectSettingsClient({
            fixed_amount: fixedAmount
          })
       })
-      if (!res.ok) throw new Error("Failed to save penalty config")
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        throw new Error(d.error || "Failed to save penalty config");
+      }
       toast.success("Penalties configuration saved")
     } catch(err: any) {
       toast.error(err.message)
@@ -212,43 +215,43 @@ export function ProjectSettingsClient({
         <p className="text-sm text-gray-500 mt-1">Configure project rules, schedules, and automated communications.</p>
       </div>
 
-      <Tabs defaultValue="profile" className="flex flex-col md:flex-row">
-        <div className="md:w-64 bg-gray-50 border-r border-gray-200">
-          <TabsList className="flex flex-col h-auto bg-transparent p-2 space-y-1 w-full m-0 items-stretch">
+      <Tabs defaultValue="profile" className="w-full">
+        <div className="bg-gray-50 border-b border-gray-200 px-4">
+          <TabsList className="flex flex-row h-auto bg-transparent p-0 m-0 w-full justify-start overflow-x-auto no-scrollbar">
             <TabsTrigger 
               value="profile" 
-              className="justify-start gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200"
+              className="px-6 py-4 rounded-none border-b-2 border-transparent data-[state=active]:border-[#4F46E5] data-[state=active]:bg-transparent data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-none font-medium transition-all"
             >
-              <Building className="h-4 w-4" /> Profile
+              <Building className="h-4 w-4 mr-2" /> Profile
             </TabsTrigger>
             <TabsTrigger 
               value="payment" 
-              className="justify-start gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200"
+              className="px-6 py-4 rounded-none border-b-2 border-transparent data-[state=active]:border-[#4F46E5] data-[state=active]:bg-transparent data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-none font-medium transition-all"
             >
-              <Banknote className="h-4 w-4" /> Payment Model
+              <Banknote className="h-4 w-4 mr-2" /> Payment Model
             </TabsTrigger>
             <TabsTrigger 
               value="penalties" 
-              className="justify-start gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200"
+              className="px-6 py-4 rounded-none border-b-2 border-transparent data-[state=active]:border-[#4F46E5] data-[state=active]:bg-transparent data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-none font-medium transition-all"
             >
-              <CalendarClock className="h-4 w-4" /> Penalties
+              <CalendarClock className="h-4 w-4 mr-2" /> Penalties
             </TabsTrigger>
             <TabsTrigger
               value="notifications"
-              className="justify-start gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200"
+              className="px-6 py-4 rounded-none border-b-2 border-transparent data-[state=active]:border-[#4F46E5] data-[state=active]:bg-transparent data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-none font-medium transition-all"
             >
-              <Bell className="h-4 w-4" /> Notifications
+              <Bell className="h-4 w-4 mr-2" /> Notifications
             </TabsTrigger>
             <TabsTrigger
               value="profile-me"
-              className="justify-start gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200"
+              className="px-6 py-4 rounded-none border-b-2 border-transparent data-[state=active]:border-[#4F46E5] data-[state=active]:bg-transparent data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-none font-medium transition-all"
             >
-              <User className="h-4 w-4 mr-1.5" />My Profile
+              <User className="h-4 w-4 mr-2" /> My Profile
             </TabsTrigger>
           </TabsList>
         </div>
 
-        <div className="flex-1 p-6 md:p-8">
+        <div className="p-6 md:p-8">
           
           {/* TAB 1: PROFILE */}
           <TabsContent value="profile" className="m-0 focus:outline-none">

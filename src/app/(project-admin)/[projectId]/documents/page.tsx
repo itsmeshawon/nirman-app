@@ -16,7 +16,7 @@ export default async function DocumentsPage(props: { params: Promise<{ projectId
     .order("uploaded_at", { ascending: false })
 
   return (
-    <div className="p-8 max-w-7xl mx-auto ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+    <div className="w-full">
       <DocumentsClient 
         projectId={projectId} 
         initialDocuments={documents || []} 

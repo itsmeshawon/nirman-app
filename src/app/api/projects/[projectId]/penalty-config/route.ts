@@ -25,12 +25,12 @@ export async function PUT(
     // Upsert penalty config
     const { error } = await supabase.from("penalty_configs").upsert({
       project_id: projectId,
-      grace_days: grace_days ? parseInt( grace_days) : 0,
+      grace_days: (grace_days && grace_days !== "") ? parseInt(String(grace_days)) : 0,
       penalty_type: penalty_type || "NONE",
-      fixed_amount: fixed_amount ? parseFloat(fixed_amount) : null,
-      percent_rate: percent_rate ? parseFloat(percent_rate) : null,
-      daily_rate: daily_rate ? parseFloat(daily_rate) : null,
-      cap: cap ? parseFloat(cap) : null
+      fixed_amount: (fixed_amount && fixed_amount !== "") ? parseFloat(String(fixed_amount)) : null,
+      percent_rate: (percent_rate && percent_rate !== "") ? parseFloat(String(percent_rate)) : null,
+      daily_rate: (daily_rate && daily_rate !== "") ? parseFloat(String(daily_rate)) : null,
+      cap: (cap && cap !== "") ? parseFloat(String(cap)) : null
     }, { onConflict: "project_id" })
 
     if (error) return NextResponse.json({ error: error.message }, { status: 400 })

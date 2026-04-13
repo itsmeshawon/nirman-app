@@ -3,7 +3,6 @@ import { createClient } from "@/lib/supabase/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
 import { requireProjectAdmin } from "@/lib/permissions"
-import crypto from "crypto"
 
 export async function POST(
   request: Request,
@@ -28,7 +27,7 @@ export async function POST(
     }
 
     const body = await request.json()
-    const { name, email, phone, unit_flat, ownership_pct, opening_balance } = body
+    const { name, email, phone, password, unit_flat, ownership_pct, opening_balance } = body
     const { profession, designation, organization, present_address, whatsapp_no } = body
 
     if (!name || !email || !unit_flat) {
@@ -52,7 +51,7 @@ export async function POST(
       newUserId = existingUser.id
     } else {
       // 3. Create new user
-      tempPassword = crypto.randomBytes(4).toString('hex') // 8 chars temporary password
+      tempPassword = password || "test1234"
       const { data: userData, error: createError } = await supabaseAdmin.auth.admin.createUser({
         email,
         password: tempPassword,

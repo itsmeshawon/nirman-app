@@ -1,12 +1,80 @@
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { Download, FileText } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
+import { Download, FileText, Pencil, Trash2, MoreVertical } from "lucide-react"
 import { toast } from "sonner"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 export function AllPaymentsTab({ projectId, payments }: { projectId: string, payments: any[] }) {
+  const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Edit Modal State
+  const [editingPayment, setEditingPayment] = useState<any>(null)
+  const [editAmount, setEditAmount] = useState("")
+  const [editMethod, setEditMethod] = useState("")
+  const [editRef, setEditRef] = useState("")
+  const [editNotes, setEditNotes] = useState("")
 
   const handleDownloadReceipt = (paymentId: string) => {
     window.open(`/${projectId}/payments/${paymentId}/receipt`, "_blank")
+  }
+
+  const openEditDialog = (payment: any) => {
+    setEditingPayment(payment)
+    setEditAmount(payment.amount.toString())
+    setEditMethod(payment.method)
+    setEditRef(payment.reference_no || "")
+    setEditNotes(payment.notes || "")
+  }
+
+  const handleUpdate = async () => {
+    if (!editingPayment) return
+    setIsSubmitting(true)
+    try {
+      const res = await fetch(`/api/projects/${projectId}/payments/${editingPayment.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: editAmount,
+          method: editMethod,
+          reference_no: editRef,
+          notes: editNotes
+        })
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      
+      toast.success("Payment record updated")
+      setEditingPayment(null)
+      router.refresh()
+    } catch (err: any) {
+      toast.error(err.message)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleDelete = async (paymentId: string) => {
+    if (!confirm("Are you sure you want to delete this payment record? This will also revert the status of any linked installment. This cannot be undone.")) return
+    
+    try {
+      const res = await fetch(`/api/projects/${projectId}/payments/${paymentId}`, {
+        method: "DELETE"
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      
+      toast.success("Payment deleted successfully")
+      router.refresh()
+    } catch (err: any) {
+      toast.error(err.message)
+    }
   }
 
   return (
@@ -44,19 +112,84 @@ export function AllPaymentsTab({ projectId, payments }: { projectId: string, pay
                       <div className="text-sm font-medium text-gray-900">{p.shareholder?.profiles?.name}</div>
                       <div className="text-xs text-gray-500">Unit: {p.shareholder?.unit_flat}</div>
                     </TableCell>
-                    <TableCell className="text-sm">{p.method.replace("_", " ")}</TableCell>
+                    <TableCell className="text-sm uppercase text-[10px] font-bold text-slate-500">{p.method.replace("_", " ")}</TableCell>
                     <TableCell className="text-sm text-gray-500 font-mono text-xs">{p.reference_no || "N/A"}</TableCell>
-                    <TableCell className="text-right font-medium text-indigo-700">{parseFloat(p.amount).toLocaleString('en-IN')}</TableCell>
+                    <TableCell className="text-right font-bold text-indigo-700">৳{parseFloat(p.amount).toLocaleString('en-IN')}</TableCell>
                     <TableCell className="text-right">
-                       <Button variant="ghost" size="sm" onClick={() => handleDownloadReceipt(p.id)} className="text-[#4F46E5] hover:text-indigo-800 hover:bg-indigo-50">
-                          <FileText className="w-4 h-4 mr-2" /> Receipt
-                       </Button>
+                       <div className="flex justify-end gap-1">
+                          <Button variant="ghost" size="sm" onClick={() => handleDownloadReceipt(p.id)} className="text-gray-500 hover:text-indigo-600">
+                             <FileText className="w-4 h-4" />
+                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => openEditDialog(p)}>
+                                <Pencil className="mr-2 h-4 w-4" /> Edit Record
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleDelete(p.id)} className="text-red-600">
+                                <Trash2 className="mr-2 h-4 w-4" /> Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                       </div>
                     </TableCell>
                  </TableRow>
                ))
             )}
           </TableBody>
        </Table>
+
+       {/* EDIT PAYMENT DIALOG */}
+       <Dialog open={!!editingPayment} onOpenChange={(open) => !open && setEditingPayment(null)}>
+         <DialogContent className="sm:max-w-[450px]">
+           <DialogHeader>
+             <DialogTitle>Edit Payment Record</DialogTitle>
+             <DialogDescription>Correct errors in a previously recorded transaction.</DialogDescription>
+           </DialogHeader>
+           <div className="space-y-4 mt-4 text-left">
+              <div className="space-y-2">
+                 <Label>Amount (৳)</Label>
+                 <Input type="number" step="0.01" value={editAmount} onChange={(e) => setEditAmount(e.target.value)} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                   <Label>Method</Label>
+                   <Select value={editMethod} onValueChange={setEditMethod}>
+                     <SelectTrigger>
+                        <span className="flex-1 text-left truncate capitalize">{editMethod.toLowerCase().replace("_", " ")}</span>
+                     </SelectTrigger>
+                     <SelectContent>
+                        <SelectItem value="BANK_TRANSFER">Bank Transfer</SelectItem>
+                        <SelectItem value="CASH">Cash</SelectItem>
+                        <SelectItem value="CHEQUE">Cheque</SelectItem>
+                        <SelectItem value="BKASH">bKash</SelectItem>
+                        <SelectItem value="NAGAD">Nagad</SelectItem>
+                     </SelectContent>
+                   </Select>
+                </div>
+                <div className="space-y-2">
+                   <Label>Reference No.</Label>
+                   <Input value={editRef} onChange={(e) => setEditRef(e.target.value)} placeholder="TXN ID / Check #" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                 <Label>Notes</Label>
+                 <Input value={editNotes} onChange={(e) => setEditNotes(e.target.value)} placeholder="Internal remarks..." />
+              </div>
+              <DialogFooter className="pt-4">
+                 <Button variant="outline" onClick={() => setEditingPayment(null)} disabled={isSubmitting}>Cancel</Button>
+                 <Button onClick={handleUpdate} disabled={isSubmitting} className="bg-indigo-700 hover:bg-indigo-800">
+                    {isSubmitting ? "Updating..." : "Save Changes"}
+                 </Button>
+              </DialogFooter>
+           </div>
+         </DialogContent>
+       </Dialog>
     </div>
   )
 }
+

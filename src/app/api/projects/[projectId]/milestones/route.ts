@@ -58,7 +58,7 @@ export async function POST(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
-    const { name, target_date, status, sort_order } = await request.json()
+    const { name, start_date, target_date, status, sort_order } = await request.json()
 
     if (!name) {
        return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
@@ -69,6 +69,7 @@ export async function POST(
       .insert({
         project_id: projectId,
         name,
+        start_date: start_date || null,
         target_date: target_date || null,
         status: status || 'UPCOMING',
         sort_order: sort_order || 0

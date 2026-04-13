@@ -18,7 +18,7 @@ export async function POST(
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
     // Verify user is an active committee member for this project
-    const { data: committeeMember, error: cmError } = await supabase
+    const { data: committeeMember, error: cmError } = await supabaseAdmin
       .from("committee_members")
       .select("id")
       .eq("project_id", projectId)
@@ -38,7 +38,7 @@ export async function POST(
     }
 
     // Insert approval record
-    const { error: approvalError } = await supabase
+    const { error: approvalError } = await supabaseAdmin
       .from("expense_approvals")
       .insert({
         expense_id: id,
@@ -55,7 +55,7 @@ export async function POST(
     else if (action === "CHANGES_REQUESTED") newStatus = "CHANGES_REQUESTED"
     else if (action === "APPROVED") {
        // Check approval rule logic
-       const { data: config } = await supabase
+       const { data: config } = await supabaseAdmin
          .from("approval_configs")
          .select("rule")
          .eq("project_id", projectId)
@@ -67,14 +67,14 @@ export async function POST(
          newStatus = "APPROVED"
        } else if (rule === "MAJORITY") {
          // Count total active committee members
-         const { count: totalMembers } = await supabase
+         const { count: totalMembers } = await supabaseAdmin
            .from("committee_members")
            .select("*", { count: 'exact', head: true })
            .eq("project_id", projectId)
            .eq("is_active", true)
            
          // Count how many APPROVED actions for this expense
-         const { count: totalApprovals } = await supabase
+         const { count: totalApprovals } = await supabaseAdmin
            .from("expense_approvals")
            .select("user_id", { count: 'exact', head: true }) // Distinct logic normally, but count is okay if we assume 1 vote per user (UI blocks double voting or we get latest)
            .eq("expense_id", id)
@@ -90,7 +90,7 @@ export async function POST(
 
     // Update parent expense if a new status was reached
     if (newStatus) {
-      const { error: updateError } = await supabase
+      const { error: updateError } = await supabaseAdmin
         .from("expenses")
         .update({ status: newStatus, updated_at: new Date().toISOString() })
         .eq("id", id)

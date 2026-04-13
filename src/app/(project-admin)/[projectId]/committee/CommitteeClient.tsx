@@ -68,7 +68,9 @@ export function CommitteeClient({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ shareholder_id: shareholderId, user_id: userId }),
       })
-      if (!res.ok) throw new Error("Failed to add committee member")
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error || "Failed to add committee member")
+      
       toast.success("Member added to committee")
       setIsAddDialogOpen(false)
       router.refresh()

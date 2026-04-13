@@ -19,22 +19,13 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
-import { Download } from "lucide-react"
-import dynamic from "next/dynamic"
-
-const PDFDownloadLink = dynamic(
-  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
-  { ssr: false }
-)
-const CredentialPDF = dynamic(
-  () => import("@/components/CredentialPDF").then((mod) => mod.CredentialPDF),
-  { ssr: false }
-)
+import { Copy, Check } from "lucide-react"
 
 const shareholderSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   phone: z.string().optional(),
+  password: z.string().min(8, "Password must be at least 8 characters").optional(),
   unit_flat: z.string().min(1, "Unit/Flat is required"),
   ownership_pct: z.string().optional(),
   opening_balance: z.string().optional(),
@@ -59,6 +50,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [tempCredentials, setTempCredentials] = useState<{email: string, pass: string, name: string} | null>(null)
+  const [copied, setCopied] = useState(false)
 
   const getProfile = (sh: any) => {
     if (!sh?.profiles) return null
@@ -75,6 +67,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
     defaultValues: {
       name: getProfile(shareholder)?.name || "",
       email: getProfile(shareholder)?.email || "",
+      password: "test1234",
       phone: getProfile(shareholder)?.phone || "",
       unit_flat: shareholder?.unit_flat || "",
       ownership_pct: shareholder?.ownership_pct?.toString() || "",
@@ -94,6 +87,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
         reset({
             name: profile?.name || "",
             email: profile?.email || "",
+            password: "test1234",
             phone: profile?.phone || "",
             unit_flat: shareholder?.unit_flat || "",
             ownership_pct: shareholder?.ownership_pct?.toString() || "",
@@ -129,8 +123,8 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
 
       toast.success(`Shareholder ${isEdit ? "updated" : "added"} successfully!`)
       
-      if (!isEdit && json.tempPassword) {
-        setTempCredentials({ email: data.email, pass: json.tempPassword, name: data.name })
+      if (!isEdit && !shareholder) {
+        setTempCredentials({ email: data.email, pass: data.password || "test1234", name: data.name })
       } else {
         onClose()
       }
@@ -146,50 +140,60 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
   const handleCloseCreds = () => {
     setTempCredentials(null)
     onClose()
+    setCopied(false)
+  }
+
+  async function copyCredentials() {
+    if (!tempCredentials) return
+    const text = `NirmaN Login Credentials\nEmail: ${tempCredentials.email}\nPassword: ${tempCredentials.pass}\nURL: ${window.location.origin}/login`
+    await navigator.clipboard.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   if (tempCredentials) {
     return (
       <Dialog open={true} onOpenChange={handleCloseCreds}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Temporary Credentials</DialogTitle>
-            <DialogDescription>
-              A new user has been created. Please share these temporary credentials. They will be prompted to change their password on first login.
-            </DialogDescription>
+            <DialogTitle>Shareholder Created</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="temp-email" className="text-right">Email</Label>
-              <Input id="temp-email" value={tempCredentials.email} readOnly className="col-span-3 font-mono" />
+
+          <div className="space-y-4 py-2">
+            <p className="text-sm text-gray-600">
+              Share these login credentials with <strong>{tempCredentials.name}</strong> for this project.
+            </p>
+            <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 space-y-2 font-mono text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-500">Email</span>
+                <span className="text-gray-900">{tempCredentials.email}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Password</span>
+                <span className="text-gray-900">{tempCredentials.pass}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">URL</span>
+                <span className="text-gray-900 text-xs">{typeof window !== "undefined" ? window.location.origin : ""}/login</span>
+              </div>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="temp-pass" className="text-right">Password</Label>
-              <Input id="temp-pass" value={tempCredentials.pass} readOnly className="col-span-3 font-mono" />
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={copyCredentials}
+              >
+                {copied ? <Check className="h-4 w-4 text-green-600 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
+                {copied ? "Copied!" : "Copy Credentials"}
+              </Button>
+              <Button
+                className="flex-1 bg-[#4F46E5] hover:bg-[#14B8A6] text-white"
+                onClick={handleCloseCreds}
+              >
+                Done
+              </Button>
             </div>
           </div>
-          <DialogFooter className="sm:justify-between gap-2">
-            {tempCredentials && (
-              <PDFDownloadLink
-                document={
-                  <CredentialPDF
-                    name={tempCredentials.name}
-                    email={tempCredentials.email}
-                    password={tempCredentials.pass}
-                  />
-                }
-                fileName={`credentials-${tempCredentials.name.toLowerCase().replace(/\s+/g, '-')}.pdf`}
-              >
-                {({ loading }) => (
-                  <Button variant="outline" className="w-full sm:w-auto" disabled={loading}>
-                    <Download className="w-4 h-4 mr-2" />
-                    {loading ? "Preparing PDF..." : "Download PDF"}
-                  </Button>
-                )}
-              </PDFDownloadLink>
-            )}
-            <Button onClick={handleCloseCreds} className="bg-[#4F46E5] hover:bg-indigo-800 w-full sm:w-auto">Done</Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     )
@@ -219,6 +223,15 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
             <Input id="email" type="email" {...register("email")} disabled={isLoading || isEdit} />
             {errors.email && <span className="text-xs text-red-500">{errors.email.message}</span>}
           </div>
+
+          {!isEdit && (
+            <div className="grid gap-2">
+              <Label htmlFor="password">Password *</Label>
+              <Input id="password" type="text" {...register("password")} disabled={isLoading} />
+              {errors.password && <span className="text-xs text-red-500">{errors.password.message}</span>}
+              <p className="text-xs text-gray-400">Min 8 characters. Share this with the shareholder.</p>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
              <div className="grid gap-2">
