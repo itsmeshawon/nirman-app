@@ -72,17 +72,20 @@ export default function SuperAdminShell({ children, userName }: SuperAdminShellP
 
       {/* User + Logout */}
       <div className="border-t border-gray-100 px-4 py-4">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="h-8 w-8 rounded-full bg-teal-100 flex items-center justify-center text-[#0F766E] text-sm font-semibold shrink-0">
+        <Link 
+          href="/profile" 
+          className="flex items-center gap-3 mb-3 p-2 -mx-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer group"
+        >
+          <div className="h-8 w-8 rounded-full bg-teal-100 flex items-center justify-center text-[#0F766E] text-sm font-semibold shrink-0 group-hover:bg-[#0F766E] group-hover:text-white transition-colors">
             {userName?.charAt(0)?.toUpperCase() ?? "A"}
           </div>
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-gray-900 truncate">{userName}</p>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium text-gray-900 truncate group-hover:text-[#0F766E] transition-colors">{userName}</p>
             <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-xs font-medium text-[#0F766E]">
               Super Admin
             </span>
           </div>
-        </div>
+        </Link>
         <button
           onClick={handleLogout}
           className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors"

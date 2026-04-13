@@ -148,14 +148,14 @@ export default function ProjectAdminShell({
         {/* Sidebar Footer (User Info) */}
         <div className="border-t border-gray-200 p-4">
           <div className="flex items-center justify-between">
-            <div className="flex flex-col truncate">
-              <span className="text-sm font-medium text-gray-900 truncate">
+            <Link href="/profile" className="flex flex-col truncate group cursor-pointer p-1 -m-1 rounded hover:bg-gray-50 transition-colors">
+              <span className="text-sm font-medium text-gray-900 truncate group-hover:text-[#0F766E] transition-colors">
                 {profileName || user?.email}
               </span>
-              <span className="mt-0.5 inline-flex items-center w-fit rounded-full bg-teal-100 px-2 py-0.5 text-[10px] font-medium text-teal-800">
+              <span className="mt-0.5 inline-flex items-center w-fit rounded-full bg-teal-100 px-2 py-0.5 text-[10px] font-medium text-teal-800 group-hover:bg-teal-200 transition-colors">
                 Project Admin
               </span>
-            </div>
+            </Link>
             <button
               onClick={handleSignOut}
               className="ml-2 rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#0F766E]"

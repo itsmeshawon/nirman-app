@@ -73,6 +73,27 @@ export default async function ShareholderDashboardPage() {
 
   return (
     <div className="space-y-6 pb-12 max-w-5xl">
+
+      {/* Incomplete Profile Banner */}
+      {(!profile?.profession || !profile?.present_address) && (
+        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
+              <AlertCircle className="w-4 h-4 text-indigo-600" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-indigo-800">Your profile is incomplete.</p>
+              <p className="text-xs text-indigo-600">Please provide your profession and present address.</p>
+            </div>
+          </div>
+          <Link
+            href="/profile"
+            className="text-sm font-semibold px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-1.5 flex-shrink-0"
+          >
+            Update Profile <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      )}
       {/* Hero card — banking style */}
       <div className="rounded-2xl bg-gradient-to-br from-teal-700 via-teal-600 to-teal-500 p-6 text-white shadow-lg relative overflow-hidden">
         <div className="absolute top-0 right-0 w-48 h-48 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/4" />

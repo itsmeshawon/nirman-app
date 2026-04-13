@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, CreditCard, FileText, Bell, Menu, X, Receipt, LogOut } from "lucide-react"
+import { LayoutDashboard, CreditCard, FileText, Bell, Menu, X, Receipt, LogOut, User } from "lucide-react"
 import NotificationBell from "@/components/NotificationBell"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
@@ -14,6 +14,7 @@ const navItems = [
   { href: "/my/expenses", label: "Expenses", icon: Receipt },
   { href: "/my/documents", label: "Documents", icon: FileText },
   { href: "/my/feed", label: "Updates", icon: Bell },
+  { href: "/profile", label: "Profile", icon: User },
 ]
 
 export default function ShareholderLayout({ children }: { children: React.ReactNode }) {
