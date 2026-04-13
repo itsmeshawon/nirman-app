@@ -21,6 +21,19 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
   const pathname = usePathname()
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [profile, setProfile] = useState<any>(null)
+
+  useEffect(() => {
+    async function fetchProfile() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data } = await supabase.from("profiles").select("name, avatar_url, email").eq("id", user.id).single()
+        setProfile(data)
+      }
+    }
+    fetchProfile()
+  }, [])
 
   const handleSignOut = async () => {
     const supabase = createClient()
@@ -64,8 +77,23 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
           <NavLinks />
         </nav>
-        {/* Sign out */}
-        <div className="border-t border-white/10 p-3">
+        {/* User + Sign out */}
+        <div className="border-t border-white/10 p-4">
+          <Link href="/profile" className="flex items-center gap-3 mb-4 group cursor-pointer">
+            <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white text-sm font-bold shrink-0 border border-white/5 overflow-hidden group-hover:border-indigo-500 transition-colors">
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt={profile.name} className="w-full h-full object-cover" />
+              ) : (
+                profile?.name?.charAt(0)?.toUpperCase() || "U"
+              )}
+            </div>
+            <div className="flex flex-col truncate min-w-0">
+              <span className="text-sm font-medium text-white truncate group-hover:text-indigo-300 transition-colors">
+                {profile?.name || "User"}
+              </span>
+              <span className="text-[10px] text-gray-400">Shareholder Portal</span>
+            </div>
+          </Link>
           <button
             onClick={handleSignOut}
             className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"

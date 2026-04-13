@@ -24,9 +24,10 @@ const NAV_ITEMS: NavItem[] = [
 interface SuperAdminShellProps {
   children: React.ReactNode
   userName: string
+  avatarUrl?: string | null
 }
 
-export default function SuperAdminShell({ children, userName }: SuperAdminShellProps) {
+export default function SuperAdminShell({ children, userName, avatarUrl }: SuperAdminShellProps) {
   const pathname = usePathname()
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -76,8 +77,12 @@ export default function SuperAdminShell({ children, userName }: SuperAdminShellP
           href="/profile" 
           className="flex items-center gap-3 mb-3 p-2 -mx-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer group"
         >
-          <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-[#4F46E5] text-sm font-semibold shrink-0 group-hover:bg-[#4F46E5] group-hover:text-white transition-colors">
-            {userName?.charAt(0)?.toUpperCase() ?? "A"}
+          <div className="h-9 w-9 rounded-full bg-indigo-100 flex items-center justify-center text-[#4F46E5] text-sm font-bold shrink-0 border border-indigo-200 overflow-hidden group-hover:bg-[#4F46E5] group-hover:text-white transition-colors">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={userName} className="w-full h-full object-cover" />
+            ) : (
+              userName?.charAt(0)?.toUpperCase() ?? "A"
+            )}
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-sm font-medium text-gray-900 truncate group-hover:text-[#4F46E5] transition-colors">{userName}</p>
@@ -154,13 +159,7 @@ export default function SuperAdminShell({ children, userName }: SuperAdminShellP
         {/* Desktop Header */}
         <header className="hidden lg:flex items-center justify-between bg-white border-b border-gray-200 px-6 py-3 shrink-0">
           <div /> {/* spacer / breadcrumb placeholder */}
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-600">{userName}</span>
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-gray-500 hover:text-red-600">
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">Sign out</span>
-            </Button>
-          </div>
+          <div />
         </header>
 
         {/* Page content */}

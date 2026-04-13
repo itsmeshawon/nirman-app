@@ -10,14 +10,17 @@ export default async function SuperAdminLayout({ children }: { children: React.R
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("name, role")
+    .select("name, role, avatar_url")
     .eq("id", user.id)
     .single()
 
   if (!profile || profile.role !== "SUPER_ADMIN") redirect("/login")
 
   return (
-    <SuperAdminShell userName={profile.name ?? user.email ?? "Admin"}>
+    <SuperAdminShell 
+      userName={profile.name ?? user.email ?? "Admin"} 
+      avatarUrl={profile.avatar_url}
+    >
       {children}
     </SuperAdminShell>
   )

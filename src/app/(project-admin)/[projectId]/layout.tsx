@@ -46,6 +46,7 @@ export default async function ProjectAdminLayout(props: {
         projectStatus={project.status}
         user={user}
         profileName={profile.name}
+        avatarUrl={profile.avatar_url}
       >
         {project.status === "ARCHIVED" ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-8 w-full">

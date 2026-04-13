@@ -29,6 +29,7 @@ interface ProjectAdminShellProps {
   projectStatus: string
   user: User | null
   profileName: string
+  avatarUrl?: string | null
 }
 
 export default function ProjectAdminShell({
@@ -38,6 +39,7 @@ export default function ProjectAdminShell({
   projectStatus,
   user,
   profileName,
+  avatarUrl,
 }: ProjectAdminShellProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const pathname = usePathname()
@@ -148,13 +150,22 @@ export default function ProjectAdminShell({
         {/* Sidebar Footer (User Info) */}
         <div className="border-t border-gray-200 p-4">
           <div className="flex items-center justify-between">
-            <Link href="/profile" className="flex flex-col truncate group cursor-pointer p-1 -m-1 rounded hover:bg-gray-50 transition-colors">
-              <span className="text-sm font-medium text-gray-900 truncate group-hover:text-[#4F46E5] transition-colors">
-                {profileName || user?.email}
-              </span>
-              <span className="mt-0.5 inline-flex items-center w-fit rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-medium text-indigo-800 group-hover:bg-indigo-200 transition-colors">
-                Project Admin
-              </span>
+            <Link href="/profile" className="flex items-center gap-3 truncate group cursor-pointer p-1 -m-1 rounded hover:bg-gray-50 transition-colors">
+              <div className="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 text-sm font-bold shrink-0 border border-indigo-100 overflow-hidden group-hover:border-indigo-300 transition-colors">
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt={profileName} className="w-full h-full object-cover" />
+                ) : (
+                  profileName?.charAt(0)?.toUpperCase() || "A"
+                )}
+              </div>
+              <div className="flex flex-col truncate min-w-0">
+                <span className="text-sm font-medium text-gray-900 truncate group-hover:text-[#4F46E5] transition-colors">
+                  {profileName || user?.email}
+                </span>
+                <span className="mt-0.5 inline-flex items-center w-fit rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-medium text-indigo-800 group-hover:bg-indigo-200 transition-colors">
+                  Project Admin
+                </span>
+              </div>
             </Link>
             <button
               onClick={handleSignOut}
@@ -190,9 +201,6 @@ export default function ProjectAdminShell({
                 <span className="text-sm font-medium text-gray-900">{projectName}</span>
             </div>
             <NotificationBell projectId={projectId} />
-            <div className="hidden md:flex items-center gap-2 border-l pl-4 border-gray-200">
-              <span className="text-sm font-medium text-gray-700">{profileName.split(' ')[0]}</span>
-            </div>
           </div>
         </header>
 

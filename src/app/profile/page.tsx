@@ -1,11 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { ArrowLeft, User, Mail, Phone, Building2, Briefcase, MapPin, MessageCircle, Camera } from "lucide-react"
+import { ArrowLeft, User, Mail, Phone, Building2, Briefcase, MapPin, MessageCircle, Camera, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -30,7 +30,9 @@ export default function MyProfilePage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
   const [initialData, setInitialData] = useState<any>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const {
     register,
@@ -80,6 +82,34 @@ export default function MyProfilePage() {
     }
     fetchProfile()
   }, [router, reset])
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setIsUploadingAvatar(true)
+    const formData = new FormData()
+    formData.append("file", file)
+
+    try {
+      const res = await fetch("/api/profile/avatar", {
+        method: "POST",
+        body: formData,
+      })
+
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "Upload failed")
+
+      toast.success("Avatar updated successfully")
+      setInitialData({ ...initialData, avatar_url: data.avatarUrl })
+      router.refresh()
+    } catch (error: any) {
+      toast.error(error.message)
+    } finally {
+      setIsUploadingAvatar(false)
+      if (fileInputRef.current) fileInputRef.current.value = ""
+    }
+  }
 
   const onSubmit = async (data: ProfileFormValues) => {
     setIsSaving(true)
@@ -141,12 +171,37 @@ export default function MyProfilePage() {
           <div className="h-32 bg-gradient-to-r from-indigo-600 to-violet-600 relative">
             <div className="absolute -bottom-12 left-8 md:left-12">
               <div className="relative group">
-                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-white bg-indigo-50 flex items-center justify-center text-indigo-600 text-3xl font-bold shadow-sm overflow-hidden">
-                  {initialData?.name?.charAt(0)?.toUpperCase() || "U"}
+                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-white bg-indigo-50 flex items-center justify-center text-indigo-600 text-3xl font-bold shadow-sm overflow-hidden relative">
+                  {initialData?.avatar_url ? (
+                    <img 
+                      src={initialData.avatar_url} 
+                      alt={initialData.name} 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    initialData?.name?.charAt(0)?.toUpperCase() || "U"
+                  )}
+                  {isUploadingAvatar && (
+                    <div className="absolute inset-0 bg-indigo-900/40 flex items-center justify-center backdrop-blur-[1px]">
+                      <Loader2 className="w-8 h-8 text-white animate-spin" />
+                    </div>
+                  )}
                 </div>
-                <button className="absolute bottom-1 right-1 bg-white p-1.5 rounded-full shadow-md text-gray-600 hover:text-indigo-600 transition-colors border border-gray-100">
+                <button 
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isUploadingAvatar}
+                  className="absolute bottom-1 right-1 bg-white p-1.5 rounded-full shadow-md text-gray-600 hover:text-indigo-600 transition-colors border border-gray-100 disabled:opacity-50"
+                >
                   <Camera className="w-4 h-4" />
                 </button>
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  className="hidden" 
+                  accept="image/*" 
+                  onChange={handleAvatarUpload}
+                />
               </div>
             </div>
           </div>
