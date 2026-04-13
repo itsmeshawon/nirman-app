@@ -79,7 +79,7 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
   if (pathname === "/my/milestones") pageTitle = "Project Milestones"
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
+    <div className="flex h-screen bg-[#F8FAFC] overflow-hidden">
       {/* Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
         <div
