@@ -68,45 +68,52 @@
 
 :root {
   /* ═══════════════════════════════════════════════
-     NirmaN Design System — Material Design 3 (io)
+     NirmaN Design System — Material Design 3
+     Light Mode Palette (Purple/Lavender)
      ═══════════════════════════════════════════════ */
 
   /* Surface & Background */
-  --background: #fefaff; /* Light Lavender-Cream */
+  --background: #FEFAFF;
   --foreground: #1D1B20;
   --card: #FFFFFF;
   --card-foreground: #1D1B20;
   --popover: #FFFFFF;
   --popover-foreground: #1D1B20;
-  
-  --surface: #FFFFFF;
+
+  --surface: #FEFAFF;
   --on-surface: #1D1B20;
-  --surface-variant: #E7E0EC;
+  --surface-variant: #F7F0F5;
   --on-surface-variant: #49454F;
 
   --surface-container-low: #F7F2FA;
   --surface-container: #F3EDF7;
   --surface-container-high: #ECE6F0;
 
-  /* Primary: Teal */
-  --primary: #0F766E;
+  /* Primary: Purple */
+  --primary: #6750A4;
   --primary-foreground: #FFFFFF;
-  --primary-container: #CCE8E4;
-  --on-primary-container: #00201D;
+  --primary-container: #EADDFF;
+  --on-primary-container: #21005D;
 
-  /* Secondary: Lavender Accent */
+  /* Secondary: Purple-ish */
   --secondary: #625B71;
   --secondary-foreground: #FFFFFF;
   --secondary-container: #E8DEF8;
   --on-secondary-container: #1D192B;
+
+  /* Tertiary: Rose/Pink */
+  --tertiary: #7D5260;
+  --tertiary-foreground: #FFFFFF;
+  --tertiary-container: #FFD8E4;
+  --on-tertiary-container: #31111D;
 
   /* Muted */
   --muted: #F3EDF7;
   --muted-foreground: #49454F;
 
   /* Accent */
-  --accent: #E8DEF8;
-  --accent-foreground: #1D192B;
+  --accent: #EADDFF;
+  --accent-foreground: #21005D;
 
   /* Error */
   --destructive: #B3261E;
@@ -118,19 +125,145 @@
   --outline-variant: #CAC4D0;
   --border: #CAC4D0;
   --input: #79747E;
-  --ring: #0F766E;
+  --ring: #6750A4;
 
   /* Sidebar */
   --sidebar: #F7F2FA;
   --sidebar-foreground: #49454F;
-  --sidebar-primary: #0F766E;
+  --sidebar-primary: #6750A4;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #CCE8E4;
-  --sidebar-accent-foreground: #00201D;
+  --sidebar-accent: #EADDFF;
+  --sidebar-accent-foreground: #21005D;
   --sidebar-border: #CAC4D0;
-  --sidebar-ring: #0F766E;
+  --sidebar-ring: #6750A4;
 
   --radius: 0.75rem;
+}
+
+/* Dark mode using .dark class (next-themes) */
+.dark {
+  /* ═══════════════════════════════════════════════
+     NirmaN Design System — Material Design 3
+     Dark Mode Palette (Purple/Lavender)
+     ═══════════════════════════════════════════════ */
+
+  /* Surface & Background */
+  --background: #1C1B1F;
+  --foreground: #E6E1E5;
+  --card: #323233;
+  --card-foreground: #E6E1E5;
+  --popover: #323233;
+  --popover-foreground: #E6E1E5;
+
+  --surface: #1C1B1F;
+  --on-surface: #E6E1E5;
+  --surface-variant: #49454F;
+  --on-surface-variant: #CAC4D0;
+
+  --surface-container-low: #2B2930;
+  --surface-container: #322F35;
+  --surface-container-high: #3C393F;
+
+  /* Primary: Purple */
+  --primary: #C0B1E6;
+  --primary-foreground: #21005D;
+  --primary-container: #4F378A;
+  --on-primary-container: #EADDFF;
+
+  /* Secondary: Purple-ish */
+  --secondary: #D8D2E6;
+  --secondary-foreground: #1D192B;
+  --secondary-container: #503C55;
+  --on-secondary-container: #E8DEF8;
+
+  /* Tertiary: Rose/Pink */
+  --tertiary: #E6C3CE;
+  --tertiary-foreground: #31111D;
+  --tertiary-container: #635046;
+  --on-tertiary-container: #FFD8E4;
+
+  /* Muted */
+  --muted: #3C393F;
+  --muted-foreground: #CAC4D0;
+
+  /* Accent */
+  --accent: #4F378A;
+  --accent-foreground: #EADDFF;
+
+  /* Error */
+  --destructive: #E69490;
+  --error-container: #601410;
+  --on-error-container: #F9DEDC;
+
+  /* Utility */
+  --m3-outline: #938F99;
+  --outline-variant: #49454F;
+  --border: #49454F;
+  --input: #938F99;
+  --ring: #C0B1E6;
+
+  /* Sidebar */
+  --sidebar: #2B2930;
+  --sidebar-foreground: #CAC4D0;
+  --sidebar-primary: #C0B1E6;
+  --sidebar-primary-foreground: #21005D;
+  --sidebar-accent: #4F378A;
+  --sidebar-accent-foreground: #EADDFF;
+  --sidebar-border: #49454F;
+  --sidebar-ring: #C0B1E6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    /* ═══════════════════════════════════════════════
+       System Dark Mode Fallback
+       ═══════════════════════════════════════════════ */
+    --background: #1C1B1F;
+    --foreground: #E6E1E5;
+    --card: #323233;
+    --card-foreground: #E6E1E5;
+    --popover: #323233;
+    --popover-foreground: #E6E1E5;
+    --surface: #1C1B1F;
+    --on-surface: #E6E1E5;
+    --surface-variant: #49454F;
+    --on-surface-variant: #CAC4D0;
+    --surface-container-low: #2B2930;
+    --surface-container: #322F35;
+    --surface-container-high: #3C393F;
+    --primary: #C0B1E6;
+    --primary-foreground: #21005D;
+    --primary-container: #4F378A;
+    --on-primary-container: #EADDFF;
+    --secondary: #D8D2E6;
+    --secondary-foreground: #1D192B;
+    --secondary-container: #503C55;
+    --on-secondary-container: #E8DEF8;
+    --tertiary: #E6C3CE;
+    --tertiary-foreground: #31111D;
+    --tertiary-container: #635046;
+    --on-tertiary-container: #FFD8E4;
+    --muted: #3C393F;
+    --muted-foreground: #CAC4D0;
+    --accent: #4F378A;
+    --accent-foreground: #EADDFF;
+    --destructive: #E69490;
+    --error-container: #601410;
+    --on-error-container: #F9DEDC;
+    --m3-outline: #938F99;
+    --outline-variant: #49454F;
+    --border: #49454F;
+    --input: #938F99;
+    --ring: #C0B1E6;
+    --sidebar: #2B2930;
+    --sidebar-foreground: #CAC4D0;
+    --sidebar-primary: #C0B1E6;
+    --sidebar-primary-foreground: #21005D;
+    --sidebar-accent: #4F378A;
+    --sidebar-accent-foreground: #EADDFF;
+    --sidebar-border: #49454F;
+    --sidebar-ring: #C0B1E6;
+  }
 }
 
 @layer base {

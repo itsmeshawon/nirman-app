@@ -58,8 +58,8 @@ function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
     <TabsPrimitive.Tab
       data-slot="tabs-trigger"
       className={cn(
-        "relative inline-flex h-10 items-center justify-center gap-1.5 px-6 text-sm font-medium whitespace-nowrap text-[#49454F] transition-all rounded-full hover:bg-[#F3EDF7] focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
-        "data-active:bg-[#E8DEF8] data-active:text-[#1D192B] data-active:font-semibold",
+        "relative inline-flex h-10 items-center justify-center gap-1.5 px-6 text-sm font-medium whitespace-nowrap text-[var(--on-surface-variant)] transition-all rounded-full hover:bg-[var(--surface-container)] focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
+        "data-active:bg-[var(--secondary-container)] data-active:text-[var(--on-secondary-container)] data-active:font-semibold",
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}

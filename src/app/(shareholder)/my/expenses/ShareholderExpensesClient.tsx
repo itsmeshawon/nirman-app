@@ -50,19 +50,17 @@ export function ShareholderExpensesClient({ expenses }: ShareholderExpensesClien
        </div>
 
        {/* Filters */}
-       <div className="flex justify-between items-center p-4 rounded-lg border">
-          <div className="flex items-center gap-4">
-             <div className="relative">
-               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-outline" />
-               <select 
-                 className="pl-9 pr-8 py-2 border rounded-md text-sm border-outline-variant/50 outline-none focus:border-primary bg-transparent appearance-none"
-                 value={filterCategory}
-                 onChange={(e) => setFilterCategory(e.target.value)}
-               >
-                 <option value="ALL">All Categories</option>
-                 {availableCategories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-               </select>
-             </div>
+       <div className="py-4 pr-4">
+          <div className="relative max-w-sm">
+             <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-outline" />
+             <select
+               className="pl-10 pr-4 py-2.5 border rounded-full text-sm border-outline-variant/40 outline-none focus:ring-2 focus:ring-primary/20 bg-transparent appearance-none w-full"
+               value={filterCategory}
+               onChange={(e) => setFilterCategory(e.target.value)}
+             >
+               <option value="ALL">All Categories</option>
+               {availableCategories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+             </select>
           </div>
        </div>
 

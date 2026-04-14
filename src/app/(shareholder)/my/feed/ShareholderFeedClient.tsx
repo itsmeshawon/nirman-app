@@ -86,7 +86,7 @@ export function ShareholderFeedClient({
               className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
                 mediaFilter === value
                   ? "bg-primary text-white border-primary"
-                  : "bg-surface text-on-surface-variant border-outline-variant/50 hover:border-primary hover:text-primary"
+                  : "bg-surface text-on-surface-variant border-outline-variant/40 hover:border-primary hover:text-primary"
               }`}
             >
               {label}
@@ -101,7 +101,7 @@ export function ShareholderFeedClient({
               className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
                 milestoneFilter === "all"
                   ? "bg-on-surface text-white border-on-surface"
-                  : "bg-surface text-on-surface-variant border-outline-variant/50 hover:border-outline"
+                  : "bg-surface text-on-surface-variant border-outline-variant/40 hover:border-outline"
               }`}
             >
               All Milestones
@@ -113,7 +113,7 @@ export function ShareholderFeedClient({
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
                   milestoneFilter === id
                     ? "bg-on-surface text-white border-on-surface"
-                    : "bg-surface text-on-surface-variant border-outline-variant/50 hover:border-outline"
+                    : "bg-surface text-on-surface-variant border-outline-variant/40 hover:border-outline"
                 }`}
               >
                 {name}

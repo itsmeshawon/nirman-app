@@ -66,7 +66,7 @@ export default async function ReceiptPrintPage(props: { params: Promise<{ projec
                    </tr>
                 </thead>
                 <tbody>
-                   <tr className="border-b border-outline-variant/30">
+                   <tr className="border-b border-outline-variant/40">
                       <td className="py-4 text-sm text-on-surface-variant">
                          {payment.schedule_item 
                            ? `Payment towards: ${payment.schedule_item.milestone?.name || 'General Obligation'}`

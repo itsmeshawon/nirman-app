@@ -142,7 +142,7 @@ export function PostCard({
     <>
       <div
         ref={cardRef}
-        className="rounded-2xl border border-outline-variant/30 mb-4 overflow-hidden"
+        className="rounded-2xl border border-outline-variant/40 mb-4 overflow-hidden"
       >
         {/* Header */}
         <div className="px-4 pt-4 pb-0 flex items-start gap-3">
@@ -224,7 +224,7 @@ export function PostCard({
         {/* Milestone */}
         {post.milestone?.name && (
           <div className="px-4 mt-2">
-            <span className="text-xs text-on-surface-variant bg-surface-variant/50 px-2 py-0.5 rounded-full border border-outline-variant/50">
+            <span className="text-xs text-on-surface-variant bg-surface-variant/50 px-2 py-0.5 rounded-full border border-outline-variant/40">
               {post.milestone.name}
             </span>
           </div>
@@ -244,7 +244,7 @@ export function PostCard({
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs border transition-all duration-150 active:scale-110 ${
                     isActive
                       ? "bg-primary-container/20 text-primary border-primary-container font-semibold"
-                      : "text-on-surface-variant border-transparent hover:bg-surface-variant/20 hover:border-outline-variant/50"
+                      : "text-on-surface-variant border-transparent hover:bg-surface-variant/20 hover:border-outline-variant/40"
                   }`}
                   aria-label={label}
                 >

@@ -98,7 +98,7 @@ export default async function StatementPrintPage() {
                 </thead>
                 <tbody>
                    {items.map(item => (
-                     <tr key={item.id} className="border-b border-outline-variant/30">
+                     <tr key={item.id} className="border-b border-outline-variant/40">
                         <td className="py-2 text-on-surface-variant">{new Date(item.due_date).toLocaleDateString()}</td>
                         <td className="py-2 text-on-surface-variant">{item.milestone?.name || "General"}</td>
                         <td className="py-2 text-right font-medium text-on-surface">{parseFloat(item.amount).toLocaleString('en-IN')}</td>
@@ -125,7 +125,7 @@ export default async function StatementPrintPage() {
                      <tr><td colSpan={4} className="py-4 text-outline italic">No payments recorded.</td></tr>
                    )}
                    {py.map(p => (
-                     <tr key={p.id} className="border-b border-outline-variant/30">
+                     <tr key={p.id} className="border-b border-outline-variant/40">
                         <td className="py-2 font-mono text-on-surface-variant">{p.receipt_no}</td>
                         <td className="py-2 text-on-surface-variant">{new Date(p.created_at).toLocaleDateString()}</td>
                         <td className="py-2 text-on-surface-variant">{p.method.replace("_", " ")}</td>

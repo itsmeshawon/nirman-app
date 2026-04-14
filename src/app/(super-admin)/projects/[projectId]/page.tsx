@@ -115,7 +115,7 @@ function Field({ label, value }: { label: string; value?: string | null }) {
 
 function ProfileCard({ profile, badge }: { profile: AdminProfile; badge: string }) {
   return (
-    <div className="border border-outline-variant/30 rounded-xl p-5">
+    <div className="border border-outline-variant/40 rounded-xl p-5">
       <div className="flex items-start justify-between mb-4">
         <div>
           <h4 className="text-lg font-semibold text-on-surface">{profile.name || "—"}</h4>
@@ -279,8 +279,8 @@ export default function SuperAdminProjectDetailPage() {
       {/* ------------------------------------------------------------------ */}
       {/* Section A — Project Info                                             */}
       {/* ------------------------------------------------------------------ */}
-      <div className="rounded-xl border border-outline-variant/30">
-        <div className="px-5 py-4 border-b border-outline-variant/30 flex items-center gap-2">
+      <div className="rounded-xl border border-outline-variant/40">
+        <div className="px-5 py-4 border-b border-outline-variant/40 flex items-center gap-2">
           <LayoutGrid className="h-4 w-4 text-primary" />
           <h2 className="text-base font-semibold text-on-surface">Project Info</h2>
         </div>
@@ -358,8 +358,8 @@ export default function SuperAdminProjectDetailPage() {
       {/* ------------------------------------------------------------------ */}
       {/* Section B — Project Admins                                           */}
       {/* ------------------------------------------------------------------ */}
-      <div className="rounded-xl border border-outline-variant/30">
-        <div className="px-5 py-4 border-b border-outline-variant/30 flex items-center gap-2">
+      <div className="rounded-xl border border-outline-variant/40">
+        <div className="px-5 py-4 border-b border-outline-variant/40 flex items-center gap-2">
           <ShieldCheck className="h-4 w-4 text-primary" />
           <h2 className="text-base font-semibold text-on-surface">
             Project Admin
@@ -382,8 +382,8 @@ export default function SuperAdminProjectDetailPage() {
       {/* ------------------------------------------------------------------ */}
       {/* Section C — Shareholders                                             */}
       {/* ------------------------------------------------------------------ */}
-      <div className="rounded-xl border border-outline-variant/30">
-        <div className="px-5 py-4 border-b border-outline-variant/30 flex flex-col sm:flex-row sm:items-center gap-3">
+      <div className="rounded-xl border border-outline-variant/40">
+        <div className="px-5 py-4 border-b border-outline-variant/40 flex flex-col sm:flex-row sm:items-center gap-3">
           <div className="flex items-center gap-2 flex-1">
             <Users className="h-4 w-4 text-primary" />
             <h2 className="text-base font-semibold text-on-surface">
@@ -392,13 +392,13 @@ export default function SuperAdminProjectDetailPage() {
             </h2>
           </div>
           <div className="relative w-full sm:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-outline pointer-events-none" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-outline pointer-events-none" />
             <input
               type="text"
               placeholder="Search by name or unit…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 text-sm border border-outline-variant/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2.5 text-sm border border-outline-variant/40 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
             />
           </div>
         </div>
@@ -409,7 +409,7 @@ export default function SuperAdminProjectDetailPage() {
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-surface-variant/20 border-b border-outline-variant/30">
+                <tr className="bg-surface-variant/20 border-b border-outline-variant/40">
                   <th className="px-4 py-3 text-left text-xs font-semibold text-on-surface-variant uppercase tracking-wide">
                     Unit
                   </th>
@@ -532,7 +532,7 @@ export default function SuperAdminProjectDetailPage() {
                     </div>
                   </section>
 
-                  <div className="border-t border-outline-variant/30" />
+                  <div className="border-t border-outline-variant/40" />
 
                   <section>
                     <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Professional</h3>
@@ -543,7 +543,7 @@ export default function SuperAdminProjectDetailPage() {
                     </div>
                   </section>
 
-                  <div className="border-t border-outline-variant/30" />
+                  <div className="border-t border-outline-variant/40" />
 
                   <section>
                     <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Shareholding</h3>

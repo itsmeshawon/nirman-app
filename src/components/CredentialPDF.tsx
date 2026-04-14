@@ -12,12 +12,12 @@ const styles = StyleSheet.create({
   header: {
     marginBottom: 20,
     borderBottomWidth: 2,
-    borderBottomColor: '#0F766E',
+    borderBottomColor: 'var(--primary)',
     paddingBottom: 10,
   },
   title: {
     fontSize: 24,
-    color: '#0F766E',
+    color: 'var(--primary)',
     fontWeight: 'bold',
   },
   subtitle: {
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   name: {
     fontWeight: 'bold',
     fontSize: 18,
-    color: '#0F766E',
+    color: 'var(--primary)',
     marginTop: 4,
   },
   credentialsBox: {

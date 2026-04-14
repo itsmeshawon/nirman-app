@@ -89,7 +89,7 @@ export function UploadDropzone({ onFilesSelected, maxFiles = 5, maxSizeMB = 10, 
       {selectedFiles.length > 0 && (
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {selectedFiles.map((file, idx) => (
-             <div key={idx} className="relative group border border-outline-variant/50 rounded-md p-2 flex flex-col items-center justify-center bg-surface">
+             <div key={idx} className="relative group border border-outline-variant/40 rounded-md p-2 flex flex-col items-center justify-center bg-surface">
                 <button 
                   type="button" 
                   onClick={(e) => { e.stopPropagation(); removeFile(idx); }}

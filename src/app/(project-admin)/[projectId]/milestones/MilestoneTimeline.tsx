@@ -151,7 +151,7 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center p-4 sm:p-6 rounded-xl border">
+      <div className="flex justify-between items-center p-4 sm:p-6 rounded-xl border border-outline-variant/40">
         <div>
           <h2 className="text-xl font-bold text-on-surface">Project Milestones</h2>
           <p className="text-sm text-on-surface-variant mt-1">Track the major phases of your construction.</p>
@@ -162,13 +162,13 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
         </Button>
       </div>
 
-      <div className="p-6 rounded-xl border">
+      <div className="p-6 rounded-xl border border-outline-variant/40">
          {milestones.length === 0 ? (
             <div className="text-center py-12 text-on-surface-variant">
                No milestones added yet. Click 'Add Milestone' to get started.
             </div>
          ) : (
-            <div className="relative border-l-2 border-outline-variant/50 ml-4 pl-8 space-y-8 py-4">
+            <div className="relative border-l-2 border-outline-variant/40 ml-4 pl-8 space-y-8 py-4">
               {milestones.map((milestone, idx) => {
                 const isCompleted = milestone.status === "COMPLETED"
                 const isInProgress = milestone.status === "IN_PROGRESS"
@@ -194,7 +194,7 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
                          <div className="absolute top-8 -left-[27px] h-[calc(100%+2rem)] border-l-2 border-dashed border-blue-300 -z-10 bg-surface"></div>
                     )}
                     {isUpcoming && idx !== milestones.length - 1 && (
-                         <div className="absolute top-8 -left-[27px] h-[calc(100%+2rem)] border-l-2 border-dotted border-outline-variant/50 -z-10 bg-surface"></div>
+                         <div className="absolute top-8 -left-[27px] h-[calc(100%+2rem)] border-l-2 border-dotted border-outline-variant/40 -z-10 bg-surface"></div>
                     )}
 
                     {/* Content */}
@@ -228,7 +228,7 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
 
                       {/* Actions */}
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                         <div className="flex flex-col bg-surface-variant/30 rounded border border-outline-variant/50 overflow-hidden mr-2">
+                         <div className="flex flex-col bg-surface-variant/30 rounded border border-outline-variant/40 overflow-hidden mr-2">
                            <button
                              disabled={idx === 0}
                              onClick={() => handleReorder(idx, 'up')}
@@ -237,7 +237,7 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
                            <button
                              disabled={idx === milestones.length - 1}
                              onClick={() => handleReorder(idx, 'down')}
-                             className="p-1 text-on-surface-variant hover:bg-surface-variant disabled:opacity-30 border-t border-outline-variant/50"
+                             className="p-1 text-on-surface-variant hover:bg-surface-variant disabled:opacity-30 border-t border-outline-variant/40"
                            ><ArrowDown className="w-3 h-3"/></button>
                          </div>
                         
@@ -245,7 +245,7 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
                           variant="outline" 
                           size="sm" 
                           onClick={() => openDialog(milestone)}
-                          className="text-on-surface-variant hover:text-primary border-outline-variant/50"
+                          className="text-on-surface-variant hover:text-primary border-outline-variant/40"
                         >
                           <Pencil className="h-4 w-4 mr-2" />
                           Edit

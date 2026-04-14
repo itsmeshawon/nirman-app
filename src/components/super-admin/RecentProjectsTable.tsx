@@ -47,7 +47,7 @@ export interface ProjectRow {
 const STATUS_STYLES: Record<string, string> = {
   PILOT: "bg-tertiary-container/20 text-tertiary border border-blue-200",
   ACTIVE: "bg-primary-container/20 text-primary border border-green-200",
-  ARCHIVED: "bg-surface-variant/50 text-on-surface-variant border border-outline-variant/50",
+  ARCHIVED: "bg-surface-variant/50 text-on-surface-variant border border-outline-variant/40",
 }
 
 export default function RecentProjectsTable({ data: initialData }: { data: ProjectRow[] }) {

@@ -85,7 +85,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
           </div>
        </div>
 
-       <div className="border-b border-outline-variant/50">
+       <div className="border-b border-outline-variant/40">
          <nav className="flex space-x-4 sm:space-x-8 overflow-x-auto whitespace-nowrap pb-1">
             <button onClick={() => setActiveTab("SCHEDULE")} className={`py-4 border-b-2 font-medium text-sm transition-colors ${activeTab === "SCHEDULE" ? "border-primary text-primary" : "border-transparent text-on-surface-variant hover:text-on-surface"}`}>
                My Collection Schedule

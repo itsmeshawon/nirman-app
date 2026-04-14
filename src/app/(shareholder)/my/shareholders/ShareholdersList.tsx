@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { Search, Building, Phone, Mail, Crown, User, Info } from "lucide-react"
+import { Search, Crown, Mail, Phone, MapPin } from "lucide-react"
 import {
   Table,
   TableBody,
@@ -12,11 +12,10 @@ import {
 } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { EmptyState } from "@/components/EmptyState"
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
-  SheetTitle,
 } from "@/components/ui/sheet"
 
 interface ShareholdersListProps {
@@ -32,57 +31,63 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
   const filteredData = useMemo(() => {
     return data.filter((item) => {
       const profile = Array.isArray(item.profiles) ? item.profiles[0] : item.profiles
-      const searchStr = `${profile?.name} ${profile?.phone} ${item.unit_flat} ${item.project?.name}`.toLowerCase()
+      const searchStr = `${profile?.name} ${profile?.email} ${profile?.phone} ${item.unit_flat}`.toLowerCase()
       return searchStr.includes(searchTerm.toLowerCase())
     })
   }, [data, searchTerm])
 
+  const getProfile = (row: any) => {
+    if (!row?.profiles) return null
+    return Array.isArray(row.profiles) ? row.profiles[0] : row.profiles
+  }
+
+  // Stats calculation
+  const total = data.length
+
   return (
     <div className="space-y-4">
-      {/* Search Header */}
-      <div className="p-4 border border-outline-variant/30 rounded-[1.25rem] flex items-center gap-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
-          <Input
-            placeholder="Search neighbors by name or unit..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9 h-11 rounded-xl border-outline-variant/50 focus:ring-primary"
-          />
-        </div>
-        <div className="hidden md:flex gap-2">
-           <Badge variant="outline" className="bg-surface-variant/20 text-slate-600 border-slate-200">
-             {data.length} Total Shareholders
-           </Badge>
-        </div>
+      {/* Top Bar */}
+      <div>
+        <h2 className="text-xl font-semibold text-on-surface">Shareholders</h2>
+        <p className="text-sm text-on-surface-variant">View project shareholders and their information</p>
       </div>
 
-      {/* Table Section */}
-      <div className="overflow-hidden">
+      {/* Stats Badge */}
+      <div className="flex gap-2">
+        <Badge variant="outline" className="text-on-surface-variant bg-surface">Total: {total}</Badge>
+      </div>
+
+      <div>
+        <div className="py-4 pr-4">
+          <div className="relative max-w-sm">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
+            <Input
+              placeholder="Search by name, email or unit..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-2.5 rounded-full border border-outline-variant/40 focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+        </div>
         <Table>
-          <TableHeader className="bg-surface-variant/20">
+          <TableHeader>
             <TableRow>
-              <TableHead className="font-semibold text-on-surface px-6 py-4">Name</TableHead>
-              <TableHead className="font-semibold text-on-surface">Email</TableHead>
-              <TableHead className="font-semibold text-on-surface">Phone</TableHead>
-              <TableHead className="font-semibold text-on-surface pr-6">Unit/Flat</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Phone</TableHead>
+              <TableHead>Unit/Flat</TableHead>
+              <TableHead>Ownership</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredData.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center py-20 text-on-surface-variant">
-                   No neighbors found matching your search.
-                </TableCell>
-              </TableRow>
-            ) : (
+            {filteredData.length ? (
               filteredData.map((item) => {
-                const profile = Array.isArray(item.profiles) ? item.profiles[0] : item.profiles
+                const profile = getProfile(item)
                 const isCommittee = committeeSet.has(item.id)
-                
+
                 return (
                   <TableRow key={item.id}>
-                    <TableCell className="px-6 py-4">
+                    <TableCell>
                       <button
                         type="button"
                         onClick={() => setSelectedShareholder(item)}
@@ -90,93 +95,116 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
                       >
                         {isCommittee && (
                           <span title="Committee Member">
-                            <Crown className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                            <Crown className="h-3.5 w-3.5 text-amber-400 shrink-0" />
                           </span>
                         )}
                         <span className="group-hover:underline underline-offset-2">{profile?.name}</span>
                       </button>
                     </TableCell>
-                    <TableCell className="text-on-surface-variant text-sm">
-                      {profile?.email || "—"}
+                    <TableCell>
+                      <div className="text-on-surface-variant">{profile?.email || "—"}</div>
                     </TableCell>
-                    <TableCell className="text-on-surface-variant text-sm">
-                      {profile?.phone || "—"}
+                    <TableCell>
+                      <div className="text-on-surface-variant">{profile?.phone || "—"}</div>
                     </TableCell>
-                    <TableCell className="font-medium text-sm pr-6">
-                      {item.unit_flat}
+                    <TableCell>
+                      <div className="font-medium">{item.unit_flat}</div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="text-on-surface-variant">{item.ownership_pct ? `${item.ownership_pct}%` : "—"}</div>
                     </TableCell>
                   </TableRow>
                 )
               })
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} className="h-auto p-0 border-0">
+                  <EmptyState
+                    icon={Crown}
+                    title="No shareholders found"
+                    description="No shareholders match your search criteria."
+                    className="border-0 rounded-none"
+                  />
+                </TableCell>
+              </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
 
-      {/* Neighbor Detail Sheet */}
-      <Sheet open={!!selectedShareholder} onOpenChange={(open) => { if(!open) setSelectedShareholder(null) }}>
-        <SheetContent side="right" className="w-full sm:max-w-md p-0">
+      {/* Shareholder Detail Sheet */}
+      <Sheet open={!!selectedShareholder} onOpenChange={(open) => { if (!open) setSelectedShareholder(null) }}>
+        <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto p-0">
           {selectedShareholder && (() => {
-            const profile = Array.isArray(selectedShareholder.profiles) ? selectedShareholder.profiles[0] : selectedShareholder.profiles
+            const profile = getProfile(selectedShareholder)
             const isCommittee = committeeSet.has(selectedShareholder.id)
-            const initials = profile?.name?.split(" ").map((n:any) => n[0]).slice(0, 2).join("").toUpperCase() || "?"
-            
+            const initials = profile?.name
+              ? profile.name.split(" ").map((n: string) => n[0]).slice(0, 2).join("").toUpperCase()
+              : "?"
             return (
-              <div className="h-full flex flex-col">
-                <div className="bg-gradient-to-br from-primary to-primary/80 px-6 pt-12 pb-8 text-white relative">
-                  <div className="flex flex-col items-center text-center">
-                    <div className="w-20 h-20 rounded-full bg-surface/20 border-2 border-white/30 flex items-center justify-center text-2xl font-bold mb-4">
-                       {profile?.avatar_url ? (
-                         <img src={profile.avatar_url} alt={profile.name} className="w-full h-full object-cover rounded-full" />
-                       ) : initials}
+              <>
+                {/* Hero */}
+                <div className="bg-gradient-to-br from-primary to-primary/80 px-6 pt-10 pb-6 text-white">
+                  <div className="flex items-start gap-4">
+                    <div className="w-16 h-16 rounded-full bg-surface/20 flex items-center justify-center text-2xl font-bold shrink-0">
+                      {initials}
                     </div>
-                    <h2 className="text-xl font-bold flex items-center gap-2">
-                       {profile?.name}
-                       {isCommittee && <Crown className="h-5 w-5 text-amber-300" />}
-                    </h2>
-                    <p className="text-white/80 text-sm opacity-80 mt-1">{selectedShareholder.project?.name}</p>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h2 className="text-xl font-bold leading-tight">{profile?.name || "—"}</h2>
+                        {isCommittee && (
+                          <span title="Committee Member" className="flex items-center gap-1 text-xs bg-amber-400/20 text-amber-200 border border-amber-400/30 px-2 py-0.5 rounded-full font-medium">
+                            <Crown className="h-3 w-3" /> Committee
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-primary-foreground text-sm mt-0.5">Unit {selectedShareholder.unit_flat || "—"}</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-6 space-y-8">
-                   <section>
-                      <h3 className="text-[10px] font-bold text-outline uppercase tracking-widest mb-4">Unit Details</h3>
-                      <div className="bg-surface-variant/20 p-4 rounded-xl border border-slate-100 flex items-center justify-between">
-                        <div>
-                          <p className="text-[10px] text-on-surface-variant mb-1">Unit / Flat</p>
-                          <p className="text-base font-bold text-slate-900">{selectedShareholder.unit_flat}</p>
-                        </div>
-                        <Building className="h-6 w-6 text-primary-container/50" />
-                      </div>
-                   </section>
+                {/* Body */}
+                <div className="px-6 py-5 space-y-6">
+                  {/* Contact */}
+                  <section>
+                    <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Contact</h3>
+                    <div className="space-y-3">
+                      <DetailRow icon={<Mail className="h-4 w-4 text-outline" />} label="Email" value={profile?.email} />
+                      <DetailRow icon={<Phone className="h-4 w-4 text-outline" />} label="Phone" value={profile?.phone} />
+                      <DetailRow icon={<Phone className="h-4 w-4 text-outline" />} label="WhatsApp" value={profile?.whatsapp_no} />
+                      <DetailRow icon={<MapPin className="h-4 w-4 text-outline" />} label="Present Address" value={profile?.present_address} />
+                    </div>
+                  </section>
 
-                   <section>
-                      <h3 className="text-[10px] font-bold text-outline uppercase tracking-widest mb-4">Contact Information</h3>
-                      <div className="space-y-4">
-                        <ContactRow icon={<Phone className="h-4 w-4" />} label="Phone" value={profile?.phone} />
-                        <ContactRow icon={<Mail className="h-4 w-4" />} label="Email" value={profile?.email} />
-                      </div>
-                   </section>
+                  <div className="border-t border-outline-variant/40" />
 
-                   {profile?.profession && (
-                     <section>
-                        <h3 className="text-[10px] font-bold text-outline uppercase tracking-widest mb-4">Bio</h3>
-                        <div className="space-y-3">
-                           <div>
-                             <p className="text-[10px] text-outline">Profession</p>
-                             <p className="text-sm text-on-surface font-medium">{profile.profession}</p>
-                           </div>
-                           {profile.organization && (
-                             <div>
-                               <p className="text-[10px] text-outline">Organization</p>
-                               <p className="text-sm text-on-surface font-medium">{profile.organization}</p>
-                             </div>
-                           )}
+                  {/* Professional */}
+                  {(profile?.profession || profile?.designation || profile?.organization) && (
+                    <>
+                      <section>
+                        <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Professional</h3>
+                        <div className="grid grid-cols-2 gap-3">
+                          <StatField label="Profession" value={profile?.profession} />
+                          <StatField label="Designation" value={profile?.designation} />
+                          <StatField label="Organization" value={profile?.organization} className="col-span-2" />
                         </div>
-                     </section>
-                   )}
+                      </section>
+
+                      <div className="border-t border-outline-variant/40" />
+                    </>
+                  )}
+
+                  {/* Shareholder Info */}
+                  <section>
+                    <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Shareholding</h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      <StatField label="Unit / Flat" value={selectedShareholder.unit_flat} />
+                      <StatField label="Ownership" value={selectedShareholder.ownership_pct != null ? `${selectedShareholder.ownership_pct}%` : undefined} />
+                      <StatField label="Opening Balance" value={selectedShareholder.opening_balance != null ? `৳${Number(selectedShareholder.opening_balance).toLocaleString()}` : undefined} />
+                    </div>
+                  </section>
                 </div>
-              </div>
+              </>
             )
           })()}
         </SheetContent>
@@ -185,16 +213,23 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
   )
 }
 
-function ContactRow({ icon, label, value }: { icon: React.ReactNode, label: string, value?: string }) {
+function DetailRow({ icon, label, value }: { icon: React.ReactNode; label: string; value?: string | null }) {
   return (
-    <div className="flex items-center gap-3">
-      <div className="w-8 h-8 rounded-lg bg-primary-container/30 text-primary flex items-center justify-center shrink-0">
-        {icon}
+    <div className="flex items-start gap-3">
+      <div className="mt-0.5 shrink-0">{icon}</div>
+      <div className="min-w-0">
+        <p className="text-xs text-outline">{label}</p>
+        <p className="text-sm text-on-surface font-medium break-words">{value || "—"}</p>
       </div>
-      <div>
-        <p className="text-[10px] text-outline">{label}</p>
-        <p className="text-sm font-semibold text-on-surface">{value || "—"}</p>
-      </div>
+    </div>
+  )
+}
+
+function StatField({ label, value, className }: { label: string; value?: string | null; className?: string }) {
+  return (
+    <div className={className}>
+      <p className="text-xs text-outline uppercase tracking-wide mb-0.5">{label}</p>
+      <p className="text-sm font-semibold text-on-surface">{value || "—"}</p>
     </div>
   )
 }

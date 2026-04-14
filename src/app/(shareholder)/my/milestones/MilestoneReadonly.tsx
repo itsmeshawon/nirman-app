@@ -18,14 +18,14 @@ interface MilestoneReadonlyProps {
 export function MilestoneReadonly({ milestones }: MilestoneReadonlyProps) {
   return (
     <div className="space-y-6">
-      <div className="p-6 sm:p-8 rounded-[1.25rem] border">
+      <div className="p-6 sm:p-8 rounded-[1.25rem] border border-outline-variant/40">
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-on-surface tracking-tight">Project Progress Report</h2>
           <p className="text-on-surface-variant mt-1">Real-time status of construction phases and milestones.</p>
         </div>
 
         {milestones.length === 0 ? (
-          <div className="text-center py-20 bg-surface-variant/10 rounded-2xl border border-dashed border-outline-variant/50">
+          <div className="text-center py-20 bg-surface-variant/10 rounded-2xl border border-dashed border-outline-variant/40">
              <div className="w-12 h-12 rounded-full bg-surface-variant/50 flex items-center justify-center mx-auto mb-4">
                 <Circle className="w-6 h-6 text-slate-300" />
              </div>
@@ -33,7 +33,7 @@ export function MilestoneReadonly({ milestones }: MilestoneReadonlyProps) {
              <p className="text-outline text-sm mt-1">Please check back later as the project admin updates the timeline.</p>
           </div>
         ) : (
-          <div className="relative border-l-2 border-outline-variant/30 ml-4 pl-8 space-y-12 py-4">
+          <div className="relative border-l-2 border-outline-variant/40 ml-4 pl-8 space-y-12 py-4">
             {milestones.map((milestone, idx) => {
               const isCompleted = milestone.status === "COMPLETED"
               const isInProgress = milestone.status === "IN_PROGRESS"
@@ -57,7 +57,7 @@ export function MilestoneReadonly({ milestones }: MilestoneReadonlyProps) {
                       </div>
                     )}
                     {isUpcoming && (
-                      <div className="bg-surface border-2 border-outline-variant/50 rounded-full p-1.5">
+                      <div className="bg-surface border-2 border-outline-variant/40 rounded-full p-1.5">
                         <Circle className="h-5 w-5 text-outline-variant" />
                       </div>
                     )}
@@ -66,9 +66,9 @@ export function MilestoneReadonly({ milestones }: MilestoneReadonlyProps) {
                   {/* Vertical Connector Logic (different styles between nodes) */}
                   {idx !== milestones.length - 1 && (
                     <div className={`absolute top-9 -left-[27px] h-[calc(100%+3rem)] border-l-2 -z-10
-                      ${isCompleted ? 'border-primary-container/50' : 'border-outline-variant/30'}
+                      ${isCompleted ? 'border-primary-container/50' : 'border-outline-variant/40'}
                       ${isInProgress ? 'border-dashed border-primary-container' : ''}
-                      ${isUpcoming ? 'border-dotted border-outline-variant/30' : ''}
+                      ${isUpcoming ? 'border-dotted border-outline-variant/40' : ''}
                     `}></div>
                   )}
 
@@ -76,8 +76,8 @@ export function MilestoneReadonly({ milestones }: MilestoneReadonlyProps) {
                   <div className={`
                     p-5 rounded-2xl border transition-all duration-300
                     ${isCompleted ? 'border-primary-container/30' : ''}
-                    ${isInProgress ? 'bg-primary-container/20 border-primary-container/50 transform scale-[1.02]' : 'border-outline-variant/30'}
-                    ${isUpcoming ? 'opacity-70 bg-surface-variant/30 border-outline-variant/30' : ''}
+                    ${isInProgress ? 'bg-primary-container/20 border-primary-container/50 transform scale-[1.02]' : 'border-outline-variant/40'}
+                    ${isUpcoming ? 'opacity-70 bg-surface-variant/30 border-outline-variant/40' : ''}
                   `}>
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div>

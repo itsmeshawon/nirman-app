@@ -259,7 +259,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
           <>
             <button
               onClick={openEdit}
-              className="w-7 h-7 rounded-full bg-surface border border-outline-variant/50 flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-colors"
+              className="w-7 h-7 rounded-full bg-surface border border-outline-variant/40 flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-colors"
               title="Edit post"
             >
               <Edit2 className="w-3.5 h-3.5" />
@@ -270,7 +270,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
               className={`w-7 h-7 rounded-full bg-surface border flex items-center justify-center transition-colors ${
                 isHidden
                   ? "border-primary text-primary hover:bg-primary-container/20"
-                  : "border-outline-variant/50 text-on-surface-variant hover:text-destructive hover:border-red-300"
+                  : "border-outline-variant/40 text-on-surface-variant hover:text-destructive hover:border-red-300"
               }`}
               title={isHidden ? "Unhide post" : "Hide post"}
             >
@@ -283,7 +283,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
             <button
               onClick={handleDelete}
               disabled={isDeleting}
-              className="w-7 h-7 rounded-full bg-surface border border-outline-variant/50 flex items-center justify-center text-on-surface-variant hover:text-destructive hover:border-red-300 transition-colors"
+              className="w-7 h-7 rounded-full bg-surface border border-outline-variant/40 flex items-center justify-center text-on-surface-variant hover:text-destructive hover:border-red-300 transition-colors"
               title="Delete post"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -354,7 +354,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
                     className={`px-2 py-0.5 rounded-full text-xs font-medium border transition-all ${
                       editTags.includes(tag)
                         ? "bg-primary text-white border-primary"
-                        : "bg-surface text-on-surface-variant border-outline-variant/50 hover:border-primary"
+                        : "bg-surface text-on-surface-variant border-outline-variant/40 hover:border-primary"
                     }`}
                   >
                     {tag}
@@ -466,7 +466,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
             {/* Milestone */}
             {post.milestone?.name && (
               <div className="mb-2">
-                <span className="text-xs text-on-surface-variant bg-surface-variant/50 px-2 py-0.5 rounded-full border border-outline-variant/50">
+                <span className="text-xs text-on-surface-variant bg-surface-variant/50 px-2 py-0.5 rounded-full border border-outline-variant/40">
                   {post.milestone.name}
                 </span>
               </div>

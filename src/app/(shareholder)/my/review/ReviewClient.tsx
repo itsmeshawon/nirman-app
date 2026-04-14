@@ -84,9 +84,9 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
                 : 0
 
              return (
-               <div key={expense.id} className="bg-surface border border-outline-variant/50 rounded-[1.25rem] overflow-hidden flex flex-col md:flex-row">
+               <div key={expense.id} className="bg-surface border border-outline-variant/40 rounded-[1.25rem] overflow-hidden flex flex-col md:flex-row">
                  {/* Left Details */}
-                 <div className="p-6 flex-1 border-b md:border-b-0 md:border-r border-outline-variant/30">
+                 <div className="p-6 flex-1 border-b md:border-b-0 md:border-r border-outline-variant/40">
                     <div className="flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-widest mb-3">
                       <Building className="w-4 h-4" />
                       {expense.projectName}
@@ -117,7 +117,7 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
                              const isImage = att.file_type.startsWith("image/")
                              return (
                                <a key={att.id} href={urlData.publicUrl} target="_blank" rel="noopener noreferrer" 
-                                  className="flex-shrink-0 relative group rounded-md overflow-hidden border border-outline-variant/50 bg-surface-variant/20 hover:ring-2 hover:ring-primary transition-all w-24 h-16 sm:w-32 sm:h-20"
+                                  className="flex-shrink-0 relative group rounded-md overflow-hidden border border-outline-variant/40 bg-surface-variant/20 hover:ring-2 hover:ring-primary transition-all w-24 h-16 sm:w-32 sm:h-20"
                                >
                                   {isImage ? (
                                     <img src={urlData.publicUrl} alt={att.file_name} className="w-full h-full object-cover" />

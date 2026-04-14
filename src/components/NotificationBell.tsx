@@ -170,12 +170,31 @@ export default function NotificationBell({ projectId }: NotificationBellProps) {
       {/* Bell button */}
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="relative rounded-full bg-surface p-1 text-outline hover:text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: "9999px",
+          width: "40px",
+          height: "40px",
+          backgroundColor: "var(--surface-container)",
+          color: "var(--foreground)",
+          border: "none",
+          cursor: "pointer",
+          transition: "background-color 200ms cubic-bezier(0.2, 0, 0, 1)",
+          position: "relative"
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = "var(--surface-container-high)"
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = "var(--surface-container)"
+        }}
         aria-label="View notifications"
       >
         {/* Re-key wrapper triggers animate-bounce when unread count changes */}
         <span key={unreadCount} className={unreadCount > 0 ? "animate-bounce inline-flex" : "inline-flex"}>
-          <Bell className="h-6 w-6" />
+          <Bell className="h-5 w-5" />
         </span>
 
         {/* Unread badge */}
@@ -188,9 +207,9 @@ export default function NotificationBell({ projectId }: NotificationBellProps) {
 
       {/* Dropdown panel */}
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto rounded-xl border border-outline-variant/50 bg-surface z-50">
+        <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto rounded-xl border border-outline-variant/40 bg-surface z-50">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-outline-variant/30 px-4 py-3 sticky top-0 bg-surface z-10">
+          <div className="flex items-center justify-between border-b border-outline-variant/40 px-4 py-3 sticky top-0 bg-surface z-10">
             <span className="text-sm font-semibold text-on-surface">Notifications</span>
             {unreadCount > 0 && (
               <button

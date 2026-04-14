@@ -88,7 +88,7 @@ export function ShareholderDocsClient({ documents }: ShareholderDocsClientProps)
         
         <div className="w-full md:w-64">
           <Select value={categoryFilter} onValueChange={(v) => setCategoryFilter(v ?? "")}>
-            <SelectTrigger className="rounded-[1.25rem] border-outline-variant/50">
+            <SelectTrigger className="rounded-[1.25rem] border-outline-variant/40">
               <div className="flex items-center gap-2">
                 <Filter className="w-4 h-4 text-outline" />
                 <SelectValue placeholder="All Categories" />

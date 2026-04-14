@@ -99,8 +99,8 @@ export function CommitteeClient({
   return (
     <div className="space-y-8">
       {/* Approval Rule Card */}
-      <section className="border rounded-xl overflow-hidden">
-        <div className="p-6 border-b bg-surface-variant/10">
+      <section className="border border-outline-variant/40 rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-outline-variant/40 bg-surface-variant">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary-container/50 text-primary rounded-lg">
               <ShieldCheck className="h-6 w-6" />
@@ -191,9 +191,9 @@ export function CommitteeClient({
                 </span>
             </h3>
            </div>
-          <Button 
+          <Button
             onClick={() => setIsAddDialogOpen(true)}
-            className="text-primary border border-primary hover:bg-primary-container/20"
+            variant="default"
           >
             <UserPlus className="mr-2 h-4 w-4" />
             Add Member
@@ -262,7 +262,7 @@ export function CommitteeClient({
           <div className="mt-4 space-y-3 max-h-[300px] overflow-y-auto">
             {availableShareholders.length > 0 ? (
               availableShareholders.map((sh) => (
-                <div key={sh.id} className="flex items-center justify-between p-3 border rounded-lg hover:border-primary transition-colors">
+                <div key={sh.id} className="flex items-center justify-between p-3 border border-outline-variant/40 rounded-lg hover:border-primary transition-colors">
                   <div>
                     <h4 className="font-medium text-sm text-on-surface">{sh.profiles?.name || "Unknown"}</h4>
                     <p className="text-xs text-on-surface-variant">Unit: {sh.unit_flat} | {sh.profiles?.email || "No email"}</p>

@@ -48,7 +48,7 @@ interface Project {
 const STATUS_STYLES: Record<string, string> = {
   PILOT: "bg-tertiary-container/20 text-tertiary border border-blue-200",
   ACTIVE: "bg-primary-container/20 text-primary border border-green-200",
-  ARCHIVED: "bg-surface-variant/50 text-on-surface-variant border border-outline-variant/50",
+  ARCHIVED: "bg-surface-variant/50 text-on-surface-variant border border-outline-variant/40",
 }
 
 export default function ProjectsPage() {
@@ -311,7 +311,7 @@ export default function ProjectsPage() {
           </Button>
         </div>
 
-        <div className="flex bg-surface-variant/50/50 p-1 rounded-lg w-fit mb-4 border border-outline-variant/50">
+        <div className="flex bg-surface-variant/50/50 p-1 rounded-lg w-fit mb-4 border border-outline-variant/40">
           <button
             onClick={() => setActiveTab("active")}
             className={cn(
@@ -334,14 +334,14 @@ export default function ProjectsPage() {
 
         <Card className="shadow-none border-0 bg-transparent">
           {/* Search */}
-          <CardHeader className="pb-3 border-b border-outline-variant/30">
-            <div className="relative max-w-xs">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
+          <CardHeader className="pb-4 border-0">
+            <div className="relative max-w-sm">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
               <Input
                 placeholder="Search projects..."
                 value={globalFilter}
                 onChange={(e) => setGlobalFilter(e.target.value)}
-                className="pl-9 h-9"
+                className="pl-10 pr-4 py-2.5 rounded-full border border-outline-variant/40 focus:ring-2 focus:ring-primary/20"
               />
             </div>
           </CardHeader>

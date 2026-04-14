@@ -264,18 +264,18 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
       <div className="flex gap-2">
          <Badge variant="outline" className="text-on-surface-variant bg-surface">Total: {total}</Badge>
          <Badge variant="outline" className="text-primary bg-primary-container/20 border-green-200">Active: {active}</Badge>
-         <Badge variant="outline" className="text-on-surface-variant bg-surface-variant/20 border-outline-variant/50">Inactive: {inactive}</Badge>
+         <Badge variant="outline" className="text-on-surface-variant bg-surface-variant/20 border-outline-variant/40">Inactive: {inactive}</Badge>
       </div>
 
       <div>
-        <div className="p-4 border-b">
+        <div className="py-4 pr-4">
            <div className="relative max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
             <Input
               placeholder="Search by name, email or unit..."
               value={globalFilter ?? ""}
               onChange={(e) => setGlobalFilter(e.target.value)}
-              className="pl-9"
+              className="pl-10 pr-4 py-2.5 rounded-full border border-outline-variant/40 focus:ring-2 focus:ring-primary/20"
             />
           </div>
         </div>
@@ -390,7 +390,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
                     </div>
                   </section>
 
-                  <div className="border-t border-outline-variant/30" />
+                  <div className="border-t border-outline-variant/40" />
 
                   {/* Professional */}
                   <section>
@@ -402,7 +402,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
                     </div>
                   </section>
 
-                  <div className="border-t border-outline-variant/30" />
+                  <div className="border-t border-outline-variant/40" />
 
                   {/* Shareholder Info */}
                   <section>
@@ -415,7 +415,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
                     </div>
                   </section>
 
-                  <div className="border-t border-outline-variant/30" />
+                  <div className="border-t border-outline-variant/40" />
 
                   {/* Quick actions */}
                   <div className="flex gap-2 pb-2">

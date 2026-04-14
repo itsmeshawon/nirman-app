@@ -178,7 +178,7 @@ export default function PackageDialog({ open, onOpenChange, onSuccess, pkg }: Pa
                   className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
                     selectedFeatures.has(key)
                       ? "border-primary bg-primary-container/20"
-                      : "border-outline-variant/50 hover:border-outline-variant"
+                      : "border-outline-variant/40 hover:border-outline-variant"
                   }`}
                 >
                   <div className={`mt-0.5 h-4 w-4 rounded border-2 flex items-center justify-center shrink-0 ${

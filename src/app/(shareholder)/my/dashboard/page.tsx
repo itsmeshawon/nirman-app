@@ -94,32 +94,6 @@ export default async function ShareholderDashboardPage() {
           </Link>
         </div>
       )}
-      {/* Hero card — banking style */}
-      <div className="rounded-2xl bg-gradient-to-br from-primary via-primary to-primary/80 p-6 text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-48 h-48 rounded-full bg-surface/5 -translate-y-1/2 translate-x-1/4" />
-        <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full bg-surface/5 translate-y-1/2 -translate-x-1/4" />
-        <div className="relative">
-          <p className="text-white/80 text-sm mb-1">Welcome back</p>
-          <h2 className="text-2xl font-bold">{profile?.name}</h2>
-          <p className="text-white/70 text-sm mt-1">{shareholder.project?.name} — Unit {shareholder.unit_flat}</p>
-          <div className="mt-4 flex flex-wrap gap-4">
-            <div>
-              <p className="text-white/70 text-xs">Ownership</p>
-              <p className="text-xl font-semibold">{shareholder.ownership_pct}%</p>
-            </div>
-            <div className="border-l border-white/20 pl-4">
-              <p className="text-white/70 text-xs">Total Paid</p>
-              <p className="text-xl font-semibold">{formatBDT(totalPaid)}</p>
-            </div>
-            {shareholder.project?.expected_handover && (
-              <div className="border-l border-white/20 pl-4">
-                <p className="text-white/70 text-xs">Expected Handover</p>
-                <p className="text-xl font-semibold">{formatDate(shareholder.project.expected_handover)}</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
 
       {/* 4 Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -128,32 +102,32 @@ export default async function ShareholderDashboardPage() {
           value={formatBDT(totalDue)}
           sub={`${scheduleItems?.filter(i => i.status === "PAID").length || 0} of ${scheduleItems?.length || 0} paid`}
           icon={<CreditCard className="w-6 h-6 text-primary" />}
-          bg="bg-primary-container/30"
-          accent="border-primary-container/50"
+          bg="bg-primary-container/20"
+          accent="border-outline-variant/40"
         />
         <SummaryCard
           label="Overdue"
           value={formatBDT(totalOverdue)}
           sub={`${scheduleItems?.filter(i => i.status === "OVERDUE").length || 0} installment(s)`}
-          icon={<AlertCircle className="w-6 h-6 text-rose-600" />}
-          bg="bg-rose-50"
-          accent={totalOverdue > 0 ? "border-rose-200" : "border-rose-100"}
+          icon={<AlertCircle className="w-6 h-6 text-primary" />}
+          bg="bg-primary-container/20"
+          accent="border-outline-variant/40"
         />
         <SummaryCard
           label="Active Penalties"
           value={formatBDT(activePenaltiesTotal)}
           sub={`${penalties?.length || 0} active fine(s)`}
-          icon={<TrendingUp className="w-6 h-6 text-tertiary" />}
-          bg="bg-tertiary-container/20"
-          accent="border-amber-100"
+          icon={<TrendingUp className="w-6 h-6 text-primary" />}
+          bg="bg-primary-container/20"
+          accent="border-outline-variant/40"
         />
         <SummaryCard
           label="Next Installment"
           value={nextDue ? formatBDT(nextDue.amount) : "—"}
           sub={nextDue ? formatDate(nextDue.due_date) : "No upcoming dues"}
-          icon={<CalendarClock className="w-6 h-6 text-emerald-600" />}
-          bg="bg-emerald-50"
-          accent="border-emerald-100"
+          icon={<CalendarClock className="w-6 h-6 text-primary" />}
+          bg="bg-primary-container/20"
+          accent="border-outline-variant/40"
         />
       </div>
 
@@ -184,8 +158,8 @@ export default async function ShareholderDashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Payments */}
-        <div className="rounded-[1.25rem] border border-outline-variant/50 overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/30">
+        <div className="rounded-[1.25rem] border border-outline-variant/40 overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/40">
             <h3 className="text-sm font-semibold text-on-surface">Recent Payments</h3>
             <Link href="/my/payments" className="text-xs text-primary hover:underline flex items-center gap-1">
               View All <ArrowRight className="w-3 h-3" />
@@ -214,8 +188,8 @@ export default async function ShareholderDashboardPage() {
         </div>
 
         {/* Recent Published Expenses */}
-        <div className="rounded-[1.25rem] border border-outline-variant/50 overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/30">
+        <div className="rounded-[1.25rem] border border-outline-variant/40 overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/40">
             <h3 className="text-sm font-semibold text-on-surface">Project Expenses (Published)</h3>
             <Link href="/my/expenses" className="text-xs text-primary hover:underline flex items-center gap-1">
               View All <ArrowRight className="w-3 h-3" />
@@ -246,7 +220,7 @@ function SummaryCard({ label, value, sub, icon, bg, accent }: {
   label: string; value: string; sub: string; icon: React.ReactNode; bg: string; accent: string
 }) {
   return (
-    <div className={`rounded-2xl border ${accent} p-5 transition-all duration-300 group cursor-default`}>
+    <div className={`rounded-2xl border ${accent} bg-surface-container/20 p-5 transition-all duration-300 group cursor-default`}>
       <div className={`w-12 h-12 rounded-[1.25rem] ${bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
         {icon}
       </div>

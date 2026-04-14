@@ -188,7 +188,7 @@ export default function PackagesPage() {
                                 </span>
                               ))}
                               {extra > 0 && (
-                                <span className="inline-flex items-center rounded-full bg-surface-variant/50 border border-outline-variant/50 px-2 py-0.5 text-xs font-medium text-on-surface-variant">
+                                <span className="inline-flex items-center rounded-full bg-surface-variant/50 border border-outline-variant/40 px-2 py-0.5 text-xs font-medium text-on-surface-variant">
                                   +{extra} more
                                 </span>
                               )}
@@ -200,7 +200,7 @@ export default function PackagesPage() {
                                 Active
                               </span>
                             ) : (
-                              <span className="inline-flex items-center rounded-full bg-surface-variant/50 border border-outline-variant/50 px-2.5 py-0.5 text-xs font-medium text-on-surface-variant">
+                              <span className="inline-flex items-center rounded-full bg-surface-variant/50 border border-outline-variant/40 px-2.5 py-0.5 text-xs font-medium text-on-surface-variant">
                                 Inactive
                               </span>
                             )}

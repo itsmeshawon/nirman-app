@@ -163,7 +163,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
             <p className="text-sm text-on-surface-variant">
               Share these login credentials with <strong>{tempCredentials.name}</strong> for this project.
             </p>
-            <div className="rounded-lg border border-outline-variant/50 bg-surface-variant/20 p-4 space-y-2 font-mono text-sm">
+            <div className="rounded-lg border border-outline-variant/40 bg-surface-variant/20 p-4 space-y-2 font-mono text-sm">
               <div className="flex justify-between">
                 <span className="text-on-surface-variant">Email</span>
                 <span className="text-on-surface">{tempCredentials.email}</span>

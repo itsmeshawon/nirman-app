@@ -21,7 +21,7 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <div className={cn(
-      "flex flex-col items-center justify-center text-center p-8 py-12 bg-surface rounded-2xl border border-dashed border-outline-variant/50",
+      "flex flex-col items-center justify-center text-center p-8 py-12 bg-surface rounded-2xl border border-dashed border-outline-variant/40",
       className
     )}>
       <div className="p-4 rounded-full bg-primary-container/20 text-primary mb-4">

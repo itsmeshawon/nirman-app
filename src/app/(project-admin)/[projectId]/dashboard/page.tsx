@@ -78,61 +78,55 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Welcome banner */}
-      <div className="rounded-[28px] bg-[#E8DEF8] p-8 text-[#1D192B] border border-[#CAC4D0]/30">
-        <p className="text-[12px] font-bold text-[#49454F] uppercase tracking-wider mb-2">Project Admin</p>
-        <h2 className="text-[28px] font-normal tracking-tight leading-tight">{project?.name || "Project Dashboard"}</h2>
-        <p className="text-[#49454F] mt-2 text-sm font-medium">Welcome back, {profile.name}</p>
-        <span className="mt-4 inline-flex items-center rounded-full bg-[#CCE8E4] px-4 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0F766E]">
-          {project?.status}
-        </span>
-      </div>
-
       {/* Quick Actions */}
       <div>
         <h3 className="text-sm font-semibold text-on-surface-variant uppercase tracking-widest mb-4 ml-1">Quick Actions</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
-            { 
-              href: `/${projectId}/expenses`, 
-              icon: FileText, 
-              label: "Add Expense", 
+            {
+              href: `/${projectId}/expenses`,
+              icon: FileText,
+              label: "Add Expense",
               desc: "Log and publish new project costs to the ledger",
-              bg: "bg-[#F3EDF7]", 
-              iconColor: "text-primary" 
+              bg: "bg-[var(--surface-container)]",
+              iconColor: "text-primary",
+              iconBg: "bg-primary-container/50"
             },
-            { 
-              href: `/${projectId}/payments`, 
-              icon: Banknote, 
-              label: "Record Payment", 
+            {
+              href: `/${projectId}/payments`,
+              icon: Banknote,
+              label: "Record Payment",
               desc: "Quickly post and verify shareholder receipts",
-              bg: "bg-[#F3EDF7]", 
-              iconColor: "text-secondary" 
+              bg: "bg-[var(--surface-container)]",
+              iconColor: "text-secondary",
+              iconBg: "bg-primary-container/50"
             },
-            { 
-              href: `/${projectId}/shareholders`, 
-              icon: Users, 
-              label: "Shareholders", 
+            {
+              href: `/${projectId}/shareholders`,
+              icon: Users,
+              label: "Shareholders",
               desc: "Manage project members and unit allocation",
-              bg: "bg-[#F3EDF7]", 
-              iconColor: "text-tertiary" 
+              bg: "bg-[var(--surface-container)]",
+              iconColor: "text-tertiary",
+              iconBg: "bg-primary-container/50"
             },
-            { 
-              href: `/${projectId}/reports`, 
-              icon: BarChart2, 
-              label: "Financial Reports", 
+            {
+              href: `/${projectId}/reports`,
+              icon: BarChart2,
+              label: "Financial Reports",
               desc: "View detailed analytics and collection trends",
-              bg: "bg-[#F3EDF7]", 
-              iconColor: "text-primary" 
+              bg: "bg-[var(--surface-container)]",
+              iconColor: "text-primary",
+              iconBg: "bg-primary-container/50"
             },
-          ].map(({ href, icon: Icon, label, desc, bg, iconColor }) => (
+          ].map(({ href, icon: Icon, label, desc, bg, iconColor, iconBg }) => (
             <Link
               key={href}
               href={href}
               className={`flex flex-col items-start p-6 rounded-[28px] ${bg} hover:ring-2 hover:ring-primary/20 transition-all group`}
             >
               <div className="flex items-start gap-4 w-full">
-                <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shrink-0 border border-outline-variant/30">
+                <div className={`w-12 h-12 rounded-2xl ${iconBg} flex items-center justify-center shrink-0`}>
                   <Icon className={`w-6 h-6 ${iconColor}`} />
                 </div>
                 <div className="flex flex-col">
@@ -162,7 +156,7 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
             value={formatBDT(totalExpenses)}
             sub="published to ledger"
             icon={<Banknote className="w-5 h-5 text-secondary" />}
-            bg="bg-secondary-container/20"
+            bg="bg-primary-container/20"
             accent="border-purple-200"
           />
           <FinancialCard
@@ -170,7 +164,7 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
             value={`${collectionRate}%`}
             sub={overdueAmount > 0 ? `${formatBDT(overdueAmount)} overdue` : "No overdue amounts"}
             icon={<BarChart2 className="w-5 h-5 text-tertiary" />}
-            bg="bg-tertiary-container/20"
+            bg="bg-primary-container/20"
             accent="border-blue-200"
           />
           <FinancialCard
@@ -178,7 +172,7 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
             value={formatBDT(Math.abs(balance))}
             sub={balance >= 0 ? "surplus" : "deficit"}
             icon={balance >= 0 ? <TrendingUp className="w-5 h-5 text-primary" /> : <TrendingDown className="w-5 h-5 text-destructive" />}
-            bg={balance >= 0 ? "bg-primary-container/20" : "bg-error-container/20"}
+            bg="bg-primary-container/20"
             accent={balance >= 0 ? "border-green-200" : "border-error-container"}
           />
         </div>
@@ -187,27 +181,27 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
       {/* Row 2: Alerts & Pipeline */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Expense Pipeline */}
-        <div className="rounded-xl border border-outline-variant/50 overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/30">
+        <div className="rounded-xl border border-outline-variant/40 overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/40">
             <h3 className="text-sm font-semibold text-on-surface">Expense Pipeline</h3>
             <Link href={`/${projectId}/expenses`} className="text-xs text-primary hover:underline flex items-center gap-1">
               View All <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
-          <div className="divide-y divide-gray-50">
+          <div className="divide-y divide-outline-variant/20">
             <PipelineRow
               label="Awaiting Review"
               count={pendingApproval || 0}
-              icon={<SendHorizontal className="w-4 h-4 text-[#0F766E]" />}
-              color="text-[#0F766E]"
-              bg="bg-[#CCE8E4]"
+              icon={<SendHorizontal className="w-4 h-4 text-[var(--primary)]" />}
+              color="text-[var(--primary)]"
+              bg="bg-primary-container/20"
             />
             <PipelineRow
               label="Changes Requested"
               count={changesRequested || 0}
               icon={<RefreshCw className="w-4 h-4 text-orange-500" />}
               color="text-orange-600"
-              bg="bg-orange-50"
+              bg="bg-primary-container/20"
             />
             <PipelineRow
               label="Approved — Unpublished"
@@ -220,49 +214,49 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
         </div>
 
         {/* Alerts */}
-        <div className="rounded-xl border border-outline-variant/50 overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/30">
+        <div className="rounded-xl border border-outline-variant/40 overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/40">
             <h3 className="text-sm font-semibold text-on-surface">Alerts</h3>
             <Link href={`/${projectId}/payments`} className="text-xs text-primary hover:underline flex items-center gap-1">
               Payments <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
-          <div className="divide-y divide-gray-50">
+          <div className="divide-y divide-outline-variant/20">
             <PipelineRow
               label="Active Penalties"
               count={activePenalties || 0}
-              icon={<ShieldAlert className="w-4 h-4 text-[#B3261E]" />}
-              color="text-[#B3261E]"
-              bg="bg-[#F9DEDC]"
+              icon={<ShieldAlert className="w-4 h-4 text-[var(--destructive)]" />}
+              color="text-[var(--destructive)]"
+              bg="bg-primary-container/20"
             />
             <PipelineRow
               label="Defaulting Installments"
               count={scheduleItems?.filter((i: any) => i.status === "OVERDUE").length || 0}
               icon={<AlertCircle className="w-4 h-4 text-orange-500" />}
               color="text-orange-600"
-              bg="bg-orange-50"
+              bg="bg-primary-container/20"
             />
             <PipelineRow
               label="Due in Next 30 Days"
               count={upcomingDues || 0}
               icon={<CalendarClock className="w-4 h-4 text-amber-500" />}
               color="text-tertiary"
-              bg="bg-tertiary-container/20"
+              bg="bg-primary-container/20"
             />
           </div>
         </div>
       </div>
 
       {/* Row 3: Recent Activity */}
-      <div className="rounded-xl border border-outline-variant/50 overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/30">
+      <div className="rounded-xl border border-outline-variant/40 overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/40">
           <h3 className="text-sm font-semibold text-on-surface">Recent Activity</h3>
           <Link href={`/${projectId}/feed`} className="text-xs text-primary hover:underline flex items-center gap-1">
             Full Log <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
         {recentAudit && recentAudit.length > 0 ? (
-          <ul className="divide-y divide-gray-50">
+          <ul className="divide-y divide-outline-variant/20">
             {recentAudit.map((log: any) => (
               <li key={log.id} className="flex items-start gap-3 px-5 py-3">
                 <div className="mt-0.5 w-7 h-7 rounded-full bg-primary-container/20 flex items-center justify-center flex-shrink-0">
@@ -291,13 +285,13 @@ function FinancialCard({ label, value, sub, icon, bg, accent }: {
   label: string; value: string; sub: string; icon: React.ReactNode; bg: string; accent: string
 }) {
   return (
-    <div className="rounded-[16px] border border-[#E7E0EC] p-6 transition-all duration-300 group cursor-default">
+    <div className="rounded-xl border border-outline-variant/40 bg-surface-container/20 p-6 transition-all duration-300 group cursor-default hover:border-outline-variant/40">
       <div className={`w-12 h-12 rounded-full ${bg} flex items-center justify-center mb-6`}>
         {icon}
       </div>
-      <p className="text-[11px] font-bold text-[#49454F] uppercase tracking-widest mb-2">{label}</p>
-      <p className="text-[24px] font-normal text-[#1D1B20] leading-tight tracking-tight">{value}</p>
-      <p className="text-[12px] text-[#49454F] mt-2 font-medium">{sub}</p>
+      <p className="text-[11px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest mb-2">{label}</p>
+      <p className="text-[24px] font-normal text-[var(--foreground)] leading-tight tracking-tight">{value}</p>
+      <p className="text-[12px] text-[var(--on-surface-variant)] mt-2 font-medium">{sub}</p>
     </div>
   )
 }
@@ -306,14 +300,14 @@ function PipelineRow({ label, count, icon, color, bg }: {
   label: string; count: number; icon: React.ReactNode; color: string; bg: string
 }) {
   return (
-    <div className="flex items-center justify-between px-6 py-4 hover:bg-[#F7F2FA] transition-colors">
+    <div className="flex items-center justify-between px-6 py-4 hover:bg-[var(--surface-container-low)] transition-colors">
       <div className="flex items-center gap-4">
         <div className={`w-10 h-10 rounded-full ${bg} flex items-center justify-center`}>
           {icon}
         </div>
-        <span className="text-[14px] font-medium text-[#1D1B20]">{label}</span>
+        <span className="text-[14px] font-medium text-[var(--foreground)]">{label}</span>
       </div>
-      <span className={`text-[12px] font-bold px-3 py-1 rounded-full ${count > 0 ? `${bg} ${color}` : "bg-[#CAC4D0]/10 text-[#49454F]"}`}>
+      <span className={`text-[12px] font-bold px-3 py-1 rounded-full ${count > 0 ? `bg-primary-container/20 ${color}` : "bg-[var(--outline-variant)]/10 text-[var(--on-surface-variant)]"}`}>
         {count}
       </span>
     </div>

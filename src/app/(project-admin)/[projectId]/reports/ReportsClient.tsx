@@ -115,7 +115,7 @@ export function ReportsClient({ projectId, chartData, summary }: ReportsClientPr
           { label: "Total Expenses", value: formatBDTShort(summary.totalExpenses), color: "text-secondary" },
           { label: "Collection Rate", value: `${summary.collectionRate}%`, color: summary.collectionRate >= 80 ? "text-emerald-700" : "text-rose-700" },
         ].map(s => (
-          <div key={s.label} className="rounded-[1.25rem] border border-outline-variant/30 p-5 transition-all duration-300">
+          <div key={s.label} className="rounded-[1.25rem] border border-outline-variant/40 p-5 transition-all duration-300">
             <p className="text-[10px] font-bold text-outline uppercase tracking-widest mb-1.5">{s.label}</p>
             <p className={`text-2xl font-black tracking-tight ${s.color}`}>{s.value}</p>
           </div>
@@ -124,7 +124,7 @@ export function ReportsClient({ projectId, chartData, summary }: ReportsClientPr
 
       {/* Bar Chart */}
       {chartData.length > 0 && (
-        <div className="rounded-[1.25rem] border border-outline-variant/30 p-8">
+        <div className="rounded-[1.25rem] border border-outline-variant/40 p-8">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-10 h-10 rounded-lg bg-primary-container/20 flex items-center justify-center">
               <BarChart2 className="w-5 h-5 text-primary" />
@@ -149,7 +149,7 @@ export function ReportsClient({ projectId, chartData, summary }: ReportsClientPr
               />
               <Tooltip
                 formatter={(value: any, name: any) => [formatBDTShort(Number(value) || 0), name === "collected" ? "Collected" : "Expenses"] as [string, string]}
-                contentStyle={{ borderRadius: "12px", border: "1px solid #E7E0EC", fontSize: 12 }}
+                contentStyle={{ borderRadius: "12px", border: "1px solid var(--surface-variant)", fontSize: 12 }}
                 cursor={{ fill: '#f8fafc' }}
               />
               <Legend 

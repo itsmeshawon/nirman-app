@@ -9,18 +9,18 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "rounded-[20px] bg-[#0F766E] text-white hover:bg-[#0F766E]/90 active:scale-[0.98]",
+          "rounded-xl bg-[var(--primary)] text-white hover:bg-[var(--primary)]/90 active:scale-[0.98]",
         outline:
-          "rounded-[20px] border border-[#79747E] text-[#0F766E] hover:bg-[#F7F2FA] active:scale-[0.98]",
+          "rounded-xl border border-[var(--m3-outline)] text-[var(--primary)] hover:bg-[var(--surface-container-low)] active:scale-[0.98]",
         secondary:
-          "rounded-[20px] bg-[#E8DEF8] text-[#1D192B] hover:bg-[#E8DEF8]/80 active:scale-[0.98]",
+          "rounded-xl bg-[var(--secondary-container)] text-[var(--on-secondary-container)] hover:bg-[var(--secondary-container)]/80 active:scale-[0.98]",
         ghost:
-          "rounded-full hover:bg-[#F3EDF7] hover:text-[#1D1B20] active:scale-[0.98]",
+          "rounded-full hover:bg-[var(--surface-container)] hover:text-[var(--foreground)] active:scale-[0.98]",
         destructive:
-          "rounded-[20px] bg-[#B3261E] text-white hover:bg-[#B3261E]/90 active:scale-[0.98]",
-        link: "text-[#0F766E] underline-offset-4 hover:underline",
+          "rounded-xl bg-[var(--destructive)] text-white hover:bg-[var(--destructive)]/90 active:scale-[0.98]",
+        link: "text-[var(--primary)] underline-offset-4 hover:underline",
         tonal:
-          "rounded-[20px] bg-[#CCE8E4] text-[#00201D] hover:bg-[#CCE8E4]/80 active:scale-[0.98]",
+          "rounded-xl bg-[var(--primary-container)] text-[#00201D] hover:bg-[var(--primary-container)]/80 active:scale-[0.98]",
       },
       size: {
         default:

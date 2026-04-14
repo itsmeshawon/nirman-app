@@ -14,7 +14,7 @@ export default function PaymentsLoading() {
       </div>
 
       {/* Tabs skeleton */}
-      <div className="border-b border-outline-variant/50">
+      <div className="border-b border-outline-variant/40">
         <div className="flex space-x-8">
           {[...Array(4)].map((_, i) => (
             <Skeleton key={i} className="h-10 w-32" />

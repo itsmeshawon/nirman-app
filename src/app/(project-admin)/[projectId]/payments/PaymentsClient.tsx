@@ -78,7 +78,7 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
       </div>
 
       {/* Tabs Navigation */}
-      <div className="border-b border-outline-variant/50">
+      <div className="border-b border-outline-variant/40">
          <nav className="flex space-x-8">
             <button
                onClick={() => setActiveTab("SCHEDULE")}

@@ -227,7 +227,7 @@ export function RecordPaymentTab({
       {/* Due Summary Side Panel */}
       <div className="space-y-6">
         {dueSummary ? (
-          <div className="bg-surface rounded-xl border border-outline-variant/50 overflow-hidden animate-in slide-in-from-right-4 duration-300">
+          <div className="bg-surface rounded-xl border border-outline-variant/40 overflow-hidden animate-in slide-in-from-right-4 duration-300">
             <div className="bg-slate-900 p-6 text-white text-center">
               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Outstanding</p>
               <h3 className="text-3xl font-black">৳{(dueSummary.totalPrincipal + (waivePenalties ? 0 : dueSummary.totalPenalty)).toLocaleString('en-IN')}</h3>
@@ -255,7 +255,7 @@ export function RecordPaymentTab({
                     <p className="text-sm text-primary font-medium">All principal installments are up to date! ✅</p>
                   ) : (
                     dueSummary.itemBreakdown.map((item, idx) => (
-                      <div key={idx} className="flex justify-between items-center bg-surface-variant/30 p-3 rounded-lg border border-outline-variant/30">
+                      <div key={idx} className="flex justify-between items-center bg-surface-variant/30 p-3 rounded-lg border border-outline-variant/40">
                         <div className="flex flex-col">
                           <span className="text-sm font-bold text-on-surface">{item.name}</span>
                           <span className="text-[10px] text-on-surface-variant font-medium">Due: {new Date(item.date).toLocaleDateString()}</span>

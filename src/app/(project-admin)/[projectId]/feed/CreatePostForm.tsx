@@ -220,14 +220,14 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
   if (!isExpanded) {
     return (
       <div
-        className="bg-surface rounded-xl border border-outline-variant/50 p-4 cursor-text"
+        className="bg-surface rounded-xl border border-outline-variant/40 p-4 cursor-text"
         onClick={() => setIsExpanded(true)}
       >
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-primary-container/50 flex items-center justify-center text-primary font-semibold text-sm shrink-0">
             PA
           </div>
-          <div className="flex-1 bg-surface-variant/20 rounded-lg px-4 py-2.5 text-sm text-outline border border-outline-variant/30 hover:border-primary-container transition-colors">
+          <div className="flex-1 bg-surface-variant/20 rounded-lg px-4 py-2.5 text-sm text-outline border border-outline-variant/40 hover:border-primary-container transition-colors">
             Share a project update...
           </div>
         </div>
@@ -280,7 +280,7 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
             className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
               isDragging
                 ? "border-primary/60 bg-primary-container/20"
-                : "border-outline-variant/50 hover:border-primary hover:bg-surface-variant/20"
+                : "border-outline-variant/40 hover:border-primary hover:bg-surface-variant/20"
             }`}
           >
             <Upload className="w-6 h-6 text-outline mx-auto mb-2" />
@@ -362,7 +362,7 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
               className={`px-2.5 py-0.5 rounded-full text-xs font-medium border transition-all ${
                 tags.includes(tag)
                   ? "bg-primary text-white border-primary"
-                  : "bg-surface text-on-surface-variant border-outline-variant/50 hover:border-primary"
+                  : "bg-surface text-on-surface-variant border-outline-variant/40 hover:border-primary"
               }`}
             >
               {tag}
@@ -429,7 +429,7 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
             id="post-milestone"
             value={milestoneId}
             onChange={(e) => setMilestoneId(e.target.value)}
-            className="w-full h-8 rounded-md border border-outline-variant/50 bg-surface px-3 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="w-full h-8 rounded-md border border-outline-variant/40 bg-surface px-3 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           >
             <option value="">No milestone</option>
             {milestones.map((m) => (

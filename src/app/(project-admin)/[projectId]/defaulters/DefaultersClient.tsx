@@ -82,10 +82,10 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#F7F2FA] p-8 rounded-[28px] border border-[#CAC4D0]/30">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[var(--surface-container-low)] p-8 rounded-[28px] border border-[var(--outline-variant)]/30">
         <div>
-          <h2 className="text-[24px] font-normal text-[#1D1B20] tracking-tight">Active Defaulters</h2>
-          <p className="text-[14px] text-[#49454F] mt-1">Real-time overview of shareholders with overdue collections.</p>
+          <h2 className="text-[24px] font-normal text-[var(--foreground)] tracking-tight">Active Defaulters</h2>
+          <p className="text-[14px] text-[var(--on-surface-variant)] mt-1">Real-time overview of shareholders with overdue collections.</p>
         </div>
         <Button 
           onClick={handleApplyPenalties} 
@@ -107,7 +107,7 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
                 <TableHead>Phone</TableHead>
                 <TableHead>Overdue Status</TableHead>
                 <TableHead className="text-right">Principal Due</TableHead>
-                <TableHead className="text-right text-[#B3261E]">Active Penalty</TableHead>
+                <TableHead className="text-right text-[var(--destructive)]">Active Penalty</TableHead>
                 <TableHead className="text-right px-6">Total Owed</TableHead>
                 <TableHead className="text-right px-6">Actions</TableHead>
               </TableRow>
@@ -128,17 +128,17 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
                   <TableRow key={i} className="group">
                     <TableCell className="px-6 py-5">
                       <div className="flex flex-col">
-                        <span className="text-[14px] font-semibold text-[#1D1B20]">
+                        <span className="text-[14px] font-semibold text-[var(--foreground)]">
                           {d.name}
                         </span>
-                        <span className="text-[12px] text-[#49454F] mt-0.5">
+                        <span className="text-[12px] text-[var(--on-surface-variant)] mt-0.5">
                           Unit: {d.unit}
                         </span>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1.5 text-[14px] font-medium text-[#49454F]">
-                        <Phone className="w-3.5 h-3.5 text-[#79747E]" />
+                      <div className="flex items-center gap-1.5 text-[14px] font-medium text-[var(--on-surface-variant)]">
+                        <Phone className="w-3.5 h-3.5 text-[var(--m3-outline)]" />
                         {d.phone}
                       </div>
                     </TableCell>
@@ -147,7 +147,7 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
                         <span className="text-[11px] font-bold text-[#964B00] bg-[#FFDDB3] px-3 py-1 rounded-full w-fit uppercase tracking-wider">
                           {d.overdueCount} Items Overdue
                         </span>
-                        <span className="text-[11px] text-[#49454F] mt-1.5 flex items-center gap-1">
+                        <span className="text-[11px] text-[var(--on-surface-variant)] mt-1.5 flex items-center gap-1">
                           <Calendar className="w-3 h-3" /> Since {d.oldestDue.toLocaleDateString()}
                         </span>
                       </div>

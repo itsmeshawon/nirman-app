@@ -17,8 +17,8 @@ export default function ShareholdersLoading() {
         ))}
       </div>
 
-      <div className="bg-surface border rounded-lg overflow-hidden">
-        <div className="p-4 border-b">
+      <div className="bg-surface rounded-lg overflow-hidden">
+        <div className="p-4">
           <Skeleton className="h-10 w-full max-w-sm" />
         </div>
         <div className="divide-y divide-gray-100">

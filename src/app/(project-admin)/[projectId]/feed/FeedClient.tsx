@@ -80,7 +80,7 @@ export function FeedClient({ projectId, initialPosts, milestones, userId }: Feed
               className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
                 filterMedia === value
                   ? "bg-primary text-white border-primary"
-                  : "bg-surface text-on-surface-variant border-outline-variant/50 hover:border-primary hover:text-primary"
+                  : "bg-surface text-on-surface-variant border-outline-variant/40 hover:border-primary hover:text-primary"
               }`}
             >
               {label}
@@ -94,7 +94,7 @@ export function FeedClient({ projectId, initialPosts, milestones, userId }: Feed
             className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
               filterStatus === "hidden"
                 ? "bg-red-600 text-white border-red-600"
-                : "bg-surface text-on-surface-variant border-outline-variant/50 hover:border-red-300 hover:text-destructive"
+                : "bg-surface text-on-surface-variant border-outline-variant/40 hover:border-red-300 hover:text-destructive"
             }`}
           >
             {filterStatus === "hidden" ? "Showing Hidden" : "Show Hidden"}

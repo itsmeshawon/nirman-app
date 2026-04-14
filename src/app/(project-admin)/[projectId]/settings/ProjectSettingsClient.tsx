@@ -210,13 +210,13 @@ export function ProjectSettingsClient({
 
   return (
     <div className="bg-surface border rounded-xl overflow-hidden">
-      <div className="p-6 border-b border-outline-variant/50">
+      <div className="p-6 border-b border-outline-variant/40">
         <h2 className="text-xl font-bold text-on-surface">Project Settings</h2>
         <p className="text-sm text-on-surface-variant mt-1">Configure project rules, schedules, and automated communications.</p>
       </div>
 
       <Tabs defaultValue="profile" className="w-full">
-        <div className="bg-surface-variant/30 border-b border-outline-variant/50 px-4">
+        <div className="bg-surface-variant/30 border-b border-outline-variant/40 px-4">
           <TabsList className="flex flex-row h-auto bg-transparent p-0 m-0 w-full justify-start overflow-x-auto no-scrollbar">
             <TabsTrigger 
               value="profile" 
@@ -256,7 +256,7 @@ export function ProjectSettingsClient({
           {/* TAB 1: PROFILE */}
           <TabsContent value="profile" className="m-0 focus:outline-none">
              <div className="max-w-2xl">
-                <div className="mb-6 pb-6 border-b border-outline-variant/30 flex items-center gap-4">
+                <div className="mb-6 pb-6 border-b border-outline-variant/40 flex items-center gap-4">
                   <div className="p-3 bg-primary-container/50 rounded-xl">
                     <LayoutGrid className="w-8 h-8 text-primary" />
                   </div>
@@ -316,7 +316,7 @@ export function ProjectSettingsClient({
                   </div>
 
                   {paymentType === "MONTHLY" || paymentType === "MIXED" ? (
-                    <div className="grid grid-cols-2 gap-4 p-4 bg-surface-variant/30 rounded-lg border border-outline-variant/30">
+                    <div className="grid grid-cols-2 gap-4 p-4 bg-surface-variant/30 rounded-lg border border-outline-variant/40">
                        <div className="grid gap-2">
                           <Label htmlFor="monthly_amount">Monthly Amount (৳)</Label>
                           <Input id="monthly_amount" type="number" value={monthlyAmount} onChange={(e) => setMonthlyAmount(e.target.value)} placeholder="e.g. 50000" />

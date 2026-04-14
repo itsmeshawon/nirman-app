@@ -74,19 +74,19 @@ export default function LoginPage() {
   return (
     <div className="w-full max-w-sm px-6">
       <div className="text-center mb-10">
-        <h1 className="text-[36px] font-normal text-[#0F766E] tracking-tight">NirmaN</h1>
-        <p className="text-[14px] text-[#49454F] mt-2">Construction Transparency Platform</p>
+        <h1 className="text-[36px] font-normal text-[var(--primary)] tracking-tight">NirmaN</h1>
+        <p className="text-[14px] text-[var(--on-surface-variant)] mt-2">Construction Transparency Platform</p>
       </div>
 
-      <Card className="rounded-[28px] border border-[#E7E0EC] bg-white p-2">
+      <Card className="rounded-[28px] border border-[var(--surface-variant)] bg-white p-2">
         <CardHeader className="pb-4 pt-6 px-6">
-          <CardTitle className="text-[24px] font-normal text-[#1D1B20]">Sign In</CardTitle>
-          <CardDescription className="text-[14px] text-[#49454F]">Enter your credentials to access your account</CardDescription>
+          <CardTitle className="text-[24px] font-normal text-[var(--foreground)]">Sign In</CardTitle>
+          <CardDescription className="text-[14px] text-[var(--on-surface-variant)]">Enter your credentials to access your account</CardDescription>
         </CardHeader>
         <CardContent className="px-6 pb-6 pt-2">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-[12px] font-bold text-[#49454F] uppercase tracking-wider ml-1">Email</Label>
+              <Label htmlFor="email" className="text-[12px] font-bold text-[var(--on-surface-variant)] uppercase tracking-wider ml-1">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -100,7 +100,7 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-[12px] font-bold text-[#49454F] uppercase tracking-wider ml-1">Password</Label>
+              <Label htmlFor="password" className="text-[12px] font-bold text-[var(--on-surface-variant)] uppercase tracking-wider ml-1">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -114,7 +114,7 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div className="text-[12px] font-medium text-[#B3261E] bg-[#F9DEDC] rounded-lg px-4 py-3">
+              <div className="text-[12px] font-medium text-[var(--destructive)] bg-[var(--error-container)] rounded-lg px-4 py-3">
                 {error}
               </div>
             )}
@@ -129,7 +129,7 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <p className="text-[12px] text-center text-[#49454F] mt-8">
+          <p className="text-[12px] text-center text-[var(--on-surface-variant)] mt-8">
             Don&apos;t have an account? Contact your project admin.
           </p>
         </CardContent>

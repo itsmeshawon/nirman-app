@@ -105,7 +105,7 @@ export default function CreateAdminDialog({ open, onOpenChange, projectId, proje
               Share these login credentials with <strong>{success.name}</strong> for the project{" "}
               <strong>{projectName}</strong>.
             </p>
-            <div className="rounded-lg border border-outline-variant/50 bg-surface-variant/20 p-4 space-y-2 font-mono text-sm">
+            <div className="rounded-lg border border-outline-variant/40 bg-surface-variant/20 p-4 space-y-2 font-mono text-sm">
               <div className="flex justify-between">
                 <span className="text-on-surface-variant">Email</span>
                 <span className="text-on-surface">{success.email}</span>

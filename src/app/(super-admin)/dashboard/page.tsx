@@ -75,7 +75,7 @@ interface StatCardProps {
 
 function StatCard({ label, value, icon: Icon, iconColor, iconBg }: StatCardProps) {
   return (
-    <Card className="border border-outline-variant/30">
+    <Card className="border border-outline-variant/40">
       <CardContent className="p-5">
         <div className="flex items-start justify-between">
           <div>
@@ -141,8 +141,8 @@ export default async function SuperAdminDashboardPage() {
       </div>
 
       {/* Recent Projects */}
-      <Card className="border border-outline-variant/30">
-        <CardHeader className="pb-3 border-b border-outline-variant/30">
+      <Card className="border border-outline-variant/40">
+        <CardHeader className="pb-3 border-b border-outline-variant/40">
           <CardTitle className="text-base font-semibold text-on-surface">Recent Projects</CardTitle>
         </CardHeader>
         <CardContent className="p-0">

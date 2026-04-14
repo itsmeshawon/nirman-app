@@ -168,7 +168,7 @@ export function ProfileForm() {
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploadingAvatar}
-              className="absolute bottom-1 right-1 bg-surface p-1.5 rounded-full text-on-surface-variant hover:text-primary transition-colors border border-outline-variant/30 disabled:opacity-50"
+              className="absolute bottom-1 right-1 bg-surface p-1.5 rounded-full text-on-surface-variant hover:text-primary transition-colors border border-outline-variant/40 disabled:opacity-50"
             >
               <Camera className="w-4 h-4" />
             </button>
@@ -242,7 +242,7 @@ export function ProfileForm() {
           </div>
         </div>
 
-        <div className="border-t border-outline-variant/30 pt-6 mt-2">
+        <div className="border-t border-outline-variant/40 pt-6 mt-2">
           <h3 className="text-sm font-semibold text-on-surface mb-4 flex items-center gap-2">
             <Briefcase className="w-4 h-4 text-outline" />
             Professional Details
@@ -269,7 +269,7 @@ export function ProfileForm() {
           </div>
         </div>
 
-        <div className="border-t border-outline-variant/30 pt-6 mt-2">
+        <div className="border-t border-outline-variant/40 pt-6 mt-2">
           <h3 className="text-sm font-semibold text-on-surface mb-4 flex items-center gap-2">
             <MapPin className="w-4 h-4 text-outline" />
             Address
