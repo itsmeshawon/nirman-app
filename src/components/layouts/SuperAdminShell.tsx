@@ -91,11 +91,11 @@ export default function SuperAdminShell({ children, userName, avatarUrl }: Super
       </nav>
 
       {/* Footer — refined layout */}
-      <div className="p-4 border-t border-outline-variant/40 mx-2 mb-2 rounded-2xl bg-white/40">
+      <div className="mx-3 p-4 border-t border-outline-variant/40">
         <div className="flex items-center justify-between">
           <Link
             href="/profile"
-            className="flex items-center gap-3 truncate group cursor-pointer p-1.5 -m-1.5 rounded-xl hover:bg-white/60 transition-all duration-200 flex-1 min-w-0"
+            className="flex items-center gap-3 truncate group cursor-pointer p-1.5 rounded-xl hover:bg-[var(--surface-container-high)] transition-all duration-200 flex-1 min-w-0"
           >
             <div className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container text-sm font-bold shrink-0 overflow-hidden">
               {avatarUrl ? (

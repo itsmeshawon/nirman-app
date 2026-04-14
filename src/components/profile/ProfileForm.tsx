@@ -290,7 +290,8 @@ export function ProfileForm() {
           <Button 
             type="submit" 
             disabled={isSaving || !isDirty}
-            className="bg-primary hover:bg-primary min-w-[160px] h-11 rounded-xl font-semibold transition-all active:scale-[0.98]"
+            variant="default"
+            className="min-w-[160px] h-11 font-semibold"
           >
             {isSaving ? "Saving..." : "Save Changes"}
           </Button>

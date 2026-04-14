@@ -87,7 +87,7 @@ export default async function ShareholderDashboardPage() {
             </div>
           </div>
           <Link
-            href="/profile"
+            href="/my/profile"
             className="text-sm font-semibold px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-1.5 flex-shrink-0"
           >
             Update Profile <ArrowRight className="w-3.5 h-3.5" />
@@ -196,7 +196,7 @@ export default async function ShareholderDashboardPage() {
             </Link>
           </div>
           {recentExpenses && recentExpenses.length > 0 ? (
-            <ul className="divide-y divide-gray-50">
+            <ul className="divide-y divide-outline-variant/30">
               {recentExpenses.map((e: any) => (
                 <li key={e.id} className="flex items-center justify-between px-5 py-3">
                   <div>
