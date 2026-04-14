@@ -14,7 +14,7 @@ export default function PaymentsLoading() {
       </div>
 
       {/* Tabs skeleton */}
-      <div className="border-b border-gray-200">
+      <div className="border-b border-outline-variant/50">
         <div className="flex space-x-8">
           {[...Array(4)].map((_, i) => (
             <Skeleton key={i} className="h-10 w-32" />
@@ -24,7 +24,7 @@ export default function PaymentsLoading() {
 
       {/* Content area skeleton */}
       <div className="space-y-4">
-        <div className="flex justify-between items-center bg-gray-50 border rounded-xl p-4">
+        <div className="flex justify-between items-center bg-surface-variant/20 border rounded-xl p-4">
           <Skeleton className="h-9 w-32" />
           <Skeleton className="h-9 w-40" />
         </div>

@@ -70,13 +70,13 @@ export function ShareholderDocsClient({ documents }: ShareholderDocsClientProps)
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold text-gray-900 font-outfit">Project Documents</h1>
-        <p className="text-gray-500 text-sm">Access important files, drawings, and legal papers for your project.</p>
+        <h1 className="text-2xl font-bold text-on-surface font-outfit">Project Documents</h1>
+        <p className="text-on-surface-variant text-sm">Access important files, drawings, and legal papers for your project.</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="flex-1 flex items-center space-x-2 bg-white rounded-[1.25rem] border px-3 py-2 shadow-eos-sm">
-          <Search className="w-4 h-4 text-gray-400" />
+        <div className="flex-1 flex items-center space-x-2 bg-surface rounded-[1.25rem] border px-3 py-2 shadow-eos-sm">
+          <Search className="w-4 h-4 text-outline" />
           <input 
             type="text" 
             placeholder="Search documents..." 
@@ -88,9 +88,9 @@ export function ShareholderDocsClient({ documents }: ShareholderDocsClientProps)
         
         <div className="w-full md:w-64">
           <Select value={categoryFilter} onValueChange={(v) => setCategoryFilter(v ?? "")}>
-            <SelectTrigger className="rounded-[1.25rem] shadow-eos-sm border-gray-200">
+            <SelectTrigger className="rounded-[1.25rem] shadow-eos-sm border-outline-variant/50">
               <div className="flex items-center gap-2">
-                <Filter className="w-4 h-4 text-gray-400" />
+                <Filter className="w-4 h-4 text-outline" />
                 <SelectValue placeholder="All Categories" />
               </div>
             </SelectTrigger>
@@ -104,10 +104,10 @@ export function ShareholderDocsClient({ documents }: ShareholderDocsClientProps)
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border shadow-eos overflow-hidden transition-all duration-300">
+      <div className="bg-surface rounded-2xl border shadow-eos overflow-hidden transition-all duration-300">
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-50/50 hover:bg-gray-50/50">
+            <TableRow className="bg-surface-variant/20/50 hover:bg-surface-variant/20/50">
               <TableHead className="w-12 pl-6">No.</TableHead>
               <TableHead>Document</TableHead>
               <TableHead>Category</TableHead>
@@ -118,27 +118,27 @@ export function ShareholderDocsClient({ documents }: ShareholderDocsClientProps)
           <TableBody>
             {filteredDocs.length > 0 ? (
               filteredDocs.map((doc, idx) => (
-                <TableRow key={doc.id} className="group hover:bg-indigo-50/30 transition-colors">
-                  <TableCell className="pl-6 text-gray-400 font-medium">{idx + 1}</TableCell>
+                <TableRow key={doc.id} className="group hover:bg-primary-container/20/30 transition-colors">
+                  <TableCell className="pl-6 text-outline font-medium">{idx + 1}</TableCell>
                   <TableCell>
                     <div className="flex items-center">
-                      <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600 mr-3 group-hover:bg-indigo-100 transition-colors">
+                      <div className="p-2 rounded-lg bg-primary-container/20 text-primary mr-3 group-hover:bg-primary-container/50 transition-colors">
                         <FileIcon className="w-4 h-4" />
                       </div>
                       <div className="flex flex-col">
-                        <span className="font-semibold text-gray-900 text-sm md:text-base">{doc.name}</span>
-                        <span className="text-[10px] text-gray-400 uppercase md:hidden tracking-wider">
+                        <span className="font-semibold text-on-surface text-sm md:text-base">{doc.name}</span>
+                        <span className="text-[10px] text-outline uppercase md:hidden tracking-wider">
                           {format(new Date(doc.uploaded_at), "dd MMM yyyy")}
                         </span>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium rounded-lg px-2.5">
+                    <Badge variant="secondary" className="bg-surface-variant/50 text-on-surface hover:bg-surface-variant font-medium rounded-lg px-2.5">
                       {doc.category}
                     </Badge>
                   </TableCell>
-                  <TableCell className="hidden md:table-cell text-gray-500 font-medium">
+                  <TableCell className="hidden md:table-cell text-on-surface-variant font-medium">
                     {format(new Date(doc.uploaded_at), "dd MMM yyyy")}
                   </TableCell>
                   <TableCell className="text-right pr-6">
@@ -146,7 +146,7 @@ export function ShareholderDocsClient({ documents }: ShareholderDocsClientProps)
                       size="icon" 
                       variant="ghost" 
                       onClick={() => handleDownload(doc)}
-                      className="text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 rounded-[1.25rem]"
+                      className="text-primary hover:bg-primary-container/50 hover:text-primary rounded-[1.25rem]"
                     >
                       <Download className="w-5 h-5" />
                     </Button>
@@ -155,13 +155,13 @@ export function ShareholderDocsClient({ documents }: ShareholderDocsClientProps)
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="h-64 text-center text-gray-500">
+                <TableCell colSpan={5} className="h-64 text-center text-on-surface-variant">
                   <div className="flex flex-col items-center justify-center space-y-3">
-                    <div className="p-4 rounded-full bg-gray-50">
-                      <FileText className="w-10 h-10 text-gray-300" />
+                    <div className="p-4 rounded-full bg-surface-variant/20">
+                      <FileText className="w-10 h-10 text-outline-variant" />
                     </div>
                     <div className="space-y-1">
-                      <p className="font-semibold text-gray-900">No documents found</p>
+                      <p className="font-semibold text-on-surface">No documents found</p>
                       <p className="text-sm">Try adjusting your search or category filter.</p>
                     </div>
                   </div>

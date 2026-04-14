@@ -133,8 +133,8 @@ export default function AdminsPage() {
       header: "Administrator",
       cell: ({ row }) => (
         <div className="flex flex-col">
-          <span className="font-medium text-gray-900">{row.original.name}</span>
-          <span className="text-xs text-gray-500">{row.original.email}</span>
+          <span className="font-medium text-on-surface">{row.original.name}</span>
+          <span className="text-xs text-on-surface-variant">{row.original.email}</span>
         </div>
       ),
     },
@@ -146,7 +146,7 @@ export default function AdminsPage() {
         return (
           <span className={cn(
             "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
-            isActive ? "bg-green-50 text-green-700 border border-green-100" : "bg-red-50 text-red-700 border border-red-100"
+            isActive ? "bg-primary-container/20 text-primary border border-green-100" : "bg-error-container/20 text-destructive border border-red-100"
           )}>
             {isActive ? "Active" : "Inactive"}
           </span>
@@ -160,12 +160,12 @@ export default function AdminsPage() {
         <div className="flex flex-wrap gap-1 max-w-[250px]">
           {row.original.assignedProjects.length > 0 ? (
             row.original.assignedProjects.map(p => (
-              <span key={p} className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded border border-gray-200">
+              <span key={p} className="text-[10px] bg-surface-variant/50 text-on-surface-variant px-1.5 py-0.5 rounded border border-outline-variant/50">
                 {p}
               </span>
             ))
           ) : (
-            <span className="text-xs text-gray-400 italic">None</span>
+            <span className="text-xs text-outline italic">None</span>
           )}
         </div>
       ),
@@ -174,7 +174,7 @@ export default function AdminsPage() {
       accessorKey: "createdAt",
       header: "Created",
       cell: ({ row }) => (
-        <span className="text-sm text-gray-500">
+        <span className="text-sm text-on-surface-variant">
           {formatDate(row.original.createdAt)}
         </span>
       ),
@@ -187,7 +187,7 @@ export default function AdminsPage() {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+            className="h-8 w-8 text-tertiary hover:text-tertiary hover:bg-tertiary-container/20"
             onClick={() => setPwdDialog({ open: true, adminId: row.original.id, adminName: row.original.name })}
             title="Reset Password"
           >
@@ -199,7 +199,7 @@ export default function AdminsPage() {
             size="icon"
             className={cn(
               "h-8 w-8 transition-colors",
-              row.original.status === "ACTIVE" ? "text-amber-600 hover:bg-amber-50" : "text-green-600 hover:bg-green-50"
+              row.original.status === "ACTIVE" ? "text-tertiary hover:bg-tertiary-container/20" : "text-primary hover:bg-primary-container/20"
             )}
             onClick={() => handleToggleStatus(row.original)}
             title={row.original.status === "ACTIVE" ? "Deactivate User" : "Activate User"}
@@ -210,7 +210,7 @@ export default function AdminsPage() {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+            className="h-8 w-8 text-destructive hover:text-destructive hover:bg-error-container/20"
             onClick={() => handleDeleteAdmin(row.original)}
             title="Delete Account"
           >
@@ -236,15 +236,15 @@ export default function AdminsPage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Project Administrators</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Manage accounts and platform access for admins</p>
+          <h1 className="text-2xl font-bold text-on-surface">Project Administrators</h1>
+          <p className="text-sm text-on-surface-variant mt-0.5">Manage accounts and platform access for admins</p>
         </div>
       </div>
 
-      <Card className="bg-white shadow-sm border border-gray-100 uppercase-headers">
-        <CardHeader className="pb-3 border-b border-gray-100">
+      <Card className="bg-surface shadow-sm border border-outline-variant/30 uppercase-headers">
+        <CardHeader className="pb-3 border-b border-outline-variant/30">
           <div className="relative max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
             <Input
               placeholder="Search admins..."
               value={globalFilter}
@@ -266,7 +266,7 @@ export default function AdminsPage() {
               <Table>
                 <TableHeader>
                   {table.getHeaderGroups().map((hg) => (
-                    <TableRow key={hg.id} className="bg-gray-50/50">
+                    <TableRow key={hg.id} className="bg-surface-variant/20/50">
                       {hg.headers.map((header) => (
                         <TableHead key={header.id}>
                           {flexRender(header.column.columnDef.header, header.getContext())}
@@ -278,13 +278,13 @@ export default function AdminsPage() {
                 <TableBody>
                   {table.getRowModel().rows.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={columns.length} className="text-center py-10 text-gray-400">
+                      <TableCell colSpan={columns.length} className="text-center py-10 text-outline">
                         No administrators found matching your search.
                       </TableCell>
                     </TableRow>
                   ) : (
                     table.getRowModel().rows.map((row) => (
-                      <TableRow key={row.id} className="hover:bg-gray-50">
+                      <TableRow key={row.id} className="hover:bg-surface-variant/20">
                         {row.getVisibleCells().map((cell) => (
                           <TableCell key={cell.id}>
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -323,7 +323,7 @@ export default function AdminsPage() {
                className="h-10"
                autoFocus
              />
-             <p className="text-[10px] text-gray-400 mt-2 italic">Minimum 6 characters recommended.</p>
+             <p className="text-[10px] text-outline mt-2 italic">Minimum 6 characters recommended.</p>
           </div>
 
           <DialogFooter>
@@ -333,7 +333,7 @@ export default function AdminsPage() {
             <Button 
                 onClick={handleResetPassword} 
                 disabled={isUpdating || !newPassword}
-                className="bg-[#4F46E5] hover:bg-indigo-800 text-white"
+                className="bg-primary hover:bg-primary text-white"
             >
               {isUpdating ? "Updating..." : "Update Password"}
             </Button>

@@ -20,7 +20,7 @@ export default async function ShareholderDocumentsPage() {
 
   if (!shareholder) {
     return (
-      <div className="p-8 text-center text-gray-500">
+      <div className="p-8 text-center text-on-surface-variant">
         Project not found for your account.
       </div>
     )

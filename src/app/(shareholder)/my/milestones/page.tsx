@@ -21,9 +21,9 @@ export default async function ShareholderMilestonesPage() {
 
   if (!shareholder) {
     return (
-      <div className="p-8 max-w-4xl mx-auto text-center mt-12 bg-white rounded-[1.25rem] shadow-eos-sm border py-24">
-         <h2 className="text-2xl font-bold text-gray-900">Project Milestones</h2>
-         <p className="text-gray-500 mt-2">You are not registered as a shareholder in any project.</p>
+      <div className="p-8 max-w-4xl mx-auto text-center mt-12 bg-surface rounded-[1.25rem] shadow-eos-sm border py-24">
+         <h2 className="text-2xl font-bold text-on-surface">Project Milestones</h2>
+         <p className="text-on-surface-variant mt-2">You are not registered as a shareholder in any project.</p>
       </div>
     )
   }

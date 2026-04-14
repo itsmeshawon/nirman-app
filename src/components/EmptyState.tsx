@@ -21,20 +21,20 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <div className={cn(
-      "flex flex-col items-center justify-center text-center p-8 py-12 bg-white rounded-2xl border border-dashed border-gray-200",
+      "flex flex-col items-center justify-center text-center p-8 py-12 bg-surface rounded-2xl border border-dashed border-outline-variant/50",
       className
     )}>
-      <div className="p-4 rounded-full bg-indigo-50 text-indigo-600 mb-4">
+      <div className="p-4 rounded-full bg-primary-container/20 text-primary mb-4">
         <Icon size={32} />
       </div>
-      <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-      <p className="text-gray-500 text-sm max-w-xs mt-1 mb-6">
+      <h3 className="text-lg font-semibold text-on-surface">{title}</h3>
+      <p className="text-on-surface-variant text-sm max-w-xs mt-1 mb-6">
         {description}
       </p>
       {actionLabel && onAction && (
         <Button 
           onClick={onAction}
-          className="bg-indigo-700 hover:bg-indigo-800"
+          className="bg-primary hover:bg-primary"
         >
           {actionLabel}
         </Button>

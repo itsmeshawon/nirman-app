@@ -49,58 +49,58 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
       
       {/* Header and Financial Overview */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Financial Collections & Payments</h1>
+        <h1 className="text-2xl font-bold text-on-surface mb-6">Financial Collections & Payments</h1>
         
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
            {/* Primary Cards */}
-           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-white shadow-sm flex flex-col justify-center">
-             <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">Total Expected</p>
-             <p className="text-2xl font-bold text-gray-900">৳ {formatBD(totalScheduled)}</p>
-           </div>
-           
-           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-indigo-50 border-indigo-100 shadow-sm flex flex-col justify-center">
-             <p className="text-xs font-semibold text-indigo-800 uppercase tracking-widest mb-2">Total Collected</p>
-             <p className="text-2xl font-bold text-indigo-900">৳ {formatBD(totalCollected)}</p>
-             <p className="text-xs font-medium text-indigo-700 mt-1">{collectionRate.toFixed(1)}% Rate</p>
-           </div>
-           
-           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-blue-50 border-blue-100 shadow-sm flex flex-col justify-center">
-             <p className="text-xs font-semibold text-blue-800 uppercase tracking-widest mb-2">Total Outstanding</p>
-             <p className="text-2xl font-bold text-blue-900">৳ {formatBD(totalOutstanding)}</p>
+           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-surface shadow-sm flex flex-col justify-center">
+             <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest mb-2">Total Expected</p>
+             <p className="text-2xl font-bold text-on-surface">৳ {formatBD(totalScheduled)}</p>
            </div>
 
-           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-red-50 border-red-100 shadow-sm flex flex-col justify-center">
-             <p className="text-xs font-semibold text-red-800 uppercase tracking-widest mb-2">Active Penalties</p>
-             <p className="text-2xl font-bold text-red-900">৳ {formatBD(totalPenalties)}</p>
-             <p className="text-xs font-medium text-red-700 mt-1">From delays</p>
+           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-primary-container/30 border-primary-container/50 shadow-sm flex flex-col justify-center">
+             <p className="text-xs font-semibold text-on-primary-container uppercase tracking-widest mb-2">Total Collected</p>
+             <p className="text-2xl font-bold text-on-primary-container">৳ {formatBD(totalCollected)}</p>
+             <p className="text-xs font-medium text-primary mt-1">{collectionRate.toFixed(1)}% Rate</p>
+           </div>
+
+           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-tertiary-container/30 border-tertiary-container/50 shadow-sm flex flex-col justify-center">
+             <p className="text-xs font-semibold text-on-tertiary-container uppercase tracking-widest mb-2">Total Outstanding</p>
+             <p className="text-2xl font-bold text-on-tertiary-container">৳ {formatBD(totalOutstanding)}</p>
+           </div>
+
+           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-error-container/30 border-error-container shadow-sm flex flex-col justify-center">
+             <p className="text-xs font-semibold text-on-error-container uppercase tracking-widest mb-2">Active Penalties</p>
+             <p className="text-2xl font-bold text-on-error-container">৳ {formatBD(totalPenalties)}</p>
+             <p className="text-xs font-medium text-destructive mt-1">From delays</p>
            </div>
         </div>
       </div>
 
       {/* Tabs Navigation */}
-      <div className="border-b border-gray-200">
+      <div className="border-b border-outline-variant/50">
          <nav className="flex space-x-8">
             <button
                onClick={() => setActiveTab("SCHEDULE")}
-               className={`py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm transition-colors ${activeTab === "SCHEDULE" ? "border-[#4F46E5] text-[#4F46E5]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
+               className={`py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm transition-colors ${activeTab === "SCHEDULE" ? "border-primary text-primary" : "border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline-variant"}`}
             >
                <Calendar className="w-4 h-4" /> Collection Schedule
             </button>
             <button
                onClick={() => setActiveTab("RECORD")}
-               className={`py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm transition-colors ${activeTab === "RECORD" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
+               className={`py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm transition-colors ${activeTab === "RECORD" ? "border-tertiary text-tertiary" : "border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline-variant"}`}
             >
                <CreditCard className="w-4 h-4" /> Record Payment
             </button>
             <button
                onClick={() => setActiveTab("DEFAULTERS")}
-               className={`py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm transition-colors ${activeTab === "DEFAULTERS" ? "border-orange-600 text-orange-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
+               className={`py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm transition-colors ${activeTab === "DEFAULTERS" ? "border-tertiary text-tertiary" : "border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline-variant"}`}
             >
                <AlertTriangle className="w-4 h-4" /> Defaulters
             </button>
             <button
                onClick={() => setActiveTab("HISTORY")}
-               className={`py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm transition-colors ${activeTab === "HISTORY" ? "border-[#4F46E5] text-[#4F46E5]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
+               className={`py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm transition-colors ${activeTab === "HISTORY" ? "border-primary text-primary" : "border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline-variant"}`}
             >
                <History className="w-4 h-4" /> Payment History
             </button>

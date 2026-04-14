@@ -75,12 +75,12 @@ interface StatCardProps {
 
 function StatCard({ label, value, icon: Icon, iconColor, iconBg }: StatCardProps) {
   return (
-    <Card className="bg-white shadow-sm border border-gray-100">
+    <Card className="bg-surface shadow-sm border border-outline-variant/30">
       <CardContent className="p-5">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-sm text-gray-500 font-medium">{label}</p>
-            <p className="text-3xl font-bold text-gray-900 mt-1">{value}</p>
+            <p className="text-sm text-on-surface-variant font-medium">{label}</p>
+            <p className="text-3xl font-bold text-on-surface mt-1">{value}</p>
           </div>
           <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${iconBg}`}>
             <Icon className={`h-5 w-5 ${iconColor}`} />
@@ -104,8 +104,8 @@ export default async function SuperAdminDashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Platform Dashboard</h1>
-        <p className="text-gray-500 text-sm mt-1">Overview of all NirmaN projects and activity</p>
+        <h1 className="text-2xl font-bold text-on-surface">Platform Dashboard</h1>
+        <p className="text-on-surface-variant text-sm mt-1">Overview of all NirmaN projects and activity</p>
       </div>
 
       {/* Stat Cards */}
@@ -114,36 +114,36 @@ export default async function SuperAdminDashboardPage() {
           label="Total Projects"
           value={stats.totalProjects}
           icon={FolderOpen}
-          iconBg="bg-indigo-50"
-          iconColor="text-[#4F46E5]"
+          iconBg="bg-primary-container/20"
+          iconColor="text-primary"
         />
         <StatCard
           label="Active Projects"
           value={stats.activeProjects}
           icon={Building2}
-          iconBg="bg-green-50"
-          iconColor="text-green-600"
+          iconBg="bg-primary-container/20"
+          iconColor="text-primary"
         />
         <StatCard
           label="Total Shareholders"
           value={stats.totalShareholders}
           icon={Users}
-          iconBg="bg-blue-50"
-          iconColor="text-blue-600"
+          iconBg="bg-tertiary-container/20"
+          iconColor="text-tertiary"
         />
         <StatCard
           label="Last Activity"
           value={lastActivityLabel}
           icon={Activity}
-          iconBg="bg-amber-50"
-          iconColor="text-amber-600"
+          iconBg="bg-tertiary-container/20"
+          iconColor="text-tertiary"
         />
       </div>
 
       {/* Recent Projects */}
-      <Card className="bg-white shadow-sm border border-gray-100">
-        <CardHeader className="pb-3 border-b border-gray-100">
-          <CardTitle className="text-base font-semibold text-gray-900">Recent Projects</CardTitle>
+      <Card className="bg-surface shadow-sm border border-outline-variant/30">
+        <CardHeader className="pb-3 border-b border-outline-variant/30">
+          <CardTitle className="text-base font-semibold text-on-surface">Recent Projects</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <RecentProjectsTable data={recentProjects} />

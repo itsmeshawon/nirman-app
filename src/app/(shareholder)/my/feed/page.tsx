@@ -22,8 +22,8 @@ export default async function ShareholderFeedPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-8">
         <p className="text-2xl mb-3">🏗️</p>
-        <h2 className="text-lg font-semibold text-gray-700">No Project Assigned</h2>
-        <p className="text-gray-400 text-sm mt-2">
+        <h2 className="text-lg font-semibold text-on-surface">No Project Assigned</h2>
+        <p className="text-outline text-sm mt-2">
           You have not been mapped to any project yet. Contact your project admin.
         </p>
       </div>
@@ -95,8 +95,8 @@ export default async function ShareholderFeedPage() {
   return (
     <div className="max-w-2xl mx-auto py-6 px-4">
       <div className="mb-5">
-        <h1 className="text-2xl font-bold text-gray-900">Activity Feed</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <h1 className="text-2xl font-bold text-on-surface">Activity Feed</h1>
+        <p className="text-sm text-on-surface-variant mt-1">
           {shareholder.project.name} — latest construction updates
         </p>
       </div>

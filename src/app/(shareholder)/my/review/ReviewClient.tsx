@@ -72,8 +72,8 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
   return (
     <div className="space-y-6">
       {expenses.length === 0 ? (
-        <div className="bg-white border rounded-[1.25rem] p-12 text-center text-gray-500 shadow-eos-sm">
-           <CheckCircle className="w-12 h-12 text-indigo-200 mx-auto mb-4" />
+        <div className="bg-surface border rounded-[1.25rem] p-12 text-center text-on-surface-variant shadow-eos-sm">
+           <CheckCircle className="w-12 h-12 text-primary-foreground/80 mx-auto mb-4" />
            <p>All caught up! No expenses currently require your review.</p>
         </div>
       ) : (
@@ -84,47 +84,47 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
                 : 0
 
              return (
-               <div key={expense.id} className="bg-white border border-gray-200 rounded-[1.25rem] shadow-eos-sm overflow-hidden flex flex-col md:flex-row">
+               <div key={expense.id} className="bg-surface border border-outline-variant/50 rounded-[1.25rem] shadow-eos-sm overflow-hidden flex flex-col md:flex-row">
                  {/* Left Details */}
-                 <div className="p-6 flex-1 border-b md:border-b-0 md:border-r border-gray-100">
-                    <div className="flex items-center gap-2 text-xs font-semibold text-[#4F46E5] uppercase tracking-widest mb-3">
+                 <div className="p-6 flex-1 border-b md:border-b-0 md:border-r border-outline-variant/30">
+                    <div className="flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-widest mb-3">
                       <Building className="w-4 h-4" />
                       {expense.projectName}
                     </div>
-                    <h2 className="text-xl font-bold text-gray-900 mb-2">{expense.title}</h2>
+                    <h2 className="text-xl font-bold text-on-surface mb-2">{expense.title}</h2>
                     <div className="flex flex-wrap gap-x-6 gap-y-2 mb-4">
                        <div>
-                         <p className="text-xs text-gray-500">Amount</p>
-                         <p className="text-lg font-semibold text-gray-900">৳ {expense.amount.toLocaleString()}</p>
+                         <p className="text-xs text-on-surface-variant">Amount</p>
+                         <p className="text-lg font-semibold text-on-surface">৳ {expense.amount.toLocaleString()}</p>
                        </div>
                        <div>
-                         <p className="text-xs text-gray-500">Date</p>
-                         <p className="text-sm font-medium text-gray-900">{new Date(expense.date).toLocaleDateString()}</p>
+                         <p className="text-xs text-on-surface-variant">Date</p>
+                         <p className="text-sm font-medium text-on-surface">{new Date(expense.date).toLocaleDateString()}</p>
                        </div>
                        <div>
-                         <p className="text-xs text-gray-500">Category</p>
-                         <p className="text-sm font-medium text-gray-900">{expense.category?.name || "Uncategorized"}</p>
+                         <p className="text-xs text-on-surface-variant">Category</p>
+                         <p className="text-sm font-medium text-on-surface">{expense.category?.name || "Uncategorized"}</p>
                        </div>
                     </div>
                     
                     {/* Proof Thumbnails */}
                     {expense.attachments && expense.attachments.length > 0 && (
-                      <div className="mt-4 pt-4 border-t border-gray-50">
-                        <p className="text-xs font-medium text-gray-500 mb-2">Proof Attachments</p>
+                      <div className="mt-4 pt-4 border-t border-outline-variant/20">
+                        <p className="text-xs font-medium text-on-surface-variant mb-2">Proof Attachments</p>
                         <div className="flex gap-3 overflow-x-auto pb-2">
                            {expense.attachments.map((att: any) => {
                              const { data: urlData } = supabase.storage.from("expense-proofs").getPublicUrl(att.file_path)
                              const isImage = att.file_type.startsWith("image/")
                              return (
                                <a key={att.id} href={urlData.publicUrl} target="_blank" rel="noopener noreferrer" 
-                                  className="flex-shrink-0 relative group rounded-md overflow-hidden border border-gray-200 bg-gray-50 hover:ring-2 hover:ring-indigo-500 transition-all w-24 h-16 sm:w-32 sm:h-20"
+                                  className="flex-shrink-0 relative group rounded-md overflow-hidden border border-outline-variant/50 bg-surface-variant/20 hover:ring-2 hover:ring-primary transition-all w-24 h-16 sm:w-32 sm:h-20"
                                >
                                   {isImage ? (
                                     <img src={urlData.publicUrl} alt={att.file_name} className="w-full h-full object-cover" />
                                   ) : (
-                                    <div className="w-full h-full flex flex-col items-center justify-center text-red-600">
+                                    <div className="w-full h-full flex flex-col items-center justify-center text-destructive">
                                       <FileText className="w-6 h-6 mb-1" />
-                                      <span className="text-[10px] text-gray-500 truncate w-full text-center px-1">PDF</span>
+                                      <span className="text-[10px] text-on-surface-variant truncate w-full text-center px-1">PDF</span>
                                     </div>
                                   )}
                                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
@@ -139,13 +139,13 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
                  </div>
 
                  {/* Right Actions */}
-                 <div className="p-6 md:w-[320px] bg-slate-50 flex flex-col justify-between">
+                 <div className="p-6 md:w-[320px] bg-surface-variant/20 flex flex-col justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-900 mb-3">Approval Progress</p>
-                      <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-                         <div className="bg-indigo-500 h-2 rounded-full" style={{ width: `${progressPct}%` }}></div>
+                      <p className="text-sm font-medium text-on-surface mb-3">Approval Progress</p>
+                      <div className="w-full bg-surface-variant rounded-full h-2 mb-2">
+                         <div className="bg-primary-container/200 h-2 rounded-full" style={{ width: `${progressPct}%` }}></div>
                       </div>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-on-surface-variant">
                         {expense.totalApprovals} of {expense.totalMembers} active members approved (Majority rules)
                       </p>
                     </div>
@@ -154,7 +154,7 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
                        <Button 
                          onClick={() => handleAction(expense.id, expense.project_id, "APPROVED")} 
                          disabled={isProcessing === expense.id}
-                         className="w-full bg-[#4F46E5] hover:bg-indigo-800 h-12"
+                         className="w-full bg-primary hover:bg-primary h-12"
                        >
                          <CheckCircle className="w-5 h-5 mr-2" /> Approve
                        </Button>
@@ -163,7 +163,7 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
                             variant="outline"
                             onClick={() => openModal(expense.id, expense.project_id, "CHANGES_REQUESTED")} 
                             disabled={isProcessing === expense.id}
-                            className="flex-1 bg-white text-orange-700 hover:text-orange-800 border-orange-200 hover:bg-orange-50"
+                            className="flex-1 bg-surface text-orange-700 hover:text-orange-800 border-orange-200 hover:bg-orange-50"
                           >
                             <RefreshCw className="w-4 h-4 mr-2" /> Modify
                           </Button>
@@ -171,7 +171,7 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
                             variant="outline"
                             onClick={() => openModal(expense.id, expense.project_id, "REJECTED")} 
                             disabled={isProcessing === expense.id}
-                            className="flex-1 bg-white text-red-700 hover:text-red-800 border-red-200 hover:bg-red-50"
+                            className="flex-1 bg-surface text-destructive hover:text-on-error-container border-error-container hover:bg-error-container/20"
                           >
                             <XCircle className="w-4 h-4 mr-2" /> Reject
                           </Button>
@@ -189,7 +189,7 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
         <DialogContent className="sm:max-w-md">
            <DialogHeader>
              <DialogTitle className="flex items-center gap-2">
-                {modalAction === "REJECTED" ? <XCircle className="w-5 h-5 text-red-600" /> : <RefreshCw className="w-5 h-5 text-orange-600" />}
+                {modalAction === "REJECTED" ? <XCircle className="w-5 h-5 text-destructive" /> : <RefreshCw className="w-5 h-5 text-orange-600" />}
                 {modalAction === "REJECTED" ? "Reject Expense" : "Request Changes"}
              </DialogTitle>
              <DialogDescription>
@@ -201,7 +201,7 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
                 value={comment} 
                 onChange={(e) => setComment(e.target.value)} 
                 placeholder="Type your reasoning here..."
-                className="h-24 focus-visible:ring-indigo-500"
+                className="h-24 focus-visible:ring-primary"
               />
            </div>
            <DialogFooter className="mt-6 flex gap-2 sm:justify-end">

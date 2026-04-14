@@ -241,12 +241,12 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
   const isHidden = post.status === "HIDDEN"
 
   return (
-    <div className={`relative bg-white rounded-xl border shadow-sm overflow-hidden ${isHidden ? "opacity-75" : ""}`}>
+    <div className={`relative bg-surface rounded-xl border shadow-sm overflow-hidden ${isHidden ? "opacity-75" : ""}`}>
       {/* Hidden overlay badge */}
       {isHidden && (
         <div className="absolute inset-0 z-10 pointer-events-none">
           <div className="absolute top-3 left-3">
-            <span className="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full border border-red-200">
+            <span className="bg-error-container/50 text-destructive text-xs font-semibold px-2 py-0.5 rounded-full border border-error-container">
               Hidden
             </span>
           </div>
@@ -259,7 +259,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
           <>
             <button
               onClick={openEdit}
-              className="w-7 h-7 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-indigo-700 hover:border-indigo-300 transition-colors shadow-sm"
+              className="w-7 h-7 rounded-full bg-surface border border-outline-variant/50 flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-colors shadow-sm"
               title="Edit post"
             >
               <Edit2 className="w-3.5 h-3.5" />
@@ -267,10 +267,10 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
             <button
               onClick={handleHideToggle}
               disabled={isToggling}
-              className={`w-7 h-7 rounded-full bg-white border flex items-center justify-center transition-colors shadow-sm ${
+              className={`w-7 h-7 rounded-full bg-surface border flex items-center justify-center transition-colors shadow-sm ${
                 isHidden
-                  ? "border-indigo-300 text-indigo-600 hover:bg-indigo-50"
-                  : "border-gray-200 text-gray-500 hover:text-red-600 hover:border-red-300"
+                  ? "border-primary text-primary hover:bg-primary-container/20"
+                  : "border-outline-variant/50 text-on-surface-variant hover:text-destructive hover:border-red-300"
               }`}
               title={isHidden ? "Unhide post" : "Hide post"}
             >
@@ -283,7 +283,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
             <button
               onClick={handleDelete}
               disabled={isDeleting}
-              className="w-7 h-7 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-red-600 hover:border-red-300 transition-colors shadow-sm"
+              className="w-7 h-7 rounded-full bg-surface border border-outline-variant/50 flex items-center justify-center text-on-surface-variant hover:text-destructive hover:border-red-300 transition-colors shadow-sm"
               title="Delete post"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -322,7 +322,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
         {isEditing ? (
           <div className="space-y-3">
             <div className="space-y-1">
-              <Label className="text-xs text-gray-500">Title (optional)</Label>
+              <Label className="text-xs text-on-surface-variant">Title (optional)</Label>
               <Input
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
@@ -332,7 +332,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
             </div>
 
             <div className="space-y-1">
-              <Label className="text-xs text-gray-500">
+              <Label className="text-xs text-on-surface-variant">
                 Description <span className="text-red-500">*</span>
               </Label>
               <Textarea
@@ -344,7 +344,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs text-gray-500">Tags</Label>
+              <Label className="text-xs text-on-surface-variant">Tags</Label>
               <div className="flex flex-wrap gap-1.5">
                 {PREDEFINED_TAGS.map((tag) => (
                   <button
@@ -353,8 +353,8 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
                     onClick={() => toggleEditTag(tag)}
                     className={`px-2 py-0.5 rounded-full text-xs font-medium border transition-all ${
                       editTags.includes(tag)
-                        ? "bg-indigo-600 text-white border-indigo-600"
-                        : "bg-white text-gray-600 border-gray-200 hover:border-indigo-300"
+                        ? "bg-primary text-white border-primary"
+                        : "bg-surface text-on-surface-variant border-outline-variant/50 hover:border-primary"
                     }`}
                   >
                     {tag}
@@ -388,14 +388,14 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
 
             {/* Media editing */}
             <div className="space-y-1.5">
-              <Label className="text-xs text-gray-500">Media</Label>
+              <Label className="text-xs text-on-surface-variant">Media</Label>
               {!mediaPath ? (
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:bg-surface-variant/20 transition-colors"
                 >
-                  <Upload className="w-5 h-5 text-gray-400 mx-auto mb-1" />
-                  <p className="text-xs text-gray-500">Click to upload new media</p>
+                  <Upload className="w-5 h-5 text-outline mx-auto mb-1" />
+                  <p className="text-xs text-on-surface-variant">Click to upload new media</p>
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -410,16 +410,16 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
               ) : (
                 <div className="border rounded-lg p-2 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-500 truncate max-w-[200px]">
+                    <span className="text-xs text-on-surface-variant truncate max-w-[200px]">
                       {mediaFile ? mediaFile.name : "Current media"}
                     </span>
-                    <button onClick={handleRemoveMedia} className="text-xs text-red-500 hover:text-red-700">
+                    <button onClick={handleRemoveMedia} className="text-xs text-red-500 hover:text-destructive">
                       Remove
                     </button>
                   </div>
                   {mediaUploading && (
-                    <div className="w-full bg-gray-100 rounded-full h-1 overflow-hidden">
-                      <div className="bg-indigo-500 h-1 transition-all" style={{ width: `${uploadProgress}%` }} />
+                    <div className="w-full bg-surface-variant/50 rounded-full h-1 overflow-hidden">
+                      <div className="bg-primary-container/200 h-1 transition-all" style={{ width: `${uploadProgress}%` }} />
                     </div>
                   )}
                 </div>
@@ -432,7 +432,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
                 size="sm"
                 onClick={() => setIsEditing(false)}
                 disabled={isSaving}
-                className="text-gray-500"
+                className="text-on-surface-variant"
               >
                 <X className="w-3.5 h-3.5 mr-1" /> Cancel
               </Button>
@@ -440,7 +440,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
                 size="sm"
                 onClick={handleSaveEdit}
                 disabled={isSaving}
-                className="bg-indigo-700 hover:bg-indigo-800 text-white"
+                className="bg-primary hover:bg-primary text-white"
               >
                 <Check className="w-3.5 h-3.5 mr-1" />
                 {isSaving ? "Saving..." : "Save Changes"}
@@ -455,7 +455,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
                 {post.tags.map((tag: string) => (
                   <span
                     key={tag}
-                    className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-xs rounded-full border border-indigo-100"
+                    className="px-2 py-0.5 bg-primary-container/20 text-primary text-xs rounded-full border border-primary-container/40"
                   >
                     {tag}
                   </span>
@@ -466,7 +466,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
             {/* Milestone */}
             {post.milestone?.name && (
               <div className="mb-2">
-                <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full border border-gray-200">
+                <span className="text-xs text-on-surface-variant bg-surface-variant/50 px-2 py-0.5 rounded-full border border-outline-variant/50">
                   {post.milestone.name}
                 </span>
               </div>
@@ -474,43 +474,43 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
 
             {/* Title */}
             {post.title && (
-              <h3 className="text-base font-bold text-gray-900 leading-snug">
+              <h3 className="text-base font-bold text-on-surface leading-snug">
                 {post.title}
               </h3>
             )}
 
             {/* Description */}
-            <p className="text-sm text-gray-700 mt-1 line-clamp-3 leading-relaxed">
+            <p className="text-sm text-on-surface mt-1 line-clamp-3 leading-relaxed">
               {post.description}
             </p>
 
             {/* Footer */}
             <div className="flex items-center justify-between mt-4 pt-3 border-t">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 text-xs font-semibold">
+                <div className="w-6 h-6 rounded-full bg-primary-container/50 flex items-center justify-center text-primary text-xs font-semibold">
                   {post.author?.name ? post.author.name.charAt(0).toUpperCase() : "A"}
                 </div>
                 <div>
-                  <span className="text-xs font-medium text-gray-700">
+                  <span className="text-xs font-medium text-on-surface">
                     {post.author?.name || "Admin"}
                   </span>
-                  <span className="text-xs text-gray-400 ml-2">
+                  <span className="text-xs text-outline ml-2">
                     {formatDateTime(post.created_at)}
                   </span>
                 </div>
               </div>
 
               {/* View count */}
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-outline">
                 👁 {viewCount}
               </span>
             </div>
 
             {/* Reactions */}
             <div className="flex gap-4 mt-2">
-              <span className="text-xs text-gray-500">👍 {rc.LIKE}</span>
-              <span className="text-xs text-gray-500">❤️ {rc.LOVE}</span>
-              <span className="text-xs text-gray-500">👏 {rc.APPRECIATE}</span>
+              <span className="text-xs text-on-surface-variant">👍 {rc.LIKE}</span>
+              <span className="text-xs text-on-surface-variant">❤️ {rc.LOVE}</span>
+              <span className="text-xs text-on-surface-variant">👏 {rc.APPRECIATE}</span>
             </div>
           </>
         )}

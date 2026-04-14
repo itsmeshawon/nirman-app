@@ -13,8 +13,8 @@ export default function DocumentsLoading() {
 
       <Skeleton className="h-10 w-full rounded-lg" />
 
-      <div className="bg-white rounded-xl border overflow-hidden">
-        <div className="bg-gray-50 h-11 border-b" />
+      <div className="bg-surface rounded-xl border overflow-hidden">
+        <div className="bg-surface-variant/20 h-11 border-b" />
         <div className="divide-y divide-gray-100">
           {[...Array(6)].map((_, i) => (
             <Skeleton key={i} className="h-14 w-full rounded-none" />

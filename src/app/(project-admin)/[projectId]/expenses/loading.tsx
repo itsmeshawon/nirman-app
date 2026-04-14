@@ -20,7 +20,7 @@ export default function ExpensesLoading() {
 
       {/* Table skeleton */}
       <div className="border rounded-xl overflow-hidden">
-        <div className="bg-gray-50 h-10 w-full" />
+        <div className="bg-surface-variant/20 h-10 w-full" />
         <div className="divide-y divide-gray-100">
           {[...Array(5)].map((_, i) => (
             <Skeleton key={i} className="h-16 w-full rounded-none" />

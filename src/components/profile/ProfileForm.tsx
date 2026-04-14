@@ -143,12 +143,12 @@ export function ProfileForm() {
   }
 
   return (
-    <div className="bg-white rounded-[1.25rem] shadow-eos-xl border border-indigo-50/50 overflow-hidden">
+    <div className="bg-surface rounded-[1.25rem] shadow-eos-xl border border-primary-container/30/50 overflow-hidden">
       {/* Cover/Header area */}
-      <div className="h-32 bg-gradient-to-r from-indigo-600 to-violet-600 relative">
+      <div className="h-32 bg-gradient-to-r from-primary to-secondary relative">
         <div className="absolute -bottom-12 left-8 md:left-12">
           <div className="relative group">
-            <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-white bg-indigo-50 flex items-center justify-center text-indigo-600 text-3xl font-bold shadow-sm overflow-hidden relative">
+            <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-white bg-primary-container/20 flex items-center justify-center text-primary text-3xl font-bold shadow-sm overflow-hidden relative">
               {initialData?.avatar_url ? (
                 <img 
                   src={initialData.avatar_url} 
@@ -159,7 +159,7 @@ export function ProfileForm() {
                 initialData?.name?.charAt(0)?.toUpperCase() || "U"
               )}
               {isUploadingAvatar && (
-                <div className="absolute inset-0 bg-indigo-900/40 flex items-center justify-center backdrop-blur-[1px]">
+                <div className="absolute inset-0 bg-primary/90/40 flex items-center justify-center backdrop-blur-[1px]">
                   <Loader2 className="w-8 h-8 text-white animate-spin" />
                 </div>
               )}
@@ -168,7 +168,7 @@ export function ProfileForm() {
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploadingAvatar}
-              className="absolute bottom-1 right-1 bg-white p-1.5 rounded-full shadow-md text-gray-600 hover:text-indigo-600 transition-colors border border-gray-100 disabled:opacity-50"
+              className="absolute bottom-1 right-1 bg-surface p-1.5 rounded-full shadow-md text-on-surface-variant hover:text-primary transition-colors border border-outline-variant/30 disabled:opacity-50"
             >
               <Camera className="w-4 h-4" />
             </button>
@@ -185,13 +185,13 @@ export function ProfileForm() {
 
       <div className="pt-16 pb-6 px-8 md:px-12 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{initialData?.name}</h2>
-          <p className="text-sm text-gray-500">{initialData?.role?.replace('_', ' ')}</p>
+          <h2 className="text-2xl font-bold text-on-surface">{initialData?.name}</h2>
+          <p className="text-sm text-on-surface-variant">{initialData?.role?.replace('_', ' ')}</p>
         </div>
         {isDirty && (
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 rounded-full border border-amber-100">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-tertiary-container/20 rounded-full border border-amber-100">
             <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-            <span className="text-xs font-semibold text-amber-700 uppercase tracking-wider">Unsaved Changes</span>
+            <span className="text-xs font-semibold text-on-tertiary-container uppercase tracking-wider">Unsaved Changes</span>
           </div>
         )}
       </div>
@@ -201,81 +201,81 @@ export function ProfileForm() {
         
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-gray-700">Full Name <span className="text-red-500">*</span></Label>
+            <Label htmlFor="name" className="text-on-surface">Full Name <span className="text-red-500">*</span></Label>
             <div className="relative">
-              <User className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+              <User className="w-4 h-4 absolute left-3 top-3 text-outline" />
               <Input id="name" {...register("name")} className="pl-9 h-11 rounded-xl" placeholder="John Doe" />
             </div>
             {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-gray-700">Email Address</Label>
+            <Label htmlFor="email" className="text-on-surface">Email Address</Label>
             <div className="relative">
-              <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+              <Mail className="w-4 h-4 absolute left-3 top-3 text-outline" />
               <Input 
                 id="email" 
                 value={initialData?.email || ""} 
                 disabled 
-                className="pl-9 bg-gray-50 text-gray-500 cursor-not-allowed font-medium h-11 rounded-xl" 
+                className="pl-9 bg-surface-variant/20 text-on-surface-variant cursor-not-allowed font-medium h-11 rounded-xl" 
               />
             </div>
-            <p className="text-[10px] text-gray-400">Email cannot be changed.</p>
+            <p className="text-[10px] text-outline">Email cannot be changed.</p>
           </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="phone" className="text-gray-700">Mobile No.</Label>
+            <Label htmlFor="phone" className="text-on-surface">Mobile No.</Label>
             <div className="relative">
-              <Phone className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+              <Phone className="w-4 h-4 absolute left-3 top-3 text-outline" />
               <Input id="phone" {...register("phone")} className="pl-9 h-11 rounded-xl" placeholder="+880..." />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="whatsapp_no" className="text-gray-700">WhatsApp No.</Label>
+            <Label htmlFor="whatsapp_no" className="text-on-surface">WhatsApp No.</Label>
             <div className="relative">
-              <MessageCircle className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+              <MessageCircle className="w-4 h-4 absolute left-3 top-3 text-outline" />
               <Input id="whatsapp_no" {...register("whatsapp_no")} className="pl-9 h-11 rounded-xl" placeholder="+880..." />
             </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-100 pt-6 mt-2">
-          <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Briefcase className="w-4 h-4 text-gray-400" />
+        <div className="border-t border-outline-variant/30 pt-6 mt-2">
+          <h3 className="text-sm font-semibold text-on-surface mb-4 flex items-center gap-2">
+            <Briefcase className="w-4 h-4 text-outline" />
             Professional Details
           </h3>
           
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="profession" className="text-gray-700">Profession</Label>
+              <Label htmlFor="profession" className="text-on-surface">Profession</Label>
               <Input id="profession" {...register("profession")} className="h-11 rounded-xl" placeholder="e.g. Engineer" />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="designation" className="text-gray-700">Designation</Label>
+              <Label htmlFor="designation" className="text-on-surface">Designation</Label>
               <Input id="designation" {...register("designation")} className="h-11 rounded-xl" placeholder="e.g. Senior Architect" />
             </div>
 
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="organization" className="text-gray-700">Organization</Label>
+              <Label htmlFor="organization" className="text-on-surface">Organization</Label>
               <div className="relative">
-                <Building2 className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                <Building2 className="w-4 h-4 absolute left-3 top-3 text-outline" />
                 <Input id="organization" {...register("organization")} className="pl-9 h-11 rounded-xl" placeholder="Company Name" />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-100 pt-6 mt-2">
-          <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-gray-400" />
+        <div className="border-t border-outline-variant/30 pt-6 mt-2">
+          <h3 className="text-sm font-semibold text-on-surface mb-4 flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-outline" />
             Address
           </h3>
           <div className="space-y-2">
-            <Label htmlFor="present_address" className="text-gray-700">Present Address</Label>
+            <Label htmlFor="present_address" className="text-on-surface">Present Address</Label>
             <Textarea 
               id="present_address" 
               {...register("present_address")} 
@@ -290,7 +290,7 @@ export function ProfileForm() {
           <Button 
             type="submit" 
             disabled={isSaving || !isDirty}
-            className="bg-[#4F46E5] hover:bg-indigo-700 min-w-[160px] h-11 rounded-xl shadow-eos font-semibold transition-all active:scale-[0.98]"
+            className="bg-primary hover:bg-primary min-w-[160px] h-11 rounded-xl shadow-eos font-semibold transition-all active:scale-[0.98]"
           >
             {isSaving ? "Saving..." : "Save Changes"}
           </Button>

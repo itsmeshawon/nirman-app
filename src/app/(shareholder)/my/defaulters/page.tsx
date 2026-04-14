@@ -22,9 +22,9 @@ export default async function DefaultersPage() {
 
   if (!memberRecords || memberRecords.length === 0) {
     return (
-      <div className="p-8 max-w-4xl mx-auto text-center mt-12 bg-white rounded-[1.25rem] shadow-eos-sm border py-24">
-         <h2 className="text-2xl font-bold text-gray-900">Defaulter List</h2>
-         <p className="text-gray-500 mt-2">You are not an active committee member on any projects.</p>
+      <div className="p-8 max-w-4xl mx-auto text-center mt-12 bg-surface rounded-[1.25rem] shadow-eos-sm border py-24">
+         <h2 className="text-2xl font-bold text-on-surface">Defaulter List</h2>
+         <p className="text-on-surface-variant mt-2">You are not an active committee member on any projects.</p>
       </div>
     )
   }
@@ -84,8 +84,8 @@ export default async function DefaultersPage() {
   return (
     <div className="space-y-6">
       <div className="mb-2">
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Defaulter List</h1>
-        <p className="text-gray-500 mt-1">Shareholders with overdue collections across your assigned projects.</p>
+        <h1 className="text-2xl font-bold text-on-surface tracking-tight">Defaulter List</h1>
+        <p className="text-on-surface-variant mt-1">Shareholders with overdue collections across your assigned projects.</p>
       </div>
       <DefaultersClient 
         overdueItems={overdueItems || []} 

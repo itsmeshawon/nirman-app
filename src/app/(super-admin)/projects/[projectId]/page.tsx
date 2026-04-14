@@ -107,24 +107,24 @@ interface ApiResponse {
 function Field({ label, value }: { label: string; value?: string | null }) {
   return (
     <div>
-      <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">{label}</p>
-      <p className="text-sm text-gray-800 font-medium">{value || "—"}</p>
+      <p className="text-xs text-outline uppercase tracking-wide mb-0.5">{label}</p>
+      <p className="text-sm text-on-surface font-medium">{value || "—"}</p>
     </div>
   )
 }
 
 function ProfileCard({ profile, badge }: { profile: AdminProfile; badge: string }) {
   return (
-    <div className="border border-gray-100 rounded-xl p-5 bg-white">
+    <div className="border border-outline-variant/30 rounded-xl p-5 bg-surface">
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h4 className="text-lg font-semibold text-gray-900">{profile.name || "—"}</h4>
-          <span className="text-xs bg-indigo-50 text-indigo-700 border border-indigo-100 px-2 py-0.5 rounded-full font-medium">
+          <h4 className="text-lg font-semibold text-on-surface">{profile.name || "—"}</h4>
+          <span className="text-xs bg-primary-container/20 text-primary border border-primary-container/40 px-2 py-0.5 rounded-full font-medium">
             {badge}
           </span>
         </div>
         <div
-          className={`w-3 h-3 rounded-full mt-1 ${profile.is_active ? "bg-green-400" : "bg-gray-300"}`}
+          className={`w-3 h-3 rounded-full mt-1 ${profile.is_active ? "bg-green-400" : "bg-outline-variant"}`}
           title={profile.is_active ? "Active" : "Inactive"}
         />
       </div>
@@ -148,9 +148,9 @@ function ProfileCard({ profile, badge }: { profile: AdminProfile; badge: string 
 // ---------------------------------------------------------------------------
 
 const STATUS_STYLES: Record<string, string> = {
-  ACTIVE: "bg-green-100 text-green-700",
-  PILOT: "bg-blue-100 text-blue-700",
-  ARCHIVED: "bg-gray-100 text-gray-600",
+  ACTIVE: "bg-primary-container/50 text-primary",
+  PILOT: "bg-tertiary-container/50 text-tertiary",
+  ARCHIVED: "bg-surface-variant/50 text-on-surface-variant",
 }
 
 function StatusBadge({ status }: { status: string }) {
@@ -229,9 +229,9 @@ export default function SuperAdminProjectDetailPage() {
   if (error || !data) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
-        <Building2 className="h-12 w-12 text-gray-200 mb-4" />
-        <p className="text-lg font-semibold text-gray-700">Failed to load project</p>
-        <p className="text-sm text-gray-400 mt-1">{error}</p>
+        <Building2 className="h-12 w-12 text-outline-variant mb-4" />
+        <p className="text-lg font-semibold text-on-surface">Failed to load project</p>
+        <p className="text-sm text-outline mt-1">{error}</p>
       </div>
     )
   }
@@ -252,7 +252,7 @@ export default function SuperAdminProjectDetailPage() {
       {/* Back link */}
       <Link
         href="/projects"
-        className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors"
+        className="inline-flex items-center gap-2 text-sm text-on-surface-variant hover:text-on-surface transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Projects
@@ -260,15 +260,15 @@ export default function SuperAdminProjectDetailPage() {
 
       {/* Page header */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-        <div className="h-12 w-12 rounded-lg bg-indigo-50 flex items-center justify-center text-[#4F46E5] shrink-0">
+        <div className="h-12 w-12 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary shrink-0">
           <Building2 className="h-6 w-6" />
         </div>
         <div className="flex-1 min-w-0">
-          <h1 className="text-2xl font-bold text-gray-900 truncate">{project.name}</h1>
+          <h1 className="text-2xl font-bold text-on-surface truncate">{project.name}</h1>
           <div className="flex items-center gap-2 mt-1">
             <StatusBadge status={project.status} />
             {project.created_at && (
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-outline">
                 Created {formatDate(project.created_at)}
               </span>
             )}
@@ -279,23 +279,23 @@ export default function SuperAdminProjectDetailPage() {
       {/* ------------------------------------------------------------------ */}
       {/* Section A — Project Info                                             */}
       {/* ------------------------------------------------------------------ */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
-        <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
-          <LayoutGrid className="h-4 w-4 text-[#4F46E5]" />
-          <h2 className="text-base font-semibold text-gray-900">Project Info</h2>
+      <div className="bg-surface rounded-xl border border-outline-variant/30 shadow-sm">
+        <div className="px-5 py-4 border-b border-outline-variant/30 flex items-center gap-2">
+          <LayoutGrid className="h-4 w-4 text-primary" />
+          <h2 className="text-base font-semibold text-on-surface">Project Info</h2>
         </div>
         <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-5">
           <Field label="Name" value={project.name} />
           <Field label="Status" value={project.status.charAt(0) + project.status.slice(1).toLowerCase()} />
           {project.package && (
             <div className="sm:col-span-2">
-              <p className="text-xs text-gray-400 uppercase tracking-wide mb-1.5">Package</p>
+              <p className="text-xs text-outline uppercase tracking-wide mb-1.5">Package</p>
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-semibold text-gray-800 bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-lg">
+                <span className="text-sm font-semibold text-on-surface bg-primary-container/20 border border-primary-container px-2.5 py-1 rounded-lg">
                   {project.package.name}
                 </span>
                 {project.package.features?.map((f: string) => (
-                  <span key={f} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+                  <span key={f} className="text-xs bg-surface-variant/50 text-on-surface-variant px-2 py-0.5 rounded-full">
                     {f.replace(/_/g, " ")}
                   </span>
                 ))}
@@ -303,49 +303,49 @@ export default function SuperAdminProjectDetailPage() {
             </div>
           )}
           <div className="flex items-start gap-2">
-            <MapPin className="h-4 w-4 text-gray-400 mt-0.5 shrink-0" />
+            <MapPin className="h-4 w-4 text-outline mt-0.5 shrink-0" />
             <div>
-              <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Address</p>
-              <p className="text-sm text-gray-800 font-medium">{project.address || "—"}</p>
+              <p className="text-xs text-outline uppercase tracking-wide mb-0.5">Address</p>
+              <p className="text-sm text-on-surface font-medium">{project.address || "—"}</p>
             </div>
           </div>
           <Field label="Area" value={project.area} />
           <div className="flex items-start gap-2">
-            <Calendar className="h-4 w-4 text-gray-400 mt-0.5 shrink-0" />
+            <Calendar className="h-4 w-4 text-outline mt-0.5 shrink-0" />
             <div>
-              <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Start Date</p>
-              <p className="text-sm text-gray-800 font-medium">
+              <p className="text-xs text-outline uppercase tracking-wide mb-0.5">Start Date</p>
+              <p className="text-sm text-on-surface font-medium">
                 {project.start_date ? formatDate(project.start_date) : "—"}
               </p>
             </div>
           </div>
           <div className="flex items-start gap-2">
-            <Calendar className="h-4 w-4 text-gray-400 mt-0.5 shrink-0" />
+            <Calendar className="h-4 w-4 text-outline mt-0.5 shrink-0" />
             <div>
-              <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Expected Handover</p>
-              <p className="text-sm text-gray-800 font-medium">
+              <p className="text-xs text-outline uppercase tracking-wide mb-0.5">Expected Handover</p>
+              <p className="text-sm text-on-surface font-medium">
                 {project.expected_handover ? formatDate(project.expected_handover) : "TBD"}
               </p>
             </div>
           </div>
           {project.building_meta && (
             <div className="sm:col-span-2 flex items-start gap-2">
-              <Layers className="h-4 w-4 text-gray-400 mt-0.5 shrink-0" />
+              <Layers className="h-4 w-4 text-outline mt-0.5 shrink-0" />
               <div className="flex-1">
-                <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Building Structure</p>
+                <p className="text-xs text-outline uppercase tracking-wide mb-1">Building Structure</p>
                 <div className="flex flex-wrap gap-6">
                   <div>
-                    <p className="text-sm font-medium text-gray-800">{project.building_meta?.floors ?? "—"}</p>
-                    <p className="text-[11px] text-gray-400">Floors</p>
+                    <p className="text-sm font-medium text-on-surface">{project.building_meta?.floors ?? "—"}</p>
+                    <p className="text-[11px] text-outline">Floors</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-800">{project.building_meta?.units ?? "—"}</p>
-                    <p className="text-[11px] text-gray-400">Units</p>
+                    <p className="text-sm font-medium text-on-surface">{project.building_meta?.units ?? "—"}</p>
+                    <p className="text-[11px] text-outline">Units</p>
                   </div>
                   {project.building_meta?.salesperson_name && (
                     <div>
-                      <p className="text-sm font-medium text-gray-800">{project.building_meta.salesperson_name}</p>
-                      <p className="text-[11px] text-gray-400">Salesperson</p>
+                      <p className="text-sm font-medium text-on-surface">{project.building_meta.salesperson_name}</p>
+                      <p className="text-[11px] text-outline">Salesperson</p>
                     </div>
                   )}
                 </div>
@@ -358,17 +358,17 @@ export default function SuperAdminProjectDetailPage() {
       {/* ------------------------------------------------------------------ */}
       {/* Section B — Project Admins                                           */}
       {/* ------------------------------------------------------------------ */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
-        <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
-          <ShieldCheck className="h-4 w-4 text-[#4F46E5]" />
-          <h2 className="text-base font-semibold text-gray-900">
+      <div className="bg-surface rounded-xl border border-outline-variant/30 shadow-sm">
+        <div className="px-5 py-4 border-b border-outline-variant/30 flex items-center gap-2">
+          <ShieldCheck className="h-4 w-4 text-primary" />
+          <h2 className="text-base font-semibold text-on-surface">
             Project Admin
-            <span className="ml-2 text-xs font-normal text-gray-400">({admins.length})</span>
+            <span className="ml-2 text-xs font-normal text-outline">({admins.length})</span>
           </h2>
         </div>
         <div className="p-5">
           {admins.length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-8">No admins assigned to this project.</p>
+            <p className="text-sm text-outline text-center py-8">No admins assigned to this project.</p>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {admins.map((admin) => (
@@ -382,56 +382,56 @@ export default function SuperAdminProjectDetailPage() {
       {/* ------------------------------------------------------------------ */}
       {/* Section C — Shareholders                                             */}
       {/* ------------------------------------------------------------------ */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
-        <div className="px-5 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center gap-3">
+      <div className="bg-surface rounded-xl border border-outline-variant/30 shadow-sm">
+        <div className="px-5 py-4 border-b border-outline-variant/30 flex flex-col sm:flex-row sm:items-center gap-3">
           <div className="flex items-center gap-2 flex-1">
-            <Users className="h-4 w-4 text-[#4F46E5]" />
-            <h2 className="text-base font-semibold text-gray-900">
+            <Users className="h-4 w-4 text-primary" />
+            <h2 className="text-base font-semibold text-on-surface">
               Shareholders
-              <span className="ml-2 text-xs font-normal text-gray-400">({shareholders.length})</span>
+              <span className="ml-2 text-xs font-normal text-outline">({shareholders.length})</span>
             </h2>
           </div>
           <div className="relative w-full sm:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-outline pointer-events-none" />
             <input
               type="text"
               placeholder="Search by name or unit…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full pl-9 pr-3 py-1.5 text-sm border border-outline-variant/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
         </div>
 
         <div className="overflow-x-auto">
           {shareholders.length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-10">No shareholders found.</p>
+            <p className="text-sm text-outline text-center py-10">No shareholders found.</p>
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-gray-50 border-b border-gray-100">
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                <tr className="bg-surface-variant/20 border-b border-outline-variant/30">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-on-surface-variant uppercase tracking-wide">
                     Unit
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-on-surface-variant uppercase tracking-wide">
                     Name
                     <span className="ml-2 inline-flex items-center gap-1 text-[10px] font-normal normal-case text-amber-500">
                       <Crown className="h-3 w-3" /> = Committee
                     </span>
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-on-surface-variant uppercase tracking-wide">
                     Email
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-on-surface-variant uppercase tracking-wide">
                     Phone
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-on-surface-variant uppercase tracking-wide">
                     Profession
                   </th>
-                  <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-4 py-3 text-right text-xs font-semibold text-on-surface-variant uppercase tracking-wide">
                     Ownership %
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-on-surface-variant uppercase tracking-wide">
                     Status
                   </th>
                 </tr>
@@ -439,21 +439,21 @@ export default function SuperAdminProjectDetailPage() {
               <tbody className="divide-y divide-gray-50">
                 {filteredShareholders.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-4 py-10 text-center text-gray-400 text-sm">
+                    <td colSpan={7} className="px-4 py-10 text-center text-outline text-sm">
                       No shareholders match your search.
                     </td>
                   </tr>
                 ) : (
                   filteredShareholders.map((sh) => (
-                    <tr key={sh.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-3 font-medium text-gray-900">
+                    <tr key={sh.id} className="hover:bg-surface-variant/20 transition-colors">
+                      <td className="px-4 py-3 font-medium text-on-surface">
                         {sh.unit_flat || "—"}
                       </td>
-                      <td className="px-4 py-3 text-gray-800">
+                      <td className="px-4 py-3 text-on-surface">
                         <button
                           type="button"
                           onClick={() => setDetailShareholder(sh)}
-                          className="flex items-center gap-1.5 font-medium text-gray-900 hover:text-[#4F46E5] transition-colors group text-left"
+                          className="flex items-center gap-1.5 font-medium text-on-surface hover:text-primary transition-colors group text-left"
                         >
                           {committeeShareholderIds.has(sh.id) && (
                             <span title="Committee Member"><Crown className="h-3.5 w-3.5 text-amber-400 shrink-0" /></span>
@@ -461,16 +461,16 @@ export default function SuperAdminProjectDetailPage() {
                           <span className="group-hover:underline underline-offset-2">{sh.profile?.name || "—"}</span>
                         </button>
                       </td>
-                      <td className="px-4 py-3 text-gray-500">
+                      <td className="px-4 py-3 text-on-surface-variant">
                         {sh.profile?.email || "—"}
                       </td>
-                      <td className="px-4 py-3 text-gray-500">
+                      <td className="px-4 py-3 text-on-surface-variant">
                         {sh.profile?.phone || "—"}
                       </td>
-                      <td className="px-4 py-3 text-gray-500">
+                      <td className="px-4 py-3 text-on-surface-variant">
                         {sh.profile?.profession || "—"}
                       </td>
-                      <td className="px-4 py-3 text-right text-gray-800 font-medium">
+                      <td className="px-4 py-3 text-right text-on-surface font-medium">
                         {sh.ownership_pct != null ? `${sh.ownership_pct}%` : "—"}
                       </td>
                       <td className="px-4 py-3">
@@ -498,9 +498,9 @@ export default function SuperAdminProjectDetailPage() {
             return (
               <>
                 {/* Hero */}
-                <div className="bg-gradient-to-br from-indigo-700 to-indigo-500 px-6 pt-10 pb-6 text-white">
+                <div className="bg-gradient-to-br from-primary to-primary/80 px-6 pt-10 pb-6 text-white">
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-2xl font-bold shrink-0">
+                    <div className="w-16 h-16 rounded-full bg-surface/20 flex items-center justify-center text-2xl font-bold shrink-0">
                       {initials}
                     </div>
                     <div className="min-w-0">
@@ -512,8 +512,8 @@ export default function SuperAdminProjectDetailPage() {
                           </span>
                         )}
                       </div>
-                      <p className="text-indigo-100 text-sm mt-0.5">Unit {detailShareholder.unit_flat || "—"}</p>
-                      <span className={`mt-2 inline-block text-xs font-semibold px-2 py-0.5 rounded-full ${isActive ? "bg-green-400/20 text-green-100 border border-green-400/30" : "bg-gray-400/20 text-gray-200 border border-gray-400/30"}`}>
+                      <p className="text-primary-foreground text-sm mt-0.5">Unit {detailShareholder.unit_flat || "—"}</p>
+                      <span className={`mt-2 inline-block text-xs font-semibold px-2 py-0.5 rounded-full ${isActive ? "bg-green-400/20 text-green-100 border border-green-400/30" : "bg-outline/20 text-outline-variant border border-outline/30"}`}>
                         {isActive ? "Active" : "Inactive"}
                       </span>
                     </div>
@@ -523,19 +523,19 @@ export default function SuperAdminProjectDetailPage() {
                 {/* Body */}
                 <div className="px-6 py-5 space-y-6">
                   <section>
-                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Contact</h3>
+                    <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Contact</h3>
                     <div className="space-y-3">
-                      <SheetDetailRow icon={<Mail className="h-4 w-4 text-gray-400" />} label="Email" value={p?.email} />
-                      <SheetDetailRow icon={<Phone className="h-4 w-4 text-gray-400" />} label="Phone" value={p?.phone} />
-                      <SheetDetailRow icon={<Phone className="h-4 w-4 text-gray-400" />} label="WhatsApp" value={p?.whatsapp_no} />
-                      <SheetDetailRow icon={<MapPin className="h-4 w-4 text-gray-400" />} label="Present Address" value={p?.present_address} />
+                      <SheetDetailRow icon={<Mail className="h-4 w-4 text-outline" />} label="Email" value={p?.email} />
+                      <SheetDetailRow icon={<Phone className="h-4 w-4 text-outline" />} label="Phone" value={p?.phone} />
+                      <SheetDetailRow icon={<Phone className="h-4 w-4 text-outline" />} label="WhatsApp" value={p?.whatsapp_no} />
+                      <SheetDetailRow icon={<MapPin className="h-4 w-4 text-outline" />} label="Present Address" value={p?.present_address} />
                     </div>
                   </section>
 
-                  <div className="border-t border-gray-100" />
+                  <div className="border-t border-outline-variant/30" />
 
                   <section>
-                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Professional</h3>
+                    <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Professional</h3>
                     <div className="grid grid-cols-2 gap-3">
                       <SheetStatField label="Profession" value={p?.profession} />
                       <SheetStatField label="Designation" value={p?.designation} />
@@ -543,10 +543,10 @@ export default function SuperAdminProjectDetailPage() {
                     </div>
                   </section>
 
-                  <div className="border-t border-gray-100" />
+                  <div className="border-t border-outline-variant/30" />
 
                   <section>
-                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Shareholding</h3>
+                    <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Shareholding</h3>
                     <div className="grid grid-cols-2 gap-3">
                       <SheetStatField label="Unit / Flat" value={detailShareholder.unit_flat} />
                       <SheetStatField label="Ownership" value={detailShareholder.ownership_pct != null ? `${detailShareholder.ownership_pct}%` : undefined} />
@@ -569,8 +569,8 @@ function SheetDetailRow({ icon, label, value }: { icon: React.ReactNode; label: 
     <div className="flex items-start gap-3">
       <div className="mt-0.5 shrink-0">{icon}</div>
       <div className="min-w-0">
-        <p className="text-xs text-gray-400">{label}</p>
-        <p className="text-sm text-gray-800 font-medium break-words">{value || "—"}</p>
+        <p className="text-xs text-outline">{label}</p>
+        <p className="text-sm text-on-surface font-medium break-words">{value || "—"}</p>
       </div>
     </div>
   )
@@ -579,8 +579,8 @@ function SheetDetailRow({ icon, label, value }: { icon: React.ReactNode; label: 
 function SheetStatField({ label, value, className }: { label: string; value?: string | null; className?: string }) {
   return (
     <div className={className}>
-      <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">{label}</p>
-      <p className="text-sm font-semibold text-gray-800">{value || "—"}</p>
+      <p className="text-xs text-outline uppercase tracking-wide mb-0.5">{label}</p>
+      <p className="text-sm font-semibold text-on-surface">{value || "—"}</p>
     </div>
   )
 }

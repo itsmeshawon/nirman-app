@@ -160,21 +160,21 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
           </DialogHeader>
 
           <div className="space-y-4 py-2">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-on-surface-variant">
               Share these login credentials with <strong>{tempCredentials.name}</strong> for this project.
             </p>
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 space-y-2 font-mono text-sm">
+            <div className="rounded-lg border border-outline-variant/50 bg-surface-variant/20 p-4 space-y-2 font-mono text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-500">Email</span>
-                <span className="text-gray-900">{tempCredentials.email}</span>
+                <span className="text-on-surface-variant">Email</span>
+                <span className="text-on-surface">{tempCredentials.email}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Password</span>
-                <span className="text-gray-900">{tempCredentials.pass}</span>
+                <span className="text-on-surface-variant">Password</span>
+                <span className="text-on-surface">{tempCredentials.pass}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">URL</span>
-                <span className="text-gray-900 text-xs">{typeof window !== "undefined" ? window.location.origin : ""}/login</span>
+                <span className="text-on-surface-variant">URL</span>
+                <span className="text-on-surface text-xs">{typeof window !== "undefined" ? window.location.origin : ""}/login</span>
               </div>
             </div>
             <div className="flex gap-2">
@@ -183,11 +183,11 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
                 className="flex-1"
                 onClick={copyCredentials}
               >
-                {copied ? <Check className="h-4 w-4 text-green-600 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
+                {copied ? <Check className="h-4 w-4 text-primary mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
                 {copied ? "Copied!" : "Copy Credentials"}
               </Button>
               <Button
-                className="flex-1 bg-[#4F46E5] hover:bg-[#14B8A6] text-white"
+                className="flex-1 bg-primary hover:bg-primary/90 text-white"
                 onClick={handleCloseCreds}
               >
                 Done
@@ -229,7 +229,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
               <Label htmlFor="password">Password *</Label>
               <Input id="password" type="text" {...register("password")} disabled={isLoading} />
               {errors.password && <span className="text-xs text-red-500">{errors.password.message}</span>}
-              <p className="text-xs text-gray-400">Min 8 characters. Share this with the shareholder.</p>
+              <p className="text-xs text-outline">Min 8 characters. Share this with the shareholder.</p>
             </div>
           )}
 
@@ -257,7 +257,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
           </div>
 
           <div className="border-t pt-4">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Additional Info (Optional)</p>
+            <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-wide mb-4">Additional Info (Optional)</p>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
@@ -290,7 +290,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
             <Button variant="outline" type="button" onClick={onClose} disabled={isLoading}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading} className="bg-[#4F46E5] hover:bg-indigo-800">
+            <Button type="submit" disabled={isLoading} className="bg-primary hover:bg-primary">
               {isLoading ? "Saving..." : isEdit ? "Save Changes" : "Add Shareholder"}
             </Button>
           </DialogFooter>

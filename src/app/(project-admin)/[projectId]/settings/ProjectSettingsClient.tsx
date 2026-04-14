@@ -209,42 +209,42 @@ export function ProjectSettingsClient({
   }
 
   return (
-    <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
-      <div className="p-6 border-b border-gray-200">
-        <h2 className="text-xl font-bold text-gray-900">Project Settings</h2>
-        <p className="text-sm text-gray-500 mt-1">Configure project rules, schedules, and automated communications.</p>
+    <div className="bg-surface border rounded-xl shadow-sm overflow-hidden">
+      <div className="p-6 border-b border-outline-variant/50">
+        <h2 className="text-xl font-bold text-on-surface">Project Settings</h2>
+        <p className="text-sm text-on-surface-variant mt-1">Configure project rules, schedules, and automated communications.</p>
       </div>
 
       <Tabs defaultValue="profile" className="w-full">
-        <div className="bg-gray-50 border-b border-gray-200 px-4">
+        <div className="bg-surface-variant/30 border-b border-outline-variant/50 px-4">
           <TabsList className="flex flex-row h-auto bg-transparent p-0 m-0 w-full justify-start overflow-x-auto no-scrollbar">
             <TabsTrigger 
               value="profile" 
-              className="px-6 py-4 rounded-none border-b-2 border-transparent data-[state=active]:border-[#4F46E5] data-[state=active]:bg-transparent data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-none font-medium transition-all"
+              className="px-6 py-4 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none font-medium transition-all"
             >
               <Building className="h-4 w-4 mr-2" /> Profile
             </TabsTrigger>
             <TabsTrigger 
               value="payment" 
-              className="px-6 py-4 rounded-none border-b-2 border-transparent data-[state=active]:border-[#4F46E5] data-[state=active]:bg-transparent data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-none font-medium transition-all"
+              className="px-6 py-4 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none font-medium transition-all"
             >
               <Banknote className="h-4 w-4 mr-2" /> Payment Model
             </TabsTrigger>
             <TabsTrigger 
               value="penalties" 
-              className="px-6 py-4 rounded-none border-b-2 border-transparent data-[state=active]:border-[#4F46E5] data-[state=active]:bg-transparent data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-none font-medium transition-all"
+              className="px-6 py-4 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none font-medium transition-all"
             >
               <CalendarClock className="h-4 w-4 mr-2" /> Penalties
             </TabsTrigger>
             <TabsTrigger
               value="notifications"
-              className="px-6 py-4 rounded-none border-b-2 border-transparent data-[state=active]:border-[#4F46E5] data-[state=active]:bg-transparent data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-none font-medium transition-all"
+              className="px-6 py-4 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none font-medium transition-all"
             >
               <Bell className="h-4 w-4 mr-2" /> Notifications
             </TabsTrigger>
             <TabsTrigger
               value="profile-me"
-              className="px-6 py-4 rounded-none border-b-2 border-transparent data-[state=active]:border-[#4F46E5] data-[state=active]:bg-transparent data-[state=active]:text-[#4F46E5] data-[state=active]:shadow-none font-medium transition-all"
+              className="px-6 py-4 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none font-medium transition-all"
             >
               <User className="h-4 w-4 mr-2" /> My Profile
             </TabsTrigger>
@@ -256,13 +256,13 @@ export function ProjectSettingsClient({
           {/* TAB 1: PROFILE */}
           <TabsContent value="profile" className="m-0 focus:outline-none">
              <div className="max-w-2xl">
-                <div className="mb-6 pb-6 border-b border-gray-100 flex items-center gap-4">
-                  <div className="p-3 bg-indigo-100/50 rounded-xl">
-                    <LayoutGrid className="w-8 h-8 text-indigo-700" />
+                <div className="mb-6 pb-6 border-b border-outline-variant/30 flex items-center gap-4">
+                  <div className="p-3 bg-primary-container/50 rounded-xl">
+                    <LayoutGrid className="w-8 h-8 text-primary" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-medium text-gray-900">Project Details</h3>
-                    <p className="text-sm text-gray-500">ID: {projectId.slice(0,8)}... • Created {new Date(project.created_at).toLocaleDateString()}</p>
+                    <h3 className="text-lg font-medium text-on-surface">Project Details</h3>
+                    <p className="text-sm text-on-surface-variant">ID: {projectId.slice(0,8)}... • Created {new Date(project.created_at).toLocaleDateString()}</p>
                   </div>
                 </div>
 
@@ -285,7 +285,7 @@ export function ProjectSettingsClient({
                         <Input id="handover" type="date" value={handover} onChange={(e) => setHandover(e.target.value)} />
                       </div>
                   </div>
-                  <Button type="submit" disabled={isLoading} className="mt-4 bg-[#4F46E5] hover:bg-indigo-800">
+                  <Button type="submit" disabled={isLoading} className="mt-4 bg-primary hover:bg-primary/90">
                     {isLoading ? "Saving..." : "Save Profile"}
                   </Button>
                 </form>
@@ -296,8 +296,8 @@ export function ProjectSettingsClient({
           <TabsContent value="payment" className="m-0 focus:outline-none">
              <div className="max-w-2xl">
                <div className="mb-6">
-                <h3 className="text-lg font-medium text-gray-900">Payment Collection Model</h3>
-                <p className="text-sm text-gray-500 mt-1">Determine how shareholders are billed for the project cost.</p>
+                <h3 className="text-lg font-medium text-on-surface">Payment Collection Model</h3>
+                <p className="text-sm text-on-surface-variant mt-1">Determine how shareholders are billed for the project cost.</p>
                </div>
 
                 <form onSubmit={handleSavePaymentModel} className="space-y-6 border-b pb-6">
@@ -316,7 +316,7 @@ export function ProjectSettingsClient({
                   </div>
 
                   {paymentType === "MONTHLY" || paymentType === "MIXED" ? (
-                    <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                    <div className="grid grid-cols-2 gap-4 p-4 bg-surface-variant/30 rounded-lg border border-outline-variant/30">
                        <div className="grid gap-2">
                           <Label htmlFor="monthly_amount">Monthly Amount (৳)</Label>
                           <Input id="monthly_amount" type="number" value={monthlyAmount} onChange={(e) => setMonthlyAmount(e.target.value)} placeholder="e.g. 50000" />
@@ -329,19 +329,19 @@ export function ProjectSettingsClient({
                   ) : null}
                   
                   {paymentType === "MILESTONE" && (
-                    <div className="p-4 bg-blue-50 text-blue-800 rounded-lg text-sm">
+                    <div className="p-4 bg-tertiary-container/30 text-on-tertiary-container rounded-lg text-sm">
                       Note: Milestone amounts will be configured directly on the Milestones page once enabled.
                     </div>
                   )}
 
-                  <Button type="submit" disabled={isLoading} className="mt-4 bg-[#4F46E5] hover:bg-indigo-800">
+                  <Button type="submit" disabled={isLoading} className="mt-4 bg-primary hover:bg-primary/90">
                     {isLoading ? "Saving Setup..." : "Save Setup"}
                   </Button>
                 </form>
 
                 <div className="pt-6">
-                   <h4 className="text-sm font-medium text-gray-900 mb-2">Schedule Generation</h4>
-                   <p className="text-sm text-gray-500 mb-4">Run the engine to generate upcoming invoices based on current active shareholders and rules.</p>
+                   <h4 className="text-sm font-medium text-on-surface mb-2">Schedule Generation</h4>
+                   <p className="text-sm text-on-surface-variant mb-4">Run the engine to generate upcoming invoices based on current active shareholders and rules.</p>
                    <Button variant="outline" onClick={handleGenerateSchedule} disabled={isLoading}>
                       Generate Schedule Items
                    </Button>
@@ -353,8 +353,8 @@ export function ProjectSettingsClient({
           <TabsContent value="penalties" className="m-0 focus:outline-none">
              <div className="max-w-2xl">
                <div className="mb-6">
-                <h3 className="text-lg font-medium text-gray-900">Late Payment Penalties</h3>
-                <p className="text-sm text-gray-500 mt-1">Configure automated late fees for overdue payments.</p>
+                <h3 className="text-lg font-medium text-on-surface">Late Payment Penalties</h3>
+                <p className="text-sm text-on-surface-variant mt-1">Configure automated late fees for overdue payments.</p>
                </div>
 
                 <form onSubmit={handleSavePenalties} className="space-y-6">
@@ -362,7 +362,7 @@ export function ProjectSettingsClient({
                   <div className="grid gap-2">
                     <Label htmlFor="grace_days">Grace Period (Days)</Label>
                     <Input id="grace_days" type="number" min="0" value={graceDays} onChange={(e) => setGraceDays(e.target.value)} placeholder="e.g. 5" className="max-w-[200px]" />
-                    <p className="text-xs text-gray-500">Number of days after due date before penalties apply.</p>
+                    <p className="text-xs text-on-surface-variant">Number of days after due date before penalties apply.</p>
                   </div>
 
                   <div className="grid gap-2">
@@ -379,13 +379,13 @@ export function ProjectSettingsClient({
                   </div>
 
                   {penaltyType === "FIXED_AMOUNT" && (
-                    <div className="grid gap-2 bg-gray-50 p-4 rounded border">
+                    <div className="grid gap-2 bg-surface-variant/30 p-4 rounded border">
                        <Label htmlFor="fixed_amount">Fixed Penalty Amount (৳)</Label>
                        <Input id="fixed_amount" type="number" value={fixedAmount} onChange={(e) => setFixedAmount(e.target.value)} className="max-w-[200px]" />
                     </div>
                   )}
 
-                  <Button type="submit" disabled={isLoading} className="mt-4 bg-[#4F46E5] hover:bg-indigo-800">
+                  <Button type="submit" disabled={isLoading} className="mt-4 bg-primary hover:bg-primary/90">
                     {isLoading ? "Saving..." : "Save Penalty Config"}
                   </Button>
                 </form>
@@ -396,15 +396,15 @@ export function ProjectSettingsClient({
           <TabsContent value="notifications" className="m-0 focus:outline-none">
              <div className="max-w-2xl">
                <div className="mb-6">
-                <h3 className="text-lg font-medium text-gray-900">Automated Reminders</h3>
-                <p className="text-sm text-gray-500 mt-1">Configure when system sends payment reminders to shareholders.</p>
+                <h3 className="text-lg font-medium text-on-surface">Automated Reminders</h3>
+                <p className="text-sm text-on-surface-variant mt-1">Configure when system sends payment reminders to shareholders.</p>
                </div>
 
                 <form onSubmit={handleSaveNotifications} className="space-y-6">
                   
                   <div className="space-y-3">
                      <Label className="text-base">Pre-Due Reminders</Label>
-                     <p className="text-sm text-gray-500 mb-3">Send emails X days before payment is due:</p>
+                     <p className="text-sm text-on-surface-variant mb-3">Send emails X days before payment is due:</p>
                      
                      <div className="flex items-center space-x-2">
                         <Checkbox id="7days" checked={sevenDays} onCheckedChange={(c) => setSevenDays(!!c)} />
@@ -429,12 +429,12 @@ export function ProjectSettingsClient({
                         <Checkbox id="overdue" checked={overdue} onCheckedChange={(c) => setOverdue(!!c)} className="mt-1" />
                         <div>
                           <label htmlFor="overdue" className="text-sm font-medium leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Send Overdue Reminders</label>
-                          <p className="text-xs text-gray-500 mt-1">Automatically send reminders every 3 days if payment is overdue.</p>
+                          <p className="text-xs text-on-surface-variant mt-1">Automatically send reminders every 3 days if payment is overdue.</p>
                         </div>
                       </div>
                   </div>
 
-                  <Button type="submit" disabled={isLoading} className="mt-4 bg-[#4F46E5] hover:bg-indigo-800">
+                  <Button type="submit" disabled={isLoading} className="mt-4 bg-primary hover:bg-primary/90">
                     {isLoading ? "Saving..." : "Save Notifications"}
                   </Button>
                 </form>
@@ -446,8 +446,8 @@ export function ProjectSettingsClient({
             <div className="max-w-2xl">
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-base font-semibold text-gray-900">My Profile</h3>
-                  <p className="text-sm text-gray-500 mt-1">Update your personal information visible to shareholders and the Super Admin.</p>
+                  <h3 className="text-base font-semibold text-on-surface">My Profile</h3>
+                  <p className="text-sm text-on-surface-variant mt-1">Update your personal information visible to shareholders and the Super Admin.</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
@@ -484,7 +484,7 @@ export function ProjectSettingsClient({
                   <Textarea value={myAddress} onChange={e => setMyAddress(e.target.value)} placeholder="Your current residential or office address" className="h-20" />
                 </div>
                 <div className="flex justify-end pt-2">
-                  <Button onClick={handleSaveAdminProfile} disabled={isLoading} className="bg-[#4F46E5] hover:bg-indigo-800">
+                  <Button onClick={handleSaveAdminProfile} disabled={isLoading} className="bg-primary hover:bg-primary/90">
                     {isLoading ? "Saving..." : "Save Profile"}
                   </Button>
                 </div>

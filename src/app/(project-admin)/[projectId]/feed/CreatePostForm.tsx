@@ -220,14 +220,14 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
   if (!isExpanded) {
     return (
       <div
-        className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 cursor-text"
+        className="bg-surface rounded-xl border border-outline-variant/50 shadow-sm p-4 cursor-text"
         onClick={() => setIsExpanded(true)}
       >
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-semibold text-sm shrink-0">
+          <div className="w-9 h-9 rounded-full bg-primary-container/50 flex items-center justify-center text-primary font-semibold text-sm shrink-0">
             PA
           </div>
-          <div className="flex-1 bg-gray-50 rounded-lg px-4 py-2.5 text-sm text-gray-400 border border-gray-100 hover:border-indigo-200 transition-colors">
+          <div className="flex-1 bg-surface-variant/20 rounded-lg px-4 py-2.5 text-sm text-outline border border-outline-variant/30 hover:border-primary-container transition-colors">
             Share a project update...
           </div>
         </div>
@@ -236,10 +236,10 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
   }
 
   return (
-    <div className="bg-white rounded-xl border border-indigo-200 shadow-sm p-5 space-y-4">
+    <div className="bg-surface rounded-xl border border-primary-container shadow-sm p-5 space-y-4">
       {/* Title */}
       <div className="space-y-1.5">
-        <Label htmlFor="post-title" className="text-xs text-gray-500 font-medium">
+        <Label htmlFor="post-title" className="text-xs text-on-surface-variant font-medium">
           Title (optional)
         </Label>
         <Input
@@ -253,7 +253,7 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
 
       {/* Description */}
       <div className="space-y-1.5">
-        <Label htmlFor="post-desc" className="text-xs text-gray-500 font-medium">
+        <Label htmlFor="post-desc" className="text-xs text-on-surface-variant font-medium">
           Description <span className="text-red-500">*</span>
         </Label>
         <Textarea
@@ -264,12 +264,12 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
           rows={4}
           className="resize-none text-sm"
         />
-        <p className="text-xs text-gray-400">{description.length} characters (min. 5)</p>
+        <p className="text-xs text-outline">{description.length} characters (min. 5)</p>
       </div>
 
       {/* Media Upload */}
       <div className="space-y-2">
-        <Label className="text-xs text-gray-500 font-medium">Media (optional)</Label>
+        <Label className="text-xs text-on-surface-variant font-medium">Media (optional)</Label>
 
         {!mediaFile ? (
           <div
@@ -279,13 +279,13 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
             onClick={() => fileInputRef.current?.click()}
             className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
               isDragging
-                ? "border-indigo-400 bg-indigo-50"
-                : "border-gray-200 hover:border-indigo-300 hover:bg-gray-50"
+                ? "border-primary/60 bg-primary-container/20"
+                : "border-outline-variant/50 hover:border-primary hover:bg-surface-variant/20"
             }`}
           >
-            <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
-            <p className="text-sm text-gray-500">Drag & drop or click to upload</p>
-            <p className="text-xs text-gray-400 mt-1">Images ≤10MB · Videos ≤50MB · Audio ≤20MB</p>
+            <Upload className="w-6 h-6 text-outline mx-auto mb-2" />
+            <p className="text-sm text-on-surface-variant">Drag & drop or click to upload</p>
+            <p className="text-xs text-outline mt-1">Images ≤10MB · Videos ≤50MB · Audio ≤20MB</p>
             <input
               ref={fileInputRef}
               type="file"
@@ -307,40 +307,40 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
                 className="w-full max-h-48 object-cover rounded-md"
               />
             ) : mediaFile.type.startsWith("video/") ? (
-              <div className="flex items-center gap-2 text-sm text-gray-700">
+              <div className="flex items-center gap-2 text-sm text-on-surface">
                 <Video className="w-4 h-4 text-blue-500" />
                 <span className="font-medium truncate">{mediaFile.name}</span>
-                <span className="text-gray-400 text-xs shrink-0">{formatBytes(mediaFile.size)}</span>
+                <span className="text-outline text-xs shrink-0">{formatBytes(mediaFile.size)}</span>
               </div>
             ) : (
-              <div className="flex items-center gap-2 text-sm text-gray-700">
+              <div className="flex items-center gap-2 text-sm text-on-surface">
                 <Music className="w-4 h-4 text-purple-500" />
                 <span className="font-medium truncate">{mediaFile.name}</span>
-                <span className="text-gray-400 text-xs shrink-0">{formatBytes(mediaFile.size)}</span>
+                <span className="text-outline text-xs shrink-0">{formatBytes(mediaFile.size)}</span>
               </div>
             )}
 
             {/* Upload Progress */}
             {mediaUploading && (
               <div className="space-y-1">
-                <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                <div className="w-full bg-surface-variant/50 rounded-full h-1.5 overflow-hidden">
                   <div
-                    className="bg-indigo-500 h-1.5 rounded-full transition-all duration-300"
+                    className="bg-primary-container/200 h-1.5 rounded-full transition-all duration-300"
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
-                <p className="text-xs text-gray-400">Uploading... {uploadProgress}%</p>
+                <p className="text-xs text-outline">Uploading... {uploadProgress}%</p>
               </div>
             )}
 
             {!mediaUploading && mediaPath && (
-              <p className="text-xs text-indigo-600 font-medium">Upload complete</p>
+              <p className="text-xs text-primary font-medium">Upload complete</p>
             )}
 
             <button
               type="button"
               onClick={handleRemoveMedia}
-              className="flex items-center gap-1 text-xs text-red-500 hover:text-red-700"
+              className="flex items-center gap-1 text-xs text-red-500 hover:text-destructive"
             >
               <X className="w-3 h-3" /> Remove
             </button>
@@ -350,7 +350,7 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
 
       {/* Tags */}
       <div className="space-y-2">
-        <Label className="text-xs text-gray-500 font-medium">Tags</Label>
+        <Label className="text-xs text-on-surface-variant font-medium">Tags</Label>
 
         {/* Predefined tag pills */}
         <div className="flex flex-wrap gap-1.5">
@@ -361,8 +361,8 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
               onClick={() => toggleTag(tag)}
               className={`px-2.5 py-0.5 rounded-full text-xs font-medium border transition-all ${
                 tags.includes(tag)
-                  ? "bg-indigo-600 text-white border-indigo-600"
-                  : "bg-white text-gray-600 border-gray-200 hover:border-indigo-300"
+                  ? "bg-primary text-white border-primary"
+                  : "bg-surface text-on-surface-variant border-outline-variant/50 hover:border-primary"
               }`}
             >
               {tag}
@@ -403,13 +403,13 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
               .map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-full"
+                  className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface-variant/50 text-on-surface text-xs rounded-full"
                 >
                   {tag}
                   <button
                     type="button"
                     onClick={() => removeTag(tag)}
-                    className="text-gray-400 hover:text-red-500"
+                    className="text-outline hover:text-red-500"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -422,14 +422,14 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
       {/* Milestone */}
       {milestones.length > 0 && (
         <div className="space-y-1.5">
-          <Label htmlFor="post-milestone" className="text-xs text-gray-500 font-medium">
+          <Label htmlFor="post-milestone" className="text-xs text-on-surface-variant font-medium">
             Milestone (optional)
           </Label>
           <select
             id="post-milestone"
             value={milestoneId}
             onChange={(e) => setMilestoneId(e.target.value)}
-            className="w-full h-8 rounded-md border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="w-full h-8 rounded-md border border-outline-variant/50 bg-surface px-3 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           >
             <option value="">No milestone</option>
             {milestones.map((m) => (
@@ -448,7 +448,7 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
           variant="ghost"
           onClick={resetForm}
           disabled={isSubmitting}
-          className="text-gray-500"
+          className="text-on-surface-variant"
         >
           Cancel
         </Button>
@@ -456,7 +456,7 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
           type="button"
           onClick={handlePublish}
           disabled={isSubmitting || mediaUploading}
-          className="bg-indigo-700 hover:bg-indigo-800 text-white"
+          className="bg-primary hover:bg-primary text-white"
         >
           {isSubmitting ? "Publishing..." : "Publish Post"}
         </Button>

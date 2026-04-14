@@ -21,9 +21,9 @@ export default async function ShareholderDirectoryPage() {
 
   if (!userShareholderRecords || userShareholderRecords.length === 0) {
     return (
-      <div className="p-8 max-w-4xl mx-auto text-center mt-12 bg-white rounded-[1.25rem] shadow-eos-sm border py-24">
-         <h2 className="text-2xl font-bold text-gray-900">Shareholder List</h2>
-         <p className="text-gray-500 mt-2">You are not registered as a shareholder in any projects.</p>
+      <div className="p-8 max-w-4xl mx-auto text-center mt-12 bg-surface rounded-[1.25rem] shadow-eos-sm border py-24">
+         <h2 className="text-2xl font-bold text-on-surface">Shareholder List</h2>
+         <p className="text-on-surface-variant mt-2">You are not registered as a shareholder in any projects.</p>
       </div>
     )
   }
@@ -65,8 +65,8 @@ export default async function ShareholderDirectoryPage() {
   return (
     <div className="space-y-6">
       <div className="mb-2">
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Project Shareholders</h1>
-        <p className="text-gray-500 mt-1">Connect with your neighbors and view project unit owners.</p>
+        <h1 className="text-2xl font-bold text-on-surface tracking-tight">Project Shareholders</h1>
+        <p className="text-on-surface-variant mt-1">Connect with your neighbors and view project unit owners.</p>
       </div>
       <ShareholdersList 
         data={neighbors || []} 

@@ -63,7 +63,7 @@ export function DefaultersTab({ projectId, scheduleItems, payments }: { projectI
   }
 
   return (
-    <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
+    <div className="bg-surface border rounded-xl shadow-sm overflow-hidden">
        <div className="p-4 border-b bg-orange-50 flex justify-between items-center">
          <div>
             <h3 className="text-lg font-semibold text-orange-900">Active Defaulters</h3>
@@ -81,7 +81,7 @@ export function DefaultersTab({ projectId, scheduleItems, payments }: { projectI
               <TableHead>Overdue Items</TableHead>
               <TableHead>Oldest Due</TableHead>
               <TableHead className="text-right">Overdue Principal (৳)</TableHead>
-              <TableHead className="text-right text-red-600">Active Penalty (৳)</TableHead>
+              <TableHead className="text-right text-destructive">Active Penalty (৳)</TableHead>
               <TableHead className="text-right font-bold">Total Due (৳)</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -89,22 +89,22 @@ export function DefaultersTab({ projectId, scheduleItems, payments }: { projectI
           <TableBody>
             {defaulters.length === 0 ? (
                <TableRow>
-                 <TableCell colSpan={7} className="text-center py-8 text-gray-500">No overdue collections found. All clear!</TableCell>
+                 <TableCell colSpan={7} className="text-center py-8 text-on-surface-variant">No overdue collections found. All clear!</TableCell>
                </TableRow>
             ) : (
                defaulters.map((d, i) => (
                  <TableRow key={i}>
                     <TableCell>
-                      <div className="text-sm font-semibold text-gray-900">{d.shareholder?.profiles?.name}</div>
-                      <div className="text-xs text-gray-500">Unit: {d.shareholder?.unit_flat}</div>
+                      <div className="text-sm font-semibold text-on-surface">{d.shareholder?.profiles?.name}</div>
+                      <div className="text-xs text-on-surface-variant">Unit: {d.shareholder?.unit_flat}</div>
                     </TableCell>
                     <TableCell className="text-sm font-medium">{d.overdueCount} items</TableCell>
-                    <TableCell className="text-sm text-gray-500">{d.oldestDue.toLocaleDateString()}</TableCell>
-                    <TableCell className="text-right font-medium text-gray-900">{d.totalOverdue.toLocaleString('en-IN')}</TableCell>
-                    <TableCell className="text-right text-sm text-red-600 font-semibold">{d.totalPenalty.toLocaleString('en-IN')}</TableCell>
-                    <TableCell className="text-right font-bold text-gray-900">{(d.totalOverdue + d.totalPenalty).toLocaleString('en-IN')}</TableCell>
+                    <TableCell className="text-sm text-on-surface-variant">{d.oldestDue.toLocaleDateString()}</TableCell>
+                    <TableCell className="text-right font-medium text-on-surface">{d.totalOverdue.toLocaleString('en-IN')}</TableCell>
+                    <TableCell className="text-right text-sm text-destructive font-semibold">{d.totalPenalty.toLocaleString('en-IN')}</TableCell>
+                    <TableCell className="text-right font-bold text-on-surface">{(d.totalOverdue + d.totalPenalty).toLocaleString('en-IN')}</TableCell>
                     <TableCell className="text-right">
-                       <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-800 hover:bg-blue-50">
+                       <Button variant="ghost" size="sm" className="text-tertiary hover:text-on-tertiary-container hover:bg-tertiary-container/20">
                           <Mail className="w-4 h-4 mr-2" /> Remind
                        </Button>
                     </TableCell>

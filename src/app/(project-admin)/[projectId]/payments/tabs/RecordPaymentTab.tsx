@@ -123,15 +123,15 @@ export function RecordPaymentTab({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
       {/* Recording Form */}
-      <div className="lg:col-span-2 bg-white border rounded-[1.25rem] shadow-sm p-8 space-y-6">
+      <div className="lg:col-span-2 bg-surface border rounded-[1.25rem] shadow-sm p-8 space-y-6">
         <div>
-          <h2 className="text-xl font-bold text-gray-900 tracking-tight">Record New Payment</h2>
-          <p className="text-sm text-gray-500 mt-1">Submit a manual payment record for a shareholder.</p>
+          <h2 className="text-xl font-bold text-on-surface tracking-tight">Record New Payment</h2>
+          <p className="text-sm text-on-surface-variant mt-1">Submit a manual payment record for a shareholder.</p>
         </div>
 
         <div className="space-y-6">
            <div className="space-y-2">
-              <Label className="text-sm font-semibold text-gray-700">Select Shareholder *</Label>
+              <Label className="text-sm font-semibold text-on-surface">Select Shareholder *</Label>
               <Select value={shareholderId} onValueChange={(v) => { setShareholderId(v ?? ""); setScheduleItemId(""); }}>
                  <SelectTrigger className="h-11">
                     <span className="flex-1 text-left truncate">
@@ -147,10 +147,10 @@ export function RecordPaymentTab({
            </div>
 
            {shareholderId && (
-              <div className="space-y-2 p-5 bg-slate-50 border border-slate-100 rounded-xl transition-all animate-in fade-in zoom-in-95 duration-200">
+              <div className="space-y-2 p-5 bg-surface-variant/20 border border-slate-100 rounded-xl transition-all animate-in fade-in zoom-in-95 duration-200">
                  <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Link to Expected Schedule (Optional)</Label>
                  <Select value={scheduleItemId} onValueChange={(v) => setScheduleItemId(v ?? "")}>
-                   <SelectTrigger className="bg-white">
+                   <SelectTrigger className="bg-surface">
                      <span className="flex-1 text-left truncate">
                         {scheduleItemId && scheduleItemId !== "none" ? `Linked to specific installment` : <span className="text-muted-foreground italic">Manual Ad-hoc Payment</span>}
                      </span>
@@ -169,11 +169,11 @@ export function RecordPaymentTab({
 
            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="space-y-2">
-                 <Label className="text-sm font-semibold text-gray-700">Amount (৳) *</Label>
+                 <Label className="text-sm font-semibold text-on-surface">Amount (৳) *</Label>
                  <Input className="h-11 text-lg font-semibold" type="number" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0.00" />
               </div>
               <div className="space-y-2">
-                 <Label className="text-sm font-semibold text-gray-700">Payment Method *</Label>
+                 <Label className="text-sm font-semibold text-on-surface">Payment Method *</Label>
                  <Select value={method} onValueChange={(v) => setMethod(v ?? "")}>
                    <SelectTrigger className="h-11">
                       <span className="flex-1 text-left truncate capitalize">{methodName.toLowerCase()}</span>
@@ -190,17 +190,17 @@ export function RecordPaymentTab({
            </div>
 
            <div className="space-y-2">
-              <Label className="text-sm font-semibold text-gray-700">Reference Number / Check No.</Label>
+              <Label className="text-sm font-semibold text-on-surface">Reference Number / Check No.</Label>
               <Input className="h-11" value={referenceNo} onChange={(e) => setReferenceNo(e.target.value)} placeholder="e.g. Bank Ref #, bKash ID, Check Digit" />
            </div>
 
            <div className="space-y-2">
-              <Label className="text-sm font-semibold text-gray-700">Internal Notes</Label>
+              <Label className="text-sm font-semibold text-on-surface">Internal Notes</Label>
               <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Note for physical receipt location or specific instructions..." className="min-h-[100px]" />
            </div>
 
            {dueSummary && dueSummary.totalPenalty > 0 && (
-             <div className="flex items-center space-x-3 p-4 bg-red-50 border border-red-100 rounded-xl">
+             <div className="flex items-center space-x-3 p-4 bg-error-container/30 border border-error-container rounded-xl">
                <Checkbox 
                 id="waive" 
                 checked={waivePenalties} 
@@ -211,13 +211,13 @@ export function RecordPaymentTab({
                  <label htmlFor="waive" className="text-sm font-bold text-red-900 cursor-pointer flex items-center gap-1.5 uppercase tracking-tight">
                    <Ban className="w-4 h-4" /> Waive All Active Penalties
                  </label>
-                 <p className="text-xs text-red-700">Check this to remove ৳{dueSummary.totalPenalty.toLocaleString('en-IN')} in late fees for this user.</p>
+                 <p className="text-xs text-destructive">Check this to remove ৳{dueSummary.totalPenalty.toLocaleString('en-IN')} in late fees for this user.</p>
                </div>
              </div>
            )}
 
            <div className="pt-6 border-t flex justify-end">
-              <Button onClick={handleCreate} disabled={isSubmitting} className="h-12 px-8 bg-[#4F46E5] hover:bg-indigo-800 text-lg shadow-lg shadow-indigo-100 w-full sm:w-auto">
+              <Button onClick={handleCreate} disabled={isSubmitting} className="h-12 px-8 bg-primary hover:bg-primary/90 text-lg shadow-lg shadow-primary/10 w-full sm:w-auto">
                  {isSubmitting ? "Recording..." : "Confirm & Record Payment"}
               </Button>
            </div>
@@ -227,7 +227,7 @@ export function RecordPaymentTab({
       {/* Due Summary Side Panel */}
       <div className="space-y-6">
         {dueSummary ? (
-          <div className="bg-white border rounded-[1.25rem] shadow-sm overflow-hidden animate-in slide-in-from-right-4 duration-300">
+          <div className="bg-surface border rounded-[1.25rem] shadow-sm overflow-hidden animate-in slide-in-from-right-4 duration-300">
             <div className="bg-slate-900 p-6 text-white text-center">
               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Outstanding</p>
               <h3 className="text-3xl font-black">৳{(dueSummary.totalPrincipal + (waivePenalties ? 0 : dueSummary.totalPenalty)).toLocaleString('en-IN')}</h3>
@@ -237,33 +237,33 @@ export function RecordPaymentTab({
             <div className="p-6 space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col">
-                  <span className="text-xs text-gray-500 font-semibold uppercase tracking-tight">Principal</span>
-                  <span className="text-lg font-bold text-gray-900">৳{dueSummary.totalPrincipal.toLocaleString('en-IN')}</span>
+                  <span className="text-xs text-on-surface-variant font-semibold uppercase tracking-tight">Principal</span>
+                  <span className="text-lg font-bold text-on-surface">৳{dueSummary.totalPrincipal.toLocaleString('en-IN')}</span>
                 </div>
                 <div className="flex flex-col text-right">
-                  <span className="text-xs text-gray-500 font-semibold uppercase tracking-tight">Penalties</span>
-                  <span className={`text-lg font-bold ${waivePenalties ? 'text-gray-300 line-through' : 'text-red-600'}`}>৳{dueSummary.totalPenalty.toLocaleString('en-IN')}</span>
+                  <span className="text-xs text-on-surface-variant font-semibold uppercase tracking-tight">Penalties</span>
+                  <span className={`text-lg font-bold ${waivePenalties ? 'text-outline-variant line-through' : 'text-destructive'}`}>৳{dueSummary.totalPenalty.toLocaleString('en-IN')}</span>
                 </div>
               </div>
 
               <div className="pt-6 border-t space-y-4">
-                <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2">
+                <h4 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-2">
                   <Info className="w-3 h-3" /> Breakdown
                 </h4>
                 <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200">
                   {dueSummary.itemBreakdown.length === 0 ? (
-                    <p className="text-sm text-green-600 font-medium">All principal installments are up to date! ✅</p>
+                    <p className="text-sm text-primary font-medium">All principal installments are up to date! ✅</p>
                   ) : (
                     dueSummary.itemBreakdown.map((item, idx) => (
-                      <div key={idx} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
+                      <div key={idx} className="flex justify-between items-center bg-surface-variant/30 p-3 rounded-lg border border-outline-variant/30">
                         <div className="flex flex-col">
-                          <span className="text-sm font-bold text-gray-800">{item.name}</span>
-                          <span className="text-[10px] text-gray-500 font-medium">Due: {new Date(item.date).toLocaleDateString()}</span>
+                          <span className="text-sm font-bold text-on-surface">{item.name}</span>
+                          <span className="text-[10px] text-on-surface-variant font-medium">Due: {new Date(item.date).toLocaleDateString()}</span>
                         </div>
                         <div className="text-right">
-                          <span className="text-sm font-bold text-gray-900">৳{item.amount.toLocaleString('en-IN')}</span>
+                          <span className="text-sm font-bold text-on-surface">৳{item.amount.toLocaleString('en-IN')}</span>
                           <div className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded mt-1 bg-opacity-20 inline-block
-                            ${item.status === 'OVERDUE' ? 'bg-red-500 text-red-700' : 'bg-orange-500 text-orange-700'}`}>
+                            ${item.status === 'OVERDUE' ? 'bg-error-container/200 text-destructive' : 'bg-orange-500 text-orange-700'}`}>
                             {item.status}
                           </div>
                         </div>
@@ -275,7 +275,7 @@ export function RecordPaymentTab({
             </div>
           </div>
         ) : (
-          <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-[1.25rem] p-12 text-center text-slate-400">
+          <div className="bg-surface-variant/20 border-2 border-dashed border-slate-200 rounded-[1.25rem] p-12 text-center text-slate-400">
             <AlertCircle className="w-12 h-12 mx-auto mb-4 opacity-20" />
             <p className="text-sm font-medium">Select a shareholder to view their owed balance summary.</p>
           </div>

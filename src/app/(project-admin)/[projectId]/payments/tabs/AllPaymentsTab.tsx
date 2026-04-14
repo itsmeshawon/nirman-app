@@ -78,9 +78,9 @@ export function AllPaymentsTab({ projectId, payments }: { projectId: string, pay
   }
 
   return (
-    <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
-       <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
-         <h3 className="text-lg font-semibold text-gray-900">Payment Ledger</h3>
+    <div className="bg-surface border rounded-xl shadow-sm overflow-hidden">
+       <div className="p-4 border-b bg-surface-variant/30 flex justify-between items-center">
+         <h3 className="text-lg font-semibold text-on-surface">Payment Ledger</h3>
          <Button variant="outline" size="sm">
             <Download className="w-4 h-4 mr-2" /> Export CSV
          </Button>
@@ -101,36 +101,34 @@ export function AllPaymentsTab({ projectId, payments }: { projectId: string, pay
           <TableBody>
             {payments.length === 0 ? (
                <TableRow>
-                 <TableCell colSpan={7} className="text-center py-8 text-gray-500">No payments recorded yet.</TableCell>
+                 <TableCell colSpan={7} className="text-center py-8 text-on-surface-variant">No payments recorded yet.</TableCell>
                </TableRow>
             ) : (
                payments.map((p) => (
                  <TableRow key={p.id}>
                     <TableCell className="text-sm">{new Date(p.created_at).toLocaleDateString()}</TableCell>
-                    <TableCell className="font-mono text-xs font-semibold text-gray-700">{p.receipt_no}</TableCell>
+                    <TableCell className="font-mono text-xs font-semibold text-on-surface">{p.receipt_no}</TableCell>
                     <TableCell>
-                      <div className="text-sm font-medium text-gray-900">{p.shareholder?.profiles?.name}</div>
-                      <div className="text-xs text-gray-500">Unit: {p.shareholder?.unit_flat}</div>
+                      <div className="text-sm font-medium text-on-surface">{p.shareholder?.profiles?.name}</div>
+                      <div className="text-xs text-on-surface-variant">Unit: {p.shareholder?.unit_flat}</div>
                     </TableCell>
                     <TableCell className="text-sm uppercase text-[10px] font-bold text-slate-500">{p.method.replace("_", " ")}</TableCell>
-                    <TableCell className="text-sm text-gray-500 font-mono text-xs">{p.reference_no || "N/A"}</TableCell>
-                    <TableCell className="text-right font-bold text-indigo-700">৳{parseFloat(p.amount).toLocaleString('en-IN')}</TableCell>
+                    <TableCell className="text-sm text-on-surface-variant font-mono text-xs">{p.reference_no || "N/A"}</TableCell>
+                    <TableCell className="text-right font-bold text-primary">৳{parseFloat(p.amount).toLocaleString('en-IN')}</TableCell>
                     <TableCell className="text-right">
                        <div className="flex justify-end gap-1">
-                          <Button variant="ghost" size="sm" onClick={() => handleDownloadReceipt(p.id)} className="text-gray-500 hover:text-indigo-600">
+                          <Button variant="ghost" size="sm" onClick={() => handleDownloadReceipt(p.id)} className="text-on-surface-variant hover:text-primary">
                              <FileText className="w-4 h-4" />
                           </Button>
                           <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                <MoreVertical className="h-4 w-4" />
-                              </Button>
+                            <DropdownMenuTrigger render={<Button variant="ghost" size="sm" className="size-8 p-0" />}>
+                              <MoreVertical className="h-4 w-4" />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem onClick={() => openEditDialog(p)}>
                                 <Pencil className="mr-2 h-4 w-4" /> Edit Record
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleDelete(p.id)} className="text-red-600">
+                              <DropdownMenuItem onClick={() => handleDelete(p.id)} className="text-destructive">
                                 <Trash2 className="mr-2 h-4 w-4" /> Delete
                               </DropdownMenuItem>
                             </DropdownMenuContent>
@@ -158,7 +156,7 @@ export function AllPaymentsTab({ projectId, payments }: { projectId: string, pay
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                    <Label>Method</Label>
-                   <Select value={editMethod} onValueChange={setEditMethod}>
+                   <Select value={editMethod} onValueChange={(v) => v && setEditMethod(v)}>
                      <SelectTrigger>
                         <span className="flex-1 text-left truncate capitalize">{editMethod.toLowerCase().replace("_", " ")}</span>
                      </SelectTrigger>
@@ -182,7 +180,7 @@ export function AllPaymentsTab({ projectId, payments }: { projectId: string, pay
               </div>
               <DialogFooter className="pt-4">
                  <Button variant="outline" onClick={() => setEditingPayment(null)} disabled={isSubmitting}>Cancel</Button>
-                 <Button onClick={handleUpdate} disabled={isSubmitting} className="bg-indigo-700 hover:bg-indigo-800">
+                 <Button onClick={handleUpdate} disabled={isSubmitting} className="bg-primary hover:bg-primary/90">
                     {isSubmitting ? "Updating..." : "Save Changes"}
                  </Button>
               </DialogFooter>

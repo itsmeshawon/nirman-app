@@ -153,13 +153,13 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Document Library</h1>
-          <p className="text-gray-500 text-sm">Manage construction drawings, land papers, and legal documents.</p>
+          <h1 className="text-2xl font-bold text-on-surface">Document Library</h1>
+          <p className="text-on-surface-variant text-sm">Manage construction drawings, land papers, and legal documents.</p>
         </div>
 
         <Dialog open={isUploadOpen} onOpenChange={setIsUploadOpen}>
           <DialogTrigger>
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-indigo-700 hover:bg-indigo-800 text-white text-sm font-medium cursor-pointer">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary hover:bg-primary text-white text-sm font-medium cursor-pointer">
               <Plus className="w-4 h-4" />
               Upload Document
             </span>
@@ -208,7 +208,7 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
               <div className="flex justify-end pt-4">
                 <Button 
                   type="submit" 
-                  className="bg-indigo-700 hover:bg-indigo-800 w-full"
+                  className="bg-primary hover:bg-primary w-full"
                   disabled={isUploading}
                 >
                   {isUploading ? (
@@ -224,8 +224,8 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
         </Dialog>
       </div>
 
-      <div className="flex items-center space-x-2 bg-white rounded-lg border px-3 py-2">
-        <Search className="w-4 h-4 text-gray-400" />
+      <div className="flex items-center space-x-2 bg-surface rounded-lg border px-3 py-2">
+        <Search className="w-4 h-4 text-outline" />
         <input 
           type="text" 
           placeholder="Search by name or category..." 
@@ -235,10 +235,10 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
         />
       </div>
 
-      <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border shadow-sm overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-50/50">
+            <TableRow className="bg-surface-variant/20/50">
               <TableHead>No.</TableHead>
               <TableHead>Document Name</TableHead>
               <TableHead>Category</TableHead>
@@ -252,25 +252,25 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
             {filteredDocs.length > 0 ? (
               filteredDocs.map((doc, idx) => (
                 <TableRow key={doc.id}>
-                  <TableCell className="font-medium text-gray-500">{idx + 1}</TableCell>
+                  <TableCell className="font-medium text-on-surface-variant">{idx + 1}</TableCell>
                   <TableCell>
                     <div className="flex items-center">
-                      <FileIcon className="w-4 h-4 mr-2 text-indigo-600" />
-                      <span className="font-medium text-gray-900">{doc.name}</span>
+                      <FileIcon className="w-4 h-4 mr-2 text-primary" />
+                      <span className="font-medium text-on-surface">{doc.name}</span>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-100">
+                    <Badge variant="outline" className="bg-primary-container/20 text-primary border-primary-container/40">
                       {doc.category}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-gray-600">
+                  <TableCell className="text-on-surface-variant">
                     {format(new Date(doc.uploaded_at), "dd MMM yyyy")}
                   </TableCell>
-                  <TableCell className="text-gray-500 uppercase text-xs">
+                  <TableCell className="text-on-surface-variant uppercase text-xs">
                     {doc.file_type.split("/").pop()}
                   </TableCell>
-                  <TableCell className="text-gray-500">
+                  <TableCell className="text-on-surface-variant">
                     {doc.file_size ? formatFileSize(doc.file_size) : "—"}
                   </TableCell>
                   <TableCell className="text-right">
@@ -278,7 +278,7 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
                       <Button 
                         variant="ghost" 
                         size="sm" 
-                        className="text-indigo-700 hover:text-indigo-800 hover:bg-indigo-50"
+                        className="text-primary hover:text-on-primary-container hover:bg-primary-container/20"
                         onClick={() => handleDownload(doc)}
                       >
                         <Download className="w-4 h-4" />
@@ -286,7 +286,7 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
                       <Button 
                         variant="ghost" 
                         size="sm" 
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="text-destructive hover:text-destructive hover:bg-error-container/20"
                         onClick={() => handleDelete(doc.id)}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -297,9 +297,9 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={7} className="h-32 text-center text-gray-500">
+                <TableCell colSpan={7} className="h-32 text-center text-on-surface-variant">
                   <div className="flex flex-col items-center justify-center space-y-2">
-                    <FileText className="w-8 h-8 text-gray-300" />
+                    <FileText className="w-8 h-8 text-outline-variant" />
                     <p>No documents found.</p>
                   </div>
                 </TableCell>

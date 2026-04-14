@@ -40,38 +40,38 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
   return (
     <div className="space-y-4">
       {/* Search Header */}
-      <div className="bg-white p-4 border border-gray-100 rounded-[1.25rem] shadow-eos-sm flex items-center gap-4">
+      <div className="bg-surface p-4 border border-outline-variant/30 rounded-[1.25rem] shadow-eos-sm flex items-center gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
           <Input
             placeholder="Search neighbors by name or unit..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9 h-11 rounded-xl border-gray-200 focus:ring-indigo-500"
+            className="pl-9 h-11 rounded-xl border-outline-variant/50 focus:ring-primary"
           />
         </div>
         <div className="hidden md:flex gap-2">
-           <Badge variant="outline" className="bg-slate-50 text-slate-600 border-slate-200">
+           <Badge variant="outline" className="bg-surface-variant/20 text-slate-600 border-slate-200">
              {data.length} Total Shareholders
            </Badge>
         </div>
       </div>
 
       {/* Table Section */}
-      <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
+      <div className="bg-surface border rounded-lg shadow-sm overflow-hidden">
         <Table>
-          <TableHeader className="bg-slate-50">
+          <TableHeader className="bg-surface-variant/20">
             <TableRow>
-              <TableHead className="font-semibold text-gray-900 px-6 py-4">Name</TableHead>
-              <TableHead className="font-semibold text-gray-900">Email</TableHead>
-              <TableHead className="font-semibold text-gray-900">Phone</TableHead>
-              <TableHead className="font-semibold text-gray-900 pr-6">Unit/Flat</TableHead>
+              <TableHead className="font-semibold text-on-surface px-6 py-4">Name</TableHead>
+              <TableHead className="font-semibold text-on-surface">Email</TableHead>
+              <TableHead className="font-semibold text-on-surface">Phone</TableHead>
+              <TableHead className="font-semibold text-on-surface pr-6">Unit/Flat</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredData.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="text-center py-20 text-gray-500">
+                <TableCell colSpan={4} className="text-center py-20 text-on-surface-variant">
                    No neighbors found matching your search.
                 </TableCell>
               </TableRow>
@@ -86,7 +86,7 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
                       <button
                         type="button"
                         onClick={() => setSelectedShareholder(item)}
-                        className="flex items-center gap-1.5 font-medium text-gray-900 hover:text-[#4F46E5] transition-colors text-left group"
+                        className="flex items-center gap-1.5 font-medium text-on-surface hover:text-primary transition-colors text-left group"
                       >
                         {isCommittee && (
                           <span title="Committee Member">
@@ -96,10 +96,10 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
                         <span className="group-hover:underline underline-offset-2">{profile?.name}</span>
                       </button>
                     </TableCell>
-                    <TableCell className="text-gray-500 text-sm">
+                    <TableCell className="text-on-surface-variant text-sm">
                       {profile?.email || "—"}
                     </TableCell>
-                    <TableCell className="text-gray-500 text-sm">
+                    <TableCell className="text-on-surface-variant text-sm">
                       {profile?.phone || "—"}
                     </TableCell>
                     <TableCell className="font-medium text-sm pr-6">
@@ -123,9 +123,9 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
             
             return (
               <div className="h-full flex flex-col">
-                <div className="bg-gradient-to-br from-indigo-700 to-indigo-500 px-6 pt-12 pb-8 text-white relative">
+                <div className="bg-gradient-to-br from-primary to-primary/80 px-6 pt-12 pb-8 text-white relative">
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-20 h-20 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center text-2xl font-bold mb-4 shadow-lg">
+                    <div className="w-20 h-20 rounded-full bg-surface/20 border-2 border-white/30 flex items-center justify-center text-2xl font-bold mb-4 shadow-lg">
                        {profile?.avatar_url ? (
                          <img src={profile.avatar_url} alt={profile.name} className="w-full h-full object-cover rounded-full" />
                        ) : initials}
@@ -134,24 +134,24 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
                        {profile?.name}
                        {isCommittee && <Crown className="h-5 w-5 text-amber-300" />}
                     </h2>
-                    <p className="text-indigo-100 text-sm opacity-80 mt-1">{selectedShareholder.project?.name}</p>
+                    <p className="text-white/80 text-sm opacity-80 mt-1">{selectedShareholder.project?.name}</p>
                   </div>
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-6 space-y-8">
                    <section>
-                      <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Unit Details</h3>
-                      <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center justify-between">
+                      <h3 className="text-[10px] font-bold text-outline uppercase tracking-widest mb-4">Unit Details</h3>
+                      <div className="bg-surface-variant/20 p-4 rounded-xl border border-slate-100 flex items-center justify-between">
                         <div>
-                          <p className="text-[10px] text-gray-500 mb-1">Unit / Flat</p>
+                          <p className="text-[10px] text-on-surface-variant mb-1">Unit / Flat</p>
                           <p className="text-base font-bold text-slate-900">{selectedShareholder.unit_flat}</p>
                         </div>
-                        <Building className="h-6 w-6 text-indigo-100" />
+                        <Building className="h-6 w-6 text-primary-container/50" />
                       </div>
                    </section>
 
                    <section>
-                      <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Contact Information</h3>
+                      <h3 className="text-[10px] font-bold text-outline uppercase tracking-widest mb-4">Contact Information</h3>
                       <div className="space-y-4">
                         <ContactRow icon={<Phone className="h-4 w-4" />} label="Phone" value={profile?.phone} />
                         <ContactRow icon={<Mail className="h-4 w-4" />} label="Email" value={profile?.email} />
@@ -160,16 +160,16 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
 
                    {profile?.profession && (
                      <section>
-                        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Bio</h3>
+                        <h3 className="text-[10px] font-bold text-outline uppercase tracking-widest mb-4">Bio</h3>
                         <div className="space-y-3">
                            <div>
-                             <p className="text-[10px] text-gray-400">Profession</p>
-                             <p className="text-sm text-gray-800 font-medium">{profile.profession}</p>
+                             <p className="text-[10px] text-outline">Profession</p>
+                             <p className="text-sm text-on-surface font-medium">{profile.profession}</p>
                            </div>
                            {profile.organization && (
                              <div>
-                               <p className="text-[10px] text-gray-400">Organization</p>
-                               <p className="text-sm text-gray-800 font-medium">{profile.organization}</p>
+                               <p className="text-[10px] text-outline">Organization</p>
+                               <p className="text-sm text-on-surface font-medium">{profile.organization}</p>
                              </div>
                            )}
                         </div>
@@ -188,12 +188,12 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
 function ContactRow({ icon, label, value }: { icon: React.ReactNode, label: string, value?: string }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+      <div className="w-8 h-8 rounded-lg bg-primary-container/30 text-primary flex items-center justify-center shrink-0">
         {icon}
       </div>
       <div>
-        <p className="text-[10px] text-gray-400">{label}</p>
-        <p className="text-sm font-semibold text-gray-800">{value || "—"}</p>
+        <p className="text-[10px] text-outline">{label}</p>
+        <p className="text-sm font-semibold text-on-surface">{value || "—"}</p>
       </div>
     </div>
   )

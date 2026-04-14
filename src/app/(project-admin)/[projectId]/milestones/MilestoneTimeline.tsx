@@ -151,24 +151,24 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center bg-white p-4 sm:p-6 rounded-xl border shadow-sm">
+      <div className="flex justify-between items-center bg-surface p-4 sm:p-6 rounded-xl border shadow-sm">
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Project Milestones</h2>
-          <p className="text-sm text-gray-500 mt-1">Track the major phases of your construction.</p>
+          <h2 className="text-xl font-bold text-on-surface">Project Milestones</h2>
+          <p className="text-sm text-on-surface-variant mt-1">Track the major phases of your construction.</p>
         </div>
-        <Button onClick={() => openDialog()} className="bg-[#4F46E5] hover:bg-indigo-800">
+        <Button onClick={() => openDialog()} className="bg-primary hover:bg-primary/90">
           <Plus className="mr-2 h-4 w-4" />
           Add Milestone
         </Button>
       </div>
 
-      <div className="bg-white p-6 rounded-xl border shadow-sm">
+      <div className="bg-surface p-6 rounded-xl border shadow-sm">
          {milestones.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
+            <div className="text-center py-12 text-on-surface-variant">
                No milestones added yet. Click 'Add Milestone' to get started.
             </div>
          ) : (
-            <div className="relative border-l-2 border-gray-200 ml-4 pl-8 space-y-8 py-4">
+            <div className="relative border-l-2 border-outline-variant/50 ml-4 pl-8 space-y-8 py-4">
               {milestones.map((milestone, idx) => {
                 const isCompleted = milestone.status === "COMPLETED"
                 const isInProgress = milestone.status === "IN_PROGRESS"
@@ -177,7 +177,7 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
                 return (
                   <div key={milestone.id} className="relative group">
                     {/* Visual Timeline Node */}
-                    <span className="absolute -left-[41px] flex h-8 w-8 items-center justify-center rounded-full bg-white ring-8 ring-white">
+                    <span className="absolute -left-[41px] flex h-8 w-8 items-center justify-center rounded-full bg-surface ring-8 ring-white">
                       {isCompleted && <CheckCircle2 className="h-6 w-6 text-green-500" />}
                       {isInProgress && (
                         <div className="relative">
@@ -185,42 +185,42 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
                           <div className="absolute inset-0 rounded-full border-blue-500 animate-ping opacity-75 ring-4 ring-blue-200"></div>
                         </div>
                       )}
-                      {isUpcoming && <Circle className="h-6 w-6 text-gray-300" />}
+                      {isUpcoming && <Circle className="h-6 w-6 text-outline-variant" />}
                     </span>
                     
                     {/* Connector Line formatting trick using border-l on the parent element overall, 
                         but we can also style specific next lines if we want dashed lines between specific statuses */}
                     {isInProgress && idx !== milestones.length - 1 && (
-                         <div className="absolute top-8 -left-[27px] h-[calc(100%+2rem)] border-l-2 border-dashed border-blue-300 -z-10 bg-white"></div>
+                         <div className="absolute top-8 -left-[27px] h-[calc(100%+2rem)] border-l-2 border-dashed border-blue-300 -z-10 bg-surface"></div>
                     )}
                     {isUpcoming && idx !== milestones.length - 1 && (
-                         <div className="absolute top-8 -left-[27px] h-[calc(100%+2rem)] border-l-2 border-dotted border-gray-200 -z-10 bg-white"></div>
+                         <div className="absolute top-8 -left-[27px] h-[calc(100%+2rem)] border-l-2 border-dotted border-outline-variant/50 -z-10 bg-surface"></div>
                     )}
 
                     {/* Content */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-1">
                       <div>
-                        <h3 className={`text-lg font-medium ${isUpcoming ? 'text-gray-600' : 'text-gray-900'}`}>
+                        <h3 className={`text-lg font-medium ${isUpcoming ? 'text-on-surface-variant' : 'text-on-surface'}`}>
                           {milestone.name}
                         </h3>
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
                           {milestone.start_date && (
-                            <p className="text-sm text-gray-500">
-                              <span className="text-xs uppercase font-semibold text-gray-400 mr-1">Start:</span>
+                            <p className="text-sm text-on-surface-variant">
+                              <span className="text-xs uppercase font-semibold text-outline mr-1">Start:</span>
                               {new Date(milestone.start_date).toLocaleDateString()}
                             </p>
                           )}
                           {milestone.target_date && (
-                            <p className="text-sm text-gray-500">
-                              <span className="text-xs uppercase font-semibold text-gray-400 mr-1">Target:</span>
+                            <p className="text-sm text-on-surface-variant">
+                              <span className="text-xs uppercase font-semibold text-outline mr-1">Target:</span>
                               {new Date(milestone.target_date).toLocaleDateString()}
                             </p>
                           )}
                         </div>
                         <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold mt-2
-                          ${isCompleted ? 'bg-green-100 text-green-800' : ''}
-                          ${isInProgress ? 'bg-blue-100 text-blue-800' : ''}
-                          ${isUpcoming ? 'bg-gray-100 text-gray-800' : ''}
+                          ${isCompleted ? 'bg-primary-container/50 text-on-primary-container' : ''}
+                          ${isInProgress ? 'bg-tertiary-container/50 text-on-tertiary-container' : ''}
+                          ${isUpcoming ? 'bg-surface-variant/50 text-on-surface' : ''}
                         `}>
                           {milestone.status.replace("_", " ")}
                         </span>
@@ -228,16 +228,16 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
 
                       {/* Actions */}
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                         <div className="flex flex-col bg-gray-50 rounded shadow-sm border border-gray-200 overflow-hidden mr-2">
-                           <button 
+                         <div className="flex flex-col bg-surface-variant/30 rounded shadow-sm border border-outline-variant/50 overflow-hidden mr-2">
+                           <button
                              disabled={idx === 0}
                              onClick={() => handleReorder(idx, 'up')}
-                             className="p-1 text-gray-500 hover:bg-gray-200 disabled:opacity-30"
+                             className="p-1 text-on-surface-variant hover:bg-surface-variant disabled:opacity-30"
                            ><ArrowUp className="w-3 h-3"/></button>
-                           <button 
+                           <button
                              disabled={idx === milestones.length - 1}
                              onClick={() => handleReorder(idx, 'down')}
-                             className="p-1 text-gray-500 hover:bg-gray-200 disabled:opacity-30 border-t border-gray-200"
+                             className="p-1 text-on-surface-variant hover:bg-surface-variant disabled:opacity-30 border-t border-outline-variant/50"
                            ><ArrowDown className="w-3 h-3"/></button>
                          </div>
                         
@@ -245,7 +245,7 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
                           variant="outline" 
                           size="sm" 
                           onClick={() => openDialog(milestone)}
-                          className="text-gray-600 hover:text-[#4F46E5] border-gray-200"
+                          className="text-on-surface-variant hover:text-primary border-outline-variant/50"
                         >
                           <Pencil className="h-4 w-4 mr-2" />
                           Edit
@@ -319,7 +319,7 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
               <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
-               <Button type="submit" disabled={isLoading} className="bg-[#4F46E5] hover:bg-indigo-800">
+               <Button type="submit" disabled={isLoading} className="bg-primary hover:bg-primary/90">
                 {isLoading ? "Saving..." : "Save"}
               </Button>
             </DialogFooter>

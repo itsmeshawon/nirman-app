@@ -79,50 +79,50 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
   return (
     <div className="space-y-6 pb-12">
       {/* Welcome banner */}
-      <div className="rounded-2xl bg-gradient-to-r from-indigo-700 to-indigo-500 p-6 text-white shadow-md">
-        <p className="text-sm font-medium text-indigo-100 mb-1">Project Admin</p>
+      <div className="rounded-2xl bg-gradient-to-r from-primary to-primary/80 p-6 text-white shadow-md">
+        <p className="text-sm font-medium text-primary-foreground mb-1">Project Admin</p>
         <h2 className="text-2xl font-bold">{project?.name || "Project Dashboard"}</h2>
-        <p className="text-indigo-100 mt-1 text-sm">Welcome back, {profile.name}</p>
-        <span className={`mt-3 inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${project?.status === "ACTIVE" ? "bg-indigo-100 text-indigo-800" : "bg-amber-100 text-amber-800"}`}>
+        <p className="text-primary-foreground mt-1 text-sm">Welcome back, {profile.name}</p>
+        <span className={`mt-3 inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${project?.status === "ACTIVE" ? "bg-primary-container/50 text-on-primary-container" : "bg-tertiary-container/40 text-on-tertiary-container"}`}>
           {project?.status}
         </span>
       </div>
 
       {/* Row 1: Financial Health */}
       <div>
-        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-3">Financial Health</h3>
+        <h3 className="text-sm font-semibold text-on-surface-variant uppercase tracking-widest mb-3">Financial Health</h3>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <FinancialCard
             label="Total Collected"
             value={formatBDT(totalPaid)}
             sub={`of ${formatBDT(totalScheduled)} scheduled`}
-            icon={<TrendingUp className="w-5 h-5 text-indigo-600" />}
-            bg="bg-indigo-50"
-            accent="border-indigo-200"
+            icon={<TrendingUp className="w-5 h-5 text-primary" />}
+            bg="bg-primary-container/20"
+            accent="border-primary-container"
           />
           <FinancialCard
             label="Total Expenses"
             value={formatBDT(totalExpenses)}
             sub="published to ledger"
-            icon={<Banknote className="w-5 h-5 text-purple-600" />}
-            bg="bg-purple-50"
+            icon={<Banknote className="w-5 h-5 text-secondary" />}
+            bg="bg-secondary-container/20"
             accent="border-purple-200"
           />
           <FinancialCard
             label="Collection Rate"
             value={`${collectionRate}%`}
             sub={overdueAmount > 0 ? `${formatBDT(overdueAmount)} overdue` : "No overdue amounts"}
-            icon={<BarChart2 className="w-5 h-5 text-blue-600" />}
-            bg="bg-blue-50"
+            icon={<BarChart2 className="w-5 h-5 text-tertiary" />}
+            bg="bg-tertiary-container/20"
             accent="border-blue-200"
           />
           <FinancialCard
             label="Net Balance"
             value={formatBDT(Math.abs(balance))}
             sub={balance >= 0 ? "surplus" : "deficit"}
-            icon={balance >= 0 ? <TrendingUp className="w-5 h-5 text-green-600" /> : <TrendingDown className="w-5 h-5 text-red-600" />}
-            bg={balance >= 0 ? "bg-green-50" : "bg-red-50"}
-            accent={balance >= 0 ? "border-green-200" : "border-red-200"}
+            icon={balance >= 0 ? <TrendingUp className="w-5 h-5 text-primary" /> : <TrendingDown className="w-5 h-5 text-destructive" />}
+            bg={balance >= 0 ? "bg-primary-container/20" : "bg-error-container/20"}
+            accent={balance >= 0 ? "border-green-200" : "border-error-container"}
           />
         </div>
       </div>
@@ -130,10 +130,10 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
       {/* Row 2: Alerts & Pipeline */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Expense Pipeline */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-            <h3 className="text-sm font-semibold text-gray-900">Expense Pipeline</h3>
-            <Link href={`/${projectId}/expenses`} className="text-xs text-indigo-600 hover:underline flex items-center gap-1">
+        <div className="bg-surface rounded-xl border border-outline-variant/50 shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/30">
+            <h3 className="text-sm font-semibold text-on-surface">Expense Pipeline</h3>
+            <Link href={`/${projectId}/expenses`} className="text-xs text-primary hover:underline flex items-center gap-1">
               View All <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
@@ -142,8 +142,8 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
               label="Awaiting Review"
               count={pendingApproval || 0}
               icon={<SendHorizontal className="w-4 h-4 text-blue-500" />}
-              color="text-blue-600"
-              bg="bg-blue-50"
+              color="text-tertiary"
+              bg="bg-tertiary-container/20"
             />
             <PipelineRow
               label="Changes Requested"
@@ -156,17 +156,17 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
               label="Approved — Unpublished"
               count={approvedUnpublished || 0}
               icon={<CheckCircle className="w-4 h-4 text-green-500" />}
-              color="text-green-600"
-              bg="bg-green-50"
+              color="text-primary"
+              bg="bg-primary-container/20"
             />
           </div>
         </div>
 
         {/* Alerts */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-            <h3 className="text-sm font-semibold text-gray-900">Alerts</h3>
-            <Link href={`/${projectId}/payments`} className="text-xs text-indigo-600 hover:underline flex items-center gap-1">
+        <div className="bg-surface rounded-xl border border-outline-variant/50 shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/30">
+            <h3 className="text-sm font-semibold text-on-surface">Alerts</h3>
+            <Link href={`/${projectId}/payments`} className="text-xs text-primary hover:underline flex items-center gap-1">
               Payments <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
@@ -175,8 +175,8 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
               label="Active Penalties"
               count={activePenalties || 0}
               icon={<ShieldAlert className="w-4 h-4 text-red-500" />}
-              color="text-red-600"
-              bg="bg-red-50"
+              color="text-destructive"
+              bg="bg-error-container/20"
             />
             <PipelineRow
               label="Defaulting Installments"
@@ -189,18 +189,18 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
               label="Due in Next 30 Days"
               count={upcomingDues || 0}
               icon={<CalendarClock className="w-4 h-4 text-amber-500" />}
-              color="text-amber-600"
-              bg="bg-amber-50"
+              color="text-tertiary"
+              bg="bg-tertiary-container/20"
             />
           </div>
         </div>
       </div>
 
       {/* Row 3: Recent Activity */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-          <h3 className="text-sm font-semibold text-gray-900">Recent Activity</h3>
-          <Link href={`/${projectId}/feed`} className="text-xs text-indigo-600 hover:underline flex items-center gap-1">
+      <div className="bg-surface rounded-xl border border-outline-variant/50 shadow-sm overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/30">
+          <h3 className="text-sm font-semibold text-on-surface">Recent Activity</h3>
+          <Link href={`/${projectId}/feed`} className="text-xs text-primary hover:underline flex items-center gap-1">
             Full Log <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
@@ -208,43 +208,43 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
           <ul className="divide-y divide-gray-50">
             {recentAudit.map((log: any) => (
               <li key={log.id} className="flex items-start gap-3 px-5 py-3">
-                <div className="mt-0.5 w-7 h-7 rounded-full bg-indigo-50 flex items-center justify-center flex-shrink-0">
-                  <FileText className="w-3.5 h-3.5 text-indigo-600" />
+                <div className="mt-0.5 w-7 h-7 rounded-full bg-primary-container/20 flex items-center justify-center flex-shrink-0">
+                  <FileText className="w-3.5 h-3.5 text-primary" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm text-gray-800 truncate">
+                  <p className="text-sm text-on-surface truncate">
                     <span className="font-medium">{log.action.replace(/_/g, " ")}</span>
-                    {log.entity_type && <span className="text-gray-500"> · {log.entity_type}</span>}
+                    {log.entity_type && <span className="text-on-surface-variant"> · {log.entity_type}</span>}
                   </p>
-                  <p className="text-xs text-gray-400 mt-0.5">{formatDateTime(log.created_at)}</p>
+                  <p className="text-xs text-outline mt-0.5">{formatDateTime(log.created_at)}</p>
                 </div>
               </li>
             ))}
           </ul>
         ) : (
-          <div className="px-5 py-8 text-center text-sm text-gray-400">No activity logged yet.</div>
+          <div className="px-5 py-8 text-center text-sm text-outline">No activity logged yet.</div>
         )}
       </div>
 
       {/* Row 4: Quick Actions */}
       <div>
-        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-3">Quick Actions</h3>
+        <h3 className="text-sm font-semibold text-on-surface-variant uppercase tracking-widest mb-3">Quick Actions</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { href: `/${projectId}/expenses`, icon: FileText, label: "Add Expense", bg: "bg-indigo-50", iconColor: "text-indigo-600" },
-            { href: `/${projectId}/payments`, icon: Banknote, label: "Record Payment", bg: "bg-blue-50", iconColor: "text-blue-600" },
-            { href: `/${projectId}/shareholders`, icon: Users, label: "Shareholders", bg: "bg-purple-50", iconColor: "text-purple-600" },
-            { href: `/${projectId}/reports`, icon: BarChart2, label: "Reports", bg: "bg-amber-50", iconColor: "text-amber-600" },
+            { href: `/${projectId}/expenses`, icon: FileText, label: "Add Expense", bg: "bg-primary-container/20", iconColor: "text-primary" },
+            { href: `/${projectId}/payments`, icon: Banknote, label: "Record Payment", bg: "bg-tertiary-container/20", iconColor: "text-tertiary" },
+            { href: `/${projectId}/shareholders`, icon: Users, label: "Shareholders", bg: "bg-secondary-container/20", iconColor: "text-secondary" },
+            { href: `/${projectId}/reports`, icon: BarChart2, label: "Reports", bg: "bg-tertiary-container/20", iconColor: "text-tertiary" },
           ].map(({ href, icon: Icon, label, bg, iconColor }) => (
             <Link
               key={href}
               href={href}
-              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white border border-gray-200 hover:border-indigo-400 hover:ring-1 hover:ring-indigo-400 transition-all shadow-sm group"
+              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-surface border border-outline-variant/50 hover:border-primary/60 hover:ring-1 hover:ring-primary/60 transition-all shadow-sm group"
             >
               <div className={`w-10 h-10 rounded-full ${bg} flex items-center justify-center group-hover:scale-110 transition-transform`}>
                 <Icon className={`w-5 h-5 ${iconColor}`} />
               </div>
-              <span className="text-xs font-medium text-gray-700">{label}</span>
+              <span className="text-xs font-medium text-on-surface">{label}</span>
             </Link>
           ))}
         </div>
@@ -257,13 +257,13 @@ function FinancialCard({ label, value, sub, icon, bg, accent }: {
   label: string; value: string; sub: string; icon: React.ReactNode; bg: string; accent: string
 }) {
   return (
-    <div className={`rounded-2xl bg-white border ${accent} shadow-eos-sm p-5 hover:shadow-eos transition-all duration-300 group cursor-default`}>
+    <div className={`rounded-2xl bg-surface border ${accent} shadow-eos-sm p-5 hover:shadow-eos transition-all duration-300 group cursor-default`}>
       <div className={`w-12 h-12 rounded-xl ${bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
         {icon}
       </div>
-      <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">{label}</p>
-      <p className="text-2xl font-black text-gray-900 leading-tight tracking-tight">{value}</p>
-      <p className="text-xs text-gray-500 mt-1 font-medium">{sub}</p>
+      <p className="text-[11px] font-bold text-outline uppercase tracking-wider mb-1">{label}</p>
+      <p className="text-2xl font-black text-on-surface leading-tight tracking-tight">{value}</p>
+      <p className="text-xs text-on-surface-variant mt-1 font-medium">{sub}</p>
     </div>
   )
 }
@@ -272,14 +272,14 @@ function PipelineRow({ label, count, icon, color, bg }: {
   label: string; count: number; icon: React.ReactNode; color: string; bg: string
 }) {
   return (
-    <div className="flex items-center justify-between px-5 py-3.5 hover:bg-gray-50/50 transition-colors">
+    <div className="flex items-center justify-between px-5 py-3.5 hover:bg-surface-variant/20/50 transition-colors">
       <div className="flex items-center gap-3">
         <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center`}>
           {icon}
         </div>
-        <span className="text-sm font-medium text-gray-700">{label}</span>
+        <span className="text-sm font-medium text-on-surface">{label}</span>
       </div>
-      <span className={`text-sm font-bold px-2 py-0.5 rounded-md ${count > 0 ? `${bg} ${color}` : "text-gray-300"}`}>
+      <span className={`text-sm font-bold px-2 py-0.5 rounded-md ${count > 0 ? `${bg} ${color}` : "text-outline-variant"}`}>
         {count}
       </span>
     </div>

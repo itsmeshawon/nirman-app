@@ -142,36 +142,36 @@ export function PostCard({
     <>
       <div
         ref={cardRef}
-        className="bg-white rounded-2xl shadow-eos-sm border border-gray-100 mb-4 overflow-hidden"
+        className="bg-surface rounded-2xl shadow-eos-sm border border-outline-variant/30 mb-4 overflow-hidden"
       >
         {/* Header */}
         <div className="px-4 pt-4 pb-0 flex items-start gap-3">
-          <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-semibold text-sm shrink-0">
+          <div className="w-9 h-9 rounded-full bg-primary-container/50 flex items-center justify-center text-primary font-semibold text-sm shrink-0">
             {authorInitials}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-sm font-semibold text-gray-900 leading-tight">
+              <span className="text-sm font-semibold text-on-surface leading-tight">
                 {post.author?.name || "Project Admin"}
               </span>
-              <span className="px-1.5 py-0.5 bg-indigo-50 text-indigo-700 text-xs rounded-full border border-indigo-100 font-medium">
+              <span className="px-1.5 py-0.5 bg-primary-container/20 text-primary text-xs rounded-full border border-primary-container/40 font-medium">
                 Project Admin
               </span>
             </div>
-            <p className="text-xs text-gray-400 mt-0.5">{relativeTime(post.created_at)}</p>
+            <p className="text-xs text-outline mt-0.5">{relativeTime(post.created_at)}</p>
           </div>
         </div>
 
         {/* Title */}
         {post.title && (
           <div className="px-4 mt-3">
-            <h3 className="text-lg font-semibold text-gray-900 leading-snug">{post.title}</h3>
+            <h3 className="text-lg font-semibold text-on-surface leading-snug">{post.title}</h3>
           </div>
         )}
 
         {/* Description */}
         <div className="px-4 mt-2">
-          <p className="text-sm text-gray-700 leading-relaxed">{post.description}</p>
+          <p className="text-sm text-on-surface leading-relaxed">{post.description}</p>
         </div>
 
         {/* Media */}
@@ -213,7 +213,7 @@ export function PostCard({
             {post.tags.map((tag: string) => (
               <span
                 key={tag}
-                className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-xs rounded-full border border-indigo-100"
+                className="px-2 py-0.5 bg-primary-container/20 text-primary text-xs rounded-full border border-primary-container/40"
               >
                 {tag}
               </span>
@@ -224,7 +224,7 @@ export function PostCard({
         {/* Milestone */}
         {post.milestone?.name && (
           <div className="px-4 mt-2">
-            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full border border-gray-200">
+            <span className="text-xs text-on-surface-variant bg-surface-variant/50 px-2 py-0.5 rounded-full border border-outline-variant/50">
               {post.milestone.name}
             </span>
           </div>
@@ -243,8 +243,8 @@ export function PostCard({
                   disabled={isReacting}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs border transition-all duration-150 active:scale-110 ${
                     isActive
-                      ? "bg-indigo-50 text-indigo-700 border-indigo-200 font-semibold"
-                      : "text-gray-500 border-transparent hover:bg-gray-50 hover:border-gray-200"
+                      ? "bg-primary-container/20 text-primary border-primary-container font-semibold"
+                      : "text-on-surface-variant border-transparent hover:bg-surface-variant/20 hover:border-outline-variant/50"
                   }`}
                   aria-label={label}
                 >
@@ -256,7 +256,7 @@ export function PostCard({
           </div>
 
           {/* View count */}
-          <span className="text-xs text-gray-400">👁 {viewCount}</span>
+          <span className="text-xs text-outline">👁 {viewCount}</span>
         </div>
 
         {/* Bottom padding */}
@@ -277,7 +277,7 @@ export function PostCard({
           />
           <button
             onClick={() => setLightboxOpen(false)}
-            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center text-xl transition-colors"
+            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface/20 hover:bg-surface/30 text-white flex items-center justify-center text-xl transition-colors"
             aria-label="Close"
           >
             ×

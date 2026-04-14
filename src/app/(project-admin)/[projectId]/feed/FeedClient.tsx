@@ -58,8 +58,8 @@ export function FeedClient({ projectId, initialPosts, milestones, userId }: Feed
     <div className="space-y-4">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Activity Feed</h1>
-        <p className="text-sm text-gray-500 mt-1">Share project updates with shareholders.</p>
+        <h1 className="text-2xl font-bold text-on-surface">Activity Feed</h1>
+        <p className="text-sm text-on-surface-variant mt-1">Share project updates with shareholders.</p>
       </div>
 
       {/* Create Post Form */}
@@ -79,8 +79,8 @@ export function FeedClient({ projectId, initialPosts, milestones, userId }: Feed
               onClick={() => setFilterMedia(value as FilterMedia)}
               className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
                 filterMedia === value
-                  ? "bg-indigo-700 text-white border-indigo-700"
-                  : "bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-700"
+                  ? "bg-primary text-white border-primary"
+                  : "bg-surface text-on-surface-variant border-outline-variant/50 hover:border-primary hover:text-primary"
               }`}
             >
               {label}
@@ -94,7 +94,7 @@ export function FeedClient({ projectId, initialPosts, milestones, userId }: Feed
             className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
               filterStatus === "hidden"
                 ? "bg-red-600 text-white border-red-600"
-                : "bg-white text-gray-600 border-gray-200 hover:border-red-300 hover:text-red-600"
+                : "bg-surface text-on-surface-variant border-outline-variant/50 hover:border-red-300 hover:text-destructive"
             }`}
           >
             {filterStatus === "hidden" ? "Showing Hidden" : "Show Hidden"}
@@ -112,7 +112,7 @@ export function FeedClient({ projectId, initialPosts, milestones, userId }: Feed
               ? "Try adjusting your filters to see more results."
               : "Share construction progress, site photos, or community updates with your shareholders."
           }
-          className="bg-gray-50/50"
+          className="bg-surface-variant/20/50"
         />
       ) : (
         <div className="space-y-4">

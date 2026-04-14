@@ -18,12 +18,12 @@ interface ExpensesClientProps {
 }
 
 const statusConfig: Record<string, { label: string, color: string, icon: any }> = {
-  DRAFT: { label: "Draft", color: "bg-slate-100 text-slate-700 border-slate-200", icon: FileText },
-  SUBMITTED: { label: "Submitted", color: "bg-blue-100 text-blue-700 border-blue-200", icon: SendHorizontal },
+  DRAFT: { label: "Draft", color: "bg-surface-variant/50 text-slate-700 border-slate-200", icon: FileText },
+  SUBMITTED: { label: "Submitted", color: "bg-tertiary-container/50 text-tertiary border-blue-200", icon: SendHorizontal },
   CHANGES_REQUESTED: { label: "Changes Req.", color: "bg-orange-100 text-orange-700 border-orange-200", icon: RefreshCw },
-  APPROVED: { label: "Approved", color: "bg-green-100 text-green-700 border-green-200", icon: CheckCircle },
-  PUBLISHED: { label: "Published", color: "bg-indigo-100 text-indigo-800 border-indigo-200", icon: CheckCircle },
-  REJECTED: { label: "Rejected", color: "bg-red-100 text-red-700 border-red-200", icon: XCircle }
+  APPROVED: { label: "Approved", color: "bg-primary-container/50 text-primary border-green-200", icon: CheckCircle },
+  PUBLISHED: { label: "Published", color: "bg-primary-container/50 text-on-primary-container border-primary-container", icon: CheckCircle },
+  REJECTED: { label: "Rejected", color: "bg-error-container/50 text-destructive border-error-container", icon: XCircle }
 }
 
 export function ExpensesClient({ projectId, expenses, milestones, categories }: ExpensesClientProps) {
@@ -115,13 +115,13 @@ export function ExpensesClient({ projectId, expenses, milestones, categories }: 
               <button
                 key={statusKey}
                 onClick={() => setFilterStatus(active ? null : statusKey)}
-                className={`flex flex-col min-w-[120px] p-3 rounded-xl border transition-all text-left ${active ? 'ring-2 ring-indigo-500 shadow-sm bg-white' : 'bg-gray-50/50 hover:bg-gray-50 border-gray-200'}`}
+                className={`flex flex-col min-w-[120px] p-3 rounded-xl border transition-all text-left ${active ? 'ring-2 ring-primary shadow-sm bg-surface' : 'bg-surface-variant/20/50 hover:bg-surface-variant/20 border-outline-variant/50'}`}
               >
                 <div className="flex justify-between items-center w-full mb-1">
                   <Icon className={`w-4 h-4 ${config.color.split(' ')[1]}`} />
                   <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${config.color}`}>{count}</span>
                 </div>
-                <span className="text-sm font-medium text-gray-700">{config.label}</span>
+                <span className="text-sm font-medium text-on-surface">{config.label}</span>
               </button>
             )
          })}
@@ -129,23 +129,23 @@ export function ExpensesClient({ projectId, expenses, milestones, categories }: 
 
       <div className="flex justify-between items-center">
          <div>
-            <h2 className="text-lg font-semibold text-gray-900">Expenses {filterStatus && `(${statusConfig[filterStatus].label})`}</h2>
-            <p className="text-sm text-gray-500">Manage and track project expenditures.</p>
+            <h2 className="text-lg font-semibold text-on-surface">Expenses {filterStatus && `(${statusConfig[filterStatus].label})`}</h2>
+            <p className="text-sm text-on-surface-variant">Manage and track project expenditures.</p>
          </div>
          <div className="flex gap-2">
             {selectedIds.size > 0 && filterStatus === "APPROVED" && (
-              <Button onClick={handleBulkPublish} disabled={isPublishing} className="bg-indigo-700 hover:bg-indigo-800">
+              <Button onClick={handleBulkPublish} disabled={isPublishing} className="bg-primary hover:bg-primary">
                  {isPublishing ? "Publishing..." : `Publish Selected (${selectedIds.size})`}
               </Button>
             )}
-            <Button onClick={openAddForm} className="bg-[#4F46E5] hover:bg-indigo-800">
+            <Button onClick={openAddForm} className="bg-primary hover:bg-primary">
                <Plus className="w-4 h-4 mr-2" /> Add Expense
             </Button>
          </div>
       </div>
 
       {/* Main Table */}
-      <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-surface border rounded-xl shadow-sm overflow-hidden">
          <Table>
             <TableHeader>
               <TableRow>
@@ -183,18 +183,18 @@ export function ExpensesClient({ projectId, expenses, milestones, categories }: 
                               type="checkbox" 
                               checked={selectedIds.has(expense.id)}
                               onChange={() => toggleSelect(expense.id)}
-                              className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                              className="rounded border-outline-variant text-primary focus:ring-primary"
                             />
                           )}
                         </TableCell>
                         <TableCell className="text-sm">{new Date(expense.date).toLocaleDateString()}</TableCell>
-                        <TableCell className="font-medium text-gray-900">
-                           <Link href={`/${projectId}/expenses/${expense.id}`} className="hover:text-indigo-600 hover:underline">
+                        <TableCell className="font-medium text-on-surface">
+                           <Link href={`/${projectId}/expenses/${expense.id}`} className="hover:text-primary hover:underline">
                              {expense.title}
                            </Link>
                         </TableCell>
-                        <TableCell className="text-sm text-gray-500">{expense.category?.name}</TableCell>
-                        <TableCell className="text-sm font-medium text-gray-900">
+                        <TableCell className="text-sm text-on-surface-variant">{expense.category?.name}</TableCell>
+                        <TableCell className="text-sm font-medium text-on-surface">
                            {(expense.amount + (expense.vat_amount || 0)).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                         </TableCell>
                         <TableCell>
@@ -203,16 +203,16 @@ export function ExpensesClient({ projectId, expenses, milestones, categories }: 
                            </span>
                         </TableCell>
                         <TableCell className="text-right">
-                           <div className="flex justify-end gap-1 text-[#4F46E5]">
+                           <div className="flex justify-end gap-1 text-primary">
                              {(expense.status === "DRAFT" || expense.status === "CHANGES_REQUESTED") && (
-                               <Button variant="ghost" size="icon" onClick={() => openEditForm(expense)} className="hover:text-indigo-800 hover:bg-indigo-50 w-8 h-8 rounded-full" title="Edit Expense">
+                               <Button variant="ghost" size="icon" onClick={() => openEditForm(expense)} className="hover:text-on-primary-container hover:bg-primary-container/20 w-8 h-8 rounded-full" title="Edit Expense">
                                   <Edit2 className="w-4 h-4" />
                                </Button>
                              )}
-                             <Link href={`/${projectId}/expenses/${expense.id}`} className="inline-flex items-center justify-center w-8 h-8 rounded-full hover:text-indigo-800 hover:bg-indigo-50 transition-colors" title="View Details">
+                             <Link href={`/${projectId}/expenses/${expense.id}`} className="inline-flex items-center justify-center w-8 h-8 rounded-full hover:text-on-primary-container hover:bg-primary-container/20 transition-colors" title="View Details">
                                <Eye className="w-4 h-4" />
                              </Link>
-                             <Button variant="ghost" size="icon" onClick={() => handleDelete(expense.id)} className="text-red-500 hover:text-red-700 hover:bg-red-50 w-8 h-8 rounded-full" title="Delete Expense">
+                             <Button variant="ghost" size="icon" onClick={() => handleDelete(expense.id)} className="text-red-500 hover:text-destructive hover:bg-error-container/20 w-8 h-8 rounded-full" title="Delete Expense">
                                 <Trash2 className="w-4 h-4" />
                              </Button>
                            </div>

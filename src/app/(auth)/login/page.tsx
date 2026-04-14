@@ -74,19 +74,19 @@ export default function LoginPage() {
   return (
     <div className="w-full max-w-sm px-4">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-[#4F46E5] tracking-tight">NirmaN</h1>
-        <p className="text-sm text-gray-500 mt-1">Construction Transparency Platform</p>
+        <h1 className="text-3xl font-bold text-primary tracking-tight">NirmaN</h1>
+        <p className="text-sm text-on-surface-variant mt-1">Construction Transparency Platform</p>
       </div>
 
-      <Card className="shadow-md border-0">
+      <Card className="shadow-m3-2 border-0 rounded-xl">
         <CardHeader className="pb-4">
-          <CardTitle className="text-xl text-gray-900">Sign In</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
+          <CardTitle className="m3-title-large text-on-surface">Sign In</CardTitle>
+          <CardDescription className="text-on-surface-variant">Enter your credentials to access your account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-1.5">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="m3-label-large text-on-surface-variant">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -95,12 +95,11 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoComplete="email"
-                className="h-10"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="m3-label-large text-on-surface-variant">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -109,26 +108,26 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 autoComplete="current-password"
-                className="h-10"
               />
             </div>
 
             {error && (
-              <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+              <div className="text-sm text-on-error-container bg-error-container rounded-sm px-3 py-2.5">
                 {error}
               </div>
             )}
 
             <Button
               type="submit"
-              className="w-full h-10 bg-[#4F46E5] hover:bg-[#14B8A6] text-white"
+              className="w-full"
+              size="lg"
               disabled={loading}
             >
               {loading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
 
-          <p className="text-xs text-center text-gray-400 mt-4">
+          <p className="text-xs text-center text-on-surface-variant mt-5">
             Don&apos;t have an account? Contact your project admin.
           </p>
         </CardContent>

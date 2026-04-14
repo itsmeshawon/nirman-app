@@ -67,24 +67,24 @@ export function DefaultersClient({ overdueItems, payments, projectMap }: Default
   }, [overdueItems, payments, projectMap])
 
   return (
-    <div className="bg-white border border-gray-100 rounded-[1.25rem] shadow-eos-sm overflow-hidden">
+    <div className="bg-surface border border-outline-variant/30 rounded-[1.25rem] shadow-eos-sm overflow-hidden">
       <div className="overflow-x-auto">
         <Table>
-          <TableHeader className="bg-slate-50">
+          <TableHeader className="bg-surface-variant/20">
             <TableRow>
-              <TableHead className="font-semibold text-gray-900 px-6 py-4">Shareholder Name</TableHead>
-              <TableHead className="font-semibold text-gray-900">Phone Number</TableHead>
-              <TableHead className="font-semibold text-gray-900">Overdue Status</TableHead>
-              <TableHead className="text-right font-semibold text-gray-900">Principal Due</TableHead>
-              <TableHead className="text-right font-semibold text-red-600">Active Penalty</TableHead>
-              <TableHead className="text-right font-bold text-gray-900 pr-6">Total Owed</TableHead>
+              <TableHead className="font-semibold text-on-surface px-6 py-4">Shareholder Name</TableHead>
+              <TableHead className="font-semibold text-on-surface">Phone Number</TableHead>
+              <TableHead className="font-semibold text-on-surface">Overdue Status</TableHead>
+              <TableHead className="text-right font-semibold text-on-surface">Principal Due</TableHead>
+              <TableHead className="text-right font-semibold text-destructive">Active Penalty</TableHead>
+              <TableHead className="text-right font-bold text-on-surface pr-6">Total Owed</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {defaulters.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-20">
-                  <div className="flex flex-col items-center justify-center text-gray-400">
+                  <div className="flex flex-col items-center justify-center text-outline">
                     <AlertTriangle className="w-12 h-12 mb-4 opacity-20" />
                     <p className="text-lg font-medium">No active defaulters</p>
                     <p className="text-sm">All shareholders are currently up to date on payments.</p>
@@ -93,20 +93,20 @@ export function DefaultersClient({ overdueItems, payments, projectMap }: Default
               </TableRow>
             ) : (
               defaulters.map((d, i) => (
-                <TableRow key={i} className="hover:bg-slate-50 transition-colors group">
+                <TableRow key={i} className="hover:bg-surface-variant/20 transition-colors group">
                   <TableCell className="px-6 py-4">
                     <div className="flex flex-col">
-                      <span className="text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                      <span className="text-sm font-bold text-on-surface group-hover:text-primary transition-colors">
                         {d.name}
                       </span>
-                      <span className="text-xs text-gray-500 mt-0.5">
+                      <span className="text-xs text-on-surface-variant mt-0.5">
                         Unit: {d.unit}
                       </span>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-1.5 text-sm text-gray-600">
-                      <Phone className="w-3.5 h-3.5 text-gray-400" />
+                    <div className="flex items-center gap-1.5 text-sm text-on-surface-variant">
+                      <Phone className="w-3.5 h-3.5 text-outline" />
                       {d.phone || "N/A"}
                     </div>
                   </TableCell>
@@ -115,7 +115,7 @@ export function DefaultersClient({ overdueItems, payments, projectMap }: Default
                       <span className="text-xs font-semibold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full w-fit">
                         {d.overdueCount} Items Overdue
                       </span>
-                      <span className="text-[10px] text-gray-400 mt-1 flex items-center gap-1">
+                      <span className="text-[10px] text-outline mt-1 flex items-center gap-1">
                         <Calendar className="w-3 h-3" /> Since {d.oldestDue.toLocaleDateString()}
                       </span>
                     </div>
@@ -123,10 +123,10 @@ export function DefaultersClient({ overdueItems, payments, projectMap }: Default
                   <TableCell className="text-right font-medium">
                     ৳ {d.totalPrincipal.toLocaleString('en-IN')}
                   </TableCell>
-                  <TableCell className="text-right font-medium text-red-600">
+                  <TableCell className="text-right font-medium text-destructive">
                     ৳ {d.totalPenalty.toLocaleString('en-IN')}
                   </TableCell>
-                  <TableCell className="text-right font-bold text-gray-900 pr-6">
+                  <TableCell className="text-right font-bold text-on-surface pr-6">
                     ৳ {(d.totalPrincipal + d.totalPenalty).toLocaleString('en-IN')}
                   </TableCell>
                 </TableRow>

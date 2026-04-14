@@ -46,9 +46,9 @@ interface Project {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  PILOT: "bg-blue-50 text-blue-700 border border-blue-200",
-  ACTIVE: "bg-green-50 text-green-700 border border-green-200",
-  ARCHIVED: "bg-gray-100 text-gray-600 border border-gray-200",
+  PILOT: "bg-tertiary-container/20 text-tertiary border border-blue-200",
+  ACTIVE: "bg-primary-container/20 text-primary border border-green-200",
+  ARCHIVED: "bg-surface-variant/50 text-on-surface-variant border border-outline-variant/50",
 }
 
 export default function ProjectsPage() {
@@ -109,7 +109,7 @@ export default function ProjectsPage() {
       accessorKey: "name",
       header: ({ column }) => (
         <button
-          className="flex items-center gap-1 text-xs uppercase tracking-wide text-gray-500 hover:text-gray-800"
+          className="flex items-center gap-1 text-xs uppercase tracking-wide text-on-surface-variant hover:text-on-surface"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Name of Project <ArrowUpDown className="h-3.5 w-3.5" />
@@ -117,11 +117,11 @@ export default function ProjectsPage() {
       ),
       cell: ({ row }) => (
         <Link href={`/projects/${row.original.id}`} className="block group">
-          <p className="font-bold text-gray-900 group-hover:text-[#4F46E5] transition-colors">
+          <p className="font-bold text-on-surface group-hover:text-primary transition-colors">
             {row.original.name}
           </p>
           {(row.original.area || row.original.address) && (
-            <p className="text-xs text-gray-400 mt-0.5">{row.original.area ?? row.original.address}</p>
+            <p className="text-xs text-outline mt-0.5">{row.original.area ?? row.original.address}</p>
           )}
         </Link>
       ),
@@ -131,11 +131,11 @@ export default function ProjectsPage() {
       header: "Package",
       cell: ({ row }) => (
         row.original.package_name ? (
-          <span className="inline-flex items-center rounded-full bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 text-xs font-medium text-indigo-700">
+          <span className="inline-flex items-center rounded-full bg-primary-container/20 border border-primary-container px-2.5 py-0.5 text-xs font-medium text-primary">
             {row.original.package_name}
           </span>
         ) : (
-          <span className="text-xs text-gray-400">—</span>
+          <span className="text-xs text-outline">—</span>
         )
       ),
     },
@@ -143,7 +143,7 @@ export default function ProjectsPage() {
       accessorKey: "status",
       header: ({ column }) => (
         <button
-          className="flex items-center gap-1 text-xs uppercase tracking-wide text-gray-500 hover:text-gray-800"
+          className="flex items-center gap-1 text-xs uppercase tracking-wide text-on-surface-variant hover:text-on-surface"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Status <ArrowUpDown className="h-3.5 w-3.5" />
@@ -160,14 +160,14 @@ export default function ProjectsPage() {
       accessorKey: "adminCount",
       header: "No. of Project Admin",
       cell: ({ row }) => (
-        <span className="text-sm text-gray-600">{row.original.adminCount}</span>
+        <span className="text-sm text-on-surface-variant">{row.original.adminCount}</span>
       ),
     },
     {
       accessorKey: "shareholderCount",
       header: "No. of Shareholders",
       cell: ({ row }) => (
-        <span className="text-sm text-gray-600">{row.original.shareholderCount}</span>
+        <span className="text-sm text-on-surface-variant">{row.original.shareholderCount}</span>
       ),
     },
     {
@@ -175,9 +175,9 @@ export default function ProjectsPage() {
       header: "Salesperson's Name",
       cell: ({ row }) => (
         row.original.salesperson_name ? (
-          <span className="text-sm text-gray-700">{row.original.salesperson_name}</span>
+          <span className="text-sm text-on-surface">{row.original.salesperson_name}</span>
         ) : (
-          <span className="text-xs text-gray-400">—</span>
+          <span className="text-xs text-outline">—</span>
         )
       ),
     },
@@ -195,7 +195,7 @@ export default function ProjectsPage() {
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+              className="h-8 w-8 text-tertiary hover:text-tertiary hover:bg-tertiary-container/20"
               onClick={() => {
                 setEditingProject(project)
                 setDialogOpen(true)
@@ -210,7 +210,7 @@ export default function ProjectsPage() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50"
+                className="h-8 w-8 text-primary hover:text-primary hover:bg-primary-container/20"
                 onClick={() => handleStatusChange(project.id, "PILOT")}
                 title="Set Inactive → PILOT"
               >
@@ -220,7 +220,7 @@ export default function ProjectsPage() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-gray-400 hover:text-gray-600 hover:bg-gray-50"
+                className="h-8 w-8 text-outline hover:text-on-surface-variant hover:bg-surface-variant/20"
                 onClick={() => handleStatusChange(project.id, "ACTIVE")}
                 title="Set Active"
               >
@@ -236,7 +236,7 @@ export default function ProjectsPage() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-blue-500 hover:text-blue-600 hover:bg-blue-50"
+                className="h-8 w-8 text-blue-500 hover:text-tertiary hover:bg-tertiary-container/20"
                 onClick={() => handleStatusChange(project.id, "PILOT")}
                 title="Unarchive Project"
               >
@@ -246,7 +246,7 @@ export default function ProjectsPage() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-orange-500 hover:text-red-600 hover:bg-red-50"
+                className="h-8 w-8 text-orange-500 hover:text-destructive hover:bg-error-container/20"
                 onClick={() => handleStatusChange(project.id, "ARCHIVED")}
                 title="Archive Project"
               >
@@ -258,7 +258,7 @@ export default function ProjectsPage() {
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-[#4F46E5] hover:text-indigo-700 hover:bg-indigo-50"
+              className="h-8 w-8 text-primary hover:text-primary hover:bg-primary-container/20"
               onClick={() =>
                 setAdminDialog({ open: true, projectId: project.id, projectName: project.name })
               }
@@ -295,15 +295,15 @@ export default function ProjectsPage() {
         {/* Page header */}
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Projects</h1>
-            <p className="text-sm text-gray-500 mt-0.5">Manage all NirmaN construction projects</p>
+            <h1 className="text-2xl font-bold text-on-surface">Projects</h1>
+            <p className="text-sm text-on-surface-variant mt-0.5">Manage all NirmaN construction projects</p>
           </div>
           <Button
             onClick={() => {
               setEditingProject(null)
               setDialogOpen(true)
             }}
-            className="bg-[#4F46E5] hover:bg-[#14B8A6] text-white shrink-0 min-h-[44px]"
+            className="bg-primary hover:bg-primary/90 text-white shrink-0 min-h-[44px]"
           >
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">Create Project</span>
@@ -311,12 +311,12 @@ export default function ProjectsPage() {
           </Button>
         </div>
 
-        <div className="flex bg-gray-100/50 p-1 rounded-lg w-fit mb-4 border border-gray-200">
+        <div className="flex bg-surface-variant/50/50 p-1 rounded-lg w-fit mb-4 border border-outline-variant/50">
           <button
             onClick={() => setActiveTab("active")}
             className={cn(
               "px-4 py-1.5 rounded-md text-sm font-medium transition-colors",
-              activeTab === "active" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-900"
+              activeTab === "active" ? "bg-surface text-on-surface shadow-sm" : "text-on-surface-variant hover:text-on-surface"
             )}
           >
             Active Projects
@@ -325,18 +325,18 @@ export default function ProjectsPage() {
             onClick={() => setActiveTab("archived")}
             className={cn(
               "px-4 py-1.5 rounded-md text-sm font-medium transition-colors",
-              activeTab === "archived" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-900"
+              activeTab === "archived" ? "bg-surface text-on-surface shadow-sm" : "text-on-surface-variant hover:text-on-surface"
             )}
           >
             Archived
           </button>
         </div>
 
-        <Card className="bg-white shadow-sm border border-gray-100">
+        <Card className="bg-surface shadow-sm border border-outline-variant/30">
           {/* Search */}
-          <CardHeader className="pb-3 border-b border-gray-100">
+          <CardHeader className="pb-3 border-b border-outline-variant/30">
             <div className="relative max-w-xs">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
               <Input
                 placeholder="Search projects..."
                 value={globalFilter}
@@ -355,13 +355,13 @@ export default function ProjectsPage() {
               </div>
             ) : projects.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center px-4">
-                <Building2 className="h-14 w-14 text-gray-200 mb-4" />
-                <p className="text-lg font-semibold text-gray-700">No projects yet</p>
-                <p className="text-sm text-gray-400 mt-1 max-w-xs">
+                <Building2 className="h-14 w-14 text-outline-variant mb-4" />
+                <p className="text-lg font-semibold text-on-surface">No projects yet</p>
+                <p className="text-sm text-outline mt-1 max-w-xs">
                   Create your first construction project to get started.
                 </p>
                 <Button
-                  className="mt-5 bg-[#4F46E5] hover:bg-[#14B8A6] text-white"
+                  className="mt-5 bg-primary hover:bg-primary/90 text-white"
                   onClick={() => {
                     setEditingProject(null)
                     setDialogOpen(true)
@@ -376,7 +376,7 @@ export default function ProjectsPage() {
                 <Table>
                   <TableHeader>
                     {table.getHeaderGroups().map((hg) => (
-                      <TableRow key={hg.id} className="bg-gray-50/50">
+                      <TableRow key={hg.id} className="bg-surface-variant/20/50">
                         {hg.headers.map((header) => (
                           <TableHead key={header.id}>
                             {flexRender(header.column.columnDef.header, header.getContext())}
@@ -388,13 +388,13 @@ export default function ProjectsPage() {
                   <TableBody>
                     {table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} className="text-center py-10 text-gray-400">
+                        <TableCell colSpan={columns.length} className="text-center py-10 text-outline">
                           No projects match your search.
                         </TableCell>
                       </TableRow>
                     ) : (
                       table.getRowModel().rows.map((row) => (
-                        <TableRow key={row.id} className="hover:bg-gray-50">
+                        <TableRow key={row.id} className="hover:bg-surface-variant/20">
                           {row.getVisibleCells().map((cell) => (
                             <TableCell key={cell.id}>
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}

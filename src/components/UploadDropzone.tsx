@@ -65,15 +65,15 @@ export function UploadDropzone({ onFilesSelected, maxFiles = 5, maxSizeMB = 10, 
   return (
     <div className="w-full">
       <div 
-        className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center transition-colors cursor-pointer ${isDragOver ? "border-indigo-500 bg-indigo-50" : "border-gray-300 bg-gray-50 hover:bg-gray-100"}`}
+        className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center transition-colors cursor-pointer ${isDragOver ? "border-primary bg-primary-container/20" : "border-outline-variant bg-surface-variant/20 hover:bg-surface-variant/50"}`}
         onDragOver={(e) => { e.preventDefault(); setIsDragOver(true) }}
         onDragLeave={(e) => { e.preventDefault(); setIsDragOver(false) }}
         onDrop={handleDrop}
         onClick={() => document.getElementById("file-upload")?.click()}
       >
-        <UploadCloud className="h-8 w-8 text-indigo-600 mb-2" />
-        <p className="text-sm text-gray-700 font-medium mb-1">Click to upload or drag and drop</p>
-        <p className="text-xs text-gray-500">JPG, PNG, PDF up to {maxSizeMB}MB (max {maxFiles})</p>
+        <UploadCloud className="h-8 w-8 text-primary mb-2" />
+        <p className="text-sm text-on-surface font-medium mb-1">Click to upload or drag and drop</p>
+        <p className="text-xs text-on-surface-variant">JPG, PNG, PDF up to {maxSizeMB}MB (max {maxFiles})</p>
         <input 
            id="file-upload" 
            type="file" 
@@ -89,11 +89,11 @@ export function UploadDropzone({ onFilesSelected, maxFiles = 5, maxSizeMB = 10, 
       {selectedFiles.length > 0 && (
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {selectedFiles.map((file, idx) => (
-             <div key={idx} className="relative group border border-gray-200 rounded-md p-2 flex flex-col items-center justify-center bg-white">
+             <div key={idx} className="relative group border border-outline-variant/50 rounded-md p-2 flex flex-col items-center justify-center bg-surface">
                 <button 
                   type="button" 
                   onClick={(e) => { e.stopPropagation(); removeFile(idx); }}
-                  className="absolute -top-2 -right-2 bg-red-100 text-red-600 hover:bg-red-200 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute -top-2 -right-2 bg-error-container/50 text-destructive hover:bg-red-200 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -102,7 +102,7 @@ export function UploadDropzone({ onFilesSelected, maxFiles = 5, maxSizeMB = 10, 
                 ) : (
                   <FileIcon className="w-6 h-6 text-red-500 mb-1" />
                 )}
-                <span className="text-[10px] truncate max-w-[80px] text-gray-600">{file.name}</span>
+                <span className="text-[10px] truncate max-w-[80px] text-on-surface-variant">{file.name}</span>
              </div>
           ))}
         </div>

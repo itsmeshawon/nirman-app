@@ -101,22 +101,22 @@ export default function CreateAdminDialog({ open, onOpenChange, projectId, proje
         {success ? (
           /* Success state — show credentials */
           <div className="space-y-4 py-2">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-on-surface-variant">
               Share these login credentials with <strong>{success.name}</strong> for the project{" "}
               <strong>{projectName}</strong>.
             </p>
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 space-y-2 font-mono text-sm">
+            <div className="rounded-lg border border-outline-variant/50 bg-surface-variant/20 p-4 space-y-2 font-mono text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-500">Email</span>
-                <span className="text-gray-900">{success.email}</span>
+                <span className="text-on-surface-variant">Email</span>
+                <span className="text-on-surface">{success.email}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Password</span>
-                <span className="text-gray-900">{success.password}</span>
+                <span className="text-on-surface-variant">Password</span>
+                <span className="text-on-surface">{success.password}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">URL</span>
-                <span className="text-gray-900 text-xs">{typeof window !== "undefined" ? window.location.origin : ""}/login</span>
+                <span className="text-on-surface-variant">URL</span>
+                <span className="text-on-surface text-xs">{typeof window !== "undefined" ? window.location.origin : ""}/login</span>
               </div>
             </div>
             <div className="flex gap-2">
@@ -125,11 +125,11 @@ export default function CreateAdminDialog({ open, onOpenChange, projectId, proje
                 className="flex-1"
                 onClick={copyCredentials}
               >
-                {copied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
+                {copied ? <Check className="h-4 w-4 text-primary" /> : <Copy className="h-4 w-4" />}
                 {copied ? "Copied!" : "Copy Credentials"}
               </Button>
               <Button
-                className="flex-1 bg-[#4F46E5] hover:bg-[#14B8A6] text-white"
+                className="flex-1 bg-primary hover:bg-primary/90 text-white"
                 onClick={handleClose}
               >
                 Done
@@ -139,20 +139,20 @@ export default function CreateAdminDialog({ open, onOpenChange, projectId, proje
         ) : (
           /* Form state */
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-2">
-            <p className="text-sm text-gray-500">
-              Creating admin for <strong className="text-gray-700">{projectName}</strong>
+            <p className="text-sm text-on-surface-variant">
+              Creating admin for <strong className="text-on-surface">{projectName}</strong>
             </p>
 
             <div className="space-y-1.5">
               <Label htmlFor="admin-name">Full Name <span className="text-red-500">*</span></Label>
               <Input id="admin-name" placeholder="e.g. Kamal Hossain" {...register("name")} />
-              {errors.name && <p className="text-xs text-red-600">{errors.name.message}</p>}
+              {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
             </div>
 
             <div className="space-y-1.5">
               <Label htmlFor="admin-email">Email <span className="text-red-500">*</span></Label>
               <Input id="admin-email" type="email" placeholder="kamal@example.com" {...register("email")} />
-              {errors.email && <p className="text-xs text-red-600">{errors.email.message}</p>}
+              {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
             </div>
 
             <div className="space-y-1.5">
@@ -165,8 +165,8 @@ export default function CreateAdminDialog({ open, onOpenChange, projectId, proje
                 Password <span className="text-red-500">*</span>
               </Label>
               <Input id="admin-password" type="text" {...register("password")} />
-              {errors.password && <p className="text-xs text-red-600">{errors.password.message}</p>}
-              <p className="text-xs text-gray-400">Min 8 characters. Share this with the admin.</p>
+              {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
+              <p className="text-xs text-outline">Min 8 characters. Share this with the admin.</p>
             </div>
 
             <DialogFooter className="pt-2">
@@ -176,7 +176,7 @@ export default function CreateAdminDialog({ open, onOpenChange, projectId, proje
               <Button
                 type="submit"
                 disabled={loading}
-                className="bg-[#4F46E5] hover:bg-[#14B8A6] text-white"
+                className="bg-primary hover:bg-primary/90 text-white"
               >
                 <UserPlus className="h-4 w-4" />
                 {loading ? "Creating..." : "Create Admin"}

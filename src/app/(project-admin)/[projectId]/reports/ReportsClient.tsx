@@ -31,17 +31,17 @@ const reportTypes = [
     title: "Expense Ledger",
     description: "All published expenses with categories, amounts, VAT and invoice numbers.",
     icon: FileSpreadsheet,
-    color: "text-indigo-600",
-    bg: "bg-indigo-50",
-    border: "border-indigo-100 hover:border-indigo-400",
+    color: "text-primary",
+    bg: "bg-primary-container/20",
+    border: "border-primary-container/40 hover:border-primary/60",
   },
   {
     id: "collection-summary",
     title: "Collection Summary",
     description: "Per-shareholder payment collection rates, overdue amounts and penalty totals.",
     icon: Users,
-    color: "text-blue-600",
-    bg: "bg-blue-50",
+    color: "text-tertiary",
+    bg: "bg-tertiary-container/20",
     border: "border-blue-100 hover:border-blue-400",
   },
   {
@@ -49,8 +49,8 @@ const reportTypes = [
     title: "Defaulters Report",
     description: "All overdue installments with shareholder details and days overdue.",
     icon: AlertTriangle,
-    color: "text-red-600",
-    bg: "bg-red-50",
+    color: "text-destructive",
+    bg: "bg-error-container/20",
     border: "border-red-100 hover:border-red-400",
   },
   {
@@ -58,8 +58,8 @@ const reportTypes = [
     title: "Audit Log Export",
     description: "Full system audit trail — actions, timestamps, entity IDs and user references.",
     icon: ClipboardList,
-    color: "text-purple-600",
-    bg: "bg-purple-50",
+    color: "text-secondary",
+    bg: "bg-secondary-container/20",
     border: "border-purple-100 hover:border-purple-400",
   },
 ]
@@ -103,20 +103,20 @@ export function ReportsClient({ projectId, chartData, summary }: ReportsClientPr
     <div className="space-y-8 pb-12">
       {/* Page header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Reports</h1>
-        <p className="text-gray-500 mt-1 text-sm">Download financial and operational reports as CSV files.</p>
+        <h1 className="text-2xl font-bold text-on-surface">Reports</h1>
+        <p className="text-on-surface-variant mt-1 text-sm">Download financial and operational reports as CSV files.</p>
       </div>
 
       {/* Summary stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Total Scheduled", value: formatBDTShort(summary.totalScheduled), color: "text-gray-900" },
-          { label: "Total Collected", value: formatBDTShort(summary.totalPaid), color: "text-indigo-600" },
-          { label: "Total Expenses", value: formatBDTShort(summary.totalExpenses), color: "text-purple-600" },
+          { label: "Total Scheduled", value: formatBDTShort(summary.totalScheduled), color: "text-on-surface" },
+          { label: "Total Collected", value: formatBDTShort(summary.totalPaid), color: "text-primary" },
+          { label: "Total Expenses", value: formatBDTShort(summary.totalExpenses), color: "text-secondary" },
           { label: "Collection Rate", value: `${summary.collectionRate}%`, color: summary.collectionRate >= 80 ? "text-emerald-700" : "text-rose-700" },
         ].map(s => (
-          <div key={s.label} className="bg-white rounded-[1.25rem] border border-gray-100 shadow-eos-sm p-5 hover:shadow-eos transition-all duration-300">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">{s.label}</p>
+          <div key={s.label} className="bg-surface rounded-[1.25rem] border border-outline-variant/30 shadow-eos-sm p-5 hover:shadow-eos transition-all duration-300">
+            <p className="text-[10px] font-bold text-outline uppercase tracking-widest mb-1.5">{s.label}</p>
             <p className={`text-2xl font-black tracking-tight ${s.color}`}>{s.value}</p>
           </div>
         ))}
@@ -124,12 +124,12 @@ export function ReportsClient({ projectId, chartData, summary }: ReportsClientPr
 
       {/* Bar Chart */}
       {chartData.length > 0 && (
-        <div className="bg-white rounded-[1.25rem] border border-gray-100 shadow-eos p-8">
+        <div className="bg-surface rounded-[1.25rem] border border-outline-variant/30 shadow-eos p-8">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center">
-              <BarChart2 className="w-5 h-5 text-indigo-600" />
+            <div className="w-10 h-10 rounded-lg bg-primary-container/20 flex items-center justify-center">
+              <BarChart2 className="w-5 h-5 text-primary" />
             </div>
-            <h3 className="text-base font-bold text-gray-900">Collections vs Expenses</h3>
+            <h3 className="text-base font-bold text-on-surface">Collections vs Expenses</h3>
           </div>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={chartData} margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
@@ -166,7 +166,7 @@ export function ReportsClient({ projectId, chartData, summary }: ReportsClientPr
 
       {/* Download Cards */}
       <div>
-        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">Download Reports</h3>
+        <h3 className="text-sm font-semibold text-on-surface-variant uppercase tracking-widest mb-4">Download Reports</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {reportTypes.map((report) => {
             const Icon = report.icon
@@ -174,19 +174,19 @@ export function ReportsClient({ projectId, chartData, summary }: ReportsClientPr
             return (
               <div
                 key={report.id}
-                className={`bg-white rounded-[1.25rem] border border-indigo-50/50 shadow-eos-sm p-6 flex items-start gap-4 transition-all hover:shadow-eos`}
+                className={`bg-surface rounded-[1.25rem] border border-primary-container/30/50 shadow-eos-sm p-6 flex items-start gap-4 transition-all hover:shadow-eos`}
               >
                 <div className={`w-12 h-12 rounded-xl ${report.bg} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
                   <Icon className={`w-5 h-5 ${report.color}`} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-base font-bold text-gray-900">{report.title}</h4>
-                  <p className="text-xs text-gray-500 mt-1 leading-relaxed font-medium">{report.description}</p>
+                  <h4 className="text-base font-bold text-on-surface">{report.title}</h4>
+                  <p className="text-xs text-on-surface-variant mt-1 leading-relaxed font-medium">{report.description}</p>
                 </div>
                 <button
                   onClick={() => handleDownload(report.id)}
                   disabled={isLoading}
-                  className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#4f46e5]/5 hover:bg-[#4f46e5]/10 text-xs font-bold text-indigo-600 transition-colors disabled:opacity-50 border border-transparent hover:border-indigo-100"
+                  className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#4f46e5]/5 hover:bg-[#4f46e5]/10 text-xs font-bold text-primary transition-colors disabled:opacity-50 border border-transparent hover:border-primary-container/40"
                 >
                   {isLoading ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />

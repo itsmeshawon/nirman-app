@@ -49,15 +49,15 @@ const typeConfig: Record<
   NotificationType,
   { Icon: React.ElementType; bg: string; text: string }
 > = {
-  PAYMENT_REMINDER:          { Icon: Banknote,      bg: "bg-amber-100",  text: "text-amber-600"  },
-  PAYMENT_OVERDUE:           { Icon: AlertTriangle, bg: "bg-red-100",    text: "text-red-600"    },
-  PAYMENT_RECORDED:          { Icon: Banknote,      bg: "bg-green-100",  text: "text-green-600"  },
-  EXPENSE_SUBMITTED:         { Icon: ClipboardList, bg: "bg-blue-100",   text: "text-blue-600"   },
-  EXPENSE_APPROVED:          { Icon: CheckCircle,   bg: "bg-green-100",  text: "text-green-600"  },
-  EXPENSE_REJECTED:          { Icon: XCircle,       bg: "bg-red-100",    text: "text-red-600"    },
+  PAYMENT_REMINDER:          { Icon: Banknote,      bg: "bg-tertiary-container/40",  text: "text-tertiary"  },
+  PAYMENT_OVERDUE:           { Icon: AlertTriangle, bg: "bg-error-container/50",    text: "text-destructive"    },
+  PAYMENT_RECORDED:          { Icon: Banknote,      bg: "bg-primary-container/50",  text: "text-primary"  },
+  EXPENSE_SUBMITTED:         { Icon: ClipboardList, bg: "bg-tertiary-container/50",   text: "text-tertiary"   },
+  EXPENSE_APPROVED:          { Icon: CheckCircle,   bg: "bg-primary-container/50",  text: "text-primary"  },
+  EXPENSE_REJECTED:          { Icon: XCircle,       bg: "bg-error-container/50",    text: "text-destructive"    },
   EXPENSE_CHANGES_REQUESTED: { Icon: RefreshCw,     bg: "bg-orange-100", text: "text-orange-600" },
-  EXPENSE_PUBLISHED:         { Icon: Megaphone,     bg: "bg-indigo-100",   text: "text-indigo-600"   },
-  ACTIVITY_POST:             { Icon: Camera,        bg: "bg-indigo-100",   text: "text-indigo-600"   },
+  EXPENSE_PUBLISHED:         { Icon: Megaphone,     bg: "bg-primary-container/50",   text: "text-primary"   },
+  ACTIVITY_POST:             { Icon: Camera,        bg: "bg-primary-container/50",   text: "text-primary"   },
   PENALTY_APPLIED:           { Icon: AlertTriangle, bg: "bg-orange-100", text: "text-orange-600" },
 }
 
@@ -170,7 +170,7 @@ export default function NotificationBell({ projectId }: NotificationBellProps) {
       {/* Bell button */}
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4F46E5] focus:ring-offset-2"
+        className="relative rounded-full bg-surface p-1 text-outline hover:text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         aria-label="View notifications"
       >
         {/* Re-key wrapper triggers animate-bounce when unread count changes */}
@@ -180,7 +180,7 @@ export default function NotificationBell({ projectId }: NotificationBellProps) {
 
         {/* Unread badge */}
         {!loading && unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-red-500 px-0.5 text-[10px] font-bold text-white leading-none">
+          <span className="absolute -top-1 -right-1 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-error-container/200 px-0.5 text-[10px] font-bold text-white leading-none">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
@@ -188,14 +188,14 @@ export default function NotificationBell({ projectId }: NotificationBellProps) {
 
       {/* Dropdown panel */}
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-xl z-50">
+        <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto rounded-xl border border-outline-variant/50 bg-surface shadow-xl z-50">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 sticky top-0 bg-white z-10">
-            <span className="text-sm font-semibold text-gray-900">Notifications</span>
+          <div className="flex items-center justify-between border-b border-outline-variant/30 px-4 py-3 sticky top-0 bg-surface z-10">
+            <span className="text-sm font-semibold text-on-surface">Notifications</span>
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
-                className="text-xs text-indigo-600 hover:text-indigo-700 font-medium transition-colors"
+                className="text-xs text-primary hover:text-primary font-medium transition-colors"
               >
                 Mark All Read
               </button>
@@ -204,7 +204,7 @@ export default function NotificationBell({ projectId }: NotificationBellProps) {
 
           {/* List */}
           {notifications.length === 0 ? (
-            <div className="flex items-center justify-center py-12 text-sm text-gray-400">
+            <div className="flex items-center justify-center py-12 text-sm text-outline">
               No notifications yet
             </div>
           ) : (
@@ -216,10 +216,10 @@ export default function NotificationBell({ projectId }: NotificationBellProps) {
                   <li key={notification.id}>
                     <button
                       onClick={() => handleNotificationClick(notification)}
-                      className={`w-full text-left flex items-start gap-3 px-4 py-3 transition-colors hover:bg-gray-50 ${
+                      className={`w-full text-left flex items-start gap-3 px-4 py-3 transition-colors hover:bg-surface-variant/20 ${
                         !notification.is_read
-                          ? "border-l-2 border-indigo-500 bg-indigo-50/30"
-                          : "border-l-2 border-transparent bg-white"
+                          ? "border-l-2 border-primary bg-primary-container/20/30"
+                          : "border-l-2 border-transparent bg-surface"
                       }`}
                     >
                       {/* Icon */}
@@ -231,13 +231,13 @@ export default function NotificationBell({ projectId }: NotificationBellProps) {
 
                       {/* Text */}
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">
+                        <p className="text-sm font-medium text-on-surface truncate">
                           {notification.title}
                         </p>
-                        <p className="text-xs text-gray-500 line-clamp-2 mt-0.5">
+                        <p className="text-xs text-on-surface-variant line-clamp-2 mt-0.5">
                           {notification.body}
                         </p>
-                        <p className="text-xs text-gray-400 mt-1">
+                        <p className="text-xs text-outline mt-1">
                           {relativeTime(notification.created_at)}
                         </p>
                       </div>

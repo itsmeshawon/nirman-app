@@ -190,7 +190,7 @@ export default function ProjectDialog({ open, onOpenChange, onSuccess, project }
                 )
               }}
             />
-            {errors.package_id && <p className="text-xs text-red-600">{errors.package_id.message}</p>}
+            {errors.package_id && <p className="text-xs text-destructive">{errors.package_id.message}</p>}
           </div>
 
           {/* Project Name */}
@@ -199,7 +199,7 @@ export default function ProjectDialog({ open, onOpenChange, onSuccess, project }
               Project Name <span className="text-red-500">*</span>
             </Label>
             <Input id="name" placeholder="e.g. Green Valley Heights" {...register("name")} />
-            {errors.name && <p className="text-xs text-red-600">{errors.name.message}</p>}
+            {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
           </div>
 
           {/* Address */}
@@ -323,7 +323,7 @@ export default function ProjectDialog({ open, onOpenChange, onSuccess, project }
             <Button
               type="submit"
               disabled={loading}
-              className="bg-[#4F46E5] hover:bg-[#14B8A6] text-white"
+              className="bg-primary hover:bg-primary/90 text-white"
             >
               {!isEdit && <Plus className="h-4 w-4" />}
               {loading ? (isEdit ? "Saving..." : "Creating...") : (isEdit ? "Save Changes" : "Create Project")}

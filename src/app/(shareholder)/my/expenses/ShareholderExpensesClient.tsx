@@ -37,11 +37,11 @@ export function ShareholderExpensesClient({ expenses }: ShareholderExpensesClien
     <div className="space-y-6">
        
        {/* Summary Card */}
-       <div className="bg-gradient-to-r from-indigo-500 to-[#4F46E5] rounded-[1.25rem] shadow-eos overflow-hidden text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center">
+       <div className="bg-gradient-to-r from-primary/80 to-primary rounded-[1.25rem] shadow-eos overflow-hidden text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center">
           <div>
-            <p className="text-indigo-100 font-medium uppercase tracking-widest text-sm mb-1">Total Published Expenses</p>
+            <p className="text-primary-foreground font-medium uppercase tracking-widest text-sm mb-1">Total Published Expenses</p>
             <h2 className="text-4xl font-bold">৳ {totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</h2>
-            <p className="text-sm text-indigo-100 flex items-center mt-3 bg-indigo-800/40 w-max px-3 py-1 rounded-full">
+            <p className="text-sm text-primary-foreground flex items-center mt-3 bg-primary/40 w-max px-3 py-1 rounded-full">
                <CheckCircle className="w-4 h-4 mr-2" />
                Transparency guaranteed: All items fully approved.
             </p>
@@ -50,12 +50,12 @@ export function ShareholderExpensesClient({ expenses }: ShareholderExpensesClien
        </div>
 
        {/* Filters */}
-       <div className="flex justify-between items-center bg-white p-4 rounded-lg border shadow-eos-sm">
+       <div className="flex justify-between items-center bg-surface p-4 rounded-lg border shadow-eos-sm">
           <div className="flex items-center gap-4">
              <div className="relative">
-               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-outline" />
                <select 
-                 className="pl-9 pr-8 py-2 border rounded-md text-sm border-gray-200 outline-none focus:border-indigo-500 bg-transparent appearance-none"
+                 className="pl-9 pr-8 py-2 border rounded-md text-sm border-outline-variant/50 outline-none focus:border-primary bg-transparent appearance-none"
                  value={filterCategory}
                  onChange={(e) => setFilterCategory(e.target.value)}
                >
@@ -67,10 +67,10 @@ export function ShareholderExpensesClient({ expenses }: ShareholderExpensesClien
        </div>
 
        {/* Table */}
-       <div className="bg-white border rounded-[1.25rem] shadow-eos-sm overflow-hidden">
+       <div className="bg-surface border rounded-[1.25rem] shadow-eos-sm overflow-hidden">
          <Table>
             <TableHeader>
-              <TableRow className="bg-gray-50/50">
+              <TableRow className="bg-surface-variant/20/50">
                 <TableHead>Published Date</TableHead>
                 <TableHead>Title</TableHead>
                 <TableHead>Category</TableHead>
@@ -81,7 +81,7 @@ export function ShareholderExpensesClient({ expenses }: ShareholderExpensesClien
             <TableBody>
               {filteredExpenses.length === 0 ? (
                  <TableRow>
-                   <TableCell colSpan={5} className="h-32 text-center text-gray-500">
+                   <TableCell colSpan={5} className="h-32 text-center text-on-surface-variant">
                       No published expenses found.
                    </TableCell>
                  </TableRow>
@@ -91,13 +91,13 @@ export function ShareholderExpensesClient({ expenses }: ShareholderExpensesClien
                     const extAmount = expense.amount + totalVat
                     
                     return (
-                      <TableRow key={expense.id} className="cursor-pointer hover:bg-gray-50" onClick={() => setSelectedExpense(expense)}>
+                      <TableRow key={expense.id} className="cursor-pointer hover:bg-surface-variant/20" onClick={() => setSelectedExpense(expense)}>
                         <TableCell className="text-sm">{new Date(expense.published_at || expense.updated_at).toLocaleDateString()}</TableCell>
-                        <TableCell className="font-medium text-gray-900">{expense.title}</TableCell>
-                        <TableCell className="text-sm text-gray-500 text-left">{expense.category?.name || "N/A"}</TableCell>
-                        <TableCell className="text-right font-medium text-gray-900">{extAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                        <TableCell className="font-medium text-on-surface">{expense.title}</TableCell>
+                        <TableCell className="text-sm text-on-surface-variant text-left">{expense.category?.name || "N/A"}</TableCell>
+                        <TableCell className="text-right font-medium text-on-surface">{extAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                         <TableCell className="text-center">
-                           <span className="inline-flex items-center text-xs font-medium bg-gray-100 text-gray-600 px-2.5 py-0.5 rounded-full">
+                           <span className="inline-flex items-center text-xs font-medium bg-surface-variant/50 text-on-surface-variant px-2.5 py-0.5 rounded-full">
                               {expense.attachments?.length || 0} files
                            </span>
                         </TableCell>
@@ -120,48 +120,48 @@ export function ShareholderExpensesClient({ expenses }: ShareholderExpensesClien
                   <div className="py-4 space-y-6">
                      <div className="grid grid-cols-2 gap-4">
                         <div>
-                           <p className="text-xs text-gray-500 uppercase font-semibold">Total Amount</p>
-                           <p className="text-lg font-bold text-gray-900">৳ {(selectedExpense.amount + (selectedExpense.vat_amount || 0)).toLocaleString()}</p>
-                           {selectedExpense.vat_amount > 0 && <span className="text-xs text-gray-500">(Includes ৳{selectedExpense.vat_amount} VAT)</span>}
+                           <p className="text-xs text-on-surface-variant uppercase font-semibold">Total Amount</p>
+                           <p className="text-lg font-bold text-on-surface">৳ {(selectedExpense.amount + (selectedExpense.vat_amount || 0)).toLocaleString()}</p>
+                           {selectedExpense.vat_amount > 0 && <span className="text-xs text-on-surface-variant">(Includes ৳{selectedExpense.vat_amount} VAT)</span>}
                         </div>
                         <div>
-                           <p className="text-xs text-gray-500 uppercase font-semibold">Date Incurred</p>
-                           <p className="font-medium text-gray-900">{new Date(selectedExpense.date).toLocaleDateString()}</p>
+                           <p className="text-xs text-on-surface-variant uppercase font-semibold">Date Incurred</p>
+                           <p className="font-medium text-on-surface">{new Date(selectedExpense.date).toLocaleDateString()}</p>
                         </div>
                         <div>
-                           <p className="text-xs text-gray-500 uppercase font-semibold">Category</p>
-                           <p className="font-medium text-gray-900">{selectedExpense.category?.name || "General"}</p>
+                           <p className="text-xs text-on-surface-variant uppercase font-semibold">Category</p>
+                           <p className="font-medium text-on-surface">{selectedExpense.category?.name || "General"}</p>
                         </div>
                         {selectedExpense.invoice_no && (
                           <div>
-                            <p className="text-xs text-gray-500 uppercase font-semibold">Invoice Number</p>
-                            <p className="font-medium text-gray-900">{selectedExpense.invoice_no}</p>
+                            <p className="text-xs text-on-surface-variant uppercase font-semibold">Invoice Number</p>
+                            <p className="font-medium text-on-surface">{selectedExpense.invoice_no}</p>
                           </div>
                         )}
                      </div>
                      {selectedExpense.notes && (
-                        <div className="bg-gray-50 p-4 rounded-lg text-sm text-gray-700">
+                        <div className="bg-surface-variant/20 p-4 rounded-lg text-sm text-on-surface">
                           <strong>Notes: </strong>{selectedExpense.notes}
                         </div>
                      )}
                      
                      <div className="border-t pt-4">
-                        <h4 className="text-sm font-semibold text-gray-900 mb-3">Verified Proofs</h4>
+                        <h4 className="text-sm font-semibold text-on-surface mb-3">Verified Proofs</h4>
                         {selectedExpense.attachments && selectedExpense.attachments.length > 0 ? (
                            <div className="grid grid-cols-2 gap-3">
                               {selectedExpense.attachments.map((att: any) => {
                                  const { data: urlData } = supabase.storage.from("expense-proofs").getPublicUrl(att.file_path)
                                  return (
-                                    <a key={att.id} href={urlData.publicUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-2 rounded border hover:bg-gray-50 hover:border-indigo-400 group">
-                                       <FileText className="w-5 h-5 text-gray-400 group-hover:text-indigo-600" />
+                                    <a key={att.id} href={urlData.publicUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-2 rounded border hover:bg-surface-variant/20 hover:border-primary/60 group">
+                                       <FileText className="w-5 h-5 text-outline group-hover:text-primary" />
                                        <span className="text-sm font-medium truncate flex-1">{att.file_name}</span>
-                                       <Download className="w-4 h-4 text-gray-400" />
+                                       <Download className="w-4 h-4 text-outline" />
                                     </a>
                                  )
                               })}
                            </div>
                         ) : (
-                           <p className="text-sm text-gray-500 italic">No attachments provided.</p>
+                           <p className="text-sm text-on-surface-variant italic">No attachments provided.</p>
                         )}
                      </div>
                   </div>

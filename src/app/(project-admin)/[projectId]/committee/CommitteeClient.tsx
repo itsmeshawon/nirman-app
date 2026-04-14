@@ -99,15 +99,15 @@ export function CommitteeClient({
   return (
     <div className="space-y-8">
       {/* Approval Rule Card */}
-      <section className="bg-white border rounded-xl shadow-sm overflow-hidden">
-        <div className="p-6 border-b bg-slate-50/50">
+      <section className="bg-surface border rounded-xl shadow-sm overflow-hidden">
+        <div className="p-6 border-b bg-surface-variant/10">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-indigo-100 text-indigo-700 rounded-lg">
+            <div className="p-2 bg-primary-container/50 text-primary rounded-lg">
               <ShieldCheck className="h-6 w-6" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">Governance & Approval Rule</h2>
-              <p className="text-sm text-gray-500">Define how project expenses and decisions are approved.</p>
+              <h2 className="text-xl font-semibold text-on-surface">Governance & Approval Rule</h2>
+              <p className="text-sm text-on-surface-variant">Define how project expenses and decisions are approved.</p>
             </div>
           </div>
         </div>
@@ -115,8 +115,8 @@ export function CommitteeClient({
         <div className="p-6">
           <div className="grid sm:grid-cols-2 gap-4">
             <label
-              className={`relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none ${
-                rule === "MAJORITY" ? "border-[#4F46E5] ring-1 ring-[#4F46E5]" : "border-gray-300"
+              className={`relative flex cursor-pointer rounded-lg border bg-surface p-4 shadow-sm focus:outline-none ${
+                rule === "MAJORITY" ? "border-primary ring-1 ring-primary" : "border-outline-variant"
               }`}
             >
               <input
@@ -129,21 +129,21 @@ export function CommitteeClient({
               />
               <span className="flex flex-1">
                 <span className="flex flex-col">
-                  <span className="block text-sm font-medium text-gray-900">Majority Approval</span>
-                  <span className="mt-1 flex items-center text-sm text-gray-500">
+                  <span className="block text-sm font-medium text-on-surface">Majority Approval</span>
+                  <span className="mt-1 flex items-center text-sm text-on-surface-variant">
                     Requires &gt; 50% of active committee members to approve. Ideal for balanced decision-making.
                   </span>
                 </span>
               </span>
               <ShieldCheck
-                className={`h-5 w-5 ${rule === "MAJORITY" ? "text-[#4F46E5]" : "text-transparent"}`}
+                className={`h-5 w-5 ${rule === "MAJORITY" ? "text-primary" : "text-transparent"}`}
                 aria-hidden="true"
               />
             </label>
 
             <label
-              className={`relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none ${
-                rule === "ANY_SINGLE" ? "border-[#4F46E5] ring-1 ring-[#4F46E5]" : "border-gray-300"
+              className={`relative flex cursor-pointer rounded-lg border bg-surface p-4 shadow-sm focus:outline-none ${
+                rule === "ANY_SINGLE" ? "border-primary ring-1 ring-primary" : "border-outline-variant"
               }`}
             >
               <input
@@ -156,14 +156,14 @@ export function CommitteeClient({
               />
               <span className="flex flex-1">
                 <span className="flex flex-col">
-                  <span className="block text-sm font-medium text-gray-900">Any Single Member</span>
-                  <span className="mt-1 flex items-center text-sm text-gray-500">
+                  <span className="block text-sm font-medium text-on-surface">Any Single Member</span>
+                  <span className="mt-1 flex items-center text-sm text-on-surface-variant">
                     Allows any single active committee member to approve. Faster, but requires high trust.
                   </span>
                 </span>
               </span>
               <ShieldCheck
-                 className={`h-5 w-5 ${rule === "ANY_SINGLE" ? "text-[#4F46E5]" : "text-transparent"}`}
+                 className={`h-5 w-5 ${rule === "ANY_SINGLE" ? "text-primary" : "text-transparent"}`}
                 aria-hidden="true"
               />
             </label>
@@ -172,7 +172,7 @@ export function CommitteeClient({
             <Button
               onClick={handleSaveRule}
               disabled={isSavingRule || rule === currentRule}
-              className="bg-[#4F46E5] hover:bg-indigo-800"
+              className="bg-primary hover:bg-primary"
             >
               {isSavingRule ? "Saving..." : "Save Rule"}
             </Button>
@@ -184,23 +184,23 @@ export function CommitteeClient({
       <section>
         <div className="flex items-center justify-between mb-4">
            <div>
-            <h3 className="text-lg font-medium leading-6 text-gray-900 flex items-center gap-2">
+            <h3 className="text-lg font-medium leading-6 text-on-surface flex items-center gap-2">
               Committee Members
-               <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+               <span className="inline-flex items-center rounded-full bg-surface-variant/50 px-2.5 py-0.5 text-xs font-medium text-on-surface">
                   {members.length}
                 </span>
             </h3>
            </div>
           <Button 
             onClick={() => setIsAddDialogOpen(true)}
-            className="bg-white text-[#4F46E5] border border-[#4F46E5] hover:bg-indigo-50"
+            className="bg-surface text-primary border border-primary hover:bg-primary-container/20"
           >
             <UserPlus className="mr-2 h-4 w-4" />
             Add Member
           </Button>
         </div>
 
-        <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-surface border rounded-lg shadow-sm overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>
@@ -215,12 +215,12 @@ export function CommitteeClient({
               {members.length > 0 ? (
                 members.map((member) => (
                   <TableRow key={member.id}>
-                    <TableCell className="font-medium text-gray-900">
+                    <TableCell className="font-medium text-on-surface">
                       {member.shareholders?.profiles?.name}
                     </TableCell>
                     <TableCell>{member.shareholders?.unit_flat}</TableCell>
-                    <TableCell className="text-gray-500">{member.shareholders?.profiles?.email}</TableCell>
-                    <TableCell className="text-gray-500 text-sm">
+                    <TableCell className="text-on-surface-variant">{member.shareholders?.profiles?.email}</TableCell>
+                    <TableCell className="text-on-surface-variant text-sm">
                       {new Date(member.created_at).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="text-right">
@@ -228,7 +228,7 @@ export function CommitteeClient({
                         variant="ghost"
                         size="sm"
                         onClick={() => handleRemoveMember(member.id)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="text-destructive hover:text-destructive hover:bg-error-container/20"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -238,8 +238,8 @@ export function CommitteeClient({
               ) : (
                 <TableRow>
                   <TableCell colSpan={5} className="h-24 text-center">
-                     <div className="flex flex-col items-center justify-center text-gray-500">
-                      <Users className="h-8 w-8 text-gray-400 mb-2" />
+                     <div className="flex flex-col items-center justify-center text-on-surface-variant">
+                      <Users className="h-8 w-8 text-outline mb-2" />
                       <p>No committee members yet.</p>
                     </div>
                   </TableCell>
@@ -262,15 +262,15 @@ export function CommitteeClient({
           <div className="mt-4 space-y-3 max-h-[300px] overflow-y-auto">
             {availableShareholders.length > 0 ? (
               availableShareholders.map((sh) => (
-                <div key={sh.id} className="flex items-center justify-between p-3 border rounded-lg hover:border-indigo-500 transition-colors">
+                <div key={sh.id} className="flex items-center justify-between p-3 border rounded-lg hover:border-primary transition-colors">
                   <div>
-                    <h4 className="font-medium text-sm text-gray-900">{sh.profiles?.name || "Unknown"}</h4>
-                    <p className="text-xs text-gray-500">Unit: {sh.unit_flat} | {sh.profiles?.email || "No email"}</p>
+                    <h4 className="font-medium text-sm text-on-surface">{sh.profiles?.name || "Unknown"}</h4>
+                    <p className="text-xs text-on-surface-variant">Unit: {sh.unit_flat} | {sh.profiles?.email || "No email"}</p>
                   </div>
                   <Button
                     size="sm"
                     disabled={isAddingMember}
-                    className="bg-[#4F46E5] hover:bg-indigo-800"
+                    className="bg-primary hover:bg-primary"
                     onClick={() => handleAddMember(sh.id, sh.user_id)}
                   >
                     Add
@@ -278,7 +278,7 @@ export function CommitteeClient({
                 </div>
               ))
             ) : (
-               <div className="text-center py-6 text-gray-500 text-sm">
+               <div className="text-center py-6 text-on-surface-variant text-sm">
                  No eligible shareholders found to add.
                </div>
             )}

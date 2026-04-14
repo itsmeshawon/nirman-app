@@ -125,7 +125,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
         <button
           type="button"
           onClick={() => setDetailShareholder(info.row.original)}
-          className="flex items-center gap-1.5 font-medium text-gray-900 hover:text-[#4F46E5] transition-colors text-left group"
+          className="flex items-center gap-1.5 font-medium text-on-surface hover:text-primary transition-colors text-left group"
         >
           {committeeSet.has(info.row.original.id) && (
             <span title="Committee Member">
@@ -140,13 +140,13 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
       accessorFn: (row) => getProfile(row)?.email,
       id: "email",
       header: "Email",
-      cell: (info) => <div className="text-gray-500">{info.getValue() as string}</div>,
+      cell: (info) => <div className="text-on-surface-variant">{info.getValue() as string}</div>,
     },
     {
       accessorFn: (row) => getProfile(row)?.phone,
       id: "phone",
       header: "Phone",
-      cell: (info) => <div className="text-gray-500">{info.getValue() as string || "—"}</div>,
+      cell: (info) => <div className="text-on-surface-variant">{info.getValue() as string || "—"}</div>,
     },
     {
       accessorKey: "unit_flat",
@@ -158,7 +158,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
       header: "Ownership",
       cell: (info) => {
         const val = info.getValue() as number
-        return val ? <div className="text-gray-500">{val}%</div> : "—"
+        return val ? <div className="text-on-surface-variant">{val}%</div> : "—"
       },
     },
     {
@@ -168,7 +168,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
         const status = row.getValue("status") as string
         const isActive = status === "ACTIVE"
         return (
-          <Badge className={isActive ? "bg-green-100 text-green-800 hover:bg-green-100" : "bg-gray-100 text-gray-800 hover:bg-gray-100"}>
+          <Badge className={isActive ? "bg-primary-container/50 text-on-primary-container hover:bg-primary-container/50" : "bg-surface-variant/50 text-on-surface hover:bg-surface-variant/50"}>
              {isActive ? "Active" : "Inactive"}
           </Badge>
         )
@@ -186,7 +186,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+              className="h-8 w-8 text-tertiary hover:text-tertiary hover:bg-tertiary-container/20"
               onClick={() => {
                 setEditingShareholder(shareholder)
                 setIsDialogOpen(true)
@@ -199,7 +199,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
             <Button
               variant="ghost"
               size="icon"
-              className={`h-8 w-8 ${isActive ? 'text-amber-600 hover:text-amber-700 hover:bg-amber-50' : 'text-green-600 hover:text-green-700 hover:bg-green-50'}`}
+              className={`h-8 w-8 ${isActive ? 'text-tertiary hover:text-on-tertiary-container hover:bg-tertiary-container/20' : 'text-primary hover:text-primary hover:bg-primary-container/20'}`}
               onClick={() => handleStatusToggle(shareholder)}
               title={isActive ? "Deactivate" : "Activate"}
             >
@@ -209,7 +209,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+              className="h-8 w-8 text-destructive hover:text-destructive hover:bg-error-container/20"
               onClick={() => handleDelete(shareholder)}
               title="Delete Shareholder"
             >
@@ -245,15 +245,15 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
       {/* Top Bar */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900">Shareholders</h2>
-          <p className="text-sm text-gray-500">Manage unit owners and their information</p>
+          <h2 className="text-xl font-semibold text-on-surface">Shareholders</h2>
+          <p className="text-sm text-on-surface-variant">Manage unit owners and their information</p>
         </div>
         <Button 
           onClick={() => {
             setEditingShareholder(null)
             setIsDialogOpen(true)
           }} 
-          className="bg-[#4F46E5] hover:bg-indigo-800"
+          className="bg-primary hover:bg-primary"
         >
           <UserPlus className="mr-2 h-4 w-4" />
           Add Shareholder
@@ -262,15 +262,15 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
 
       {/* Stats Badges */}
       <div className="flex gap-2">
-         <Badge variant="outline" className="text-gray-600 bg-white">Total: {total}</Badge>
-         <Badge variant="outline" className="text-green-600 bg-green-50 border-green-200">Active: {active}</Badge>
-         <Badge variant="outline" className="text-gray-500 bg-gray-50 border-gray-200">Inactive: {inactive}</Badge>
+         <Badge variant="outline" className="text-on-surface-variant bg-surface">Total: {total}</Badge>
+         <Badge variant="outline" className="text-primary bg-primary-container/20 border-green-200">Active: {active}</Badge>
+         <Badge variant="outline" className="text-on-surface-variant bg-surface-variant/20 border-outline-variant/50">Inactive: {inactive}</Badge>
       </div>
 
-      <div className="bg-white border rounded-lg shadow-sm">
+      <div className="bg-surface border rounded-lg shadow-sm">
         <div className="p-4 border-b">
            <div className="relative max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
             <Input
               placeholder="Search by name, email or unit..."
               value={globalFilter ?? ""}
@@ -330,7 +330,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
         {/* Infinite Scroll Loader */}
         {table.getRowModel().rows.length > visibleCount && (
           <div ref={loaderRef} className="py-6 flex items-center justify-center border-t">
-            <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-indigo-600"></div>
+            <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-primary"></div>
           </div>
         )}
       </div>
@@ -355,9 +355,9 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
             return (
               <>
                 {/* Hero */}
-                <div className="bg-gradient-to-br from-indigo-700 to-indigo-500 px-6 pt-10 pb-6 text-white">
+                <div className="bg-gradient-to-br from-primary to-primary/80 px-6 pt-10 pb-6 text-white">
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-2xl font-bold shrink-0">
+                    <div className="w-16 h-16 rounded-full bg-surface/20 flex items-center justify-center text-2xl font-bold shrink-0">
                       {initials}
                     </div>
                     <div className="min-w-0">
@@ -369,8 +369,8 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
                           </span>
                         )}
                       </div>
-                      <p className="text-indigo-100 text-sm mt-0.5">Unit {detailShareholder.unit_flat || "—"}</p>
-                      <span className={`mt-2 inline-block text-xs font-semibold px-2 py-0.5 rounded-full ${isActive ? "bg-green-400/20 text-green-100 border border-green-400/30" : "bg-gray-400/20 text-gray-200 border border-gray-400/30"}`}>
+                      <p className="text-primary-foreground text-sm mt-0.5">Unit {detailShareholder.unit_flat || "—"}</p>
+                      <span className={`mt-2 inline-block text-xs font-semibold px-2 py-0.5 rounded-full ${isActive ? "bg-green-400/20 text-green-100 border border-green-400/30" : "bg-outline/20 text-outline-variant border border-outline/30"}`}>
                         {isActive ? "Active" : "Inactive"}
                       </span>
                     </div>
@@ -381,20 +381,20 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
                 <div className="px-6 py-5 space-y-6">
                   {/* Contact */}
                   <section>
-                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Contact</h3>
+                    <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Contact</h3>
                     <div className="space-y-3">
-                      <DetailRow icon={<Mail className="h-4 w-4 text-gray-400" />} label="Email" value={profile?.email} />
-                      <DetailRow icon={<Phone className="h-4 w-4 text-gray-400" />} label="Phone" value={profile?.phone} />
-                      <DetailRow icon={<Phone className="h-4 w-4 text-gray-400" />} label="WhatsApp" value={profile?.whatsapp_no} />
-                      <DetailRow icon={<MapPin className="h-4 w-4 text-gray-400" />} label="Present Address" value={profile?.present_address} />
+                      <DetailRow icon={<Mail className="h-4 w-4 text-outline" />} label="Email" value={profile?.email} />
+                      <DetailRow icon={<Phone className="h-4 w-4 text-outline" />} label="Phone" value={profile?.phone} />
+                      <DetailRow icon={<Phone className="h-4 w-4 text-outline" />} label="WhatsApp" value={profile?.whatsapp_no} />
+                      <DetailRow icon={<MapPin className="h-4 w-4 text-outline" />} label="Present Address" value={profile?.present_address} />
                     </div>
                   </section>
 
-                  <div className="border-t border-gray-100" />
+                  <div className="border-t border-outline-variant/30" />
 
                   {/* Professional */}
                   <section>
-                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Professional</h3>
+                    <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Professional</h3>
                     <div className="grid grid-cols-2 gap-3">
                       <StatField label="Profession" value={profile?.profession} />
                       <StatField label="Designation" value={profile?.designation} />
@@ -402,11 +402,11 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
                     </div>
                   </section>
 
-                  <div className="border-t border-gray-100" />
+                  <div className="border-t border-outline-variant/30" />
 
                   {/* Shareholder Info */}
                   <section>
-                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Shareholding</h3>
+                    <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Shareholding</h3>
                     <div className="grid grid-cols-2 gap-3">
                       <StatField label="Unit / Flat" value={detailShareholder.unit_flat} />
                       <StatField label="Ownership" value={detailShareholder.ownership_pct != null ? `${detailShareholder.ownership_pct}%` : undefined} />
@@ -415,19 +415,19 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
                     </div>
                   </section>
 
-                  <div className="border-t border-gray-100" />
+                  <div className="border-t border-outline-variant/30" />
 
                   {/* Quick actions */}
                   <div className="flex gap-2 pb-2">
                     <button
                       onClick={() => { setEditingShareholder(detailShareholder); setIsDialogOpen(true); setDetailShareholder(null) }}
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors"
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary hover:bg-primary text-white text-sm font-medium transition-colors"
                     >
                       <Pencil className="h-4 w-4" /> Edit Profile
                     </button>
                     <button
                       onClick={() => { setDetailShareholder(null); handleStatusToggle(detailShareholder) }}
-                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors border ${isActive ? "border-amber-200 text-amber-700 hover:bg-amber-50" : "border-green-200 text-green-700 hover:bg-green-50"}`}
+                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors border ${isActive ? "border-amber-200 text-on-tertiary-container hover:bg-tertiary-container/20" : "border-green-200 text-primary hover:bg-primary-container/20"}`}
                     >
                       {isActive ? <ToggleLeft className="h-4 w-4" /> : <ToggleRight className="h-4 w-4" />}
                       {isActive ? "Deactivate" : "Activate"}
@@ -448,8 +448,8 @@ function DetailRow({ icon, label, value }: { icon: React.ReactNode; label: strin
     <div className="flex items-start gap-3">
       <div className="mt-0.5 shrink-0">{icon}</div>
       <div className="min-w-0">
-        <p className="text-xs text-gray-400">{label}</p>
-        <p className="text-sm text-gray-800 font-medium break-words">{value || "—"}</p>
+        <p className="text-xs text-outline">{label}</p>
+        <p className="text-sm text-on-surface font-medium break-words">{value || "—"}</p>
       </div>
     </div>
   )
@@ -458,8 +458,8 @@ function DetailRow({ icon, label, value }: { icon: React.ReactNode; label: strin
 function StatField({ label, value, className }: { label: string; value?: string | null; className?: string }) {
   return (
     <div className={className}>
-      <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">{label}</p>
-      <p className="text-sm font-semibold text-gray-800">{value || "—"}</p>
+      <p className="text-xs text-outline uppercase tracking-wide mb-0.5">{label}</p>
+      <p className="text-sm font-semibold text-on-surface">{value || "—"}</p>
     </div>
   )
 }

@@ -135,11 +135,11 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
   }
 
   const statusConfig: Record<string, string> = {
-    UPCOMING: "bg-gray-100 text-gray-700",
-    DUE: "bg-blue-100 text-blue-700",
-    OVERDUE: "bg-red-100 text-red-700",
-    PAID: "bg-green-100 text-green-700",
-    PARTIALLY_PAID: "bg-yellow-100 text-yellow-800"
+    UPCOMING: "bg-surface-variant/50 text-on-surface",
+    DUE: "bg-tertiary-container/50 text-tertiary",
+    OVERDUE: "bg-error-container/50 text-destructive",
+    PAID: "bg-primary-container/50 text-primary",
+    PARTIALLY_PAID: "bg-tertiary-container/40 text-on-tertiary-container"
   }
 
   const filteredItems = filterStatus 
@@ -147,12 +147,12 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
     : scheduleItems
 
   return (
-    <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
-       <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
+    <div className="bg-surface border rounded-xl shadow-sm overflow-hidden">
+       <div className="p-4 border-b bg-surface-variant/30 flex justify-between items-center">
          <select 
            value={filterStatus}
            onChange={(e) => setFilterStatus(e.target.value)}
-           className="border-gray-300 rounded text-sm focus:ring-indigo-500 focus:border-indigo-500 block p-2 px-3 bg-white"
+           className="border-outline-variant rounded text-sm focus:ring-primary focus:border-primary block p-2 px-3 bg-surface"
          >
            <option value="">All Statuses</option>
            <option value="DUE">Due</option>
@@ -161,7 +161,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
            <option value="PARTIALLY_PAID">Partially Paid</option>
            <option value="PAID">Paid</option>
          </select>
-         <Button onClick={() => setIsModalOpen(true)} className="bg-[#4F46E5] hover:bg-indigo-800 text-sm h-9">
+         <Button onClick={() => setIsModalOpen(true)} className="bg-primary hover:bg-primary/90 text-sm h-9">
             <Plus className="w-4 h-4 mr-2" /> Add Custom Collection
          </Button>
        </div>
@@ -173,7 +173,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
               <TableHead>Milestone</TableHead>
               <TableHead className="text-right">Expected (৳)</TableHead>
               <TableHead className="text-right">Paid (৳)</TableHead>
-              <TableHead className="text-right text-red-600">Penalty</TableHead>
+              <TableHead className="text-right text-destructive">Penalty</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -200,13 +200,13 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
                    <TableRow key={item.id} className={isOverdue ? "border-l-4 border-l-red-500" : ""}>
                       <TableCell className="text-sm font-medium">{new Date(item.due_date).toLocaleDateString()}</TableCell>
                       <TableCell>
-                        <div className="text-sm font-medium text-gray-900">{item.shareholder?.profiles?.name}</div>
-                        <div className="text-xs text-gray-500">Unit: {item.shareholder?.unit_flat}</div>
+                        <div className="text-sm font-medium text-on-surface">{item.shareholder?.profiles?.name}</div>
+                        <div className="text-xs text-on-surface-variant">Unit: {item.shareholder?.unit_flat}</div>
                       </TableCell>
-                      <TableCell className="text-sm text-gray-500">{item.milestone?.name || 'General'}</TableCell>
-                      <TableCell className="text-right font-medium text-gray-900">{parseFloat(item.amount).toLocaleString('en-IN')}</TableCell>
-                      <TableCell className="text-right text-sm text-indigo-700 font-semibold">{getPaidAmount(item.id).toLocaleString('en-IN')}</TableCell>
-                      <TableCell className="text-right text-sm text-red-600">{getPenalty(item).toLocaleString('en-IN')}</TableCell>
+                      <TableCell className="text-sm text-on-surface-variant">{item.milestone?.name || 'General'}</TableCell>
+                      <TableCell className="text-right font-medium text-on-surface">{parseFloat(item.amount).toLocaleString('en-IN')}</TableCell>
+                      <TableCell className="text-right text-sm text-primary font-semibold">{getPaidAmount(item.id).toLocaleString('en-IN')}</TableCell>
+                      <TableCell className="text-right text-sm text-destructive">{getPenalty(item).toLocaleString('en-IN')}</TableCell>
                       <TableCell>
                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${uiStyle}`}>
                             {item.status.replace("_", " ")}
@@ -214,16 +214,14 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
                       </TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
+                          <DropdownMenuTrigger render={<Button variant="ghost" size="sm" className="size-8 p-0" />}>
+                            <MoreVertical className="h-4 w-4" />
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem onClick={() => openEditDialog(item)}>
                               <Pencil className="mr-2 h-4 w-4" /> Edit Installment
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleDelete(item.id)} className="text-red-600">
+                            <DropdownMenuItem onClick={() => handleDelete(item.id)} className="text-destructive">
                               <Trash2 className="mr-2 h-4 w-4" /> Delete
                             </DropdownMenuItem>
                           </DropdownMenuContent>
@@ -287,7 +285,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
               </div>
               <DialogFooter className="pt-4">
                  <Button variant="outline" onClick={() => setIsModalOpen(false)} disabled={isSubmitting}>Cancel</Button>
-                 <Button onClick={handleCreate} disabled={isSubmitting} className="bg-indigo-700 hover:bg-indigo-800">
+                 <Button onClick={handleCreate} disabled={isSubmitting} className="bg-primary hover:bg-primary/90">
                     {isSubmitting ? "Creating..." : "Schedule Collection"}
                  </Button>
               </DialogFooter>
@@ -315,7 +313,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
               </div>
               <div className="space-y-2">
                  <Label>Milestone</Label>
-                 <Select value={editMilestoneId} onValueChange={setEditMilestoneId}>
+                 <Select value={editMilestoneId} onValueChange={(v) => v && setEditMilestoneId(v)}>
                    <SelectTrigger>
                      <span className="flex-1 text-left truncate">
                         {editMilestoneId && editMilestoneId !== "none" ? milestones.find(m => m.id === editMilestoneId)?.name : "General"}
@@ -331,7 +329,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
               </div>
               <div className="space-y-2">
                  <Label>Status Override</Label>
-                 <Select value={editStatus} onValueChange={setEditStatus}>
+                 <Select value={editStatus} onValueChange={(v) => v && setEditStatus(v)}>
                    <SelectTrigger>
                       <span className="flex-1 text-left truncate uppercase text-xs font-bold">{editStatus.replace("_", " ")}</span>
                    </SelectTrigger>
@@ -343,11 +341,11 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
                      <SelectItem value="PAID">Paid</SelectItem>
                    </SelectContent>
                  </Select>
-                 <p className="text-[10px] text-gray-500 italic">Note: Manually overriding status might be reverted by the payment engine if it detects conflicting records.</p>
+                 <p className="text-[10px] text-on-surface-variant italic">Note: Manually overriding status might be reverted by the payment engine if it detects conflicting records.</p>
               </div>
               <DialogFooter className="pt-4">
                  <Button variant="outline" onClick={() => setEditingItem(null)} disabled={isSubmitting}>Cancel</Button>
-                 <Button onClick={handleUpdate} disabled={isSubmitting} className="bg-indigo-700 hover:bg-indigo-800">
+                 <Button onClick={handleUpdate} disabled={isSubmitting} className="bg-primary hover:bg-primary/90">
                     {isSubmitting ? "Updating..." : "Save Changes"}
                  </Button>
               </DialogFooter>

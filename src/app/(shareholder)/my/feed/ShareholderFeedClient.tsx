@@ -85,8 +85,8 @@ export function ShareholderFeedClient({
               onClick={() => setMediaFilter(value)}
               className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
                 mediaFilter === value
-                  ? "bg-indigo-700 text-white border-indigo-700"
-                  : "bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-700"
+                  ? "bg-primary text-white border-primary"
+                  : "bg-surface text-on-surface-variant border-outline-variant/50 hover:border-primary hover:text-primary"
               }`}
             >
               {label}
@@ -100,8 +100,8 @@ export function ShareholderFeedClient({
               onClick={() => setMilestoneFilter("all")}
               className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
                 milestoneFilter === "all"
-                  ? "bg-gray-800 text-white border-gray-800"
-                  : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
+                  ? "bg-on-surface text-white border-on-surface"
+                  : "bg-surface text-on-surface-variant border-outline-variant/50 hover:border-outline"
               }`}
             >
               All Milestones
@@ -112,8 +112,8 @@ export function ShareholderFeedClient({
                 onClick={() => setMilestoneFilter(id)}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
                   milestoneFilter === id
-                    ? "bg-gray-800 text-white border-gray-800"
-                    : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
+                    ? "bg-on-surface text-white border-on-surface"
+                    : "bg-surface text-on-surface-variant border-outline-variant/50 hover:border-outline"
                 }`}
               >
                 {name}
@@ -127,8 +127,8 @@ export function ShareholderFeedClient({
       {filteredPosts.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <p className="text-3xl mb-3">🏗️</p>
-          <p className="text-gray-500 font-medium">No updates yet.</p>
-          <p className="text-gray-400 text-sm mt-1">
+          <p className="text-on-surface-variant font-medium">No updates yet.</p>
+          <p className="text-outline text-sm mt-1">
             Your project team will post construction progress here.
           </p>
         </div>

@@ -28,7 +28,7 @@ export default async function ExpenseDetailPage(props: { params: Promise<{ proje
     .single()
 
   if (!expense) {
-    return <div className="p-8 text-center text-gray-500">Expense not found</div>
+    return <div className="p-8 text-center text-on-surface-variant">Expense not found</div>
   }
 
   // Sort approvals by date

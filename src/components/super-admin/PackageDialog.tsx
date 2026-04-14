@@ -145,7 +145,7 @@ export default function PackageDialog({ open, onOpenChange, onSuccess, pkg }: Pa
                 if (nameError) setNameError("")
               }}
             />
-            {nameError && <p className="text-xs text-red-600">{nameError}</p>}
+            {nameError && <p className="text-xs text-destructive">{nameError}</p>}
           </div>
 
           {/* Description */}
@@ -165,10 +165,10 @@ export default function PackageDialog({ open, onOpenChange, onSuccess, pkg }: Pa
           <div className="space-y-2">
             <div>
               <Label>Features <span className="text-red-500">*</span></Label>
-              <p className="text-xs text-gray-500">Select the platform features included in this package.</p>
+              <p className="text-xs text-on-surface-variant">Select the platform features included in this package.</p>
             </div>
 
-            {featuresError && <p className="text-xs text-red-600">{featuresError}</p>}
+            {featuresError && <p className="text-xs text-destructive">{featuresError}</p>}
 
             <div className="grid grid-cols-2 gap-2">
               {ALL_FEATURE_KEYS.map((key) => (
@@ -177,18 +177,18 @@ export default function PackageDialog({ open, onOpenChange, onSuccess, pkg }: Pa
                   onClick={() => toggleFeature(key)}
                   className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
                     selectedFeatures.has(key)
-                      ? "border-indigo-500 bg-indigo-50"
-                      : "border-gray-200 hover:border-gray-300"
+                      ? "border-primary bg-primary-container/20"
+                      : "border-outline-variant/50 hover:border-outline-variant"
                   }`}
                 >
                   <div className={`mt-0.5 h-4 w-4 rounded border-2 flex items-center justify-center shrink-0 ${
-                    selectedFeatures.has(key) ? "border-indigo-600 bg-indigo-600" : "border-gray-300"
+                    selectedFeatures.has(key) ? "border-primary bg-primary" : "border-outline-variant"
                   }`}>
                     {selectedFeatures.has(key) && <Check className="h-2.5 w-2.5 text-white" />}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-800">{FEATURE_LABELS[key].label}</p>
-                    <p className="text-xs text-gray-500">{FEATURE_LABELS[key].description}</p>
+                    <p className="text-sm font-medium text-on-surface">{FEATURE_LABELS[key].label}</p>
+                    <p className="text-xs text-on-surface-variant">{FEATURE_LABELS[key].description}</p>
                   </div>
                 </div>
               ))}
@@ -209,7 +209,7 @@ export default function PackageDialog({ open, onOpenChange, onSuccess, pkg }: Pa
             type="button"
             onClick={handleSubmit}
             disabled={loading}
-            className="bg-[#4F46E5] hover:bg-[#14B8A6] text-white"
+            className="bg-primary hover:bg-primary/90 text-white"
           >
             {!isEdit && <Plus className="h-4 w-4" />}
             {loading
