@@ -78,7 +78,7 @@ export function AllPaymentsTab({ projectId, payments }: { projectId: string, pay
   }
 
   return (
-    <div className="bg-surface border rounded-xl shadow-sm overflow-hidden">
+    <div className="overflow-hidden">
        <div className="p-4 border-b bg-surface-variant/30 flex justify-between items-center">
          <h3 className="text-lg font-semibold text-on-surface">Payment Ledger</h3>
          <Button variant="outline" size="sm">

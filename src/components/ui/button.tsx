@@ -9,28 +9,28 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "rounded-full bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-m3-1",
+          "rounded-[20px] bg-[#0F766E] text-white hover:bg-[#0F766E]/90 active:scale-[0.98]",
         outline:
-          "rounded-full border-primary text-primary hover:bg-primary/8 aria-expanded:bg-primary/8",
+          "rounded-[20px] border border-[#79747E] text-[#0F766E] hover:bg-[#F7F2FA] active:scale-[0.98]",
         secondary:
-          "rounded-full bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80",
+          "rounded-[20px] bg-[#E8DEF8] text-[#1D192B] hover:bg-[#E8DEF8]/80 active:scale-[0.98]",
         ghost:
-          "rounded-md hover:bg-surface-variant/60 hover:text-on-surface-variant aria-expanded:bg-surface-variant/60",
+          "rounded-full hover:bg-[#F3EDF7] hover:text-[#1D1B20] active:scale-[0.98]",
         destructive:
-          "rounded-full bg-error-container text-on-error-container hover:bg-error-container/80 focus-visible:border-destructive/40 focus-visible:ring-destructive/20",
-        link: "text-primary underline-offset-4 hover:underline",
+          "rounded-[20px] bg-[#B3261E] text-white hover:bg-[#B3261E]/90 active:scale-[0.98]",
+        link: "text-[#0F766E] underline-offset-4 hover:underline",
         tonal:
-          "rounded-full bg-primary-container text-on-primary-container hover:shadow-m3-1",
+          "rounded-[20px] bg-[#CCE8E4] text-[#00201D] hover:bg-[#CCE8E4]/80 active:scale-[0.98]",
       },
       size: {
         default:
-          "h-10 gap-2 px-6 has-data-[icon=inline-end]:pr-4 has-data-[icon=inline-start]:pl-4",
-        xs: "h-7 gap-1 rounded-full px-3 text-xs has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-8 gap-1.5 rounded-full px-4 text-[0.8rem] has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3 [&_svg:not([class*='size-'])]:size-3.5",
-        lg: "h-12 gap-2 px-8 text-base has-data-[icon=inline-end]:pr-6 has-data-[icon=inline-start]:pl-6",
+          "h-10 px-6",
+        xs: "h-7 px-3 text-xs",
+        sm: "h-8 px-4 text-[0.8rem]",
+        lg: "h-12 px-8 text-base",
         icon: "size-10 rounded-full",
         "icon-xs":
-          "size-7 rounded-full [&_svg:not([class*='size-'])]:size-3",
+          "size-7 rounded-full",
         "icon-sm":
           "size-8 rounded-full",
         "icon-lg": "size-12 rounded-full",

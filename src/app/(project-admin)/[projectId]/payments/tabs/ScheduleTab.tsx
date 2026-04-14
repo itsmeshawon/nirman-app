@@ -147,7 +147,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
     : scheduleItems
 
   return (
-    <div className="bg-surface border rounded-xl shadow-sm overflow-hidden">
+    <div className="overflow-hidden">
        <div className="p-4 border-b bg-surface-variant/30 flex justify-between items-center">
          <select 
            value={filterStatus}

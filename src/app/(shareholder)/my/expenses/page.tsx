@@ -20,7 +20,7 @@ export default async function ShareholderExpensesPage() {
 
   if (!shareholderRecords || shareholderRecords.length === 0) {
     return (
-      <div className="p-8 max-w-4xl mx-auto text-center mt-12 bg-surface rounded-[1.25rem] shadow-eos-sm border py-24">
+      <div className="p-8 max-w-4xl mx-auto text-center mt-12 bg-surface rounded-[1.25rem] border py-24">
          <h1 className="text-2xl font-bold text-on-surface">My Expenses</h1>
          <p className="text-on-surface-variant mt-2">You don't have any active project associations yet.</p>
       </div>

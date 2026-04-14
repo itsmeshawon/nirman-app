@@ -62,19 +62,19 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
 
        {/* Summary Cards */}
        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="border rounded-[1.25rem] p-5 bg-surface shadow-eos-sm">
+          <div className="border rounded-[1.25rem] p-5">
              <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest mb-2">Total Paid</p>
              <p className="text-2xl font-bold text-primary">৳ {formatBD(totalPaid)}</p>
           </div>
-          <div className="border rounded-[1.25rem] p-5 bg-surface shadow-eos-sm">
+          <div className="border rounded-[1.25rem] p-5">
              <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest mb-2">Total Outstanding</p>
              <p className="text-2xl font-bold text-tertiary">৳ {formatBD(totalDue)}</p>
           </div>
-          <div className="border rounded-[1.25rem] p-5 bg-surface shadow-eos-sm">
+          <div className="border rounded-[1.25rem] p-5">
              <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest mb-2">Penalty Balance</p>
              <p className="text-2xl font-bold text-destructive">৳ {formatBD(totalPenalties)}</p>
           </div>
-          <div className="border rounded-[1.25rem] p-5 bg-orange-50 border-orange-100 shadow-eos-sm">
+          <div className="border rounded-[1.25rem] p-5 bg-orange-50 border-orange-100">
              <p className="text-xs font-semibold text-orange-800 uppercase tracking-widest mb-2">Next Scheduled Due</p>
              <p className="text-2xl font-bold text-on-surface">
                {nextPayment ? `৳ ${formatBD(parseFloat(nextPayment.amount))}` : "None"}
@@ -98,7 +98,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
 
       <div className="animate-in fade-in duration-300">
          {activeTab === "SCHEDULE" && (
-            <div className="bg-surface border rounded-[1.25rem] shadow-eos-sm overflow-hidden">
+            <div className="overflow-hidden">
                <Table>
                   <TableHeader>
                     <TableRow>
@@ -152,7 +152,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
          )}
 
          {activeTab === "HISTORY" && (
-            <div className="bg-surface border rounded-[1.25rem] shadow-eos-sm overflow-hidden">
+            <div className="overflow-hidden">
                <Table>
                   <TableHeader>
                     <TableRow>

@@ -241,7 +241,7 @@ export default function AdminsPage() {
         </div>
       </div>
 
-      <Card className="bg-surface shadow-sm border border-outline-variant/30 uppercase-headers">
+      <Card className="shadow-none border-0 bg-transparent uppercase-headers">
         <CardHeader className="pb-3 border-b border-outline-variant/30">
           <div className="relative max-w-xs">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />

@@ -99,7 +99,7 @@ export function CommitteeClient({
   return (
     <div className="space-y-8">
       {/* Approval Rule Card */}
-      <section className="bg-surface border rounded-xl shadow-sm overflow-hidden">
+      <section className="border rounded-xl overflow-hidden">
         <div className="p-6 border-b bg-surface-variant/10">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary-container/50 text-primary rounded-lg">
@@ -115,7 +115,7 @@ export function CommitteeClient({
         <div className="p-6">
           <div className="grid sm:grid-cols-2 gap-4">
             <label
-              className={`relative flex cursor-pointer rounded-lg border bg-surface p-4 shadow-sm focus:outline-none ${
+              className={`relative flex cursor-pointer rounded-lg border p-4 focus:outline-none ${
                 rule === "MAJORITY" ? "border-primary ring-1 ring-primary" : "border-outline-variant"
               }`}
             >
@@ -142,7 +142,7 @@ export function CommitteeClient({
             </label>
 
             <label
-              className={`relative flex cursor-pointer rounded-lg border bg-surface p-4 shadow-sm focus:outline-none ${
+              className={`relative flex cursor-pointer rounded-lg border p-4 focus:outline-none ${
                 rule === "ANY_SINGLE" ? "border-primary ring-1 ring-primary" : "border-outline-variant"
               }`}
             >
@@ -193,14 +193,14 @@ export function CommitteeClient({
            </div>
           <Button 
             onClick={() => setIsAddDialogOpen(true)}
-            className="bg-surface text-primary border border-primary hover:bg-primary-container/20"
+            className="text-primary border border-primary hover:bg-primary-container/20"
           >
             <UserPlus className="mr-2 h-4 w-4" />
             Add Member
           </Button>
         </div>
 
-        <div className="bg-surface border rounded-lg shadow-sm overflow-hidden">
+        <div className="overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>

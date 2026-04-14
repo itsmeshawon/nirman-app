@@ -115,7 +115,7 @@ function Field({ label, value }: { label: string; value?: string | null }) {
 
 function ProfileCard({ profile, badge }: { profile: AdminProfile; badge: string }) {
   return (
-    <div className="border border-outline-variant/30 rounded-xl p-5 bg-surface">
+    <div className="border border-outline-variant/30 rounded-xl p-5">
       <div className="flex items-start justify-between mb-4">
         <div>
           <h4 className="text-lg font-semibold text-on-surface">{profile.name || "—"}</h4>
@@ -279,7 +279,7 @@ export default function SuperAdminProjectDetailPage() {
       {/* ------------------------------------------------------------------ */}
       {/* Section A — Project Info                                             */}
       {/* ------------------------------------------------------------------ */}
-      <div className="bg-surface rounded-xl border border-outline-variant/30 shadow-sm">
+      <div className="rounded-xl border border-outline-variant/30">
         <div className="px-5 py-4 border-b border-outline-variant/30 flex items-center gap-2">
           <LayoutGrid className="h-4 w-4 text-primary" />
           <h2 className="text-base font-semibold text-on-surface">Project Info</h2>
@@ -358,7 +358,7 @@ export default function SuperAdminProjectDetailPage() {
       {/* ------------------------------------------------------------------ */}
       {/* Section B — Project Admins                                           */}
       {/* ------------------------------------------------------------------ */}
-      <div className="bg-surface rounded-xl border border-outline-variant/30 shadow-sm">
+      <div className="rounded-xl border border-outline-variant/30">
         <div className="px-5 py-4 border-b border-outline-variant/30 flex items-center gap-2">
           <ShieldCheck className="h-4 w-4 text-primary" />
           <h2 className="text-base font-semibold text-on-surface">
@@ -382,7 +382,7 @@ export default function SuperAdminProjectDetailPage() {
       {/* ------------------------------------------------------------------ */}
       {/* Section C — Shareholders                                             */}
       {/* ------------------------------------------------------------------ */}
-      <div className="bg-surface rounded-xl border border-outline-variant/30 shadow-sm">
+      <div className="rounded-xl border border-outline-variant/30">
         <div className="px-5 py-4 border-b border-outline-variant/30 flex flex-col sm:flex-row sm:items-center gap-3">
           <div className="flex items-center gap-2 flex-1">
             <Users className="h-4 w-4 text-primary" />

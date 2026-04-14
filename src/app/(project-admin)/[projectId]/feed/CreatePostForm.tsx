@@ -220,7 +220,7 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
   if (!isExpanded) {
     return (
       <div
-        className="bg-surface rounded-xl border border-outline-variant/50 shadow-sm p-4 cursor-text"
+        className="bg-surface rounded-xl border border-outline-variant/50 p-4 cursor-text"
         onClick={() => setIsExpanded(true)}
       >
         <div className="flex items-center gap-3">
@@ -236,7 +236,7 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
   }
 
   return (
-    <div className="bg-surface rounded-xl border border-primary-container shadow-sm p-5 space-y-4">
+    <div className="bg-surface rounded-xl border border-primary-container p-5 space-y-4">
       {/* Title */}
       <div className="space-y-1.5">
         <Label htmlFor="post-title" className="text-xs text-on-surface-variant font-medium">

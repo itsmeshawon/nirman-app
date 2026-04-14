@@ -67,7 +67,7 @@ export function DefaultersClient({ overdueItems, payments, projectMap }: Default
   }, [overdueItems, payments, projectMap])
 
   return (
-    <div className="bg-surface border border-outline-variant/30 rounded-[1.25rem] shadow-eos-sm overflow-hidden">
+    <div className="overflow-hidden">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader className="bg-surface-variant/20">

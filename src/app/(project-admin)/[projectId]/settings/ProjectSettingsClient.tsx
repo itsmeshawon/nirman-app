@@ -209,7 +209,7 @@ export function ProjectSettingsClient({
   }
 
   return (
-    <div className="bg-surface border rounded-xl shadow-sm overflow-hidden">
+    <div className="bg-surface border rounded-xl overflow-hidden">
       <div className="p-6 border-b border-outline-variant/50">
         <h2 className="text-xl font-bold text-on-surface">Project Settings</h2>
         <p className="text-sm text-on-surface-variant mt-1">Configure project rules, schedules, and automated communications.</p>

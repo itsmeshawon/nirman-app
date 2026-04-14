@@ -143,12 +143,12 @@ export function ProfileForm() {
   }
 
   return (
-    <div className="bg-surface rounded-[1.25rem] shadow-eos-xl border border-primary-container/30/50 overflow-hidden">
+    <div className="bg-surface rounded-[1.25rem] border border-primary-container/30/50 overflow-hidden">
       {/* Cover/Header area */}
       <div className="h-32 bg-gradient-to-r from-primary to-secondary relative">
         <div className="absolute -bottom-12 left-8 md:left-12">
           <div className="relative group">
-            <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-white bg-primary-container/20 flex items-center justify-center text-primary text-3xl font-bold shadow-sm overflow-hidden relative">
+            <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-white bg-primary-container/20 flex items-center justify-center text-primary text-3xl font-bold overflow-hidden relative">
               {initialData?.avatar_url ? (
                 <img 
                   src={initialData.avatar_url} 
@@ -168,7 +168,7 @@ export function ProfileForm() {
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploadingAvatar}
-              className="absolute bottom-1 right-1 bg-surface p-1.5 rounded-full shadow-md text-on-surface-variant hover:text-primary transition-colors border border-outline-variant/30 disabled:opacity-50"
+              className="absolute bottom-1 right-1 bg-surface p-1.5 rounded-full text-on-surface-variant hover:text-primary transition-colors border border-outline-variant/30 disabled:opacity-50"
             >
               <Camera className="w-4 h-4" />
             </button>
@@ -290,7 +290,7 @@ export function ProfileForm() {
           <Button 
             type="submit" 
             disabled={isSaving || !isDirty}
-            className="bg-primary hover:bg-primary min-w-[160px] h-11 rounded-xl shadow-eos font-semibold transition-all active:scale-[0.98]"
+            className="bg-primary hover:bg-primary min-w-[160px] h-11 rounded-xl font-semibold transition-all active:scale-[0.98]"
           >
             {isSaving ? "Saving..." : "Save Changes"}
           </Button>

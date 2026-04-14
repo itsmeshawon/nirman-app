@@ -95,7 +95,7 @@ export default async function ShareholderDashboardPage() {
         </div>
       )}
       {/* Hero card — banking style */}
-      <div className="rounded-2xl bg-gradient-to-br from-primary via-primary to-primary/80 p-6 text-white shadow-lg relative overflow-hidden">
+      <div className="rounded-2xl bg-gradient-to-br from-primary via-primary to-primary/80 p-6 text-white relative overflow-hidden">
         <div className="absolute top-0 right-0 w-48 h-48 rounded-full bg-surface/5 -translate-y-1/2 translate-x-1/4" />
         <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full bg-surface/5 translate-y-1/2 -translate-x-1/4" />
         <div className="relative">
@@ -184,7 +184,7 @@ export default async function ShareholderDashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Payments */}
-        <div className="bg-surface rounded-[1.25rem] border border-outline-variant/50 shadow-eos-sm overflow-hidden">
+        <div className="rounded-[1.25rem] border border-outline-variant/50 overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/30">
             <h3 className="text-sm font-semibold text-on-surface">Recent Payments</h3>
             <Link href="/my/payments" className="text-xs text-primary hover:underline flex items-center gap-1">
@@ -214,7 +214,7 @@ export default async function ShareholderDashboardPage() {
         </div>
 
         {/* Recent Published Expenses */}
-        <div className="bg-surface rounded-[1.25rem] border border-outline-variant/50 shadow-eos-sm overflow-hidden">
+        <div className="rounded-[1.25rem] border border-outline-variant/50 overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/30">
             <h3 className="text-sm font-semibold text-on-surface">Project Expenses (Published)</h3>
             <Link href="/my/expenses" className="text-xs text-primary hover:underline flex items-center gap-1">
@@ -246,7 +246,7 @@ function SummaryCard({ label, value, sub, icon, bg, accent }: {
   label: string; value: string; sub: string; icon: React.ReactNode; bg: string; accent: string
 }) {
   return (
-    <div className={`bg-surface rounded-2xl border ${accent} shadow-eos-sm p-5 hover:shadow-eos transition-all duration-300 group cursor-default`}>
+    <div className={`rounded-2xl border ${accent} p-5 transition-all duration-300 group cursor-default`}>
       <div className={`w-12 h-12 rounded-[1.25rem] ${bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
         {icon}
       </div>

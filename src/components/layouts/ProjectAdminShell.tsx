@@ -86,7 +86,7 @@ export default function ProjectAdminShell({
   }
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen bg-[#fefaff] overflow-hidden">
       {/* Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
         <div
@@ -98,37 +98,32 @@ export default function ProjectAdminShell({
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-[280px] flex-col bg-surface transition-transform duration-300 ease-[cubic-bezier(0.2,0,0,1)] lg:static lg:translate-x-0 lg:w-[260px] lg:border-r lg:border-outline-variant/50",
-          isMobileMenuOpen ? "translate-x-0 shadow-m3-5" : "-translate-x-full"
+          "fixed inset-y-0 left-0 z-50 flex w-[260px] flex-col bg-[#F7F2FA] transition-transform duration-300 ease-[cubic-bezier(0.2,0,0,1)] lg:static lg:translate-x-0 lg:w-[260px]",
+          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Sidebar Header */}
-        <div className="flex h-16 shrink-0 items-center justify-between px-5 border-b border-outline-variant/50">
+        <div className="flex h-16 shrink-0 items-center justify-between px-6">
           <Link href={`/${projectId}/dashboard`} className="flex items-center gap-2">
-            <span className="text-xl font-bold text-primary tracking-tight">NirmaN</span>
+            <span className="text-[24px] font-normal text-[#0F766E] tracking-tight">NirmaN</span>
           </Link>
-          <button className="lg:hidden p-2 rounded-full hover:bg-surface-variant/50" onClick={() => setIsMobileMenuOpen(false)}>
-            <X className="h-5 w-5 text-on-surface-variant" />
+          <button className="lg:hidden p-2 rounded-full hover:bg-[#ECE6F0]" onClick={() => setIsMobileMenuOpen(false)}>
+            <X className="h-5 w-5 text-[#49454F]" />
           </button>
         </div>
 
         {/* Project Info Area */}
-        <div className="px-5 py-4 border-b border-outline-variant/50">
-          <h2 className="font-semibold text-on-surface truncate" title={projectName}>
+        <div className="px-6 py-4">
+          <h2 className="text-[14px] font-medium text-[#1D1B20] truncate" title={projectName}>
             {projectName}
           </h2>
-          <span
-            className={cn(
-              "mt-1.5 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-              statusColor(projectStatus)
-            )}
-          >
+          <span className="mt-1 inline-flex items-center rounded-full bg-[#E8DEF8] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1D192B]">
             {projectStatus.replace("_", " ")}
           </span>
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+        <nav className="flex-1 space-y-1 overflow-y-auto p-3">
           {navItems.map((item) => {
             const isActive = pathname?.includes(item.href)
             return (
@@ -136,17 +131,17 @@ export default function ProjectAdminShell({
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "group flex items-center rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-200",
+                  "group flex h-12 items-center rounded-full px-4 text-sm transition-all duration-200",
                   isActive
-                    ? "bg-primary-container text-on-primary-container"
-                    : "text-on-surface-variant hover:bg-surface-variant/50 hover:text-on-surface"
+                    ? "bg-[#CCE8E4] text-[#0F766E] font-semibold"
+                    : "text-[#49454F] hover:bg-[#F3EDF7] font-medium"
                 )}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <item.icon
                   className={cn(
                     "mr-3 h-5 w-5 flex-shrink-0 transition-colors",
-                    isActive ? "text-on-primary-container" : "text-on-surface-variant group-hover:text-on-surface"
+                    isActive ? "text-[#0F766E]" : "text-[#49454F]"
                   )}
                   aria-hidden="true"
                 />
@@ -157,10 +152,10 @@ export default function ProjectAdminShell({
         </nav>
 
         {/* Sidebar Footer (User Info) */}
-        <div className="border-t border-outline-variant/50 p-4">
+        <div className="p-4 border-t border-[#CAC4D0]/30 mx-2 mb-2 rounded-2xl bg-white/40">
           <div className="flex items-center justify-between">
-            <Link href={`/${projectId}/profile`} className="flex items-center gap-3 truncate group cursor-pointer p-1.5 -m-1.5 rounded-md hover:bg-surface-variant/50 transition-all duration-200 flex-1 min-w-0">
-              <div className="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container text-sm font-bold shrink-0 overflow-hidden">
+            <Link href={`/${projectId}/profile`} className="flex items-center gap-3 truncate group cursor-pointer p-1.5 -m-1.5 rounded-xl hover:bg-white/60 transition-all duration-200 flex-1 min-w-0">
+              <div className="w-10 h-10 rounded-full bg-[#E8DEF8] flex items-center justify-center text-[#1D192B] text-sm font-bold shrink-0 overflow-hidden">
                 {avatarUrl ? (
                   <img src={avatarUrl} alt={profileName} className="w-full h-full object-cover" />
                 ) : (
@@ -168,17 +163,17 @@ export default function ProjectAdminShell({
                 )}
               </div>
               <div className="flex flex-col truncate min-w-0">
-                <span className="text-sm font-medium text-on-surface truncate group-hover:text-primary transition-colors">
+                <span className="text-sm font-semibold text-[#1D1B20] truncate">
                   {profileName || user?.email}
                 </span>
-                <span className="mt-0.5 inline-flex items-center w-fit rounded-full bg-secondary-container px-2.5 py-0.5 text-[10px] font-medium text-on-secondary-container">
-                  Project Admin
+                <span className="text-[10px] font-bold text-[#49454F] uppercase tracking-wider">
+                  Admin
                 </span>
               </div>
             </Link>
             <button
               onClick={handleSignOut}
-              className="ml-2 rounded-full p-2 text-on-surface-variant hover:bg-error-container/50 hover:text-on-error-container transition-all duration-200"
+              className="ml-2 rounded-full p-2 text-[#49454F] hover:bg-[#ECE6F0] hover:text-[#B3261E] transition-all duration-200"
               title="Sign Out"
             >
               <LogOut className="h-5 w-5" />
@@ -190,24 +185,24 @@ export default function ProjectAdminShell({
       {/* Main Content Area */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top Header */}
-        <header className="flex h-16 items-center justify-between border-b border-outline-variant/50 bg-surface px-4 sm:px-6 lg:px-8">
+        <header className="flex h-16 items-center justify-between bg-[#fefaff]/80 backdrop-blur-md px-4 sm:px-6 lg:px-8">
           <div className="flex items-center">
             <button
-              className="mr-3 p-2 rounded-full text-on-surface-variant hover:bg-surface-variant/50 lg:hidden"
+              className="mr-3 p-2 rounded-full text-[#49454F] lg:hidden hover:bg-[#ECE6F0]"
               onClick={() => setIsMobileMenuOpen(true)}
             >
               <span className="sr-only">Open sidebar</span>
               <Menu className="h-6 w-6" />
             </button>
-            <h1 className="text-lg font-semibold text-on-surface">{pageTitle}</h1>
+            <h1 className="text-[22px] font-normal text-[#1D1B20]">{pageTitle}</h1>
           </div>
 
           {/* Header Right Actions */}
           <div className="flex items-center gap-4">
             {/* Desktop Only Project Name Snippet */}
             <div className="hidden lg:flex lg:items-center lg:gap-2 mr-2">
-                <span className="text-sm text-on-surface-variant">Project:</span>
-                <span className="text-sm font-medium text-on-surface">{projectName}</span>
+                <span className="text-[12px] font-bold text-[#49454F] uppercase tracking-wider">Project</span>
+                <span className="text-[14px] font-medium text-[#1D1B20]">{projectName}</span>
             </div>
             <NotificationBell projectId={projectId} />
           </div>
@@ -215,7 +210,7 @@ export default function ProjectAdminShell({
 
         {/* Main Content Scroll Area */}
         <main className="flex-1 overflow-y-auto">
-          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-10">
             {children}
           </div>
         </main>

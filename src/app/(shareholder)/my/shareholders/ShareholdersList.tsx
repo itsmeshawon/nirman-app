@@ -40,7 +40,7 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
   return (
     <div className="space-y-4">
       {/* Search Header */}
-      <div className="bg-surface p-4 border border-outline-variant/30 rounded-[1.25rem] shadow-eos-sm flex items-center gap-4">
+      <div className="p-4 border border-outline-variant/30 rounded-[1.25rem] flex items-center gap-4">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
           <Input
@@ -58,7 +58,7 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
       </div>
 
       {/* Table Section */}
-      <div className="bg-surface border rounded-lg shadow-sm overflow-hidden">
+      <div className="overflow-hidden">
         <Table>
           <TableHeader className="bg-surface-variant/20">
             <TableRow>
@@ -125,7 +125,7 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
               <div className="h-full flex flex-col">
                 <div className="bg-gradient-to-br from-primary to-primary/80 px-6 pt-12 pb-8 text-white relative">
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-20 h-20 rounded-full bg-surface/20 border-2 border-white/30 flex items-center justify-center text-2xl font-bold mb-4 shadow-lg">
+                    <div className="w-20 h-20 rounded-full bg-surface/20 border-2 border-white/30 flex items-center justify-center text-2xl font-bold mb-4">
                        {profile?.avatar_url ? (
                          <img src={profile.avatar_url} alt={profile.name} className="w-full h-full object-cover rounded-full" />
                        ) : initials}

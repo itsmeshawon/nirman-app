@@ -63,7 +63,7 @@ export function DefaultersTab({ projectId, scheduleItems, payments }: { projectI
   }
 
   return (
-    <div className="bg-surface border rounded-xl shadow-sm overflow-hidden">
+    <div className="overflow-hidden">
        <div className="p-4 border-b bg-orange-50 flex justify-between items-center">
          <div>
             <h3 className="text-lg font-semibold text-orange-900">Active Defaulters</h3>

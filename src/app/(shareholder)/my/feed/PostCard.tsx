@@ -142,7 +142,7 @@ export function PostCard({
     <>
       <div
         ref={cardRef}
-        className="bg-surface rounded-2xl shadow-eos-sm border border-outline-variant/30 mb-4 overflow-hidden"
+        className="rounded-2xl border border-outline-variant/30 mb-4 overflow-hidden"
       >
         {/* Header */}
         <div className="px-4 pt-4 pb-0 flex items-start gap-3">
@@ -272,7 +272,7 @@ export function PostCard({
           <img
             src={mediaUrl}
             alt={post.title || "Full size"}
-            className="max-w-full max-h-full rounded-[1.25rem] object-contain shadow-2xl"
+            className="max-w-full max-h-full rounded-[1.25rem] object-contain"
             onClick={(e) => e.stopPropagation()}
           />
           <button

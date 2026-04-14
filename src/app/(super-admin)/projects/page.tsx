@@ -316,7 +316,7 @@ export default function ProjectsPage() {
             onClick={() => setActiveTab("active")}
             className={cn(
               "px-4 py-1.5 rounded-md text-sm font-medium transition-colors",
-              activeTab === "active" ? "bg-surface text-on-surface shadow-sm" : "text-on-surface-variant hover:text-on-surface"
+              activeTab === "active" ? "bg-surface text-on-surface" : "text-on-surface-variant hover:text-on-surface"
             )}
           >
             Active Projects
@@ -325,14 +325,14 @@ export default function ProjectsPage() {
             onClick={() => setActiveTab("archived")}
             className={cn(
               "px-4 py-1.5 rounded-md text-sm font-medium transition-colors",
-              activeTab === "archived" ? "bg-surface text-on-surface shadow-sm" : "text-on-surface-variant hover:text-on-surface"
+              activeTab === "archived" ? "bg-surface text-on-surface" : "text-on-surface-variant hover:text-on-surface"
             )}
           >
             Archived
           </button>
         </div>
 
-        <Card className="bg-surface shadow-sm border border-outline-variant/30">
+        <Card className="shadow-none border-0 bg-transparent">
           {/* Search */}
           <CardHeader className="pb-3 border-b border-outline-variant/30">
             <div className="relative max-w-xs">

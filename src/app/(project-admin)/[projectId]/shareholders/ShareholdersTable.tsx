@@ -267,7 +267,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
          <Badge variant="outline" className="text-on-surface-variant bg-surface-variant/20 border-outline-variant/50">Inactive: {inactive}</Badge>
       </div>
 
-      <div className="bg-surface border rounded-lg shadow-sm">
+      <div>
         <div className="p-4 border-b">
            <div className="relative max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />

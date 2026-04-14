@@ -28,8 +28,8 @@ const tabsListVariants = cva(
   {
     variants: {
       variant: {
-        default: "gap-0 border-b border-outline-variant/50",
-        line: "gap-0 border-b border-outline-variant/50",
+        default: "gap-2",
+        line: "gap-2",
       },
     },
     defaultVariants: {
@@ -58,10 +58,8 @@ function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
     <TabsPrimitive.Tab
       data-slot="tabs-trigger"
       className={cn(
-        "relative inline-flex h-12 flex-1 items-center justify-center gap-1.5 px-4 text-sm font-medium whitespace-nowrap text-on-surface-variant transition-all hover:text-on-surface hover:bg-surface-variant/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50",
-        "data-active:text-primary data-active:font-semibold",
-        "after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-[3px] after:w-0 after:rounded-t-full after:bg-primary after:transition-all after:duration-200",
-        "data-active:after:w-full",
+        "relative inline-flex h-10 items-center justify-center gap-1.5 px-6 text-sm font-medium whitespace-nowrap text-[#49454F] transition-all rounded-full hover:bg-[#F3EDF7] focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
+        "data-active:bg-[#E8DEF8] data-active:text-[#1D192B] data-active:font-semibold",
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}

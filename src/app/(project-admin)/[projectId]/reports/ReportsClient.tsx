@@ -115,7 +115,7 @@ export function ReportsClient({ projectId, chartData, summary }: ReportsClientPr
           { label: "Total Expenses", value: formatBDTShort(summary.totalExpenses), color: "text-secondary" },
           { label: "Collection Rate", value: `${summary.collectionRate}%`, color: summary.collectionRate >= 80 ? "text-emerald-700" : "text-rose-700" },
         ].map(s => (
-          <div key={s.label} className="bg-surface rounded-[1.25rem] border border-outline-variant/30 shadow-eos-sm p-5 hover:shadow-eos transition-all duration-300">
+          <div key={s.label} className="rounded-[1.25rem] border border-outline-variant/30 p-5 transition-all duration-300">
             <p className="text-[10px] font-bold text-outline uppercase tracking-widest mb-1.5">{s.label}</p>
             <p className={`text-2xl font-black tracking-tight ${s.color}`}>{s.value}</p>
           </div>
@@ -124,7 +124,7 @@ export function ReportsClient({ projectId, chartData, summary }: ReportsClientPr
 
       {/* Bar Chart */}
       {chartData.length > 0 && (
-        <div className="bg-surface rounded-[1.25rem] border border-outline-variant/30 shadow-eos p-8">
+        <div className="rounded-[1.25rem] border border-outline-variant/30 p-8">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-10 h-10 rounded-lg bg-primary-container/20 flex items-center justify-center">
               <BarChart2 className="w-5 h-5 text-primary" />
@@ -149,7 +149,7 @@ export function ReportsClient({ projectId, chartData, summary }: ReportsClientPr
               />
               <Tooltip
                 formatter={(value: any, name: any) => [formatBDTShort(Number(value) || 0), name === "collected" ? "Collected" : "Expenses"] as [string, string]}
-                contentStyle={{ borderRadius: "12px", border: "none", boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)", fontSize: 12 }}
+                contentStyle={{ borderRadius: "12px", border: "1px solid #E7E0EC", fontSize: 12 }}
                 cursor={{ fill: '#f8fafc' }}
               />
               <Legend 
@@ -174,7 +174,7 @@ export function ReportsClient({ projectId, chartData, summary }: ReportsClientPr
             return (
               <div
                 key={report.id}
-                className={`bg-surface rounded-[1.25rem] border border-primary-container/30/50 shadow-eos-sm p-6 flex items-start gap-4 transition-all hover:shadow-eos`}
+                className={`rounded-[1.25rem] border border-primary-container/30/50 p-6 flex items-start gap-4 transition-all`}
               >
                 <div className={`w-12 h-12 rounded-xl ${report.bg} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
                   <Icon className={`w-5 h-5 ${report.color}`} />

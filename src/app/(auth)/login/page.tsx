@@ -72,21 +72,21 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="w-full max-w-sm px-4">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-primary tracking-tight">NirmaN</h1>
-        <p className="text-sm text-on-surface-variant mt-1">Construction Transparency Platform</p>
+    <div className="w-full max-w-sm px-6">
+      <div className="text-center mb-10">
+        <h1 className="text-[36px] font-normal text-[#0F766E] tracking-tight">NirmaN</h1>
+        <p className="text-[14px] text-[#49454F] mt-2">Construction Transparency Platform</p>
       </div>
 
-      <Card className="shadow-m3-2 border-0 rounded-xl">
-        <CardHeader className="pb-4">
-          <CardTitle className="m3-title-large text-on-surface">Sign In</CardTitle>
-          <CardDescription className="text-on-surface-variant">Enter your credentials to access your account</CardDescription>
+      <Card className="rounded-[28px] border border-[#E7E0EC] bg-white p-2">
+        <CardHeader className="pb-4 pt-6 px-6">
+          <CardTitle className="text-[24px] font-normal text-[#1D1B20]">Sign In</CardTitle>
+          <CardDescription className="text-[14px] text-[#49454F]">Enter your credentials to access your account</CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-1.5">
-              <Label htmlFor="email" className="m3-label-large text-on-surface-variant">Email</Label>
+        <CardContent className="px-6 pb-6 pt-2">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-[12px] font-bold text-[#49454F] uppercase tracking-wider ml-1">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -95,11 +95,12 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoComplete="email"
+                className="h-12"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="password" className="m3-label-large text-on-surface-variant">Password</Label>
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-[12px] font-bold text-[#49454F] uppercase tracking-wider ml-1">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -108,26 +109,27 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 autoComplete="current-password"
+                className="h-12"
               />
             </div>
 
             {error && (
-              <div className="text-sm text-on-error-container bg-error-container rounded-sm px-3 py-2.5">
+              <div className="text-[12px] font-medium text-[#B3261E] bg-[#F9DEDC] rounded-lg px-4 py-3">
                 {error}
               </div>
             )}
 
             <Button
               type="submit"
-              className="w-full"
-              size="lg"
+              className="w-full h-12 text-base"
+              variant="default"
               disabled={loading}
             >
               {loading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
 
-          <p className="text-xs text-center text-on-surface-variant mt-5">
+          <p className="text-[12px] text-center text-[#49454F] mt-8">
             Don&apos;t have an account? Contact your project admin.
           </p>
         </CardContent>

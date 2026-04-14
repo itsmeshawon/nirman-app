@@ -125,7 +125,7 @@ export default function PackagesPage() {
           </Button>
         </div>
 
-        <Card className="bg-surface shadow-sm border border-outline-variant/30">
+        <Card className="shadow-none border-0 bg-transparent">
           <CardContent className="p-0">
             {loading ? (
               <div className="p-6 space-y-4">

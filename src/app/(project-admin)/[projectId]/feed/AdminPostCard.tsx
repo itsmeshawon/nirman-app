@@ -241,7 +241,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
   const isHidden = post.status === "HIDDEN"
 
   return (
-    <div className={`relative bg-surface rounded-xl border shadow-sm overflow-hidden ${isHidden ? "opacity-75" : ""}`}>
+    <div className={`relative bg-surface rounded-xl border overflow-hidden ${isHidden ? "opacity-75" : ""}`}>
       {/* Hidden overlay badge */}
       {isHidden && (
         <div className="absolute inset-0 z-10 pointer-events-none">
@@ -259,7 +259,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
           <>
             <button
               onClick={openEdit}
-              className="w-7 h-7 rounded-full bg-surface border border-outline-variant/50 flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-colors shadow-sm"
+              className="w-7 h-7 rounded-full bg-surface border border-outline-variant/50 flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-colors"
               title="Edit post"
             >
               <Edit2 className="w-3.5 h-3.5" />
@@ -267,7 +267,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
             <button
               onClick={handleHideToggle}
               disabled={isToggling}
-              className={`w-7 h-7 rounded-full bg-surface border flex items-center justify-center transition-colors shadow-sm ${
+              className={`w-7 h-7 rounded-full bg-surface border flex items-center justify-center transition-colors ${
                 isHidden
                   ? "border-primary text-primary hover:bg-primary-container/20"
                   : "border-outline-variant/50 text-on-surface-variant hover:text-destructive hover:border-red-300"
@@ -283,7 +283,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
             <button
               onClick={handleDelete}
               disabled={isDeleting}
-              className="w-7 h-7 rounded-full bg-surface border border-outline-variant/50 flex items-center justify-center text-on-surface-variant hover:text-destructive hover:border-red-300 transition-colors shadow-sm"
+              className="w-7 h-7 rounded-full bg-surface border border-outline-variant/50 flex items-center justify-center text-on-surface-variant hover:text-destructive hover:border-red-300 transition-colors"
               title="Delete post"
             >
               <Trash2 className="w-3.5 h-3.5" />

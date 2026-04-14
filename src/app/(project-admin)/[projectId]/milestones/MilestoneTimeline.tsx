@@ -151,7 +151,7 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center bg-surface p-4 sm:p-6 rounded-xl border shadow-sm">
+      <div className="flex justify-between items-center p-4 sm:p-6 rounded-xl border">
         <div>
           <h2 className="text-xl font-bold text-on-surface">Project Milestones</h2>
           <p className="text-sm text-on-surface-variant mt-1">Track the major phases of your construction.</p>
@@ -162,7 +162,7 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
         </Button>
       </div>
 
-      <div className="bg-surface p-6 rounded-xl border shadow-sm">
+      <div className="p-6 rounded-xl border">
          {milestones.length === 0 ? (
             <div className="text-center py-12 text-on-surface-variant">
                No milestones added yet. Click 'Add Milestone' to get started.
@@ -228,7 +228,7 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
 
                       {/* Actions */}
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                         <div className="flex flex-col bg-surface-variant/30 rounded shadow-sm border border-outline-variant/50 overflow-hidden mr-2">
+                         <div className="flex flex-col bg-surface-variant/30 rounded border border-outline-variant/50 overflow-hidden mr-2">
                            <button
                              disabled={idx === 0}
                              onClick={() => handleReorder(idx, 'up')}

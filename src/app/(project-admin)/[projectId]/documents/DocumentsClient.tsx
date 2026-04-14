@@ -224,7 +224,7 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
         </Dialog>
       </div>
 
-      <div className="flex items-center space-x-2 bg-surface rounded-lg border px-3 py-2">
+      <div className="flex items-center space-x-2 rounded-lg border px-3 py-2">
         <Search className="w-4 h-4 text-outline" />
         <input 
           type="text" 
@@ -235,7 +235,7 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
         />
       </div>
 
-      <div className="bg-surface rounded-xl border shadow-sm overflow-hidden">
+      <div className="overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="bg-surface-variant/20/50">

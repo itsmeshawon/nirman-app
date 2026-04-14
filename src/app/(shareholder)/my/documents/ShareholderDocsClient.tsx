@@ -75,7 +75,7 @@ export function ShareholderDocsClient({ documents }: ShareholderDocsClientProps)
       </div>
 
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="flex-1 flex items-center space-x-2 bg-surface rounded-[1.25rem] border px-3 py-2 shadow-eos-sm">
+        <div className="flex-1 flex items-center space-x-2 rounded-[1.25rem] border px-3 py-2">
           <Search className="w-4 h-4 text-outline" />
           <input 
             type="text" 
@@ -88,7 +88,7 @@ export function ShareholderDocsClient({ documents }: ShareholderDocsClientProps)
         
         <div className="w-full md:w-64">
           <Select value={categoryFilter} onValueChange={(v) => setCategoryFilter(v ?? "")}>
-            <SelectTrigger className="rounded-[1.25rem] shadow-eos-sm border-outline-variant/50">
+            <SelectTrigger className="rounded-[1.25rem] border-outline-variant/50">
               <div className="flex items-center gap-2">
                 <Filter className="w-4 h-4 text-outline" />
                 <SelectValue placeholder="All Categories" />
@@ -104,7 +104,7 @@ export function ShareholderDocsClient({ documents }: ShareholderDocsClientProps)
         </div>
       </div>
 
-      <div className="bg-surface rounded-2xl border shadow-eos overflow-hidden transition-all duration-300">
+      <div className="overflow-hidden transition-all duration-300">
         <Table>
           <TableHeader>
             <TableRow className="bg-surface-variant/20/50 hover:bg-surface-variant/20/50">

@@ -18,11 +18,6 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -40,25 +35,24 @@
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
 
-  /* M3 Extended Colors */
+  /* M3 Extended Colors mapped to specific user tokens */
   --color-primary-container: var(--primary-container);
   --color-on-primary-container: var(--on-primary-container);
   --color-secondary-container: var(--secondary-container);
   --color-on-secondary-container: var(--on-secondary-container);
-  --color-tertiary: var(--tertiary);
-  --color-tertiary-container: var(--tertiary-container);
-  --color-on-tertiary-container: var(--on-tertiary-container);
-  --color-error-container: var(--error-container);
-  --color-on-error-container: var(--on-error-container);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-outline: var(--m3-outline);
+  --color-outline-variant: var(--outline-variant);
+
+  /* Surface tokens */
   --color-surface: var(--surface);
   --color-on-surface: var(--on-surface);
   --color-surface-variant: var(--surface-variant);
   --color-on-surface-variant: var(--on-surface-variant);
-  --color-outline: var(--m3-outline);
-  --color-outline-variant: var(--outline-variant);
-  --color-success: var(--success);
 
-  /* M3 Radius tokens */
+  /* Radius tokens */
   --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -66,279 +60,108 @@
   --radius-xl: 28px;
   --radius-full: 9999px;
 
-  /* M3 Elevation shadows */
-  --shadow-m3-1: 0 1px 3px 1px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.3);
-  --shadow-m3-2: 0 2px 6px 2px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.3);
-  --shadow-m3-3: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
-  --shadow-m3-5: 0 8px 12px 6px rgba(0,0,0,0.15), 0 4px 4px rgba(0,0,0,0.3);
-
-  /* M3 Motion */
-  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
-  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
-  --duration-short: 150ms;
-  --duration-medium: 300ms;
-  --duration-long: 500ms;
+  /* Elevation shadows */
+  --shadow-m3-1: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-m3-2: 0 4px 12px -2px rgba(0,0,10,0.04), 0 2px 4px -2px rgba(0,0,10,0.02);
+  --shadow-m3-3: 0 8px 24px rgba(0,0,0,0.15);
 }
 
 :root {
   /* ═══════════════════════════════════════════════
-     NirmaN Design System — Material Design 3
-     Primary: Teal #0F766E
+     NirmaN Design System — Material Design 3 (io)
      ═══════════════════════════════════════════════ */
 
   /* Surface & Background */
-  --background: #F8FAF8;
-  --foreground: #191C1B;
+  --background: #fefaff; /* Light Lavender-Cream */
+  --foreground: #1D1B20;
   --card: #FFFFFF;
-  --card-foreground: #191C1B;
+  --card-foreground: #1D1B20;
   --popover: #FFFFFF;
-  --popover-foreground: #191C1B;
+  --popover-foreground: #1D1B20;
+  
+  --surface: #FFFFFF;
+  --on-surface: #1D1B20;
+  --surface-variant: #E7E0EC;
+  --on-surface-variant: #49454F;
+
+  --surface-container-low: #F7F2FA;
+  --surface-container: #F3EDF7;
+  --surface-container-high: #ECE6F0;
 
   /* Primary: Teal */
   --primary: #0F766E;
   --primary-foreground: #FFFFFF;
-  --primary-container: #A7F3D0;
-  --on-primary-container: #00201A;
+  --primary-container: #CCE8E4;
+  --on-primary-container: #00201D;
 
-  /* Secondary */
-  --secondary: #4A635C;
+  /* Secondary: Lavender Accent */
+  --secondary: #625B71;
   --secondary-foreground: #FFFFFF;
-  --secondary-container: #CCE8DF;
-  --on-secondary-container: #062019;
-
-  /* Tertiary: Blue-gray accent */
-  --tertiary: #436277;
-  --tertiary-container: #C7E7FF;
-  --on-tertiary-container: #001E2F;
+  --secondary-container: #E8DEF8;
+  --on-secondary-container: #1D192B;
 
   /* Muted */
-  --muted: #F1F4F2;
-  --muted-foreground: #6F7975;
+  --muted: #F3EDF7;
+  --muted-foreground: #49454F;
 
-  /* Accent mapped to tertiary container for M3 feel */
-  --accent: #C7E7FF;
-  --accent-foreground: #001E2F;
+  /* Accent */
+  --accent: #E8DEF8;
+  --accent-foreground: #1D192B;
 
   /* Error */
-  --destructive: #BA1A1A;
-  --error-container: #FFDAD6;
-  --on-error-container: #410002;
+  --destructive: #B3261E;
+  --error-container: #F9DEDC;
+  --on-error-container: #410E0B;
 
-  /* Success */
-  --success: #10B981;
-
-  /* Surface system */
-  --surface: #F8FAF8;
-  --on-surface: #191C1B;
-  --surface-variant: #DBE5DF;
-  --on-surface-variant: #3F4945;
-
-  /* Outline */
-  --m3-outline: #6F7975;
-  --outline-variant: #BFC9C3;
-
-  /* Borders & inputs */
-  --border: #BFC9C3;
-  --input: #BFC9C3;
+  /* Utility */
+  --m3-outline: #79747E;
+  --outline-variant: #CAC4D0;
+  --border: #CAC4D0;
+  --input: #79747E;
   --ring: #0F766E;
 
-  /* Charts */
-  --chart-1: #0F766E;
-  --chart-2: #4A635C;
-  --chart-3: #436277;
-  --chart-4: #BA1A1A;
-  --chart-5: #10B981;
-
-  /* Border radius base */
-  --radius: 0.75rem;
-
   /* Sidebar */
-  --sidebar: #FFFFFF;
-  --sidebar-foreground: #191C1B;
+  --sidebar: #F7F2FA;
+  --sidebar-foreground: #49454F;
   --sidebar-primary: #0F766E;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #A7F3D0;
-  --sidebar-accent-foreground: #00201A;
-  --sidebar-border: #DBE5DF;
+  --sidebar-accent: #CCE8E4;
+  --sidebar-accent-foreground: #00201D;
+  --sidebar-border: #CAC4D0;
   --sidebar-ring: #0F766E;
-}
 
-.dark {
-  --background: #191C1B;
-  --foreground: #E1E3E0;
-  --card: #1E2422;
-  --card-foreground: #E1E3E0;
-  --popover: #1E2422;
-  --popover-foreground: #E1E3E0;
-
-  --primary: #4FD8C5;
-  --primary-foreground: #00382F;
-  --primary-container: #005048;
-  --on-primary-container: #A7F3D0;
-
-  --secondary: #B0CCC3;
-  --secondary-foreground: #1C352E;
-  --secondary-container: #324B44;
-  --on-secondary-container: #CCE8DF;
-
-  --tertiary: #ABCBE3;
-  --tertiary-container: #2B4A5E;
-  --on-tertiary-container: #C7E7FF;
-
-  --muted: #2A2F2D;
-  --muted-foreground: #8A938E;
-
-  --accent: #2B4A5E;
-  --accent-foreground: #C7E7FF;
-
-  --destructive: #FFB4AB;
-  --error-container: #690005;
-  --on-error-container: #FFDAD6;
-
-  --success: #34D399;
-
-  --surface: #191C1B;
-  --on-surface: #E1E3E0;
-  --surface-variant: #3F4945;
-  --on-surface-variant: #BFC9C3;
-
-  --m3-outline: #899390;
-  --outline-variant: #3F4945;
-
-  --border: #3F4945;
-  --input: #3F4945;
-  --ring: #4FD8C5;
-
-  --chart-1: #4FD8C5;
-  --chart-2: #B0CCC3;
-  --chart-3: #ABCBE3;
-  --chart-4: #FFB4AB;
-  --chart-5: #34D399;
-
-  --sidebar: #111614;
-  --sidebar-foreground: #E1E3E0;
-  --sidebar-primary: #4FD8C5;
-  --sidebar-primary-foreground: #00382F;
-  --sidebar-accent: #005048;
-  --sidebar-accent-foreground: #A7F3D0;
-  --sidebar-border: #3F4945;
-  --sidebar-ring: #4FD8C5;
+  --radius: 0.75rem;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+    transition-duration: 200ms;
+    transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground selection:bg-primary-container selection:text-on-primary-container;
   }
   html {
     @apply font-sans;
   }
+  
+  /* Typography Overrides */
+  h1 { @apply text-[28px] font-normal tracking-tight text-foreground; }
+  h2 { @apply text-[22px] font-medium tracking-tight text-foreground; }
+  h3 { @apply text-[16px] font-semibold text-foreground; }
+  p { @apply text-[14px] font-normal leading-relaxed text-muted-foreground; }
 }
 
-/* ═══════════════════════════════════════════════
-   M3 Typography Scale Utilities
-   ═══════════════════════════════════════════════ */
-
 @layer utilities {
-  .m3-display-large {
-    font-size: 57px;
-    line-height: 64px;
-    font-weight: 400;
-    letter-spacing: -0.25px;
+  .pill-radius { border-radius: 9999px; }
+  
+  /* Table Overrides */
+  .m3-table-container {
+     @apply rounded-xl border border-outline-variant overflow-hidden;
   }
-  .m3-headline-large {
-    font-size: 32px;
-    line-height: 40px;
-    font-weight: 600;
-  }
-  .m3-headline-medium {
-    font-size: 28px;
-    line-height: 36px;
-    font-weight: 600;
-  }
-  .m3-title-large {
-    font-size: 22px;
-    line-height: 28px;
-    font-weight: 600;
-  }
-  .m3-title-medium {
-    font-size: 16px;
-    line-height: 24px;
-    font-weight: 500;
-  }
-  .m3-body-large {
-    font-size: 16px;
-    line-height: 24px;
-    font-weight: 400;
-  }
-  .m3-body-medium {
-    font-size: 14px;
-    line-height: 20px;
-    font-weight: 400;
-  }
-  .m3-body-small {
-    font-size: 12px;
-    line-height: 16px;
-    font-weight: 400;
-  }
-  .m3-label-large {
-    font-size: 14px;
-    line-height: 20px;
-    font-weight: 500;
-  }
-  .m3-label-medium {
-    font-size: 12px;
-    line-height: 16px;
-    font-weight: 500;
-  }
-
-  /* M3 Elevation with surface tint */
-  .m3-elevation-0 {
-    box-shadow: none;
-  }
-  .m3-elevation-1 {
-    box-shadow: 0 1px 3px 1px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.3);
-    background-image: linear-gradient(to bottom, rgba(15, 118, 110, 0.05), rgba(15, 118, 110, 0.05));
-  }
-  .m3-elevation-2 {
-    box-shadow: 0 2px 6px 2px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.3);
-    background-image: linear-gradient(to bottom, rgba(15, 118, 110, 0.08), rgba(15, 118, 110, 0.08));
-  }
-  .m3-elevation-3 {
-    box-shadow: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
-    background-image: linear-gradient(to bottom, rgba(15, 118, 110, 0.11), rgba(15, 118, 110, 0.11));
-  }
-  .m3-elevation-5 {
-    box-shadow: 0 8px 12px 6px rgba(0,0,0,0.15), 0 4px 4px rgba(0,0,0,0.3);
-    background-image: linear-gradient(to bottom, rgba(15, 118, 110, 0.14), rgba(15, 118, 110, 0.14));
-  }
-
-  /* M3 State layers */
-  .m3-state-hover {
-    background-image: linear-gradient(to bottom, rgba(15, 118, 110, 0.08), rgba(15, 118, 110, 0.08));
-  }
-  .m3-state-pressed {
-    background-image: linear-gradient(to bottom, rgba(15, 118, 110, 0.12), rgba(15, 118, 110, 0.12));
-  }
-}
-
-/* ═══════════════════════════════════════════════
-   M3 Motion Transitions
-   ═══════════════════════════════════════════════ */
-
-@layer utilities {
-  .m3-transition-short {
-    transition-duration: 150ms;
-    transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
-  }
-  .m3-transition-medium {
-    transition-duration: 300ms;
-    transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
-  }
-  .m3-transition-long {
-    transition-duration: 500ms;
-    transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+  .m3-table-header {
+     @apply bg-surface-container text-[12px] font-semibold uppercase tracking-wider text-muted-foreground;
   }
 }

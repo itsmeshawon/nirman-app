@@ -79,13 +79,70 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
   return (
     <div className="space-y-6 pb-12">
       {/* Welcome banner */}
-      <div className="rounded-2xl bg-gradient-to-r from-primary to-primary/80 p-6 text-white shadow-md">
-        <p className="text-sm font-medium text-primary-foreground mb-1">Project Admin</p>
-        <h2 className="text-2xl font-bold">{project?.name || "Project Dashboard"}</h2>
-        <p className="text-primary-foreground mt-1 text-sm">Welcome back, {profile.name}</p>
-        <span className={`mt-3 inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${project?.status === "ACTIVE" ? "bg-primary-container/50 text-on-primary-container" : "bg-tertiary-container/40 text-on-tertiary-container"}`}>
+      <div className="rounded-[28px] bg-[#E8DEF8] p-8 text-[#1D192B] border border-[#CAC4D0]/30">
+        <p className="text-[12px] font-bold text-[#49454F] uppercase tracking-wider mb-2">Project Admin</p>
+        <h2 className="text-[28px] font-normal tracking-tight leading-tight">{project?.name || "Project Dashboard"}</h2>
+        <p className="text-[#49454F] mt-2 text-sm font-medium">Welcome back, {profile.name}</p>
+        <span className="mt-4 inline-flex items-center rounded-full bg-[#CCE8E4] px-4 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0F766E]">
           {project?.status}
         </span>
+      </div>
+
+      {/* Quick Actions */}
+      <div>
+        <h3 className="text-sm font-semibold text-on-surface-variant uppercase tracking-widest mb-4 ml-1">Quick Actions</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {[
+            { 
+              href: `/${projectId}/expenses`, 
+              icon: FileText, 
+              label: "Add Expense", 
+              desc: "Log and publish new project costs to the ledger",
+              bg: "bg-[#F3EDF7]", 
+              iconColor: "text-primary" 
+            },
+            { 
+              href: `/${projectId}/payments`, 
+              icon: Banknote, 
+              label: "Record Payment", 
+              desc: "Quickly post and verify shareholder receipts",
+              bg: "bg-[#F3EDF7]", 
+              iconColor: "text-secondary" 
+            },
+            { 
+              href: `/${projectId}/shareholders`, 
+              icon: Users, 
+              label: "Shareholders", 
+              desc: "Manage project members and unit allocation",
+              bg: "bg-[#F3EDF7]", 
+              iconColor: "text-tertiary" 
+            },
+            { 
+              href: `/${projectId}/reports`, 
+              icon: BarChart2, 
+              label: "Financial Reports", 
+              desc: "View detailed analytics and collection trends",
+              bg: "bg-[#F3EDF7]", 
+              iconColor: "text-primary" 
+            },
+          ].map(({ href, icon: Icon, label, desc, bg, iconColor }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`flex flex-col items-start p-6 rounded-[28px] ${bg} hover:ring-2 hover:ring-primary/20 transition-all group`}
+            >
+              <div className="flex items-start gap-4 w-full">
+                <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shrink-0 border border-outline-variant/30">
+                  <Icon className={`w-6 h-6 ${iconColor}`} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xl font-medium text-on-surface mb-1">{label}</span>
+                  <span className="text-sm text-on-surface-variant leading-relaxed opacity-80">{desc}</span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
 
       {/* Row 1: Financial Health */}
@@ -130,7 +187,7 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
       {/* Row 2: Alerts & Pipeline */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Expense Pipeline */}
-        <div className="bg-surface rounded-xl border border-outline-variant/50 shadow-sm overflow-hidden">
+        <div className="rounded-xl border border-outline-variant/50 overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/30">
             <h3 className="text-sm font-semibold text-on-surface">Expense Pipeline</h3>
             <Link href={`/${projectId}/expenses`} className="text-xs text-primary hover:underline flex items-center gap-1">
@@ -141,9 +198,9 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
             <PipelineRow
               label="Awaiting Review"
               count={pendingApproval || 0}
-              icon={<SendHorizontal className="w-4 h-4 text-blue-500" />}
-              color="text-tertiary"
-              bg="bg-tertiary-container/20"
+              icon={<SendHorizontal className="w-4 h-4 text-[#0F766E]" />}
+              color="text-[#0F766E]"
+              bg="bg-[#CCE8E4]"
             />
             <PipelineRow
               label="Changes Requested"
@@ -163,7 +220,7 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
         </div>
 
         {/* Alerts */}
-        <div className="bg-surface rounded-xl border border-outline-variant/50 shadow-sm overflow-hidden">
+        <div className="rounded-xl border border-outline-variant/50 overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/30">
             <h3 className="text-sm font-semibold text-on-surface">Alerts</h3>
             <Link href={`/${projectId}/payments`} className="text-xs text-primary hover:underline flex items-center gap-1">
@@ -174,9 +231,9 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
             <PipelineRow
               label="Active Penalties"
               count={activePenalties || 0}
-              icon={<ShieldAlert className="w-4 h-4 text-red-500" />}
-              color="text-destructive"
-              bg="bg-error-container/20"
+              icon={<ShieldAlert className="w-4 h-4 text-[#B3261E]" />}
+              color="text-[#B3261E]"
+              bg="bg-[#F9DEDC]"
             />
             <PipelineRow
               label="Defaulting Installments"
@@ -197,7 +254,7 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
       </div>
 
       {/* Row 3: Recent Activity */}
-      <div className="bg-surface rounded-xl border border-outline-variant/50 shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-outline-variant/50 overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/30">
           <h3 className="text-sm font-semibold text-on-surface">Recent Activity</h3>
           <Link href={`/${projectId}/feed`} className="text-xs text-primary hover:underline flex items-center gap-1">
@@ -226,29 +283,6 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
         )}
       </div>
 
-      {/* Row 4: Quick Actions */}
-      <div>
-        <h3 className="text-sm font-semibold text-on-surface-variant uppercase tracking-widest mb-3">Quick Actions</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[
-            { href: `/${projectId}/expenses`, icon: FileText, label: "Add Expense", bg: "bg-primary-container/20", iconColor: "text-primary" },
-            { href: `/${projectId}/payments`, icon: Banknote, label: "Record Payment", bg: "bg-tertiary-container/20", iconColor: "text-tertiary" },
-            { href: `/${projectId}/shareholders`, icon: Users, label: "Shareholders", bg: "bg-secondary-container/20", iconColor: "text-secondary" },
-            { href: `/${projectId}/reports`, icon: BarChart2, label: "Reports", bg: "bg-tertiary-container/20", iconColor: "text-tertiary" },
-          ].map(({ href, icon: Icon, label, bg, iconColor }) => (
-            <Link
-              key={href}
-              href={href}
-              className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-surface border border-outline-variant/50 hover:border-primary/60 hover:ring-1 hover:ring-primary/60 transition-all shadow-sm group"
-            >
-              <div className={`w-10 h-10 rounded-full ${bg} flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                <Icon className={`w-5 h-5 ${iconColor}`} />
-              </div>
-              <span className="text-xs font-medium text-on-surface">{label}</span>
-            </Link>
-          ))}
-        </div>
-      </div>
     </div>
   )
 }
@@ -257,13 +291,13 @@ function FinancialCard({ label, value, sub, icon, bg, accent }: {
   label: string; value: string; sub: string; icon: React.ReactNode; bg: string; accent: string
 }) {
   return (
-    <div className={`rounded-2xl bg-surface border ${accent} shadow-eos-sm p-5 hover:shadow-eos transition-all duration-300 group cursor-default`}>
-      <div className={`w-12 h-12 rounded-xl ${bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+    <div className="rounded-[16px] border border-[#E7E0EC] p-6 transition-all duration-300 group cursor-default">
+      <div className={`w-12 h-12 rounded-full ${bg} flex items-center justify-center mb-6`}>
         {icon}
       </div>
-      <p className="text-[11px] font-bold text-outline uppercase tracking-wider mb-1">{label}</p>
-      <p className="text-2xl font-black text-on-surface leading-tight tracking-tight">{value}</p>
-      <p className="text-xs text-on-surface-variant mt-1 font-medium">{sub}</p>
+      <p className="text-[11px] font-bold text-[#49454F] uppercase tracking-widest mb-2">{label}</p>
+      <p className="text-[24px] font-normal text-[#1D1B20] leading-tight tracking-tight">{value}</p>
+      <p className="text-[12px] text-[#49454F] mt-2 font-medium">{sub}</p>
     </div>
   )
 }
@@ -272,14 +306,14 @@ function PipelineRow({ label, count, icon, color, bg }: {
   label: string; count: number; icon: React.ReactNode; color: string; bg: string
 }) {
   return (
-    <div className="flex items-center justify-between px-5 py-3.5 hover:bg-surface-variant/20/50 transition-colors">
-      <div className="flex items-center gap-3">
-        <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center`}>
+    <div className="flex items-center justify-between px-6 py-4 hover:bg-[#F7F2FA] transition-colors">
+      <div className="flex items-center gap-4">
+        <div className={`w-10 h-10 rounded-full ${bg} flex items-center justify-center`}>
           {icon}
         </div>
-        <span className="text-sm font-medium text-on-surface">{label}</span>
+        <span className="text-[14px] font-medium text-[#1D1B20]">{label}</span>
       </div>
-      <span className={`text-sm font-bold px-2 py-0.5 rounded-md ${count > 0 ? `${bg} ${color}` : "text-outline-variant"}`}>
+      <span className={`text-[12px] font-bold px-3 py-1 rounded-full ${count > 0 ? `${bg} ${color}` : "bg-[#CAC4D0]/10 text-[#49454F]"}`}>
         {count}
       </span>
     </div>

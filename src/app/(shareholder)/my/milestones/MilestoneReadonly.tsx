@@ -18,7 +18,7 @@ interface MilestoneReadonlyProps {
 export function MilestoneReadonly({ milestones }: MilestoneReadonlyProps) {
   return (
     <div className="space-y-6">
-      <div className="bg-surface p-6 sm:p-8 rounded-[1.25rem] border shadow-sm">
+      <div className="p-6 sm:p-8 rounded-[1.25rem] border">
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-on-surface tracking-tight">Project Progress Report</h2>
           <p className="text-on-surface-variant mt-1">Real-time status of construction phases and milestones.</p>
@@ -44,13 +44,13 @@ export function MilestoneReadonly({ milestones }: MilestoneReadonlyProps) {
                   {/* Timeline Node */}
                   <span className="absolute -left-[41px] flex h-8 w-8 items-center justify-center rounded-full bg-surface ring-8 ring-white">
                     {isCompleted && (
-                      <div className="bg-primary-container/200 rounded-full p-1.5 shadow-sm shadow-green-100">
+                      <div className="bg-primary-container/200 rounded-full p-1.5">
                         <CheckCircle2 className="h-5 w-5 text-white" />
                       </div>
                     )}
                     {isInProgress && (
                       <div className="relative">
-                        <div className="bg-primary rounded-full p-1.5 shadow-lg shadow-primary/10 relative z-10">
+                        <div className="bg-primary rounded-full p-1.5 relative z-10">
                           <Clock className="h-5 w-5 text-white" />
                         </div>
                         <div className="absolute inset-0 rounded-full bg-primary animate-ping opacity-25"></div>
@@ -75,8 +75,8 @@ export function MilestoneReadonly({ milestones }: MilestoneReadonlyProps) {
                   {/* Content Card */}
                   <div className={`
                     p-5 rounded-2xl border transition-all duration-300
-                    ${isCompleted ? 'bg-surface border-primary-container/30 shadow-sm' : ''}
-                    ${isInProgress ? 'bg-primary-container/20 border-primary-container/50 shadow-md transform scale-[1.02]' : 'bg-surface border-outline-variant/30'}
+                    ${isCompleted ? 'border-primary-container/30' : ''}
+                    ${isInProgress ? 'bg-primary-container/20 border-primary-container/50 transform scale-[1.02]' : 'border-outline-variant/30'}
                     ${isUpcoming ? 'opacity-70 bg-surface-variant/30 border-outline-variant/30' : ''}
                   `}>
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

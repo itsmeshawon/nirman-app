@@ -123,7 +123,7 @@ export function RecordPaymentTab({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
       {/* Recording Form */}
-      <div className="lg:col-span-2 bg-surface border rounded-[1.25rem] shadow-sm p-8 space-y-6">
+      <div className="lg:col-span-2 bg-surface border rounded-[1.25rem] p-8 space-y-6">
         <div>
           <h2 className="text-xl font-bold text-on-surface tracking-tight">Record New Payment</h2>
           <p className="text-sm text-on-surface-variant mt-1">Submit a manual payment record for a shareholder.</p>
@@ -217,7 +217,7 @@ export function RecordPaymentTab({
            )}
 
            <div className="pt-6 border-t flex justify-end">
-              <Button onClick={handleCreate} disabled={isSubmitting} className="h-12 px-8 bg-primary hover:bg-primary/90 text-lg shadow-lg shadow-primary/10 w-full sm:w-auto">
+              <Button onClick={handleCreate} disabled={isSubmitting} className="h-12 px-8 bg-primary hover:bg-primary/90 text-lg w-full sm:w-auto">
                  {isSubmitting ? "Recording..." : "Confirm & Record Payment"}
               </Button>
            </div>
@@ -227,7 +227,7 @@ export function RecordPaymentTab({
       {/* Due Summary Side Panel */}
       <div className="space-y-6">
         {dueSummary ? (
-          <div className="bg-surface border rounded-[1.25rem] shadow-sm overflow-hidden animate-in slide-in-from-right-4 duration-300">
+          <div className="bg-surface rounded-xl border border-outline-variant/50 overflow-hidden animate-in slide-in-from-right-4 duration-300">
             <div className="bg-slate-900 p-6 text-white text-center">
               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Outstanding</p>
               <h3 className="text-3xl font-black">৳{(dueSummary.totalPrincipal + (waivePenalties ? 0 : dueSummary.totalPenalty)).toLocaleString('en-IN')}</h3>

@@ -115,7 +115,7 @@ export function ExpensesClient({ projectId, expenses, milestones, categories }: 
               <button
                 key={statusKey}
                 onClick={() => setFilterStatus(active ? null : statusKey)}
-                className={`flex flex-col min-w-[120px] p-3 rounded-xl border transition-all text-left ${active ? 'ring-2 ring-primary shadow-sm bg-surface' : 'bg-surface-variant/20/50 hover:bg-surface-variant/20 border-outline-variant/50'}`}
+                className={`flex flex-col min-w-[120px] p-3 rounded-xl border transition-all text-left ${active ? 'ring-2 ring-primary bg-surface' : 'bg-surface-variant/20/50 hover:bg-surface-variant/20 border-outline-variant/50'}`}
               >
                 <div className="flex justify-between items-center w-full mb-1">
                   <Icon className={`w-4 h-4 ${config.color.split(' ')[1]}`} />
@@ -145,7 +145,7 @@ export function ExpensesClient({ projectId, expenses, milestones, categories }: 
       </div>
 
       {/* Main Table */}
-      <div className="bg-surface border rounded-xl shadow-sm overflow-hidden">
+      <div className="overflow-hidden">
          <Table>
             <TableHeader>
               <TableRow>

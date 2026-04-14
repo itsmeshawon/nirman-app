@@ -53,23 +53,23 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
         
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
            {/* Primary Cards */}
-           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-surface shadow-sm flex flex-col justify-center">
+           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 flex flex-col justify-center">
              <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest mb-2">Total Expected</p>
              <p className="text-2xl font-bold text-on-surface">৳ {formatBD(totalScheduled)}</p>
            </div>
 
-           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-primary-container/30 border-primary-container/50 shadow-sm flex flex-col justify-center">
+           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-primary-container/30 border-primary-container/50 flex flex-col justify-center">
              <p className="text-xs font-semibold text-on-primary-container uppercase tracking-widest mb-2">Total Collected</p>
              <p className="text-2xl font-bold text-on-primary-container">৳ {formatBD(totalCollected)}</p>
              <p className="text-xs font-medium text-primary mt-1">{collectionRate.toFixed(1)}% Rate</p>
            </div>
 
-           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-tertiary-container/30 border-tertiary-container/50 shadow-sm flex flex-col justify-center">
+           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-tertiary-container/30 border-tertiary-container/50 flex flex-col justify-center">
              <p className="text-xs font-semibold text-on-tertiary-container uppercase tracking-widest mb-2">Total Outstanding</p>
              <p className="text-2xl font-bold text-on-tertiary-container">৳ {formatBD(totalOutstanding)}</p>
            </div>
 
-           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-error-container/30 border-error-container shadow-sm flex flex-col justify-center">
+           <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 bg-error-container/30 border-error-container flex flex-col justify-center">
              <p className="text-xs font-semibold text-on-error-container uppercase tracking-widest mb-2">Active Penalties</p>
              <p className="text-2xl font-bold text-on-error-container">৳ {formatBD(totalPenalties)}</p>
              <p className="text-xs font-medium text-destructive mt-1">From delays</p>

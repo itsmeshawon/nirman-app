@@ -123,7 +123,7 @@ export function ExpenseDetailClient({ projectId, expense, milestones, categories
       </div>
 
       {/* Main Info Card */}
-      <div className="bg-surface rounded-xl shadow-sm border border-outline-variant/50 overflow-hidden">
+      <div className="bg-surface rounded-xl border border-outline-variant/50 overflow-hidden">
         <div className="p-6 md:p-8">
            <h2 className="text-2xl text-on-surface font-medium mb-1">{expense.title}</h2>
            <p className="text-sm text-on-surface-variant mb-6 flex items-center gap-2">
@@ -177,7 +177,7 @@ export function ExpenseDetailClient({ projectId, expense, milestones, categories
                    const isImage = att.file_type.startsWith("image/")
 
                    return (
-                     <a key={att.id} href={urlData.publicUrl} target="_blank" rel="noopener noreferrer" className="group relative block w-full rounded-lg border border-outline-variant/50 bg-surface p-3 shadow-sm hover:border-primary hover:ring-1 hover:ring-primary transition-all">
+                     <a key={att.id} href={urlData.publicUrl} target="_blank" rel="noopener noreferrer" className="group relative block w-full rounded-lg border border-outline-variant/50 bg-surface p-3 hover:border-primary hover:ring-1 hover:ring-primary transition-all">
                         <div className="flex items-center gap-3">
                            {isImage ? (
                              <img src={urlData.publicUrl} alt={att.file_name} className="w-10 h-10 rounded object-cover border" />
@@ -206,7 +206,7 @@ export function ExpenseDetailClient({ projectId, expense, milestones, categories
 
       {/* Governance Timeline */}
       {expense.status !== "DRAFT" && (
-        <div className="bg-surface rounded-xl shadow-sm border border-outline-variant/50 overflow-hidden">
+        <div className="bg-surface rounded-xl border border-outline-variant/50 overflow-hidden">
            <div className="p-6 border-b">
              <h3 className="text-lg font-medium text-on-surface">Governance Timeline</h3>
            </div>

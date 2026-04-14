@@ -72,7 +72,7 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
   return (
     <div className="space-y-6">
       {expenses.length === 0 ? (
-        <div className="bg-surface border rounded-[1.25rem] p-12 text-center text-on-surface-variant shadow-eos-sm">
+        <div className="bg-surface border rounded-[1.25rem] p-12 text-center text-on-surface-variant">
            <CheckCircle className="w-12 h-12 text-primary-foreground/80 mx-auto mb-4" />
            <p>All caught up! No expenses currently require your review.</p>
         </div>
@@ -84,7 +84,7 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
                 : 0
 
              return (
-               <div key={expense.id} className="bg-surface border border-outline-variant/50 rounded-[1.25rem] shadow-eos-sm overflow-hidden flex flex-col md:flex-row">
+               <div key={expense.id} className="bg-surface border border-outline-variant/50 rounded-[1.25rem] overflow-hidden flex flex-col md:flex-row">
                  {/* Left Details */}
                  <div className="p-6 flex-1 border-b md:border-b-0 md:border-r border-outline-variant/30">
                     <div className="flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-widest mb-3">
