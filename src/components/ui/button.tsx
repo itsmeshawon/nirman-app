@@ -7,20 +7,20 @@ const buttonVariants = cva(
   "group/button inline-flex shrink-0 items-center justify-center border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 active:not-aria-[haspopup]:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
-      variant: {
+variant: {
         default:
-          "rounded-xl bg-[var(--primary)] text-white hover:bg-[var(--primary)]/90 active:scale-[0.98]",
+          "rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary)]/90 active:scale-[0.98]",
         outline:
-          "rounded-xl border border-[var(--m3-outline)] text-[var(--primary)] hover:bg-[var(--surface-container-low)] active:scale-[0.98]",
+          "rounded-xl border border-[var(--primary)] text-[var(--primary)] hover:bg-[var(--surface-container-low)] active:scale-[0.98]",
         secondary:
-          "rounded-xl bg-[var(--secondary-container)] text-[var(--on-secondary-container)] hover:bg-[var(--secondary-container)]/80 active:scale-[0.98]",
+          "rounded-xl bg-[var(--primary-container)] text-[var(--on-primary-container)] hover:bg-[var(--primary-container)]/80 active:scale-[0.98]",
         ghost:
           "rounded-full hover:bg-[var(--surface-container)] hover:text-[var(--foreground)] active:scale-[0.98]",
         destructive:
-          "rounded-xl bg-[var(--destructive)] text-white hover:bg-[var(--destructive)]/90 active:scale-[0.98]",
+          "rounded-xl bg-[var(--error-container)] text-[var(--on-error-container)] hover:bg-[var(--error-container)]/80 active:scale-[0.98]",
         link: "text-[var(--primary)] underline-offset-4 hover:underline",
         tonal:
-          "rounded-xl bg-[var(--primary-container)] text-[#00201D] hover:bg-[var(--primary-container)]/80 active:scale-[0.98]",
+          "rounded-xl bg-[var(--primary-container)] text-[var(--on-primary-container)] hover:bg-[var(--primary-container)]/80 active:scale-[0.98]",
       },
       size: {
         default:
