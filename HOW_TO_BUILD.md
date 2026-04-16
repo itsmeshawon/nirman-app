@@ -1,6 +1,14 @@
 # HOW TO BUILD ANY FEATURE — NirmaN
-> Use this every time you want to add, fix, or change anything in the app.
+> Your personal guide. You do not need to know how to code.
 > Last updated: April 2026
+
+---
+
+## THE GOLDEN RULE
+
+You describe **what you want the product to do**.
+The agent figures out everything technical — database, code, security, structure.
+You never need to write table names, field types, SQL, or API routes.
 
 ---
 
@@ -15,7 +23,7 @@ Read these two files completely before doing anything:
 
 These are the source of truth for my project. Once you've read both, help me with:
 
-[DESCRIBE YOUR TASK HERE]
+[YOUR DESCRIPTION GOES HERE — see templates below]
 
 ---
 MANDATORY AFTER COMPLETION:
@@ -37,216 +45,205 @@ NIRMAN_CONTEXT.md updated: [list every section updated]
 
 ---
 
-## HOW TO DESCRIBE YOUR TASK
+## YOUR DESCRIPTION — TEMPLATES BY SITUATION
 
-Be specific. The more context you give, the less back-and-forth.
+Pick the one that matches what you want to do. Fill in the `[ ]` parts only.
 
-### Template
+---
+
+### SITUATION 1 — New Feature
 
 ```
-I want to build: [what it does in plain language]
+I want to add a new feature to NirmaN.
 
-Who uses it: [Super Admin / Project Admin / Shareholder / All]
+What I want it to do:
+[Describe it like you're explaining to a friend. What happens, 
+who does it, what they see, what gets saved.]
 
-Where it lives: [which page or section of the app]
+Who uses this:
+[Project Admin / Shareholder / Super Admin]
 
-What it should do:
-- [action 1]
-- [action 2]
-- [action 3]
+Where in the app:
+[Which section — e.g. inside a project, on the shareholder 
+dashboard, in the super admin panel]
 
 What it should NOT do:
-- [any limits or constraints]
+[Any limits — or just write "none"]
 
-Related existing feature: [if it connects to something already built]
+Why we need this:
+[The problem it solves]
 ```
 
-### Example (Good)
-
+**Example:**
 ```
-I want to build: A way for Project Admins to add notes to any payment record
+I want to add a new feature to NirmaN.
 
-Who uses it: Project Admin only
+What I want it to do:
+When a Project Admin visits the construction site, I want them to 
+be able to log that visit. They write the date, who went, and what 
+they saw. Shareholders can see the completed visits so they know 
+the project is being actively checked.
 
-Where it lives: Inside the existing payments section, on each payment's detail view
+Who uses this:
+Project Admin logs visits. Shareholders can only view them.
 
-What it should do:
-- Admin can type and save a note on any payment
-- Note is visible to the admin only (not shareholders)
-- Notes can be edited after saving
+Where in the app:
+Inside the project — new section in the sidebar called "Site Visits"
 
 What it should NOT do:
-- Don't let shareholders see notes
-- Don't create a separate page — add it to the existing payment detail
+Shareholders should not be able to add or edit visits — view only.
 
-Related existing feature: Payments section at /:projectId/payments
-```
-
-### Example (Bad — too vague)
-
-```
-Add notes to payments
+Why we need this:
+Shareholders have no visibility into whether the site is being 
+physically monitored. This builds trust.
 ```
 
 ---
 
-## THE BUILD PROCESS — STEP BY STEP
-
-### STEP 1 — Agent reads context
-The agent reads NIRMAN_CONTEXT.md and AGENT_RULES.md.
-**You do nothing. Wait.**
-
-### STEP 2 — Agent announces the plan
-Before writing any code, the agent will output:
-- What files it will create or change
-- Whether the database needs changes
-- Who is authorized to use this feature
-- Any risks or conflicts with existing features
-
-**You review this plan.**
-If something looks wrong, say so before the agent starts coding.
-If it looks right, say "go ahead" or just stay silent.
-
-### STEP 3 — Agent builds the feature
-The agent writes the code in the correct order:
-1. Database changes (if needed)
-2. API route
-3. Server page
-4. Client component
-5. UI wired to API
-
-**You do nothing. Wait.**
-
-### STEP 4 — Agent updates the source of truth
-After finishing, the agent updates NIRMAN_CONTEXT.md:
-- Adds the feature to the Feature Log
-- Documents any new files, tables, or policies
-
-**You do nothing. Wait.**
-
-### STEP 5 — Agent confirms completion
-The agent will output:
+### SITUATION 2 — Something Is Broken
 
 ```
-✅ [Feature name] complete.
-Files changed: [list]
-NIRMAN_CONTEXT.md updated: [sections]
+Something is broken. Here is exactly what happens:
+
+Page or section: [where in the app]
+What I did: [what I clicked or typed]
+What I expected: [what should have happened]
+What actually happened: [what went wrong]
+Error message: [paste exactly what you see — on screen or in browser]
 ```
 
-### STEP 6 — You test it
-Test the feature yourself in the browser.
-Run the dev server if it's not already running:
-```bash
-npm run dev
+**Example:**
 ```
-Open: http://localhost:3000
+Something is broken. Here is exactly what happens:
 
-Test as each relevant role:
-- Does it work for the user who should have access?
-- Is it correctly blocked for users who shouldn't?
-
-### STEP 7 — If something is broken
-Tell the agent exactly what you see:
+Page or section: Expenses page inside the project
+What I did: Clicked "Submit for Approval" on a draft expense
+What I expected: The expense status changes to "Submitted"
+What actually happened: Nothing happened. The button spun and stopped.
+Error message: Failed to fetch — 404
 ```
-It's not working. Here's what happens:
-- I clicked [button/action]
-- Expected: [what should happen]
-- Actual: [what actually happened]
-- Error message (if any): [paste it]
-```
-
-The agent will diagnose and fix it.
 
 ---
 
-## TASK TYPES — WHAT TO EXPECT
+### SITUATION 3 — Change How Something Looks
 
-### New Feature
-Agent will: create API route + page + client component + audit log + update context
-Time: medium (several steps)
+```
+I want to change how something looks. No new data needed.
 
-### Bug Fix
-Agent will: read the broken code, identify root cause, apply targeted fix
-You provide: what's broken, what error you see, which page/action
-Time: fast
+Page or section: [where in the app]
+What it looks like now: [describe current state]
+What I want it to look like: [describe what you want]
+```
 
-### UI Change
-Agent will: edit the component, use design tokens, no API changes
-You provide: what it looks like now, what you want it to look like
-Time: fast
+**Example:**
+```
+I want to change how something looks. No new data needed.
 
-### Database Change
-Agent will: verify existing schema first, write SQL carefully, update RLS, document
-You provide: what data needs to be stored and why
-Time: medium — DB changes are careful, not rushed
-
-### New Page
-Agent will: choose correct route group, create server + client files, wire to existing APIs
-You provide: which role uses it, what data it shows
-Time: medium
+Page or section: Milestones page
+What it looks like now: Each milestone just shows the name and dates
+What I want it to look like: Add a progress bar under each milestone —
+green and full for Completed, blue and half for In Progress, 
+grey and empty for Upcoming
+```
 
 ---
 
-## THINGS THAT SLOW DOWN DEVELOPMENT
+### SITUATION 4 — Add Something Small to an Existing Feature
 
-| If you do this | What happens |
-|----------------|-------------|
-| Describe task vaguely | Agent makes assumptions, builds wrong thing, needs rework |
-| Skip the starting message | Agent has no context, makes mistakes about RLS, clients, patterns |
-| Run SQL in Supabase without telling the agent | Source of truth goes out of sync, bugs appear later |
-| Start a new conversation mid-feature | Agent loses context — paste the starting message again |
-| Ask for multiple unrelated features at once | Agent mixes them up — one task per conversation |
+```
+I want to add something small to an existing feature.
+
+Feature: [which existing feature]
+What I want to add: [describe it]
+Who should see it: [Project Admin / Shareholder / both]
+Any rules: [e.g. only show it when status is X, or hide it from shareholders]
+```
+
+**Example:**
+```
+I want to add something small to an existing feature.
+
+Feature: Payment records
+What I want to add: A "Reference Number" field — for example a bank 
+transaction ID or bKash number. Optional, not required.
+Who should see it: Project Admin can add it. Shareholder can see it.
+Any rules: None — just store it and display it.
+```
 
 ---
 
-## THINGS THAT SPEED UP DEVELOPMENT
+### SITUATION 5 — Remove or Restrict Something
 
-| Do this | Why it helps |
+```
+I want to remove or restrict something.
+
+What: [which feature or action]
+Current behaviour: [how it works now]
+What I want instead: [the new rule]
+```
+
+**Example:**
+```
+I want to remove or restrict something.
+
+What: Deleting a milestone
+Current behaviour: Any Project Admin can delete any milestone including 
+completed ones
+What I want instead: Completed milestones cannot be deleted. Show a 
+message explaining why. Upcoming and In Progress can still be deleted.
+```
+
+---
+
+## THE PROCESS — WHAT HAPPENS AFTER YOU SEND THE PROMPT
+
+| Step | Who | What happens |
+|------|-----|-------------|
+| 1 | Agent | Reads NIRMAN_CONTEXT.md and AGENT_RULES.md |
+| 2 | Agent | Announces the plan — what it will build and how |
+| 3 | You | Review the plan. Say "go ahead" if it looks right. Say what's wrong if it doesn't. |
+| 4 | Agent | Builds everything — database, API, page, UI |
+| 5 | Agent | Updates NIRMAN_CONTEXT.md |
+| 6 | Agent | Confirms done with ✅ and lists every file changed |
+| 7 | You | Test it in the browser at http://localhost:3000 |
+| 8 | You | If broken, paste the error back and the agent fixes it |
+
+---
+
+## THINGS THAT SLOW EVERYTHING DOWN
+
+| Do this | What happens |
 |---------|-------------|
-| Use the starting message every time | Agent starts with full context, zero guesswork |
-| Review the plan before saying go ahead | Catches wrong assumptions before code is written |
-| Give one clear task per conversation | Focused agent = fewer mistakes |
-| Tell the agent the role + location + purpose | Agent picks the right auth, client, and route group immediately |
-| Report broken things with exact error messages | Agent debugs in one shot instead of guessing |
+| Describe vaguely | Agent guesses wrong, builds the wrong thing |
+| Skip the starting message | Agent has no context, makes mistakes |
+| Ask for two unrelated things at once | Agent gets confused — one task per conversation |
+| Open a new conversation mid-task | Agent loses memory — start fresh with the starting message |
+| Run SQL in Supabase yourself without telling the agent | Source of truth breaks, bugs appear later |
 
 ---
 
-## WHAT NEVER TO DO IN SUPABASE DIRECTLY
+## WHAT YOU NEVER NEED TO PROVIDE
 
-These actions in the Supabase dashboard will break things if done without the agent:
+The agent works these out on its own from the context files:
 
-| Action | Why it's dangerous |
-|--------|--------------------|
-| Add a new table without RLS policies | Table is unprotected — anyone can read/write |
-| Add `FOR ALL USING(...)` policy | Breaks INSERT operations on that table |
-| Reference `finance_staff` in any function or policy | Table doesn't exist — crashes everything that uses the function |
-| Delete a table that other tables FK into | Cascade crash across the app |
-| Run SQL from an old guide or tutorial | Patterns differ — always go through the agent |
+- Table names and field types
+- Database structure or SQL
+- API routes and endpoints
+- Security rules (RLS)
+- Which code files to edit
+- How to connect the UI to the data
+- Design tokens and styling
 
-If you must run SQL yourself, tell the agent what you ran so it can update NIRMAN_CONTEXT.md.
-
----
-
-## QUICK REFERENCE
-
-| I want to... | What to tell the agent |
-|-------------|----------------------|
-| Add a new section/page | "Build a [name] page for [role] that shows [data]" |
-| Fix something broken | "On [page], when I [action], it shows [error]. Expected: [what should happen]" |
-| Change how something looks | "On [page], change [element] to look like [description]" |
-| Add a new field to a form | "Add [field name] to the [form name] in [page]" |
-| Add a new DB table | "I need to store [data]. Here's what it needs: [fields]" |
-| Delete a feature | "Remove [feature] from [page]. Keep the rest of the page intact." |
-| Change who can access something | "Only [role] should be able to [action]. Currently [role] can also do it." |
+Your only job is to describe the product behaviour in plain language.
 
 ---
 
 ## FILE LOCATIONS
 
-| File | What it is |
-|------|-----------|
-| `/Users/shawon/Desktop/personal-projects/NirmanApp/NIRMAN_CONTEXT.md` | Full project context — updated after every feature |
-| `/Users/shawon/Desktop/personal-projects/NirmanApp/AGENT_RULES.md` | Rules, checklists, patterns the agent follows |
-| `/Users/shawon/Desktop/personal-projects/NirmanApp/HOW_TO_BUILD.md` | This file — your process guide |
-| `/Users/shawon/Desktop/personal-projects/NirmanApp/.claude/worktrees/cool-mestorf/` | The actual codebase |
-| `.env.local` | Supabase keys — never share or commit this file |
+| File | What it is | Who reads it |
+|------|-----------|-------------|
+| `NIRMAN_CONTEXT.md` | Full project knowledge — updated after every task | Agent |
+| `AGENT_RULES.md` | Rules, patterns, checklists | Agent |
+| `HOW_TO_BUILD.md` | This file — your guide | You |
+| `.claude/worktrees/cool-mestorf/` | The actual codebase | Agent |
+| `.env.local` | Supabase keys — never share this file | No one |
