@@ -407,6 +407,7 @@ DRAFT → (admin submits) → SUBMITTED → (committee reviews) → APPROVED or 
 - Only **Committee Members** can approve/reject/request changes
 - **Approval Rule** (per project): `MAJORITY` (>50% of committee must approve) or `ANY_SINGLE` (one approval enough)
 - **Shareholders** can only see PUBLISHED expenses
+- **Publishing**: Admin can publish APPROVED expenses either from the detail page or directly from the table using the "Publish" button (instant update, no page navigation needed)
 
 ### C. Payment Schedule Generation
 - Route: `POST /api/projects/[projectId]/generate-schedule`
@@ -542,6 +543,8 @@ await createNotification({
 
 | Date | Feature | Files Changed | DB Changes |
 |------|---------|--------------|------------|
+| Apr 2026 | Committee review count badge in navigation | `(shareholder)/layout.tsx`, `api/projects/[projectId]/committee/pending-count/route.ts` | None — queries existing tables |
+| Apr 2026 | Quick publish expense from table | `expenses/ExpensesClient.tsx` | None — UI + API integration only |
 | Apr 2026 | Fix cascade delete (reactions, post_views, expense_attachments, expense_approvals, schedule_items, penalties, notifications) | `api/projects/[projectId]/route.ts` | None — code fix only |
 | Apr 2026 | Delete project (Super Admin) | `api/projects/[projectId]/route.ts`, `projects/page.tsx` | None |
 | Apr 2026 | Delete project admin | `api/projects/[projectId]/admin/[adminId]/route.ts`, `projects/[projectId]/page.tsx` | None |
