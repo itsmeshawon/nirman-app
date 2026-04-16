@@ -26,12 +26,14 @@ const statusConfig: Record<string, { label: string, color: string, icon: any }> 
   REJECTED: { label: "Rejected", color: "bg-error-container/50 text-destructive border-error-container", icon: XCircle }
 }
 
-export function ExpensesClient({ projectId, expenses, milestones, categories }: ExpensesClientProps) {
+export function ExpensesClient({ projectId, expenses: initialExpenses, milestones, categories }: ExpensesClientProps) {
   const router = useRouter()
+  const [expenses, setExpenses] = useState<any[]>(initialExpenses)
   const [filterStatus, setFilterStatus] = useState<string | null>(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingExpense, setEditingExpense] = useState<any>(null)
   const [isPublishing, setIsPublishing] = useState(false)
+  const [publishingId, setPublishingId] = useState<string | null>(null)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
 
   // Pipeline counts
@@ -67,6 +69,26 @@ export function ExpensesClient({ projectId, expenses, milestones, categories }: 
       toast.error(err.message)
     } finally {
       setIsPublishing(false)
+    }
+  }
+
+  const handlePublishOne = async (id: string) => {
+    setPublishingId(id)
+    try {
+      const res = await fetch(`/api/projects/${projectId}/expenses/${id}/publish`, { method: "POST" })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+
+      // Update the expense in the list to PUBLISHED status instantly
+      setExpenses(prev => prev.map(exp =>
+        exp.id === id ? { ...exp, status: "PUBLISHED" } : exp
+      ))
+
+      toast.success("Expense published successfully.")
+    } catch (err: any) {
+      toast.error(err.message)
+    } finally {
+      setPublishingId(null)
     }
   }
 
@@ -208,6 +230,15 @@ export function ExpensesClient({ projectId, expenses, milestones, categories }: 
                                <Button variant="ghost" size="icon" onClick={() => openEditForm(expense)} className="hover:text-on-primary-container hover:bg-primary-container/20 w-8 h-8 rounded-full" title="Edit Expense">
                                   <Edit2 className="w-4 h-4" />
                                </Button>
+                             )}
+                             {expense.status === "APPROVED" && (
+                               <button
+                                 onClick={() => handlePublishOne(expense.id)}
+                                 disabled={publishingId === expense.id}
+                                 className="px-2 py-1 text-xs bg-primary text-white rounded hover:bg-primary/90 disabled:opacity-50"
+                               >
+                                  {publishingId === expense.id ? "Publishing..." : "Publish"}
+                               </button>
                              )}
                              <Link href={`/${projectId}/expenses/${expense.id}`} className="inline-flex items-center justify-center w-8 h-8 rounded-full hover:text-on-primary-container hover:bg-primary-container/20 transition-colors" title="View Details">
                                <Eye className="w-4 h-4" />

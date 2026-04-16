@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { requireProjectAdmin, getUserProfile } from "@/lib/permissions"
 import ProjectAdminShell from "@/components/layouts/ProjectAdminShell"
 
@@ -27,9 +28,9 @@ export default async function ProjectAdminLayout(props: {
     
     // 3. Get profile for shell
     const profile = await getUserProfile(supabase)
-    
+
     // 4. Get project details for shell
-    const { data: project } = await supabase
+    const { data: project } = await supabaseAdmin
       .from("projects")
       .select("name, status")
       .eq("id", projectId)

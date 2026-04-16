@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { redirect } from "next/navigation"
 import { ShareholderFeedClient } from "./ShareholderFeedClient"
 
@@ -12,7 +13,7 @@ export default async function ShareholderFeedPage() {
   if (!user) redirect("/login")
 
   // 2. Shareholder + project
-  const { data: shareholder } = await supabase
+  const { data: shareholder } = await supabaseAdmin
     .from("shareholders")
     .select("*, project:projects(id, name)")
     .eq("user_id", user.id)

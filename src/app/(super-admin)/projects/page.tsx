@@ -10,7 +10,7 @@ import {
   type SortingState,
   flexRender,
 } from "@tanstack/react-table"
-import { Plus, Search, Building2, ArrowUpDown, UserPlus, Pencil, ToggleLeft, ToggleRight, Archive, ArchiveRestore } from "lucide-react"
+import { Plus, Search, Building2, ArrowUpDown, UserPlus, Pencil, ToggleLeft, ToggleRight, Archive, ArchiveRestore, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -64,6 +64,7 @@ export default function ProjectsPage() {
     projectId: "",
     projectName: "",
   })
+  const [deletingProjectId, setDeletingProjectId] = useState<string | null>(null)
 
   const fetchProjects = useCallback(async () => {
     try {
@@ -101,6 +102,27 @@ export default function ProjectsPage() {
       await fetchProjects()
     } catch {
       toast.error("Failed to update project status", { id: toastId })
+    }
+  }
+
+  async function handleDeleteProject(project: Project) {
+    if (!confirm(`Delete project "${project.name}" permanently? This cannot be undone.`)) return
+
+    setDeletingProjectId(project.id)
+    try {
+      const res = await fetch(`/api/projects/${project.id}`, { method: "DELETE" })
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        throw new Error(errData.error || "Failed to delete project")
+      }
+
+      toast.success("Project deleted successfully")
+      await fetchProjects()
+    } catch (err: any) {
+      toast.error(err.message)
+    } finally {
+      setDeletingProjectId(null)
     }
   }
 
@@ -265,6 +287,18 @@ export default function ProjectsPage() {
               title="Assign Admin"
             >
               <UserPlus className="h-3.5 w-3.5" />
+            </Button>
+
+            {/* Delete Project */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-error hover:text-error hover:bg-error-container/20"
+              onClick={() => handleDeleteProject(project)}
+              disabled={deletingProjectId === project.id}
+              title="Delete Project"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
             </Button>
           </div>
         )

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { redirect } from "next/navigation"
 import { formatBDT, formatDate } from "@/lib/utils"
 import {
@@ -16,7 +17,7 @@ export default async function ShareholderDashboardPage() {
   if (!user) redirect("/login")
 
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
-  const { data: shareholder } = await supabase
+  const { data: shareholder } = await supabaseAdmin
     .from("shareholders")
     .select("*, project:projects(id, name, status, address, expected_handover)")
     .eq("user_id", user.id)

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, useCallback } from "react"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import {
   ArrowLeft,
@@ -16,9 +16,12 @@ import {
   Crown,
   Mail,
   Phone,
+  Trash2,
 } from "lucide-react"
 import { cn, formatDate } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 import {
   Sheet,
   SheetContent,
@@ -113,9 +116,19 @@ function Field({ label, value }: { label: string; value?: string | null }) {
   )
 }
 
-function ProfileCard({ profile, badge }: { profile: AdminProfile; badge: string }) {
+function ProfileCard({
+  profile,
+  badge,
+  onDelete,
+  isDeleting = false,
+}: {
+  profile: AdminProfile
+  badge: string
+  onDelete?: () => void
+  isDeleting?: boolean
+}) {
   return (
-    <div className="border border-outline-variant/40 rounded-xl p-5">
+    <div className="border border-outline-variant/40 rounded-xl p-5 relative">
       <div className="flex items-start justify-between mb-4">
         <div>
           <h4 className="text-lg font-semibold text-on-surface">{profile.name || "—"}</h4>
@@ -123,10 +136,24 @@ function ProfileCard({ profile, badge }: { profile: AdminProfile; badge: string 
             {badge}
           </span>
         </div>
-        <div
-          className={`w-3 h-3 rounded-full mt-1 ${profile.is_active ? "bg-green-400" : "bg-outline-variant"}`}
-          title={profile.is_active ? "Active" : "Inactive"}
-        />
+        <div className="flex items-center gap-2">
+          {onDelete && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-error hover:text-error hover:bg-error-container/20"
+              onClick={onDelete}
+              disabled={isDeleting}
+              title="Delete admin"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
+          <div
+            className={`w-3 h-3 rounded-full mt-1 ${profile.is_active ? "bg-green-400" : "bg-outline-variant"}`}
+            title={profile.is_active ? "Active" : "Inactive"}
+          />
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <Field label="Email" value={profile.email} />
@@ -194,6 +221,7 @@ function PageSkeleton() {
 
 export default function SuperAdminProjectDetailPage() {
   const params = useParams()
+  const router = useRouter()
   const projectId = params.projectId as string
 
   const [data, setData] = useState<ApiResponse | null>(null)
@@ -201,6 +229,7 @@ export default function SuperAdminProjectDetailPage() {
   const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState("")
   const [detailShareholder, setDetailShareholder] = useState<Shareholder | null>(null)
+  const [deletingAdminId, setDeletingAdminId] = useState<string | null>(null)
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -246,6 +275,29 @@ export default function SuperAdminProjectDetailPage() {
         sh.unit_flat?.toLowerCase().includes(search.toLowerCase())
       )
     : shareholders
+
+  const handleDeleteAdmin = async (admin: AdminProfile) => {
+    if (!confirm(`Remove ${admin.name} as project admin?`)) return
+
+    setDeletingAdminId(admin.id)
+    try {
+      const res = await fetch(`/api/projects/${projectId}/admin/${admin.id}`, {
+        method: "DELETE",
+      })
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        throw new Error(errData.error || "Failed to delete admin")
+      }
+
+      toast.success("Project admin removed successfully")
+      router.refresh()
+    } catch (err: any) {
+      toast.error(err.message)
+    } finally {
+      setDeletingAdminId(null)
+    }
+  }
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
@@ -372,7 +424,13 @@ export default function SuperAdminProjectDetailPage() {
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {admins.map((admin) => (
-                <ProfileCard key={admin.id} profile={admin} badge="Project Admin" />
+                <ProfileCard
+                  key={admin.id}
+                  profile={admin}
+                  badge="Project Admin"
+                  onDelete={() => handleDeleteAdmin(admin)}
+                  isDeleting={deletingAdminId === admin.id}
+                />
               ))}
             </div>
           )}
