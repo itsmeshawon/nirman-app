@@ -27,20 +27,12 @@ These are the source of truth for my project. Once you've read both, help me wit
 
 ---
 MANDATORY AFTER COMPLETION:
-When the task is fully done, you MUST update NIRMAN_CONTEXT.md:
-1. Add a row to the Feature Log (§12) — date, feature name, files changed, DB changes
-2. Update App Structure (§5) — add any new files or routes
-3. Update Database Schema (§6) — add any new tables, columns, or enums
-4. Update FK Reference (§6B) — add any new foreign key relationships
-5. Update RLS Policies (§7) — document any new policies
-6. Update Business Logic (§8) — document any new workflows
-7. Update supabaseAdmin Bypasses (§11) — if any new bypass was added
-8. Update Unimplemented Features (§10) — if status changed
+When the task is fully done, update NIRMAN_CONTEXT.md with everything
+that changed — new files, new data, new rules, new workflows — and confirm:
 
-Then confirm with:
 ✅ [Feature name] complete.
 Files changed: [list every file]
-NIRMAN_CONTEXT.md updated: [list every section updated]
+NIRMAN_CONTEXT.md updated: [list what was added or changed]
 ```
 
 ---
