@@ -98,16 +98,25 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
         const errorData = await res.json().catch(() => ({}))
         throw new Error(errorData.error || "Failed to save milestone")
       }
-      
+
+      const responseData = await res.json()
+
+      if (!responseData.data) {
+        throw new Error("Invalid response from server")
+      }
+
       toast.success(isEdit ? "Milestone updated" : "Milestone created")
       setIsDialogOpen(false)
-      
-      // If we create, we get data back. If patch, we just refresh the whole route
-      router.refresh()
-      
-      // Update local state optimistic-ish for simple render without perfect refresh timing
-      const updatedData = isEdit ? milestones.map(m => m.id === editingMilestone.id ? { ...m, ...body } : m) : [...milestones, { id: 'temp', ...body }] as Milestone[]
-      if(isEdit) setMilestones(updatedData)
+
+      // Update local state immediately with the response data
+      if (isEdit) {
+        setMilestones(milestones.map(m =>
+          m.id === editingMilestone?.id ? { ...m, ...responseData.data } : m
+        ))
+      } else {
+        // For new milestones, append the server response
+        setMilestones(prev => [...prev, responseData.data])
+      }
       
     } catch (err: any) {
       toast.error(err.message)

@@ -41,6 +41,8 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
   const [projectName, setProjectName] = useState<string>("")
   const [unitFlat, setUnitFlat] = useState<string>("")
   const [shareholderStatus, setShareholderStatus] = useState<string>("")
+  const [projectId, setProjectId] = useState<string>("")
+  const [pendingCount, setPendingCount] = useState<number | null>(null)
 
   useEffect(() => {
     async function fetchData() {
@@ -50,12 +52,15 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
         const { data: profileData } = await supabase.from("profiles").select("name, avatar_url, email").eq("id", user.id).single()
         setProfile(profileData)
 
-        const { data: shareholderData } = await supabase.from("shareholders").select("unit_flat, status, projects(name)").eq("user_id", user.id).single()
+        const { data: shareholderData } = await supabase.from("shareholders").select("id, unit_flat, status, project_id, projects(name)").eq("user_id", user.id).single()
         if (shareholderData?.unit_flat) {
           setUnitFlat(shareholderData.unit_flat)
         }
         if (shareholderData?.status) {
           setShareholderStatus(shareholderData.status)
+        }
+        if (shareholderData?.project_id) {
+          setProjectId(shareholderData.project_id)
         }
         const projects = shareholderData?.projects as any
         if (Array.isArray(projects) && projects[0]?.name) {
@@ -78,6 +83,25 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
     }
     fetchData()
   }, [])
+
+  // Fetch pending count when we have projectId and user is a committee member
+  useEffect(() => {
+    async function fetchPendingCount() {
+      if (!projectId || !isCommitteeMember) return
+
+      try {
+        const response = await fetch(`/api/projects/${projectId}/committee/pending-count`)
+        if (response.ok) {
+          const data = await response.json()
+          setPendingCount(data.count)
+        }
+      } catch (err) {
+        console.error("Error fetching pending count:", err)
+      }
+    }
+
+    fetchPendingCount()
+  }, [projectId, isCommitteeMember])
 
   const handleSignOut = async () => {
     const supabase = createClient()
@@ -164,21 +188,33 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
               <Link
                 href="/my/review"
                 className={cn(
-                  "group flex h-12 items-center rounded-full px-4 text-sm font-medium transition-all duration-200",
+                  "group flex h-12 items-center justify-between rounded-full px-4 text-sm font-medium transition-all duration-200",
                   pathname === "/my/review"
                     ? "bg-[var(--primary-container)] text-[var(--primary)] font-semibold"
                     : "text-[var(--on-surface)] hover:bg-[var(--surface-container)] font-medium"
                 )}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <ShieldCheck
-                  className={cn(
-                    "mr-3 h-5 w-5 flex-shrink-0 transition-colors",
-                    pathname === "/my/review" ? "text-[var(--primary)]" : "text-[var(--on-surface)]"
-                  )}
-                  aria-hidden="true"
-                />
-                Committee Review
+                <div className="flex items-center">
+                  <ShieldCheck
+                    className={cn(
+                      "mr-3 h-5 w-5 flex-shrink-0 transition-colors",
+                      pathname === "/my/review" ? "text-[var(--primary)]" : "text-[var(--on-surface)]"
+                    )}
+                    aria-hidden="true"
+                  />
+                  Committee Review
+                </div>
+                {pendingCount !== null && (
+                  <span className={cn(
+                    "inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold ml-2 flex-shrink-0",
+                    pathname === "/my/review"
+                      ? "bg-[var(--primary)] text-white"
+                      : "bg-[var(--error-container)] text-[var(--error)]"
+                  )}>
+                    {pendingCount > 99 ? "99+" : pendingCount}
+                  </span>
+                )}
               </Link>
               <Link
                 href="/my/defaulters"

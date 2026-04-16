@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { CommitteeClient } from "./CommitteeClient"
 
 export default async function CommitteePage(props: { params: Promise<{ projectId: string }> }) {
@@ -20,7 +21,7 @@ export default async function CommitteePage(props: { params: Promise<{ projectId
   const currentRule = config?.rule || "MAJORITY"
 
   // 2. Fetch Active Committee Members with their shareholder & profile data
-  const { data: members, error } = await supabase
+  const { data: members, error } = await supabaseAdmin
     .from("committee_members")
     .select(`
       id,
@@ -44,7 +45,7 @@ export default async function CommitteePage(props: { params: Promise<{ projectId
 
   // 3. Fetch Active Shareholders NOT already on the committee
   // Workaround: fetch all active, then filter in memory since Supabase RPC/complex query isn't strictly needed for small lists yet.
-  const { data: allActiveShareholders } = await supabase
+  const { data: allActiveShareholders } = await supabaseAdmin
     .from("shareholders")
     .select(`
       id,
