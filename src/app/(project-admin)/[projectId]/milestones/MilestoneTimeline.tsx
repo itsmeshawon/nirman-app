@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { CheckCircle2, Clock, Circle, Pencil, ArrowUp, ArrowDown, Plus } from "lucide-react"
+import { CheckCircle2, Clock, Circle, Pencil, ArrowUp, ArrowDown, Plus, Banknote } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { toast } from "sonner"
+import { formatBDT } from "@/lib/utils"
 
 interface Milestone {
   id: string
@@ -32,12 +33,18 @@ interface Milestone {
   sort_order: number
 }
 
+interface ExpenseTotal {
+  total: number
+  count: number
+}
+
 interface MilestoneTimelineProps {
   projectId: string
   initialMilestones: Milestone[]
+  expenseTotals: Record<string, ExpenseTotal>
 }
 
-export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTimelineProps) {
+export function MilestoneTimeline({ projectId, initialMilestones, expenseTotals }: MilestoneTimelineProps) {
   const router = useRouter()
   const [milestones, setMilestones] = useState<Milestone[]>(initialMilestones)
   
@@ -240,6 +247,13 @@ export function MilestoneTimeline({ projectId, initialMilestones }: MilestoneTim
                               </p>
                             )}
                           </div>
+                          {expenseTotals[milestone.id] && expenseTotals[milestone.id].count > 0 && (
+                            <div className="mt-2 flex items-center gap-1.5 text-xs text-[var(--on-surface-variant)] bg-[var(--surface-variant)]/40 px-2.5 py-1 rounded-lg w-fit">
+                              <Banknote className="w-3.5 h-3.5 text-[var(--primary)]" />
+                              <span className="font-semibold text-[var(--primary)]">{formatBDT(expenseTotals[milestone.id].total)}</span>
+                              <span className="opacity-60">across {expenseTotals[milestone.id].count} expense{expenseTotals[milestone.id].count > 1 ? 's' : ''}</span>
+                            </div>
+                          )}
                         </div>
 
                         <div className="flex items-center gap-3 shrink-0">

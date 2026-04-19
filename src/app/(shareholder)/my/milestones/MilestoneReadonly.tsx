@@ -1,6 +1,7 @@
 "use client"
 
-import { CheckCircle2, Clock, Circle } from "lucide-react"
+import { CheckCircle2, Clock, Circle, Banknote } from "lucide-react"
+import { formatBDT } from "@/lib/utils"
 
 interface Milestone {
   id: string
@@ -11,11 +12,17 @@ interface Milestone {
   sort_order: number
 }
 
-interface MilestoneReadonlyProps {
-  milestones: Milestone[]
+interface ExpenseTotal {
+  total: number
+  count: number
 }
 
-export function MilestoneReadonly({ milestones }: MilestoneReadonlyProps) {
+interface MilestoneReadonlyProps {
+  milestones: Milestone[]
+  expenseTotals: Record<string, ExpenseTotal>
+}
+
+export function MilestoneReadonly({ milestones, expenseTotals }: MilestoneReadonlyProps) {
   return (
     <div className="space-y-6">
       <div className="p-6 sm:p-8 rounded-[1.25rem] border border-[var(--outline-variant)]/40 bg-[var(--surface)]">
@@ -96,6 +103,14 @@ export function MilestoneReadonly({ milestones }: MilestoneReadonlyProps) {
                             <p className="text-[10px] font-bold text-[var(--primary)] bg-[var(--primary-container)]/30 px-2 py-0.5 rounded w-fit uppercase tracking-tighter">
                               Duration: {Math.ceil((new Date(milestone.target_date).getTime() - new Date(milestone.start_date).getTime()) / (1000 * 60 * 60 * 24))} Days
                             </p>
+                          )}
+
+                          {expenseTotals[milestone.id] && expenseTotals[milestone.id].count > 0 && (
+                            <div className="mt-1 flex items-center gap-1.5 text-xs text-[var(--on-surface-variant)] bg-[var(--surface-variant)]/40 px-2.5 py-1 rounded-lg w-fit">
+                              <Banknote className="w-3.5 h-3.5 text-[var(--primary)]" />
+                              <span className="font-semibold text-[var(--primary)]">{formatBDT(expenseTotals[milestone.id].total)}</span>
+                              <span className="opacity-60">across {expenseTotals[milestone.id].count} expense{expenseTotals[milestone.id].count > 1 ? 's' : ''}</span>
+                            </div>
                           )}
                         </div>
                       </div>

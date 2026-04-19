@@ -24,9 +24,24 @@ export default async function MilestonesPage(props: { params: Promise<{ projectI
     return <div>Failed to load milestones</div>
   }
 
+  const { data: expenses } = await supabase
+    .from("expenses")
+    .select("milestone_id, amount, vat_amount")
+    .eq("project_id", projectId)
+
+  const expenseTotals: Record<string, { total: number; count: number }> = {}
+  for (const e of expenses || []) {
+    if (!e.milestone_id) continue
+    if (!expenseTotals[e.milestone_id]) {
+      expenseTotals[e.milestone_id] = { total: 0, count: 0 }
+    }
+    expenseTotals[e.milestone_id].total += (e.amount || 0) + (e.vat_amount || 0)
+    expenseTotals[e.milestone_id].count += 1
+  }
+
   return (
     <div className="w-full">
-      <MilestoneTimeline projectId={projectId} initialMilestones={milestones || []} />
+      <MilestoneTimeline projectId={projectId} initialMilestones={milestones || []} expenseTotals={expenseTotals} />
     </div>
   )
 }

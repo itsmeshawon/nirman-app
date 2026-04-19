@@ -35,9 +35,26 @@ export default async function ShareholderMilestonesPage() {
     .eq("project_id", shareholder.project_id)
     .order("sort_order", { ascending: true })
 
+  // 3. Fetch PUBLISHED expense totals per milestone
+  const { data: expenses } = await supabase
+    .from("expenses")
+    .select("milestone_id, amount, vat_amount")
+    .eq("project_id", shareholder.project_id)
+    .eq("status", "PUBLISHED")
+
+  const expenseTotals: Record<string, { total: number; count: number }> = {}
+  for (const e of expenses || []) {
+    if (!e.milestone_id) continue
+    if (!expenseTotals[e.milestone_id]) {
+      expenseTotals[e.milestone_id] = { total: 0, count: 0 }
+    }
+    expenseTotals[e.milestone_id].total += (e.amount || 0) + (e.vat_amount || 0)
+    expenseTotals[e.milestone_id].count += 1
+  }
+
   return (
     <div className="w-full">
-      <MilestoneReadonly milestones={milestones || []} />
+      <MilestoneReadonly milestones={milestones || []} expenseTotals={expenseTotals} />
     </div>
   )
 }

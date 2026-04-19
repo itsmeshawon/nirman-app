@@ -556,6 +556,7 @@ await createNotification({
 | Apr 2026 | Fix milestone instant render | `milestones/MilestoneTimeline.tsx` | None — removed router.refresh() |
 | Apr 2026 | Fix is_project_member() | — | Removed finance_staff reference from DB function |
 | Apr 2026 | Remove Finance Staff SQL | — | Dropped finance_staff table + all RLS policies it added |
+| Apr 2026 | Milestone expense totals in cards | `(project-admin)/[projectId]/milestones/page.tsx`, `(project-admin)/[projectId]/milestones/MilestoneTimeline.tsx`, `(shareholder)/my/milestones/page.tsx`, `(shareholder)/my/milestones/MilestoneReadonly.tsx` | None — queries existing expenses table grouped by milestone_id |
 
 ---
 
