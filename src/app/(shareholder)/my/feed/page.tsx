@@ -33,8 +33,6 @@ export default async function ShareholderFeedPage() {
 
   const projectId: string = shareholder.project.id
 
-  const { supabaseAdmin } = await import("@/lib/supabase/admin")
-  
   // 3. Fetch PUBLISHED posts
   const { data: posts, error: postsError } = await supabaseAdmin
     .from("activity_posts")
