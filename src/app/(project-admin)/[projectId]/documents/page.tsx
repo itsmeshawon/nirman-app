@@ -8,7 +8,7 @@ export default async function DocumentsPage(props: { params: Promise<{ projectId
   const params = await props.params
   const { projectId } = params
 
-  const { data: documents } = await supabaseAdmin
+  const { data: documents } = await getSupabaseAdmin()
     .from("project_documents")
     .select("*")
     .eq("project_id", projectId)

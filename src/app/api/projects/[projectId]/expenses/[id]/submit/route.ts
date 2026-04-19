@@ -63,7 +63,7 @@ export async function POST(
 
     // Notify active committee members
     try {
-      const { data: committeeMembers } = await supabaseAdmin
+      const { data: committeeMembers } = await getSupabaseAdmin()
         .from("committee_members")
         .select("user_id")
         .eq("project_id", projectId)

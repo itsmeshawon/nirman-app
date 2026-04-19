@@ -21,7 +21,7 @@ export default async function CommitteePage(props: { params: Promise<{ projectId
   const currentRule = config?.rule || "MAJORITY"
 
   // 2. Fetch Active Committee Members with their shareholder & profile data
-  const { data: members, error } = await supabaseAdmin
+  const { data: members, error } = await getSupabaseAdmin()
     .from("committee_members")
     .select(`
       id,
@@ -45,7 +45,7 @@ export default async function CommitteePage(props: { params: Promise<{ projectId
 
   // 3. Fetch Active Shareholders NOT already on the committee
   // Workaround: fetch all active, then filter in memory since Supabase RPC/complex query isn't strictly needed for small lists yet.
-  const { data: allActiveShareholders } = await supabaseAdmin
+  const { data: allActiveShareholders } = await getSupabaseAdmin()
     .from("shareholders")
     .select(`
       id,

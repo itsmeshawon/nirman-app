@@ -17,7 +17,7 @@ export default async function ShareholderDashboardPage() {
   if (!user) redirect("/login")
 
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
-  const { data: shareholder } = await supabaseAdmin
+  const { data: shareholder } = await getSupabaseAdmin()
     .from("shareholders")
     .select("*, project:projects(id, name, status, address, expected_handover)")
     .eq("user_id", user.id)

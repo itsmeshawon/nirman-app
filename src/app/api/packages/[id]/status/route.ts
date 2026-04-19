@@ -28,7 +28,7 @@ export async function PATCH(
       return NextResponse.json({ error: "is_active must be a boolean" }, { status: 400 })
     }
 
-    const { data: pkg, error: dbError } = await supabaseAdmin
+    const { data: pkg, error: dbError } = await getSupabaseAdmin()
       .from("packages")
       .update({
         is_active,

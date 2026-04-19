@@ -62,7 +62,7 @@ export async function PATCH(
     if (whatsapp_no !== undefined) profileUpdate.whatsapp_no = whatsapp_no
 
     if (shData?.user_id && Object.keys(profileUpdate).length > 0) {
-      const { error: profileError } = await supabaseAdmin
+      const { error: profileError } = await getSupabaseAdmin()
         .from("profiles")
         .update(profileUpdate)
         .eq("id", shData.user_id)

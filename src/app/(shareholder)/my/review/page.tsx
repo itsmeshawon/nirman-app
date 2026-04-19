@@ -14,7 +14,7 @@ export default async function CommitteeReviewPage() {
   }
 
   // 1. Fetch projects where user is an active committee member
-  const { data: memberRecords } = await supabaseAdmin
+  const { data: memberRecords } = await getSupabaseAdmin()
     .from("committee_members")
     .select("project_id, project:projects(id, name)")
     .eq("user_id", user.id)
@@ -38,7 +38,7 @@ export default async function CommitteeReviewPage() {
   }, {} as Record<string, string>)
 
   // 2. Fetch SUBMITTED expenses for those projects
-  const { data: expenses } = await supabaseAdmin
+  const { data: expenses } = await getSupabaseAdmin()
     .from("expenses")
     .select(`
        *,
@@ -51,13 +51,13 @@ export default async function CommitteeReviewPage() {
 
   // 3. Fetch all committee counts and active approvals for the progress indicators
   const expensesWithProgress = await Promise.all((expenses || []).map(async (exp) => {
-     const { count: totalMembers } = await supabaseAdmin
+     const { count: totalMembers } = await getSupabaseAdmin()
        .from("committee_members")
        .select("*", { count: 'exact', head: true })
        .eq("project_id", exp.project_id)
        .eq("is_active", true)
 
-     const { count: totalApprovals } = await supabaseAdmin
+     const { count: totalApprovals } = await getSupabaseAdmin()
        .from("expense_approvals")
        .select("*", { count: 'exact', head: true })
        .eq("expense_id", exp.id)

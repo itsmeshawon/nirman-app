@@ -24,7 +24,7 @@ async function getPlatformStats() {
 }
 
 async function getRecentProjects(): Promise<ProjectRow[]> {
-  const { data: projects } = await supabaseAdmin
+  const { data: projects } = await getSupabaseAdmin()
     .from("projects")
     .select("id, name, address, area, status, start_date, created_at, package_id, building_meta, packages(id, name, features)")
     .order("created_at", { ascending: false })

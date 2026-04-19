@@ -15,7 +15,7 @@ export async function GET(
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
     // 2. Authorization - Check if user is an active committee member for this project
-    const { data: committeeMember, error: memberError } = await supabaseAdmin
+    const { data: committeeMember, error: memberError } = await getSupabaseAdmin()
       .from("committee_members")
       .select("id")
       .eq("project_id", projectId)
@@ -28,7 +28,7 @@ export async function GET(
     }
 
     // 3. Count pending reviews (SUBMITTED or CHANGES_REQUESTED)
-    const { count, error: countError } = await supabaseAdmin
+    const { count, error: countError } = await getSupabaseAdmin()
       .from("expenses")
       .select("id", { count: "exact" })
       .eq("project_id", projectId)

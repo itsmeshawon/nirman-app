@@ -11,7 +11,7 @@ export async function GET() {
     if (!superAdmin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
     // Check role safely
-    const { data: currentProfile } = await supabaseAdmin
+    const { data: currentProfile } = await getSupabaseAdmin()
       .from("profiles")
       .select("role")
       .eq("id", superAdmin.id)
@@ -22,7 +22,7 @@ export async function GET() {
     }
 
     // 2. Fetch all PROJECT_ADMIN profiles (Robust Fetch)
-    const { data: profiles, error: pError } = await supabaseAdmin
+    const { data: profiles, error: pError } = await getSupabaseAdmin()
       .from("profiles")
       .select("id, name, email, phone, status, created_at")
       .eq("role", "PROJECT_ADMIN")
@@ -31,7 +31,7 @@ export async function GET() {
     if (pError) throw pError
 
     // 3. Fetch all project_admin mappings (Robust Fetch)
-    const { data: mappings, error: mError } = await supabaseAdmin
+    const { data: mappings, error: mError } = await getSupabaseAdmin()
       .from("project_admins")
       .select("user_id, project_id")
 

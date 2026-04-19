@@ -14,7 +14,7 @@ export default async function DefaultersPage() {
   }
 
   // 1. Fetch projects where user is an active committee member
-  const { data: memberRecords } = await supabaseAdmin
+  const { data: memberRecords } = await getSupabaseAdmin()
     .from("committee_members")
     .select("project_id, project:projects(id, name)")
     .eq("user_id", user.id)
@@ -38,7 +38,7 @@ export default async function DefaultersPage() {
   }, {} as Record<string, string>)
 
   // 2. Fetch payment_schedules first (since schedule_items doesn't have project_id)
-  const { data: schedules } = await supabaseAdmin
+  const { data: schedules } = await getSupabaseAdmin()
     .from("payment_schedules")
     .select("id, project_id")
     .in("project_id", projectIds)
@@ -46,7 +46,7 @@ export default async function DefaultersPage() {
   const scheduleIds = schedules?.map(s => s.id) || []
 
   // 3. Fetch OVERDUE items for those schedules
-  const { data: overdueItems } = await supabaseAdmin
+  const { data: overdueItems } = await getSupabaseAdmin()
     .from("schedule_items")
     .select(`
       id,
@@ -75,7 +75,7 @@ export default async function DefaultersPage() {
 
   // 4. Fetch all payments related to overdue items
   const overdueItemIds = overdueItems?.map(i => i.id) || []
-  const { data: payments } = overdueItemIds.length > 0 ? await supabaseAdmin
+  const { data: payments } = overdueItemIds.length > 0 ? await getSupabaseAdmin()
     .from("payments")
     .select("schedule_item_id, amount")
     .in("schedule_item_id", overdueItemIds)

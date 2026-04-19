@@ -30,7 +30,7 @@ export default async function ProjectAdminLayout(props: {
     const profile = await getUserProfile(supabase)
 
     // 4. Get project details for shell
-    const { data: project } = await supabaseAdmin
+    const { data: project } = await getSupabaseAdmin()
       .from("projects")
       .select("name, status")
       .eq("id", projectId)

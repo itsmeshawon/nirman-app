@@ -33,7 +33,7 @@ export async function POST(
     }
 
     // 2. Add / Reactivate Committee Member
-    const { data: existing } = await supabaseAdmin
+    const { data: existing } = await getSupabaseAdmin()
       .from("committee_members")
       .select("id")
       .eq("project_id", projectId)
@@ -42,13 +42,13 @@ export async function POST(
 
     let insertError = null
     if (existing) {
-      const { error } = await supabaseAdmin
+      const { error } = await getSupabaseAdmin()
         .from("committee_members")
         .update({ is_active: true, user_id })
         .eq("id", existing.id)
       insertError = error
     } else {
-      const { error } = await supabaseAdmin
+      const { error } = await getSupabaseAdmin()
         .from("committee_members")
         .insert({
           project_id: projectId,

@@ -29,7 +29,7 @@ export async function DELETE(
     }
 
     // 3. Verify admin exists and is assigned to this project
-    const { data: projectAdmin } = await supabaseAdmin
+    const { data: projectAdmin } = await getSupabaseAdmin()
       .from("project_admins")
       .select("user_id")
       .eq("project_id", projectId)
@@ -44,14 +44,14 @@ export async function DELETE(
     }
 
     // 4. Get admin profile info for audit logging
-    const { data: adminProfile } = await supabaseAdmin
+    const { data: adminProfile } = await getSupabaseAdmin()
       .from("profiles")
       .select("name, email")
       .eq("id", adminId)
       .single()
 
     // 5. Delete the project admin assignment
-    const { error: deleteError } = await supabaseAdmin
+    const { error: deleteError } = await getSupabaseAdmin()
       .from("project_admins")
       .delete()
       .eq("project_id", projectId)

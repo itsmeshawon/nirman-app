@@ -45,7 +45,7 @@ export async function DELETE(
     }
 
     // Delete from Database
-    const { error: dbError } = await supabaseAdmin
+    const { error: dbError } = await getSupabaseAdmin()
       .from("project_documents")
       .delete()
       .eq("id", id)

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
-import { createClient as createAdminClient } from "@supabase/supabase-js"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
 import { requireProjectAdmin } from "@/lib/permissions"
 
@@ -22,10 +22,7 @@ export async function POST(
     catch { return NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
 
     // Use Admin Client to bypass RLS for Storage and DB inserts (since we already authorized above)
-    const supabaseAdmin = createAdminClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
+    const supabaseAdmin = getSupabaseAdmin()
 
     const formData = await request.formData()
     const file = formData.get("file") as File
@@ -57,7 +54,7 @@ export async function POST(
     }
 
     // Insert into expense_attachments table bypassing RLS
-    const { data: attachment, error: dbError } = await supabaseAdmin
+    const { data: attachment, error: dbError } = await getSupabaseAdmin()
       .from("expense_attachments")
       .insert({
         expense_id: id,

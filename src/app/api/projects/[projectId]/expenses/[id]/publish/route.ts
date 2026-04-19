@@ -55,7 +55,7 @@ export async function POST(
 
     // Notify all shareholders
     try {
-      const { data: shareholders } = await supabaseAdmin
+      const { data: shareholders } = await getSupabaseAdmin()
         .from("shareholders")
         .select("user_id")
         .eq("project_id", projectId)

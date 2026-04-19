@@ -31,7 +31,7 @@ export async function GET(
 
     const isAdmin = !!adminRow
 
-    let query = supabaseAdmin
+    let query = getSupabaseAdmin()
       .from("activity_posts")
       .select(`
         id,
@@ -126,7 +126,7 @@ export async function POST(
 
     const { title, description, media_url, media_type, tags, milestone_id } = validated.data
 
-    const { data: post, error: insertError } = await supabaseAdmin
+    const { data: post, error: insertError } = await getSupabaseAdmin()
       .from("activity_posts")
       .insert({
         project_id: projectId,
@@ -155,7 +155,7 @@ export async function POST(
 
     // Notify all active shareholders
     try {
-      const { data: shareholders } = await supabaseAdmin
+      const { data: shareholders } = await getSupabaseAdmin()
         .from("shareholders")
         .select("user_id")
         .eq("project_id", projectId)

@@ -92,7 +92,7 @@ export async function POST(
     }
 
     // Insert metadata
-    const { data: document, error: dbError } = await supabaseAdmin
+    const { data: document, error: dbError } = await getSupabaseAdmin()
       .from("project_documents")
       .insert({
         project_id: projectId,

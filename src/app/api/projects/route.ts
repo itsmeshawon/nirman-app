@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
     if (salesperson_name) building_meta.salesperson_name = salesperson_name
 
     // Create the project
-    const { data: project, error: projectError } = await supabaseAdmin
+    const { data: project, error: projectError } = await getSupabaseAdmin()
       .from("projects")
       .insert({
         name,

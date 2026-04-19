@@ -36,7 +36,7 @@ export async function PUT(
 
     const { name, description, features } = parsed.data
 
-    const { data: pkg, error: dbError } = await supabaseAdmin
+    const { data: pkg, error: dbError } = await getSupabaseAdmin()
       .from("packages")
       .update({
         name,

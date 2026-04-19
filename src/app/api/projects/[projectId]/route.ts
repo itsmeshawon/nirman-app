@@ -17,14 +17,14 @@ export async function GET(
 
     // Only Super Admin or someone explicitly linked could see this, 
     // but for the Super Admin dashboard we'll check the role via Admin bypass
-    const { data: profile } = await supabaseAdmin
+    const { data: profile } = await getSupabaseAdmin()
       .from("profiles").select("role").eq("id", user.id).single()
     
     if (!profile || profile.role !== "SUPER_ADMIN") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
-    const { data: project, error } = await supabaseAdmin
+    const { data: project, error } = await getSupabaseAdmin()
       .from("projects")
       .select("*")
       .eq("id", projectId)
@@ -56,7 +56,7 @@ export async function DELETE(
     }
 
     // Authorization: Only SUPER_ADMIN can delete projects
-    const { data: profile } = await supabaseAdmin
+    const { data: profile } = await getSupabaseAdmin()
       .from("profiles")
       .select("role")
       .eq("id", user.id)
@@ -67,7 +67,7 @@ export async function DELETE(
     }
 
     // Verify project exists
-    const { data: project } = await supabaseAdmin
+    const { data: project } = await getSupabaseAdmin()
       .from("projects")
       .select("id, name")
       .eq("id", projectId)
@@ -78,7 +78,7 @@ export async function DELETE(
     }
 
     // Check for active shareholders
-    const { count: activeShareholders } = await supabaseAdmin
+    const { count: activeShareholders } = await getSupabaseAdmin()
       .from("shareholders")
       .select("id", { count: "exact" })
       .eq("project_id", projectId)
@@ -95,7 +95,7 @@ export async function DELETE(
     }
 
     // Check for unpaid payments
-    const { count: unpaidPayments } = await supabaseAdmin
+    const { count: unpaidPayments } = await getSupabaseAdmin()
       .from("payments")
       .select("id", { count: "exact" })
       .eq("project_id", projectId)
@@ -119,7 +119,7 @@ export async function DELETE(
     await getSupabaseAdmin().from("notifications").delete().eq("project_id", projectId)
 
     // ─── Step 2: Post reactions & views (link via post_id, not project_id) ───
-    const { data: projectPosts } = await supabaseAdmin
+    const { data: projectPosts } = await getSupabaseAdmin()
       .from("activity_posts")
       .select("id")
       .eq("project_id", projectId)
@@ -133,7 +133,7 @@ export async function DELETE(
     await getSupabaseAdmin().from("activity_posts").delete().eq("project_id", projectId)
 
     // ─── Step 4: Expense attachments & approvals (link via expense_id) ────────
-    const { data: projectExpenses } = await supabaseAdmin
+    const { data: projectExpenses } = await getSupabaseAdmin()
       .from("expenses")
       .select("id")
       .eq("project_id", projectId)
@@ -150,13 +150,13 @@ export async function DELETE(
     await getSupabaseAdmin().from("payments").delete().eq("project_id", projectId)
 
     // ─── Step 7: Penalties (link via schedule_item_id → schedule_id) ─────────
-    const { data: projectSchedules } = await supabaseAdmin
+    const { data: projectSchedules } = await getSupabaseAdmin()
       .from("payment_schedules")
       .select("id")
       .eq("project_id", projectId)
     const scheduleIds = (projectSchedules ?? []).map((s) => s.id)
     if (scheduleIds.length > 0) {
-      const { data: projectScheduleItems } = await supabaseAdmin
+      const { data: projectScheduleItems } = await getSupabaseAdmin()
         .from("schedule_items")
         .select("id")
         .in("schedule_id", scheduleIds)
@@ -196,7 +196,7 @@ export async function DELETE(
     await getSupabaseAdmin().from("project_documents").delete().eq("project_id", projectId)
 
     // ─── Step 17: Delete the project itself ───────────────────────────────────
-    const { error: deleteError } = await supabaseAdmin
+    const { error: deleteError } = await getSupabaseAdmin()
       .from("projects")
       .delete()
       .eq("id", projectId)

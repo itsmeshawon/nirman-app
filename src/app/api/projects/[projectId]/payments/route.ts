@@ -125,7 +125,7 @@ export async function POST(
 
     // 5. Notify the shareholder who received the payment
     try {
-      const { data: shareholder } = await supabaseAdmin
+      const { data: shareholder } = await getSupabaseAdmin()
         .from("shareholders")
         .select("user_id")
         .eq("id", shareholder_id)

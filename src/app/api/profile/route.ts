@@ -59,7 +59,7 @@ export async function PUT(request: Request) {
 
     const data = validationResult.data
 
-    const { error: updateError } = await supabaseAdmin
+    const { error: updateError } = await getSupabaseAdmin()
       .from("profiles")
       .update({
         ...data,

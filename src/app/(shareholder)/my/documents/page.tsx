@@ -28,7 +28,7 @@ export default async function ShareholderDocumentsPage() {
   }
 
   // 3. Fetch project documents
-  const { data: documents } = await supabaseAdmin
+  const { data: documents } = await getSupabaseAdmin()
     .from("project_documents")
     .select("*")
     .eq("project_id", shareholder.project_id)

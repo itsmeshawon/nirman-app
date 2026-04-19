@@ -27,7 +27,7 @@ export async function PATCH(
 
     // 2. Handle Status Update
     if (status !== undefined) {
-      const { error: updateError } = await supabaseAdmin
+      const { error: updateError } = await getSupabaseAdmin()
         .from("profiles")
         .update({ status })
         .eq("id", adminId)

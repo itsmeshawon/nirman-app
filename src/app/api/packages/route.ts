@@ -29,7 +29,7 @@ export async function GET() {
     const { user, error } = await getSuperAdmin()
     if (error) return error
 
-    const { data: packages, error: dbError } = await supabaseAdmin
+    const { data: packages, error: dbError } = await getSupabaseAdmin()
       .from("packages")
       .select("*")
       .order("created_at", { ascending: false })
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
 
     const { name, description, features } = parsed.data
 
-    const { data: pkg, error: dbError } = await supabaseAdmin
+    const { data: pkg, error: dbError } = await getSupabaseAdmin()
       .from("packages")
       .insert({
         name,

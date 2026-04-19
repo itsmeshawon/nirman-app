@@ -14,7 +14,7 @@ export default async function FeedPage(props: { params: Promise<{ projectId: str
   const { data: { user } } = await supabase.auth.getUser()
 
   // 2. Fetch all posts (admin sees all statuses)
-  const { data: posts, error: postsError } = await supabaseAdmin
+  const { data: posts, error: postsError } = await getSupabaseAdmin()
     .from("activity_posts")
     .select("*, author:profiles!author_id(name), milestone:milestones!milestone_id(name)")
     .eq("project_id", projectId)

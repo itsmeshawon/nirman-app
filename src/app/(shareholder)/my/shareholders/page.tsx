@@ -14,7 +14,7 @@ export default async function ShareholderDirectoryPage() {
   }
 
   // 1. Identify which project the current user belongs to
-  const { data: userShareholderRecords } = await supabaseAdmin
+  const { data: userShareholderRecords } = await getSupabaseAdmin()
     .from("shareholders")
     .select("project_id")
     .eq("user_id", user.id)
@@ -31,7 +31,7 @@ export default async function ShareholderDirectoryPage() {
   const projectIds = userShareholderRecords.map(r => r.project_id)
 
   // 2. Fetch all shareholders for those projects
-  const { data: neighbors } = await supabaseAdmin
+  const { data: neighbors } = await getSupabaseAdmin()
     .from("shareholders")
     .select(`
       id,
@@ -54,7 +54,7 @@ export default async function ShareholderDirectoryPage() {
     .order("unit_flat", { ascending: true })
 
   // 3. Fetch committee members to highlight them
-  const { data: committeeData } = await supabaseAdmin
+  const { data: committeeData } = await getSupabaseAdmin()
     .from("committee_members")
     .select("shareholder_id")
     .in("project_id", projectIds)

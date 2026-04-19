@@ -16,7 +16,7 @@ export async function GET(
     if (profile?.role !== "SUPER_ADMIN") return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
     // Fetch project with package info
-    const { data: projectRaw } = await supabaseAdmin
+    const { data: projectRaw } = await getSupabaseAdmin()
       .from("projects")
       .select("*, packages(id, name, features, is_active)")
       .eq("id", projectId)
@@ -29,7 +29,7 @@ export async function GET(
     } : null
 
     // Fetch project admins with profiles
-    const { data: projectAdmins } = await supabaseAdmin
+    const { data: projectAdmins } = await getSupabaseAdmin()
       .from("project_admins")
       .select("user_id")
       .eq("project_id", projectId)
@@ -40,7 +40,7 @@ export async function GET(
       : { data: [] }
 
     // Fetch shareholders with profiles
-    const { data: shareholders } = await supabaseAdmin
+    const { data: shareholders } = await getSupabaseAdmin()
       .from("shareholders")
       .select("id, user_id, unit_flat, ownership_pct, opening_balance, status")
       .eq("project_id", projectId)
@@ -58,7 +58,7 @@ export async function GET(
     }))
 
     // Fetch committee members
-    const { data: committeeMembers } = await supabaseAdmin
+    const { data: committeeMembers } = await getSupabaseAdmin()
       .from("committee_members")
       .select("id, shareholder_id, user_id, is_active")
       .eq("project_id", projectId)

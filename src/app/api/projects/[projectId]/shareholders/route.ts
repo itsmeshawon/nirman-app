@@ -82,7 +82,7 @@ export async function POST(
     }
 
     // 4. Create the shareholder record
-    const { data: shData, error: shError } = await supabaseAdmin
+    const { data: shData, error: shError } = await getSupabaseAdmin()
       .from("shareholders")
       .insert({
         project_id: projectId,

@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     }
 
     // Get old profile to check for existing avatar
-    const { data: oldProfile } = await supabaseAdmin
+    const { data: oldProfile } = await getSupabaseAdmin()
       .from("profiles")
       .select("avatar_url")
       .eq("id", user.id)
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
     const avatarUrl = urlData.publicUrl
 
     // Update Profile
-    const { error: dbError } = await supabaseAdmin
+    const { error: dbError } = await getSupabaseAdmin()
       .from("profiles")
       .update({ avatar_url: avatarUrl })
       .eq("id", user.id)

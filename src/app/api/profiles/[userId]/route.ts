@@ -39,7 +39,7 @@ export async function PUT(
     if (present_address !== undefined) updateData.present_address = present_address
     if (whatsapp_no !== undefined) updateData.whatsapp_no = whatsapp_no
 
-    const { error } = await supabaseAdmin
+    const { error } = await getSupabaseAdmin()
       .from("profiles")
       .update(updateData)
       .eq("id", userId)

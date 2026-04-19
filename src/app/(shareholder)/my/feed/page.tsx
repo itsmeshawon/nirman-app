@@ -13,7 +13,7 @@ export default async function ShareholderFeedPage() {
   if (!user) redirect("/login")
 
   // 2. Shareholder + project
-  const { data: shareholder } = await supabaseAdmin
+  const { data: shareholder } = await getSupabaseAdmin()
     .from("shareholders")
     .select("*, project:projects(id, name)")
     .eq("user_id", user.id)
@@ -34,7 +34,7 @@ export default async function ShareholderFeedPage() {
   const projectId: string = shareholder.project.id
 
   // 3. Fetch PUBLISHED posts
-  const { data: posts, error: postsError } = await supabaseAdmin
+  const { data: posts, error: postsError } = await getSupabaseAdmin()
     .from("activity_posts")
     .select("*, author:profiles!author_id(name), milestone:milestones!milestone_id(name)")
     .eq("project_id", projectId)

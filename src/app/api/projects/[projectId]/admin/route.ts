@@ -71,7 +71,7 @@ export async function POST(
     )
 
     // Upsert into project_admins
-    const { error: adminError } = await supabaseAdmin
+    const { error: adminError } = await getSupabaseAdmin()
       .from("project_admins")
       .upsert(
         { project_id: projectId, user_id: targetUserId },

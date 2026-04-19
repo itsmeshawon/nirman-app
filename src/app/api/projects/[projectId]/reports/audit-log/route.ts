@@ -11,7 +11,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ proj
 
     const { data: project } = await supabase.from("projects").select("name").eq("id", projectId).single()
 
-    const { data: logs } = await supabaseAdmin
+    const { data: logs } = await getSupabaseAdmin()
       .from("audit_logs")
       .select("action, entity_type, entity_id, details, ip_address, created_at, user_id")
       .eq("project_id", projectId)
