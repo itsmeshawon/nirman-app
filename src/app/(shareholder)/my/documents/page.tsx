@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { ShareholderDocsClient } from "./ShareholderDocsClient"
 import { redirect } from "next/navigation"
 
@@ -26,8 +27,6 @@ export default async function ShareholderDocumentsPage() {
     )
   }
 
-  const { supabaseAdmin } = await import("@/lib/supabase/admin")
-  
   // 3. Fetch project documents
   const { data: documents } = await supabaseAdmin
     .from("project_documents")

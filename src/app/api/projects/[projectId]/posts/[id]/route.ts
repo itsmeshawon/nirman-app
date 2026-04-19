@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { requireProjectAdmin } from "@/lib/permissions"
 import { logAction } from "@/lib/audit"
 
@@ -89,7 +90,6 @@ export async function DELETE(
 
     // If there was media, try to delete it (best effort)
     if (post?.media_url) {
-      const { supabaseAdmin } = await import("@/lib/supabase/admin")
       await supabaseAdmin.storage.from("activity-media").remove([post.media_url])
     }
 

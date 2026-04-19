@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { FeedClient } from "./FeedClient"
 
 export const dynamic = "force-dynamic"
@@ -12,8 +13,6 @@ export default async function FeedPage(props: { params: Promise<{ projectId: str
   // 1. Current user
   const { data: { user } } = await supabase.auth.getUser()
 
-  const { supabaseAdmin } = await import("@/lib/supabase/admin")
-  
   // 2. Fetch all posts (admin sees all statuses)
   const { data: posts, error: postsError } = await supabaseAdmin
     .from("activity_posts")

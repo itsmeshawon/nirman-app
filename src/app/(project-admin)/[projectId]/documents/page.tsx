@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { DocumentsClient } from "./DocumentsClient"
 
 export const dynamic = "force-dynamic"
@@ -7,8 +8,6 @@ export default async function DocumentsPage(props: { params: Promise<{ projectId
   const params = await props.params
   const { projectId } = params
 
-  const { supabaseAdmin } = await import("@/lib/supabase/admin")
-  
   const { data: documents } = await supabaseAdmin
     .from("project_documents")
     .select("*")
