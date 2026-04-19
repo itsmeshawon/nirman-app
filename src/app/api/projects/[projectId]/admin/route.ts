@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { createClient } from "@/lib/supabase/server"
-import { supabaseAdmin } from "@/lib/supabase/admin"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
 
 const createAdminSchema = z.object({
@@ -36,7 +36,7 @@ export async function POST(
     const { name, email, phone, password } = parsed.data
 
     // Check if auth user already exists
-    const { data: userList } = await supabaseAdmin.auth.admin.listUsers()
+    const { data: userList } = await getSupabaseAdmin().auth.admin.listUsers()
     const existingAuthUser = userList?.users.find((u) => u.email === email)
 
     let targetUserId: string
@@ -45,7 +45,7 @@ export async function POST(
       targetUserId = existingAuthUser.id
     } else {
       // Create the auth user
-      const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
+      const { data: newUser, error: createError } = await getSupabaseAdmin().auth.admin.createUser({
         email,
         password,
         email_confirm: true,
@@ -59,7 +59,7 @@ export async function POST(
     }
 
     // Upsert profile with PROJECT_ADMIN role
-    await supabaseAdmin.from("profiles").upsert(
+    await getSupabaseAdmin().from("profiles").upsert(
       { 
         id: targetUserId, 
         name, 

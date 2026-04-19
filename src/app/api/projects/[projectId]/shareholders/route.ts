@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
-import { supabaseAdmin } from "@/lib/supabase/admin"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
 import { requireProjectAdmin } from "@/lib/permissions"
 
@@ -38,7 +38,7 @@ export async function POST(
     let newUserId: string
     let tempPassword = ""
 
-    const { data: listData, error: listError } = await supabaseAdmin.auth.admin.listUsers()
+    const { data: listData, error: listError } = await getSupabaseAdmin().auth.admin.listUsers()
     
     if (listError) {
       console.error("List users error:", listError)
@@ -52,7 +52,7 @@ export async function POST(
     } else {
       // 3. Create new user
       tempPassword = password || "test1234"
-      const { data: userData, error: createError } = await supabaseAdmin.auth.admin.createUser({
+      const { data: userData, error: createError } = await getSupabaseAdmin().auth.admin.createUser({
         email,
         password: tempPassword,
         email_confirm: true,
@@ -67,7 +67,7 @@ export async function POST(
       newUserId = userData.user.id
 
       // Upsert profile for the newly created user using Admin Client to bypass RLS initially
-      await supabaseAdmin.from('profiles').upsert({
+      await getSupabaseAdmin().from('profiles').upsert({
          id: newUserId,
          name,
          email,

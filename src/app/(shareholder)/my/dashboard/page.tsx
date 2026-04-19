@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
-import { supabaseAdmin } from "@/lib/supabase/admin"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { redirect } from "next/navigation"
 import { formatBDT, formatDate } from "@/lib/utils"
 import {

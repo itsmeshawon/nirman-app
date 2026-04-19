@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { createClient } from "@/lib/supabase/server"
-import { supabaseAdmin } from "@/lib/supabase/admin"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
 
 const DEFAULT_CATEGORIES = [
@@ -47,10 +47,10 @@ export async function GET() {
     // Use supabaseAdmin to bypass RLS — Super Admin needs cross-project counts
     const [{ data: shareholders }, { data: projectAdmins }] = await Promise.all([
       projectIds.length
-        ? supabaseAdmin.from("shareholders").select("project_id").in("project_id", projectIds)
+        ? getSupabaseAdmin().from("shareholders").select("project_id").in("project_id", projectIds)
         : Promise.resolve({ data: [] }),
       projectIds.length
-        ? supabaseAdmin.from("project_admins").select("project_id").in("project_id", projectIds)
+        ? getSupabaseAdmin().from("project_admins").select("project_id").in("project_id", projectIds)
         : Promise.resolve({ data: [] }),
     ])
 
@@ -129,10 +129,10 @@ export async function POST(request: NextRequest) {
       project_id: project.id,
       name: catName,
     }))
-    await supabaseAdmin.from("expense_categories").insert(categories)
+    await getSupabaseAdmin().from("expense_categories").insert(categories)
 
     // Create default approval config
-    await supabaseAdmin.from("approval_configs").insert({
+    await getSupabaseAdmin().from("approval_configs").insert({
       project_id: project.id,
       rule: "MAJORITY",
     })

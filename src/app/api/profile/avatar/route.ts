@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
-import { supabaseAdmin } from "@/lib/supabase/admin"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
 
 export async function POST(request: Request) {
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
     // Upload to Storage
     const arrayBuffer = await file.arrayBuffer()
-    const { error: uploadError } = await supabaseAdmin.storage
+    const { error: uploadError } = await getSupabaseAdmin().storage
       .from("avatars")
       .upload(filePath, arrayBuffer, {
         contentType: file.type,
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
     }
 
     // Get public URL
-    const { data: urlData } = supabaseAdmin.storage
+    const { data: urlData } = getSupabaseAdmin().storage
       .from("avatars")
       .getPublicUrl(filePath)
 
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
 
     if (dbError) {
       // Cleanup storage if database update fails
-      await supabaseAdmin.storage.from("avatars").remove([filePath])
+      await getSupabaseAdmin().storage.from("avatars").remove([filePath])
       return NextResponse.json({ error: dbError.message }, { status: 500 })
     }
 
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
             const oldPathMatch = oldProfile.avatar_url.split("/avatars/")[1]
             if (oldPathMatch) {
                 const oldPath = oldPathMatch.split("?")[0] // Remove query params if any
-                await supabaseAdmin.storage.from("avatars").remove([oldPath])
+                await getSupabaseAdmin().storage.from("avatars").remove([oldPath])
             }
         } catch (cleanupErr) {
             console.warn("Cleanup of old avatar failed:", cleanupErr)

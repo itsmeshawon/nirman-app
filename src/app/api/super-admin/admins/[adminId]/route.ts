@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
-import { supabaseAdmin } from "@/lib/supabase/admin"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
 
 export async function PATCH(
@@ -40,7 +40,7 @@ export async function PATCH(
       if (password.length < 6) {
         return NextResponse.json({ error: "Password must be at least 6 characters" }, { status: 400 })
       }
-      const { error: pwdError } = await supabaseAdmin.auth.admin.updateUserById(adminId, {
+      const { error: pwdError } = await getSupabaseAdmin().auth.admin.updateUserById(adminId, {
         password: password
       })
       if (pwdError) throw pwdError
@@ -87,11 +87,11 @@ export async function DELETE(
 
     // 2. Delete User from Auth (this cascade deletes profiles if configured, or we do both)
     // Supabase Auth Admin deletion deletes the user from auth.users
-    const { error: authError } = await supabaseAdmin.auth.admin.deleteUser(adminId)
+    const { error: authError } = await getSupabaseAdmin().auth.admin.deleteUser(adminId)
     if (authError) throw authError
 
     // 3. Profiles usually has a trigger or FK to auto-delete, but let's be safe
-    await supabaseAdmin.from("profiles").delete().eq("id", adminId)
+    await getSupabaseAdmin().from("profiles").delete().eq("id", adminId)
 
     // 4. Audit Log
     await logAction({

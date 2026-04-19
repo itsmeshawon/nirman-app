@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
-import { supabaseAdmin } from "@/lib/supabase/admin"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { requireProjectAdmin } from "@/lib/permissions"
 import { logAction } from "@/lib/audit"
 import { documentSchema } from "@/lib/validations"
@@ -79,7 +79,7 @@ export async function POST(
     const arrayBuffer = await file.arrayBuffer()
 
     // Upload to Storage using Admin Client to bypass RLS for now (hardened later in README instructions)
-    const { error: uploadError } = await supabaseAdmin.storage
+    const { error: uploadError } = await getSupabaseAdmin().storage
       .from("project-documents")
       .upload(filePath, arrayBuffer, {
         contentType: file.type,
@@ -106,7 +106,7 @@ export async function POST(
 
     if (dbError) {
       // Rollback storage
-      await supabaseAdmin.storage.from("project-documents").remove([filePath])
+      await getSupabaseAdmin().storage.from("project-documents").remove([filePath])
       return NextResponse.json({ error: dbError.message }, { status: 400 })
     }
 

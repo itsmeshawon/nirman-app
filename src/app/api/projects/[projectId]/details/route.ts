@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
-import { supabaseAdmin } from "@/lib/supabase/admin"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 
 export async function GET(
   request: Request,
@@ -36,7 +36,7 @@ export async function GET(
 
     const adminUserIds = projectAdmins?.map((a: { user_id: string }) => a.user_id) || []
     const { data: adminProfiles } = adminUserIds.length
-      ? await supabaseAdmin.from("profiles").select("id, name, email, phone, profession, designation, organization, present_address, whatsapp_no, is_active").in("id", adminUserIds)
+      ? await getSupabaseAdmin().from("profiles").select("id, name, email, phone, profession, designation, organization, present_address, whatsapp_no, is_active").in("id", adminUserIds)
       : { data: [] }
 
     // Fetch shareholders with profiles
@@ -48,7 +48,7 @@ export async function GET(
 
     const shareholderUserIds = shareholders?.map((s: { user_id: string }) => s.user_id).filter(Boolean) || []
     const { data: shareholderProfiles } = shareholderUserIds.length
-      ? await supabaseAdmin.from("profiles").select("id, name, email, phone, profession, designation, organization, present_address, whatsapp_no, is_active").in("id", shareholderUserIds)
+      ? await getSupabaseAdmin().from("profiles").select("id, name, email, phone, profession, designation, organization, present_address, whatsapp_no, is_active").in("id", shareholderUserIds)
       : { data: [] }
 
     // Merge shareholder profiles

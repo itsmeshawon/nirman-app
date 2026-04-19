@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
-import { supabaseAdmin } from "@/lib/supabase/admin"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { formatDistanceToNow } from "date-fns"
 import { Building2, Users, Activity, FolderOpen } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -35,8 +35,8 @@ async function getRecentProjects(): Promise<ProjectRow[]> {
   const projectIds = projects.map((p: any) => p.id)
 
   const [{ data: shareholders }, { data: projectAdmins }] = await Promise.all([
-    supabaseAdmin.from("shareholders").select("project_id").in("project_id", projectIds),
-    supabaseAdmin.from("project_admins").select("project_id").in("project_id", projectIds),
+    getSupabaseAdmin().from("shareholders").select("project_id").in("project_id", projectIds),
+    getSupabaseAdmin().from("project_admins").select("project_id").in("project_id", projectIds),
   ])
 
   const shCountMap: Record<string, number> = {}

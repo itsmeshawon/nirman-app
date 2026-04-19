@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
-import { supabaseAdmin } from "@/lib/supabase/admin"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { DocumentsClient } from "./DocumentsClient"
 
 export const dynamic = "force-dynamic"

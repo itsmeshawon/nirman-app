@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import { supabaseAdmin } from "@/lib/supabase/admin"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { requireProjectAdmin, getUserProfile } from "@/lib/permissions"
 import ProjectAdminShell from "@/components/layouts/ProjectAdminShell"
 

@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
-import { supabaseAdmin } from "@/lib/supabase/admin"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { CommitteeClient } from "./CommitteeClient"
 
 export default async function CommitteePage(props: { params: Promise<{ projectId: string }> }) {

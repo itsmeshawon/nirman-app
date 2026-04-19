@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
-import { supabaseAdmin } from "@/lib/supabase/admin"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { requireProjectAdmin } from "@/lib/permissions"
 
 export async function POST(
@@ -49,7 +49,7 @@ export async function POST(
     const buffer = Buffer.from(arrayBuffer)
 
     // Upload to Supabase Storage using admin client to bypass RLS
-    const { data, error: uploadError } = await supabaseAdmin.storage
+    const { data, error: uploadError } = await getSupabaseAdmin().storage
       .from("activity-media")
       .upload(path, buffer, {
         contentType: file.type,
@@ -93,7 +93,7 @@ export async function DELETE(
        return NextResponse.json({ error: "Invalid path access." }, { status: 403 })
     }
 
-    const { error: removeError } = await supabaseAdmin.storage
+    const { error: removeError } = await getSupabaseAdmin().storage
       .from("activity-media")
       .remove([path])
 

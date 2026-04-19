@@ -1,4 +1,4 @@
-import { supabaseAdmin } from "@/lib/supabase/admin"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 
 interface LogActionParams {
   projectId?: string
@@ -17,7 +17,7 @@ export async function logAction({
   entityId,
   details,
 }: LogActionParams) {
-  const { error } = await supabaseAdmin.from("audit_logs").insert({
+  const { error } = await getSupabaseAdmin().from("audit_logs").insert({
     project_id: projectId ?? null,
     user_id: userId,
     action,

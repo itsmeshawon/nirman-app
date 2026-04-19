@@ -1,4 +1,4 @@
-import { supabaseAdmin } from "@/lib/supabase/admin"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 
 interface NotificationPayload {
   userId: string
@@ -10,7 +10,7 @@ interface NotificationPayload {
 }
 
 export async function createNotification(payload: NotificationPayload) {
-  await supabaseAdmin.from("notifications").insert({
+  await getSupabaseAdmin().from("notifications").insert({
     user_id: payload.userId,
     project_id: payload.projectId || null,
     type: payload.type,
@@ -32,5 +32,5 @@ export async function createNotificationsForMany(userIds: string[], payload: Omi
     link_url: payload.linkUrl || null,
     is_read: false,
   }))
-  await supabaseAdmin.from("notifications").insert(rows)
+  await getSupabaseAdmin().from("notifications").insert(rows)
 }

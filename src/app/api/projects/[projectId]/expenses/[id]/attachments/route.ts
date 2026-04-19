@@ -47,7 +47,7 @@ export async function POST(
     const arrayBuffer = await file.arrayBuffer()
 
     // Upload to Supabase Storage bypassing RLS
-    const { error: uploadError } = await supabaseAdmin.storage
+    const { error: uploadError } = await getSupabaseAdmin().storage
       .from("expense-proofs")
       .upload(filePath, arrayBuffer, { contentType: file.type })
 
@@ -72,7 +72,7 @@ export async function POST(
     if (dbError) {
       console.error("DB Error writing attachment:", dbError)
       // rollback
-      await supabaseAdmin.storage.from("expense-proofs").remove([filePath])
+      await getSupabaseAdmin().storage.from("expense-proofs").remove([filePath])
       return NextResponse.json({ error: dbError.message }, { status: 400 })
     }
 

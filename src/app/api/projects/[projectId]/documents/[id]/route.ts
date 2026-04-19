@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
-import { supabaseAdmin } from "@/lib/supabase/admin"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { requireProjectAdmin } from "@/lib/permissions"
 import { logAction } from "@/lib/audit"
 
@@ -34,7 +34,7 @@ export async function DELETE(
     }
 
     // Delete from Storage
-    const { error: storageError } = await supabaseAdmin.storage
+    const { error: storageError } = await getSupabaseAdmin().storage
       .from("project-documents")
       .remove([document.file_path])
 
