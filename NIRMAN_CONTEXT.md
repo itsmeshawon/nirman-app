@@ -543,6 +543,7 @@ await createNotification({
 
 | Date | Feature | Files Changed | DB Changes |
 |------|---------|--------------|------------|
+| Apr 2026 | Fix Publish button dark theme accessibility on Expenses table | `(project-admin)/[projectId]/expenses/ExpensesClient.tsx` | None — UI only |
 | Apr 2026 | Committee review count badge in navigation | `(shareholder)/layout.tsx`, `api/projects/[projectId]/committee/pending-count/route.ts` | None — queries existing tables |
 | Apr 2026 | Quick publish expense from table | `expenses/ExpensesClient.tsx` | None — UI + API integration only |
 | Apr 2026 | Fix cascade delete (reactions, post_views, expense_attachments, expense_approvals, schedule_items, penalties, notifications) | `api/projects/[projectId]/route.ts` | None — code fix only |
