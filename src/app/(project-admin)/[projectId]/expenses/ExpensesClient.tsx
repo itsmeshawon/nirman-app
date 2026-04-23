@@ -18,10 +18,10 @@ interface ExpensesClientProps {
 }
 
 const statusConfig: Record<string, { label: string, color: string, icon: any }> = {
-  DRAFT: { label: "Draft", color: "bg-surface-variant/50 text-slate-700 border-slate-200", icon: FileText },
-  SUBMITTED: { label: "Submitted", color: "bg-tertiary-container/50 text-tertiary border-blue-200", icon: SendHorizontal },
-  CHANGES_REQUESTED: { label: "Changes Req.", color: "bg-orange-100 text-orange-700 border-orange-200", icon: RefreshCw },
-  APPROVED: { label: "Approved", color: "bg-primary-container/50 text-primary border-green-200", icon: CheckCircle },
+  DRAFT: { label: "Draft", color: "bg-surface-variant/50 text-on-surface-variant border-outline-variant", icon: FileText },
+  SUBMITTED: { label: "Submitted", color: "bg-tertiary-container/50 text-tertiary border-tertiary-container", icon: SendHorizontal },
+  CHANGES_REQUESTED: { label: "Changes Req.", color: "bg-tertiary-container/50 text-tertiary border-tertiary-container", icon: RefreshCw },
+  APPROVED: { label: "Approved", color: "bg-primary-container/50 text-primary border-primary-container", icon: CheckCircle },
   PUBLISHED: { label: "Published", color: "bg-primary-container/50 text-on-primary-container border-primary-container", icon: CheckCircle },
   REJECTED: { label: "Rejected", color: "bg-error-container/50 text-destructive border-error-container", icon: XCircle }
 }
@@ -232,13 +232,14 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
                                </Button>
                              )}
                              {expense.status === "APPROVED" && (
-                               <button
+                               <Button
+                                 size="sm"
                                  onClick={() => handlePublishOne(expense.id)}
                                  disabled={publishingId === expense.id}
-                                 className="px-2 py-1 text-xs bg-primary text-white rounded hover:bg-primary/90 disabled:opacity-50"
+                                 className="bg-primary hover:bg-primary"
                                >
                                   {publishingId === expense.id ? "Publishing..." : "Publish"}
-                               </button>
+                               </Button>
                              )}
                              <Link href={`/${projectId}/expenses/${expense.id}`} className="inline-flex items-center justify-center w-8 h-8 rounded-full hover:text-on-primary-container hover:bg-primary-container/20 transition-colors" title="View Details">
                                <Eye className="w-4 h-4" />
