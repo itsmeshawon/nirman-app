@@ -175,6 +175,7 @@ src/
 │   │   ├── documents/page.tsx + DocumentsClient.tsx
 │   │   ├── reports/page.tsx + ReportsClient.tsx
 │   │   ├── defaulters/page.tsx + DefaultersClient.tsx
+│   │   ├── activity-log/page.tsx + ActivityLogClient.tsx  # Search + date filter over audit_logs
 │   │   ├── settings/page.tsx + ProjectSettingsClient.tsx
 │   │   └── profile/page.tsx
 │   │
@@ -533,6 +534,7 @@ await createNotification({
 | File | Reason |
 |------|--------|
 | `(project-admin)/[projectId]/layout.tsx` | RLS blocks project read for project admins |
+| `(project-admin)/[projectId]/activity-log/page.tsx` | Uses supabaseAdmin to join profiles on audit_logs for actor names |
 | `(project-admin)/[projectId]/committee/page.tsx` | Cross-table read: committee + shareholders |
 | `(shareholder)/my/dashboard/page.tsx` | RLS blocks shareholder reading own record |
 | `(shareholder)/my/feed/page.tsx` | Same as above |
@@ -557,6 +559,7 @@ await createNotification({
 | Apr 2026 | Fix milestone instant render | `milestones/MilestoneTimeline.tsx` | None — removed router.refresh() |
 | Apr 2026 | Fix is_project_member() | — | Removed finance_staff reference from DB function |
 | Apr 2026 | Remove Finance Staff SQL | — | Dropped finance_staff table + all RLS policies it added |
+| Apr 2026 | Activity Log page + sidebar nav for Project Admin | `(project-admin)/[projectId]/activity-log/page.tsx`, `activity-log/ActivityLogClient.tsx`, `components/layouts/ProjectAdminShell.tsx`, `(project-admin)/[projectId]/dashboard/page.tsx` | None — queries existing audit_logs table |
 | Apr 2026 | Milestone expense totals in cards | `(project-admin)/[projectId]/milestones/page.tsx`, `(project-admin)/[projectId]/milestones/MilestoneTimeline.tsx`, `(shareholder)/my/milestones/page.tsx`, `(shareholder)/my/milestones/MilestoneReadonly.tsx` | None — queries existing expenses table grouped by milestone_id |
 
 ---

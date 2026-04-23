@@ -251,23 +251,37 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
       <div className="rounded-xl border border-outline-variant/40 overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/40">
           <h3 className="text-sm font-semibold text-on-surface">Recent Activity</h3>
-          <Link href={`/${projectId}/feed`} className="text-xs text-primary hover:underline flex items-center gap-1">
+          <Link href={`/${projectId}/activity-log`} className="text-xs text-primary hover:underline flex items-center gap-1">
             Full Log <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
         {recentAudit && recentAudit.length > 0 ? (
           <ul className="divide-y divide-outline-variant/20">
             {recentAudit.map((log: any) => (
-              <li key={log.id} className="flex items-start gap-3 px-5 py-3">
-                <div className="mt-0.5 w-7 h-7 rounded-full bg-primary-container/20 flex items-center justify-center flex-shrink-0">
-                  <FileText className="w-3.5 h-3.5 text-primary" />
+              <li key={log.id} className="flex items-start gap-4 px-5 py-4 hover:bg-surface-container-low/50 transition-colors">
+                <div className="mt-0.5 w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center flex-shrink-0">
+                  <FileText className="w-4 h-4 text-primary" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm text-on-surface truncate">
-                    <span className="font-medium">{log.action.replace(/_/g, " ")}</span>
-                    {log.entity_type && <span className="text-on-surface-variant"> · {log.entity_type}</span>}
-                  </p>
-                  <p className="text-xs text-outline mt-0.5">{formatDateTime(log.created_at)}</p>
+                  <div className="flex flex-wrap items-center gap-2 mb-0.5">
+                    <span className="text-sm font-semibold text-on-surface">
+                      {log.action.replace(/_/g, " ")}
+                    </span>
+                    {log.entity_type && (
+                      <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium bg-primary-container/20 text-primary border border-primary-container/30">
+                        {log.entity_type}
+                      </span>
+                    )}
+                  </div>
+                  {log.details && Object.keys(log.details).length > 0 && (
+                    <p className="text-xs text-outline truncate max-w-xl">
+                      {Object.entries(log.details)
+                        .filter(([, v]) => v !== null && v !== undefined)
+                        .map(([k, v]: [string, any]) => `${k}: ${v}`)
+                        .join(" · ")}
+                    </p>
+                  )}
+                  <p className="text-xs text-outline mt-1">{formatDateTime(log.created_at)}</p>
                 </div>
               </li>
             ))}

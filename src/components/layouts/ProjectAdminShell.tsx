@@ -19,7 +19,8 @@ import {
   LogOut,
   Menu,
   X,
-  AlertTriangle
+  AlertTriangle,
+  ClipboardList
 } from "lucide-react"
 import NotificationBell from "@/components/NotificationBell"
 import { ThemeToggle } from "@/components/ThemeToggle"
@@ -60,6 +61,7 @@ export default function ProjectAdminShell({
     { label: "Activity Feed", href: `/${projectId}/feed`, icon: MessageSquare },
     { label: "Documents", href: `/${projectId}/documents`, icon: FolderOpen },
     { label: "Reports", href: `/${projectId}/reports`, icon: BarChart3 },
+    { label: "Activity Log", href: `/${projectId}/activity-log`, icon: ClipboardList },
     { label: "Settings", href: `/${projectId}/settings`, icon: Settings },
   ]
 
