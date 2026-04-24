@@ -49,7 +49,7 @@ export async function GET(
         created_at,
         updated_at,
         profiles!activity_posts_author_id_fkey ( id, name ),
-        reactions ( reaction_type ),
+        reactions ( type ),
         post_views ( id )
       `)
       .eq("project_id", projectId)
@@ -72,7 +72,7 @@ export async function GET(
     const formatted = (posts || []).map((post: any) => {
       const reactionCounts: Record<string, number> = {}
       for (const r of post.reactions || []) {
-        reactionCounts[r.reaction_type] = (reactionCounts[r.reaction_type] || 0) + 1
+        reactionCounts[r.type] = (reactionCounts[r.type] || 0) + 1
       }
       return {
         ...post,

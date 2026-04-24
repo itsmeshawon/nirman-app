@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useRef } from "react"
+import { useState, useCallback, useRef, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog"
 import { toast } from "sonner"
 import { formatDateTime } from "@/lib/utils"
-import { Eye, EyeOff, Edit2, X, Tag, Trash2, Upload, ThumbsUp, Heart, Sparkles } from "lucide-react"
+import { Eye, EyeOff, Edit2, X, Tag, Trash2, Upload, ThumbsUp, Heart, Meh, Frown } from "lucide-react"
 
 interface AdminPostCardProps {
   post: any
@@ -45,6 +45,27 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
   const [isSaving, setIsSaving] = useState(false)
   const [isToggling, setIsToggling] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [localViewCount, setLocalViewCount] = useState<number>(post.view_count || 0)
+  const cardRef = useRef<HTMLDivElement>(null)
+  const viewTracked = useRef(false)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !viewTracked.current) {
+          viewTracked.current = true
+          fetch(`/api/projects/${projectId}/posts/${post.id}/view`, { method: "POST" })
+            .then((res) => res.ok ? res.json() : null)
+            .then((data) => { if (data?.isNew) setLocalViewCount((c) => c + 1) })
+            .catch(() => {})
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.5 }
+    )
+    if (cardRef.current) observer.observe(cardRef.current)
+    return () => observer.disconnect()
+  }, [projectId, post.id])
 
   // Edit form state — initialised when modal opens
   const [editTitle, setEditTitle] = useState("")
@@ -205,14 +226,13 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
     }
   }
 
-  const rc = post.reactionCounts || { LIKE: 0, LOVE: 0, APPRECIATE: 0 }
-  const viewCount = post.view_count || 0
+  const rc = post.reactionCounts || { LIKE: 0, LOVE: 0, MEH: 0, SAD: 0 }
   const isHidden = post.status === "HIDDEN"
 
   return (
     <>
       {/* Card — always shows post content */}
-      <div className={`relative bg-surface rounded-xl border overflow-hidden ${isHidden ? "opacity-75" : ""}`}>
+      <div ref={cardRef} className={`relative bg-surface rounded-xl border overflow-hidden ${isHidden ? "opacity-75" : ""}`}>
         {isHidden && (
           <div className="absolute top-3 left-3 z-10 pointer-events-none">
             <span className="bg-error-container/50 text-destructive text-xs font-semibold px-2 py-0.5 rounded-full border border-error-container">Hidden</span>
@@ -270,13 +290,15 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
                 <span className="text-xs text-outline ml-2">{formatDateTime(post.created_at)}</span>
               </div>
             </div>
-            <span className="text-xs text-outline flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> {viewCount}</span>
+            <span className="text-xs text-outline flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> {localViewCount}</span>
           </div>
 
           <div className="flex gap-4 mt-2">
             <span className="text-xs text-on-surface-variant flex items-center gap-1"><ThumbsUp className="w-3.5 h-3.5" /> {rc.LIKE}</span>
             <span className="text-xs text-on-surface-variant flex items-center gap-1"><Heart className="w-3.5 h-3.5" /> {rc.LOVE}</span>
-            <span className="text-xs text-on-surface-variant flex items-center gap-1"><Sparkles className="w-3.5 h-3.5" /> {rc.APPRECIATE}</span>
+            <span className="text-xs text-on-surface-variant flex items-center gap-1"><Meh className="w-3.5 h-3.5" /> {rc.MEH}
+            </span>
+            <span className="text-xs text-on-surface-variant flex items-center gap-1"><Frown className="w-3.5 h-3.5" /> {rc.SAD}</span>
           </div>
         </div>
       </div>

@@ -27,6 +27,7 @@ export function ShareholderFeedClient({
   viewCounts,
   isCommitteeMember,
   milestones,
+  userName,
 }: ShareholderFeedClientProps) {
   const [posts, setPosts] = useState<any[]>(initialPosts)
   const [myReactions, setMyReactions] = useState<Record<string, string>>(initialReactions)
@@ -99,6 +100,7 @@ export function ShareholderFeedClient({
             projectId={projectId}
             milestones={milestones}
             userId={userId}
+            userName={userName}
             onSuccess={handleNewPost}
           />
         </div>
@@ -169,7 +171,8 @@ export function ShareholderFeedClient({
             const postReactionCounts = {
               LIKE: (raw as any).LIKE || 0,
               LOVE: (raw as any).LOVE || 0,
-              APPRECIATE: (raw as any).APPRECIATE || 0,
+              MEH: (raw as any).MEH || 0,
+              SAD: (raw as any).SAD || 0,
             }
             // Committee member can manage only their own posts
             const canManage = isCommitteeMember && post.author_id === userId

@@ -35,7 +35,7 @@ export default async function FeedPage(props: { params: Promise<{ projectId: str
   if (postIds.length > 0) {
     const { data } = await supabase
       .from("reactions")
-      .select("post_id, reaction_type")
+      .select("post_id, type")
       .in("post_id", postIds)
     reactionRows = data || []
   }
@@ -44,16 +44,29 @@ export default async function FeedPage(props: { params: Promise<{ projectId: str
   const reactionCountsMap: Record<string, Record<string, number>> = {}
   for (const row of reactionRows) {
     if (!reactionCountsMap[row.post_id]) {
-      reactionCountsMap[row.post_id] = { LIKE: 0, LOVE: 0, APPRECIATE: 0 }
+      reactionCountsMap[row.post_id] = { LIKE: 0, LOVE: 0, MEH: 0, SAD: 0 }
     }
-    reactionCountsMap[row.post_id][row.reaction_type] =
-      (reactionCountsMap[row.post_id][row.reaction_type] || 0) + 1
+    reactionCountsMap[row.post_id][row.type] =
+      (reactionCountsMap[row.post_id][row.type] || 0) + 1
   }
 
-  // Attach reactionCounts to each post
+  // 4. View counts
+  let viewCountsMap: Record<string, number> = {}
+  if (postIds.length > 0) {
+    const { data: viewRows } = await getSupabaseAdmin()
+      .from("post_views")
+      .select("post_id")
+      .in("post_id", postIds)
+    for (const row of viewRows || []) {
+      viewCountsMap[row.post_id] = (viewCountsMap[row.post_id] || 0) + 1
+    }
+  }
+
+  // Attach reactionCounts + view_count to each post
   const postsWithCounts = allPosts.map((post: any) => ({
     ...post,
-    reactionCounts: reactionCountsMap[post.id] || { LIKE: 0, LOVE: 0, APPRECIATE: 0 },
+    reactionCounts: reactionCountsMap[post.id] || { LIKE: 0, LOVE: 0, MEH: 0, SAD: 0 },
+    view_count: viewCountsMap[post.id] || 0,
   }))
 
   // 4. Milestones

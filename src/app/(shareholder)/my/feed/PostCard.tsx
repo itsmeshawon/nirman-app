@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
-import { ThumbsUp, Heart, Sparkles, Eye, Edit2, EyeOff, Trash2, X, Tag, Upload } from "lucide-react"
+import { ThumbsUp, Heart, Meh, Frown, Eye, Edit2, EyeOff, Trash2, X, Tag, Upload } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -20,12 +20,12 @@ interface PostCardProps {
   userId: string
   projectId: string
   myReaction: string | null
-  reactionCounts: { LIKE: number; LOVE: number; APPRECIATE: number }
+  reactionCounts: { LIKE: number; LOVE: number; MEH: number; SAD: number }
   viewCount: number
   onReactionChange: (
     postId: string,
     newReaction: string | null,
-    newCounts: { LIKE: number; LOVE: number; APPRECIATE: number }
+    newCounts: { LIKE: number; LOVE: number; MEH: number; SAD: number }
   ) => void
   canManage?: boolean
   onHide?: (postId: string, newStatus: string) => void
@@ -56,7 +56,8 @@ const PREDEFINED_TAGS = ["Progress Update", "Material Delivery", "Site Update", 
 const REACTIONS = [
   { type: "LIKE", icon: ThumbsUp, label: "Like" },
   { type: "LOVE", icon: Heart, label: "Love" },
-  { type: "APPRECIATE", icon: Sparkles, label: "Appreciate" },
+  { type: "MEH", icon: Meh, label: "Meh" },
+  { type: "SAD", icon: Frown, label: "Sad" },
 ] as const
 
 export function PostCard({
@@ -73,7 +74,8 @@ export function PostCard({
   onDelete,
 }: PostCardProps) {
   const [myReaction, setMyReaction] = useState<string | null>(myReactionProp)
-  const [counts, setCounts] = useState<{ LIKE: number; LOVE: number; APPRECIATE: number }>(reactionCountsProp)
+  const [counts, setCounts] = useState<{ LIKE: number; LOVE: number; MEH: number; SAD: number }>(reactionCountsProp)
+  const [localViewCount, setLocalViewCount] = useState(viewCount)
   const [isReacting, setIsReacting] = useState(false)
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
@@ -106,6 +108,9 @@ export function PostCard({
         if (entry.isIntersecting && !viewTracked.current) {
           viewTracked.current = true
           fetch(`/api/projects/${projectId}/posts/${post.id}/view`, { method: "POST" })
+            .then((res) => res.ok ? res.json() : null)
+            .then((data) => { if (data?.isNew) setLocalViewCount((c) => c + 1) })
+            .catch(() => {})
           observer.disconnect()
         }
       },
@@ -368,7 +373,7 @@ export function PostCard({
               )
             })}
           </div>
-          <span className="text-xs text-outline flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> {viewCount}</span>
+          <span className="text-xs text-outline flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> {localViewCount}</span>
         </div>
         <div className="h-3" />
       </div>

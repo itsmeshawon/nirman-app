@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { getSupabaseAdmin } from "@/lib/supabase/admin"
 
-const VALID_REACTION_TYPES = ["LIKE", "LOVE", "APPRECIATE"] as const
+const VALID_REACTION_TYPES = ["LIKE", "LOVE", "MEH", "SAD"] as const
 type ReactionType = typeof VALID_REACTION_TYPES[number]
 
 export async function POST(
@@ -22,47 +22,36 @@ export async function POST(
     const { reaction_type } = body
 
     if (!VALID_REACTION_TYPES.includes(reaction_type as ReactionType)) {
-      return NextResponse.json({ error: "Invalid reaction_type. Must be LIKE, LOVE, or APPRECIATE." }, { status: 400 })
+      return NextResponse.json({ error: "Invalid reaction_type. Must be LIKE, LOVE, MEH, or SAD." }, { status: 400 })
     }
 
     const admin = getSupabaseAdmin()
 
-    // Check existing reaction
+    // DB column is "type", not "reaction_type"
     const { data: existing } = await admin
       .from("reactions")
-      .select("id, reaction_type")
+      .select("id, type")
       .eq("post_id", id)
       .eq("user_id", user.id)
       .single()
 
     if (existing) {
-      if (existing.reaction_type === reaction_type) {
-        // Toggle off — delete
-        const { error: deleteError } = await admin
-          .from("reactions")
-          .delete()
-          .eq("id", existing.id)
-
-        if (deleteError) return NextResponse.json({ error: deleteError.message }, { status: 400 })
+      if (existing.type === reaction_type) {
+        const { error } = await admin.from("reactions").delete().eq("id", existing.id)
+        if (error) return NextResponse.json({ error: error.message }, { status: 400 })
         return NextResponse.json({ action: "removed" }, { status: 200 })
       } else {
-        // Different type — update
-        const { error: updateError } = await admin
-          .from("reactions")
-          .update({ reaction_type })
-          .eq("id", existing.id)
-
-        if (updateError) return NextResponse.json({ error: updateError.message }, { status: 400 })
+        const { error } = await admin.from("reactions").update({ type: reaction_type }).eq("id", existing.id)
+        if (error) return NextResponse.json({ error: error.message }, { status: 400 })
         return NextResponse.json({ action: "updated" }, { status: 200 })
       }
     }
 
-    // No existing reaction — insert
-    const { error: insertError } = await admin
+    const { error } = await admin
       .from("reactions")
-      .insert({ post_id: id, user_id: user.id, reaction_type })
+      .insert({ post_id: id, user_id: user.id, type: reaction_type })
 
-    if (insertError) return NextResponse.json({ error: insertError.message }, { status: 400 })
+    if (error) return NextResponse.json({ error: error.message }, { status: 400 })
 
     return NextResponse.json({ action: "added" }, { status: 201 })
 

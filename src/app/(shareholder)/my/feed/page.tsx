@@ -72,17 +72,17 @@ export default async function ShareholderFeedPage() {
 
   if (postIds.length > 0) {
     const [myReactionsRes, allReactionsRes, viewsRes] = await Promise.all([
-      supabase.from("reactions").select("post_id, reaction_type").eq("user_id", user.id).in("post_id", postIds),
-      supabase.from("reactions").select("post_id, reaction_type").in("post_id", postIds),
-      supabase.from("post_views").select("post_id").in("post_id", postIds),
+      supabase.from("reactions").select("post_id, type").eq("user_id", user.id).in("post_id", postIds),
+      supabase.from("reactions").select("post_id, type").in("post_id", postIds),
+      getSupabaseAdmin().from("post_views").select("post_id").in("post_id", postIds),
     ])
 
     for (const row of myReactionsRes.data || []) {
-      myReactions[row.post_id] = row.reaction_type
+      myReactions[row.post_id] = row.type
     }
     for (const row of allReactionsRes.data || []) {
-      if (!reactionCounts[row.post_id]) reactionCounts[row.post_id] = { LIKE: 0, LOVE: 0, APPRECIATE: 0 }
-      reactionCounts[row.post_id][row.reaction_type] = (reactionCounts[row.post_id][row.reaction_type] || 0) + 1
+      if (!reactionCounts[row.post_id]) reactionCounts[row.post_id] = { LIKE: 0, LOVE: 0, MEH: 0, SAD: 0 }
+      reactionCounts[row.post_id][row.type] = (reactionCounts[row.post_id][row.type] || 0) + 1
     }
     for (const row of viewsRes.data || []) {
       viewCounts[row.post_id] = (viewCounts[row.post_id] || 0) + 1
