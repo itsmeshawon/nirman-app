@@ -259,6 +259,8 @@ src/
     ├── super-admin/
     │   ├── CreateProjectDialog.tsx
     │   └── CreateAdminDialog.tsx
+    ├── icons/
+    │   └── ClapIcon.tsx    # (unused — kept for reference; app uses Lucide Meh/Frown/PartyPopper instead)
     └── ui/                 # shadcn/ui: Button, Input, Dialog, Table, Card, Select, Label, Skeleton, Badge...
 ```
 
@@ -287,8 +289,8 @@ src/
 | `expense_attachments` | Files attached to expenses |
 | `expense_approvals` | Committee approval records per expense |
 | `activity_posts` | Feed posts with optional media |
-| `reactions` | Post reactions (LIKE/LOVE/APPRECIATE) |
-| `post_views` | View tracking |
+| `reactions` | Post reactions (LIKE/LOVE/MEH/SAD) |
+| `post_views` | View tracking — one row per user per login session (session_id from JWT) |
 | `project_documents` | Project documents |
 | `approval_configs` | Expense approval rule (MAJORITY/ANY_SINGLE) |
 | `notification_configs` | Notification settings per project |
@@ -323,7 +325,7 @@ schedule_type:       MONTHLY, MILESTONE, MIXED
 approval_rule:       MAJORITY, ANY_SINGLE
 notification_type:   PAYMENT_REMINDER, PAYMENT_OVERDUE, EXPENSE_SUBMITTED, EXPENSE_APPROVED, EXPENSE_REJECTED, EXPENSE_PUBLISHED, ACTIVITY_POST, PENALTY_APPLIED
 media_type:          IMAGE, VIDEO, AUDIO
-reaction_type:       LIKE, LOVE, APPRECIATE
+reaction_type:       LIKE, LOVE, APPRECIATE (deprecated), MEH, SAD
 post_status:         PUBLISHED, HIDDEN
 ```
 
@@ -563,11 +565,12 @@ await createNotification({
 | Apr 2026 | Milestone expense totals in cards | `(project-admin)/[projectId]/milestones/page.tsx`, `(project-admin)/[projectId]/milestones/MilestoneTimeline.tsx`, `(shareholder)/my/milestones/page.tsx`, `(shareholder)/my/milestones/MilestoneReadonly.tsx` | None — queries existing expenses table grouped by milestone_id |
 | Apr 2026 | Project Update feature — rename Activity Feed, modal composer, committee member posting | `components/layouts/ProjectAdminShell.tsx`, `(shareholder)/layout.tsx`, `feed/FeedClient.tsx`, `feed/CreatePostForm.tsx`, `feed/AdminPostCard.tsx`, `(shareholder)/my/feed/page.tsx`, `(shareholder)/my/feed/ShareholderFeedClient.tsx`, `(shareholder)/my/feed/PostCard.tsx`, `api/.../posts/route.ts`, `api/.../posts/[id]/route.ts`, `api/.../posts/[id]/hide/route.ts` | None — logic change only |
 | Apr 2026 | Mobile horizontal scroll for all data tables | `(shareholder)/my/defaulters/DefaultersClient.tsx`, `(shareholder)/my/expenses/ShareholderExpensesClient.tsx`, `(shareholder)/my/payments/ShareholderPaymentsClient.tsx`, `(project-admin)/[projectId]/defaulters/DefaultersClient.tsx`, `(project-admin)/[projectId]/expenses/ExpensesClient.tsx`, `(project-admin)/[projectId]/committee/CommitteeClient.tsx`, `(project-admin)/[projectId]/documents/DocumentsClient.tsx`, `(project-admin)/[projectId]/activity-log/ActivityLogClient.tsx`, `(project-admin)/[projectId]/payments/tabs/AllPaymentsTab.tsx`, `(project-admin)/[projectId]/payments/tabs/ScheduleTab.tsx`, `(project-admin)/[projectId]/payments/tabs/DefaultersTab.tsx` | None — UI only, replaced overflow-hidden with overflow-x-auto on table wrapper divs |
-<<<<<<< HEAD
 | Apr 2026 | Rename "Project Update" nav label to "Project Update Feed" | `components/layouts/ProjectAdminShell.tsx`, `(shareholder)/layout.tsx` | None — UI label only |
-=======
-| Apr 2026 | Remove redundant in-page titles from all pages (header bar already shows page title) | `(super-admin)/dashboard/page.tsx`, `(super-admin)/projects/page.tsx`, `(super-admin)/packages/page.tsx`, `(super-admin)/admins/page.tsx`, `(project-admin)/[projectId]/feed/FeedClient.tsx`, `(project-admin)/[projectId]/documents/DocumentsClient.tsx`, `(project-admin)/[projectId]/activity-log/page.tsx`, `(project-admin)/[projectId]/settings/ProjectSettingsClient.tsx`, `(project-admin)/[projectId]/milestones/MilestoneTimeline.tsx`, `(project-admin)/[projectId]/expenses/ExpensesClient.tsx`, `(project-admin)/[projectId]/shareholders/ShareholdersTable.tsx`, `(project-admin)/[projectId]/reports/ReportsClient.tsx`, `(project-admin)/[projectId]/payments/PaymentsClient.tsx`, `(project-admin)/[projectId]/defaulters/DefaultersClient.tsx`, `(project-admin)/[projectId]/expenses/[id]/ExpenseDetailClient.tsx`, `(shareholder)/my/feed/page.tsx`, `(shareholder)/my/payments/ShareholderPaymentsClient.tsx`, `(shareholder)/my/review/page.tsx`, `(shareholder)/my/shareholders/page.tsx`, `(shareholder)/my/shareholders/ShareholdersList.tsx`, `(shareholder)/my/milestones/MilestoneReadonly.tsx`, `(shareholder)/my/defaulters/page.tsx`, `(shareholder)/my/profile/page.tsx`, `(shareholder)/my/expenses/page.tsx`, `(shareholder)/my/documents/ShareholderDocsClient.tsx` | None — UI only |
->>>>>>> remove-page-header
+| Apr 2026 | Remove redundant in-page titles from all pages (header bar already shows page title) | Multiple page/client files across super-admin, project-admin, and shareholder routes | None — UI only |
+| Apr 2026 | Fix reaction column name bug (reaction_type → type) across all reaction queries | `feed/page.tsx`, `(shareholder)/my/feed/page.tsx`, `api/.../react/route.ts`, `api/.../posts/route.ts` | None — code fix only |
+| Apr 2026 | Committee member avatar initials fix in CreatePostForm | `(shareholder)/my/feed/ShareholderFeedClient.tsx` | None — pass userName prop |
+| Apr 2026 | View count feature — per login session, live increment | `api/.../posts/[id]/view/route.ts`, `feed/AdminPostCard.tsx`, `(shareholder)/my/feed/PostCard.tsx`, `feed/page.tsx`, `(shareholder)/my/feed/page.tsx` | Dropped unique constraint on post_views(post_id,user_id); added session_id column + partial unique index on (post_id,user_id,session_id) |
+| Apr 2026 | Replace Appreciate reaction with Meh + Sad; swap icon to PartyPopper then Meh/Frown | `feed/AdminPostCard.tsx`, `(shareholder)/my/feed/PostCard.tsx`, `ShareholderFeedClient.tsx`, `feed/page.tsx`, `(shareholder)/my/feed/page.tsx`, `api/.../react/route.ts`, `components/icons/ClapIcon.tsx` (created then removed) | Added MEH, SAD to reaction_type enum; APPRECIATE deprecated but retained in DB |
 
 ---
 
