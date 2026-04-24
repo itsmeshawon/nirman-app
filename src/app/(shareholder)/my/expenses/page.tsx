@@ -43,10 +43,6 @@ export default async function ShareholderExpensesPage() {
 
   return (
     <div className="max-w-5xl mx-auto p-4 md:p-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-on-surface">Project Expenses</h1>
-        <p className="text-on-surface-variant mt-1">Full transparent visibility into approved and finalized project expenditures.</p>
-      </div>
       <ShareholderExpensesClient expenses={expenses || []} />
     </div>
   )

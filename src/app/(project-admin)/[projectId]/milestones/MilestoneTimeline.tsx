@@ -167,11 +167,7 @@ export function MilestoneTimeline({ projectId, initialMilestones, expenseTotals 
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center p-6 sm:p-8 rounded-[1.25rem] border border-[var(--outline-variant)]/40 bg-[var(--surface-container-low)]">
-        <div>
-          <h2 className="text-2xl font-bold text-[var(--on-surface)]">Project Milestones</h2>
-          <p className="text-sm text-[var(--on-surface-variant)] mt-1">Track the major phases of your construction.</p>
-        </div>
+      <div className="flex justify-end items-center p-6 sm:p-8 rounded-[1.25rem] border border-[var(--outline-variant)]/40 bg-[var(--surface-container-low)]">
         <Button onClick={() => openDialog()}>
           <Plus className="mr-2 h-4 w-4" />
           Add Milestone

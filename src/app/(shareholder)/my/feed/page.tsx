@@ -102,13 +102,6 @@ export default async function ShareholderFeedPage() {
 
   return (
     <div className="max-w-2xl mx-auto py-6 px-4">
-      <div className="mb-5">
-        <h1 className="text-2xl font-bold text-on-surface">Project Update</h1>
-        <p className="text-sm text-on-surface-variant mt-1">
-          {(shareholder.project as any).name} — latest construction updates
-        </p>
-      </div>
-
       <ShareholderFeedClient
         posts={allPosts}
         userId={user.id}

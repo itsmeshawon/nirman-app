@@ -73,10 +73,6 @@ export default async function CommitteeReviewPage() {
 
   return (
     <div className="space-y-6">
-      <div className="mb-2">
-        <h1 className="text-2xl font-bold text-on-surface tracking-tight">Expense Reviews</h1>
-        <p className="text-on-surface-variant mt-1">Review and approve expenditures across your committee assignments.</p>
-      </div>
       <ReviewClient expenses={expensesWithProgress} />
     </div>
   )

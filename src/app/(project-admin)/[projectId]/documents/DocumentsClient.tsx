@@ -151,12 +151,7 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-on-surface">Document Library</h1>
-          <p className="text-on-surface-variant text-sm">Manage construction drawings, land papers, and legal documents.</p>
-        </div>
-
+      <div className="flex justify-end items-center gap-4">
         <Dialog open={isUploadOpen} onOpenChange={setIsUploadOpen}>
           <DialogTrigger>
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary hover:bg-primary text-white text-sm font-medium cursor-pointer">

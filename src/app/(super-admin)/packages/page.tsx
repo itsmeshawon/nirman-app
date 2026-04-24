@@ -106,12 +106,7 @@ export default function PackagesPage() {
   return (
     <>
       <div className="space-y-5">
-        {/* Page header */}
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-on-surface">Packages</h1>
-            <p className="text-sm text-on-surface-variant mt-0.5">Manage feature packages for projects</p>
-          </div>
+        <div className="flex items-center justify-end gap-4">
           <Button
             onClick={() => {
               setEditingPackage(null)

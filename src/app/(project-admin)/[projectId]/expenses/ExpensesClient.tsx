@@ -149,11 +149,7 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
          })}
       </div>
 
-      <div className="flex justify-between items-center">
-         <div>
-            <h2 className="text-lg font-semibold text-on-surface">Expenses {filterStatus && `(${statusConfig[filterStatus].label})`}</h2>
-            <p className="text-sm text-on-surface-variant">Manage and track project expenditures.</p>
-         </div>
+      <div className="flex justify-end items-center">
          <div className="flex gap-2">
             {selectedIds.size > 0 && filterStatus === "APPROVED" && (
               <Button onClick={handleBulkPublish} disabled={isPublishing} className="bg-primary hover:bg-primary">

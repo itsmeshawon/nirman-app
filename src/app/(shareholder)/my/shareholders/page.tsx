@@ -64,10 +64,6 @@ export default async function ShareholderDirectoryPage() {
 
   return (
     <div className="space-y-6">
-      <div className="mb-2">
-        <h1 className="text-2xl font-bold text-on-surface tracking-tight">Project Shareholders</h1>
-        <p className="text-on-surface-variant mt-1">Connect with your neighbors and view project unit owners.</p>
-      </div>
       <ShareholdersList 
         data={neighbors || []} 
         committeeShareholderIds={committeeShareholderIds}

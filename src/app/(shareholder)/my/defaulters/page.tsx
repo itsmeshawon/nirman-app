@@ -83,10 +83,6 @@ export default async function DefaultersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="mb-2">
-        <h1 className="text-2xl font-bold text-on-surface tracking-tight">Defaulter List</h1>
-        <p className="text-on-surface-variant mt-1">Shareholders with overdue collections across your assigned projects.</p>
-      </div>
       <DefaultersClient 
         overdueItems={overdueItems || []} 
         payments={payments || []} 

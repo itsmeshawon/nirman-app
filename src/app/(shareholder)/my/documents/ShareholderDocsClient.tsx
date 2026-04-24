@@ -69,11 +69,6 @@ export function ShareholderDocsClient({ documents }: ShareholderDocsClientProps)
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold text-on-surface font-outfit">Project Documents</h1>
-        <p className="text-on-surface-variant text-sm">Access important files, drawings, and legal papers for your project.</p>
-      </div>
-
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1 flex items-center space-x-2 rounded-[1.25rem] border px-3 py-2">
           <Search className="w-4 h-4 text-outline" />

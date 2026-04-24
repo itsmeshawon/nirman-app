@@ -50,11 +50,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
   return (
     <div className="space-y-8">
        
-       <div className="flex justify-between items-end">
-           <div>
-              <h1 className="text-2xl font-bold text-on-surface mb-2">My Payments</h1>
-              <p className="text-on-surface-variant">Track your financial obligations for Unit: {shareholder.unit_flat}</p>
-           </div>
+       <div className="flex justify-end items-end">
            <Button onClick={() => window.open("/my/payments/statement", "_blank")} variant="outline" className="text-primary border-primary hover:bg-primary-container/20">
                <FileDown className="w-4 h-4 mr-2" /> Download Full Statement
            </Button>

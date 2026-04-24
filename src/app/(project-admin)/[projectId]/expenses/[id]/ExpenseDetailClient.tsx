@@ -88,7 +88,6 @@ export function ExpenseDetailClient({ projectId, expense, milestones, categories
            <Link href={`/${projectId}/expenses`} className="inline-flex items-center justify-center rounded-full p-1.5 hover:bg-surface-variant/50 transition-colors">
              <ArrowLeft className="w-5 h-5 text-on-surface-variant" />
            </Link>
-           <h1 className="text-2xl font-bold text-on-surface">Expense Details</h1>
            <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusUI?.color}`}>
              {statusUI?.label}
            </span>

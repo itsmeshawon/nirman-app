@@ -47,10 +47,8 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
   return (
     <div className="space-y-8">
       
-      {/* Header and Financial Overview */}
+      {/* Financial Overview */}
       <div>
-        <h1 className="text-2xl font-bold text-on-surface mb-6">Financial Collections & Payments</h1>
-        
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
            {/* Primary Cards */}
            <div className="col-span-2 lg:col-span-1 border rounded-xl p-4 flex flex-col justify-center">
