@@ -6,6 +6,83 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { formatDateTime } from "@/lib/utils"
 
+const ENTITY_LABELS: Record<string, string> = {
+  activity_post: "Post",
+  approval_config: "Approval Config",
+  committee_member: "Committee",
+  document: "Document",
+  expense: "Expense",
+  milestone: "Milestone",
+  milestones: "Milestones",
+  notification_config: "Notifications",
+  package: "Package",
+  payment: "Payment",
+  payment_schedule: "Payment Schedule",
+  penalty: "Penalty",
+  penalty_config: "Penalty Config",
+  profile: "Profile",
+  project: "Project",
+  project_admin: "Project Admin",
+  schedule_items: "Schedule",
+  shareholder: "Shareholder",
+  user: "User",
+}
+
+const DETAIL_LABELS: Record<string, string> = {
+  name: "Name",
+  email: "Email",
+  unit_flat: "Unit / Flat",
+  status: "Status",
+  newStatus: "Status",
+  amount: "Amount",
+  method: "Payment Method",
+  receipt_no: "Receipt No.",
+  title: "Title",
+  description: "Description",
+  category: "Category",
+  type: "Type",
+  due_date: "Due Date",
+  deleted_at: "Deleted At",
+  file_name: "File",
+  fileName: "File",
+  shareholder_id: "Shareholder",
+  newRule: "Approval Rule",
+  reviewAction: "Review",
+  comment: "Comment",
+  waived_amount: "Waived Amount",
+  waive_reason: "Waive Reason",
+  count: "Count",
+  attachmentsCount: "Attachments",
+  note: "Note",
+  message: "Message",
+  initialStatus: "Initial Status",
+  updated_fields: "Updated Fields",
+}
+
+const SKIP_KEYS = new Set(["ids", "milestone_id", "tags"])
+
+function formatDetailValue(key: string, value: unknown): string {
+  if (value === null || value === undefined) return ""
+  if (Array.isArray(value)) return value.join(", ")
+  if (typeof value === "string") {
+    // ISO date strings
+    if (/^\d{4}-\d{2}-\d{2}T/.test(value)) return formatDateTime(value)
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      return new Date(value).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+    }
+    // Enum-style values: snake_case → Title Case
+    if (/^[A-Z_]+$/.test(value)) return value.replace(/_/g, " ")
+    return value
+  }
+  if (typeof value === "number") {
+    if (key === "amount" || key === "waived_amount") {
+      return `৳ ${value.toLocaleString("en-BD")}`
+    }
+    return String(value)
+  }
+  return String(value)
+}
+
 interface AuditLog {
   id: string
   action: string
@@ -123,15 +200,15 @@ export default function ActivityLogClient({ logs }: ActivityLogClientProps) {
                     </span>
                     {log.entity_type && (
                       <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium bg-primary-container/20 text-primary border border-primary-container/30">
-                        {log.entity_type}
+                        {ENTITY_LABELS[log.entity_type] ?? log.entity_type}
                       </span>
                     )}
                   </div>
                   {log.details && Object.keys(log.details).length > 0 && (
                     <p className="text-xs text-outline truncate max-w-xl">
                       {Object.entries(log.details)
-                        .filter(([, v]) => v !== null && v !== undefined)
-                        .map(([k, v]) => `${k}: ${v}`)
+                        .filter(([k, v]) => v !== null && v !== undefined && !SKIP_KEYS.has(k))
+                        .map(([k, v]) => `${DETAIL_LABELS[k] ?? k}: ${formatDetailValue(k, v)}`)
                         .join(" · ")}
                     </p>
                   )}

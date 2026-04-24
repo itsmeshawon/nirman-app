@@ -269,15 +269,25 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
                     </span>
                     {log.entity_type && (
                       <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium bg-primary-container/20 text-primary border border-primary-container/30">
-                        {log.entity_type}
+                        {({ activity_post: "Post", approval_config: "Approval Config", committee_member: "Committee", document: "Document", expense: "Expense", milestone: "Milestone", milestones: "Milestones", notification_config: "Notifications", package: "Package", payment: "Payment", payment_schedule: "Payment Schedule", penalty: "Penalty", penalty_config: "Penalty Config", profile: "Profile", project: "Project", project_admin: "Project Admin", schedule_items: "Schedule", shareholder: "Shareholder", user: "User" } as Record<string,string>)[log.entity_type] ?? log.entity_type}
                       </span>
                     )}
                   </div>
                   {log.details && Object.keys(log.details).length > 0 && (
                     <p className="text-xs text-outline truncate max-w-xl">
                       {Object.entries(log.details)
-                        .filter(([, v]) => v !== null && v !== undefined)
-                        .map(([k, v]: [string, any]) => `${k}: ${v}`)
+                        .filter(([k, v]: [string, any]) => v !== null && v !== undefined && !["ids", "milestone_id", "tags"].includes(k))
+                        .map(([k, v]: [string, any]) => {
+                          const labels: Record<string, string> = { name: "Name", email: "Email", unit_flat: "Unit / Flat", status: "Status", newStatus: "Status", amount: "Amount", method: "Payment Method", receipt_no: "Receipt No.", title: "Title", description: "Description", category: "Category", due_date: "Due Date", deleted_at: "Deleted At", file_name: "File", fileName: "File", newRule: "Approval Rule", reviewAction: "Review", comment: "Comment", waived_amount: "Waived Amount", count: "Count", note: "Note", message: "Message" }
+                          const label = labels[k] ?? k
+                          let val = v
+                          if (typeof v === "string" && /^\d{4}-\d{2}-\d{2}T/.test(v)) val = formatDateTime(v)
+                          else if (typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v)) val = new Date(v).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                          else if (typeof v === "string" && /^[A-Z_]+$/.test(v)) val = v.replace(/_/g, " ")
+                          else if (typeof v === "number" && (k === "amount" || k === "waived_amount")) val = `৳ ${v.toLocaleString("en-BD")}`
+                          else if (Array.isArray(v)) val = v.join(", ")
+                          return `${label}: ${val}`
+                        })
                         .join(" · ")}
                     </p>
                   )}
