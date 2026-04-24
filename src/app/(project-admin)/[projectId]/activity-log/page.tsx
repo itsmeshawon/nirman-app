@@ -28,12 +28,6 @@ export default async function ActivityLogPage(props: { params: Promise<{ project
 
   return (
     <div className="space-y-6 pb-12">
-      <div>
-        <h1 className="text-2xl font-bold text-on-surface">Activity Log</h1>
-        <p className="text-sm text-on-surface-variant mt-0.5">
-          Full audit trail of all actions taken in this project.
-        </p>
-      </div>
       <ActivityLogClient logs={logs ?? []} />
     </div>
   )

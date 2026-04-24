@@ -103,11 +103,6 @@ export default async function SuperAdminDashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-on-surface">Platform Dashboard</h1>
-        <p className="text-on-surface-variant text-sm mt-1">Overview of all NirmaN projects and activity</p>
-      </div>
-
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard

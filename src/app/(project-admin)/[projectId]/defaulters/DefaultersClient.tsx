@@ -82,11 +82,7 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[var(--surface-container-low)] p-8 rounded-[28px] border border-[var(--outline-variant)]/30">
-        <div>
-          <h2 className="text-[24px] font-normal text-[var(--foreground)] tracking-tight">Active Defaulters</h2>
-          <p className="text-[14px] text-[var(--on-surface-variant)] mt-1">Real-time overview of shareholders with overdue collections.</p>
-        </div>
+      <div className="flex flex-col sm:flex-row justify-end items-start sm:items-center gap-4 bg-[var(--surface-container-low)] p-8 rounded-[28px] border border-[var(--outline-variant)]/30">
         <Button 
           onClick={handleApplyPenalties} 
           disabled={isProcessing} 

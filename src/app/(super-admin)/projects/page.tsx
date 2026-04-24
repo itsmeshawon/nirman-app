@@ -326,12 +326,7 @@ export default function ProjectsPage() {
   return (
     <>
       <div className="space-y-5">
-        {/* Page header */}
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-on-surface">Projects</h1>
-            <p className="text-sm text-on-surface-variant mt-0.5">Manage all NirmaN construction projects</p>
-          </div>
+        <div className="flex items-center justify-end gap-4">
           <Button
             onClick={() => {
               setEditingProject(null)

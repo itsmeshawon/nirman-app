@@ -210,11 +210,6 @@ export function ProjectSettingsClient({
 
   return (
     <div className="bg-surface border rounded-xl overflow-hidden">
-      <div className="p-6 border-b border-outline-variant/40">
-        <h2 className="text-xl font-bold text-on-surface">Project Settings</h2>
-        <p className="text-sm text-on-surface-variant mt-1">Configure project rules, schedules, and automated communications.</p>
-      </div>
-
       <Tabs defaultValue="profile" className="w-full">
         <div className="bg-surface-variant/30 border-b border-outline-variant/40 px-4">
           <TabsList className="flex flex-row h-auto bg-transparent p-0 m-0 w-full justify-start overflow-x-auto no-scrollbar">

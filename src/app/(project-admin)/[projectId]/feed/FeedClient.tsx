@@ -57,12 +57,6 @@ export function FeedClient({ projectId, initialPosts, milestones, userId, userNa
 
   return (
     <div className="space-y-4">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-on-surface">Project Update</h1>
-        <p className="text-sm text-on-surface-variant mt-1">Share project updates with shareholders.</p>
-      </div>
-
       {/* Create Post Form */}
       <CreatePostForm
         projectId={projectId}

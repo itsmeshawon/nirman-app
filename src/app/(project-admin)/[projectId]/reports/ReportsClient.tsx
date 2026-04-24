@@ -101,12 +101,6 @@ export function ReportsClient({ projectId, chartData, summary }: ReportsClientPr
 
   return (
     <div className="space-y-8 pb-12">
-      {/* Page header */}
-      <div>
-        <h1 className="text-2xl font-bold text-on-surface">Reports</h1>
-        <p className="text-on-surface-variant mt-1 text-sm">Download financial and operational reports as CSV files.</p>
-      </div>
-
       {/* Summary stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[

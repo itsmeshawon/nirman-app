@@ -234,13 +234,6 @@ export default function AdminsPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-on-surface">Project Administrators</h1>
-          <p className="text-sm text-on-surface-variant mt-0.5">Manage accounts and platform access for admins</p>
-        </div>
-      </div>
-
       <Card className="shadow-none border-0 bg-transparent uppercase-headers">
         <CardHeader className="pb-4 border-0">
           <div className="relative max-w-sm">

@@ -46,12 +46,6 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
 
   return (
     <div className="space-y-4">
-      {/* Top Bar */}
-      <div>
-        <h2 className="text-xl font-semibold text-on-surface">Shareholders</h2>
-        <p className="text-sm text-on-surface-variant">View project shareholders and their information</p>
-      </div>
-
       {/* Stats Badge */}
       <div className="flex gap-2">
         <Badge variant="outline" className="text-on-surface-variant bg-surface">Total: {total}</Badge>

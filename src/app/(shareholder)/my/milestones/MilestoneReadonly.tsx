@@ -26,11 +26,6 @@ export function MilestoneReadonly({ milestones, expenseTotals }: MilestoneReadon
   return (
     <div className="space-y-6">
       <div className="p-6 sm:p-8 rounded-[1.25rem] border border-[var(--outline-variant)]/40 bg-[var(--surface)]">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-[var(--on-surface)] tracking-tight">Project Progress Report</h2>
-          <p className="text-[var(--on-surface-variant)] mt-1">Real-time status of construction phases and milestones.</p>
-        </div>
-
         {milestones.length === 0 ? (
           <div className="text-center py-20 bg-[var(--surface-variant)]/10 rounded-2xl border border-dashed border-[var(--outline-variant)]/40">
              <div className="w-12 h-12 rounded-full bg-[var(--surface-variant)]/50 flex items-center justify-center mx-auto mb-4">

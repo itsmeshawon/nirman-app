@@ -243,11 +243,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
   return (
     <div className="space-y-4">
       {/* Top Bar */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-xl font-semibold text-on-surface">Shareholders</h2>
-          <p className="text-sm text-on-surface-variant">Manage unit owners and their information</p>
-        </div>
+      <div className="flex flex-col sm:flex-row justify-end items-start sm:items-center gap-4">
         <Button 
           onClick={() => {
             setEditingShareholder(null)
