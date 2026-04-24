@@ -274,7 +274,7 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
                     )}
                   </div>
                   {log.details && Object.keys(log.details).length > 0 && (
-                    <p className="text-xs text-outline truncate max-w-xl">
+                    <p className="text-xs text-outline break-words">
                       {Object.entries(log.details)
                         .filter(([k, v]: [string, any]) => v !== null && v !== undefined && !["ids", "milestone_id", "tags"].includes(k))
                         .map(([k, v]: [string, any]) => {

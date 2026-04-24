@@ -205,7 +205,7 @@ export default function ActivityLogClient({ logs }: ActivityLogClientProps) {
                     )}
                   </div>
                   {log.details && Object.keys(log.details).length > 0 && (
-                    <p className="text-xs text-outline truncate max-w-xl">
+                    <p className="text-xs text-outline break-words">
                       {Object.entries(log.details)
                         .filter(([k, v]) => v !== null && v !== undefined && !SKIP_KEYS.has(k))
                         .map(([k, v]) => `${DETAIL_LABELS[k] ?? k}: ${formatDetailValue(k, v)}`)
