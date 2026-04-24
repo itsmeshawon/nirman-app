@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { getSupabaseAdmin } from "@/lib/supabase/admin"
-import { requireProjectAdmin } from "@/lib/permissions"
+import { requireProjectAdmin, requireCommitteeMember } from "@/lib/permissions"
 import { logAction } from "@/lib/audit"
 import { createNotificationsForMany } from "@/lib/notifications"
 
@@ -108,8 +108,9 @@ export async function POST(
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-    try { await requireProjectAdmin(supabase, projectId) }
-    catch { return NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
+    const isAdmin = await requireProjectAdmin(supabase, projectId).catch(() => null)
+    const isCommittee = isAdmin ? null : await requireCommitteeMember(supabase, projectId).catch(() => null)
+    if (!isAdmin && !isCommittee) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
     const body = await request.json()
     
@@ -126,7 +127,7 @@ export async function POST(
 
     const { title, description, media_url, media_type, tags, milestone_id } = validated.data
 
-    const { data: post, error: insertError } = await getSupabaseAdmin()
+    const { data: inserted, error: insertError } = await getSupabaseAdmin()
       .from("activity_posts")
       .insert({
         project_id: projectId,
@@ -139,10 +140,17 @@ export async function POST(
         milestone_id: milestone_id || null,
         status: "PUBLISHED",
       })
-      .select()
+      .select("id")
       .single()
 
     if (insertError) return NextResponse.json({ error: insertError.message }, { status: 400 })
+
+    // Re-fetch with author join so the client can display correct initials immediately
+    const { data: post } = await getSupabaseAdmin()
+      .from("activity_posts")
+      .select("*, author:profiles!author_id(id, name), milestone:milestones!milestone_id(name)")
+      .eq("id", inserted.id)
+      .single()
 
     await logAction({
       projectId,

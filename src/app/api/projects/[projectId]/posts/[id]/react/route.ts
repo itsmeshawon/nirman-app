@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 
 const VALID_REACTION_TYPES = ["LIKE", "LOVE", "APPRECIATE"] as const
 type ReactionType = typeof VALID_REACTION_TYPES[number]
@@ -24,8 +25,10 @@ export async function POST(
       return NextResponse.json({ error: "Invalid reaction_type. Must be LIKE, LOVE, or APPRECIATE." }, { status: 400 })
     }
 
+    const admin = getSupabaseAdmin()
+
     // Check existing reaction
-    const { data: existing } = await supabase
+    const { data: existing } = await admin
       .from("reactions")
       .select("id, reaction_type")
       .eq("post_id", id)
@@ -35,29 +38,27 @@ export async function POST(
     if (existing) {
       if (existing.reaction_type === reaction_type) {
         // Toggle off — delete
-        const { error: deleteError } = await supabase
+        const { error: deleteError } = await admin
           .from("reactions")
           .delete()
           .eq("id", existing.id)
 
         if (deleteError) return NextResponse.json({ error: deleteError.message }, { status: 400 })
-
         return NextResponse.json({ action: "removed" }, { status: 200 })
       } else {
         // Different type — update
-        const { error: updateError } = await supabase
+        const { error: updateError } = await admin
           .from("reactions")
           .update({ reaction_type })
           .eq("id", existing.id)
 
         if (updateError) return NextResponse.json({ error: updateError.message }, { status: 400 })
-
         return NextResponse.json({ action: "updated" }, { status: 200 })
       }
     }
 
     // No existing reaction — insert
-    const { error: insertError } = await supabase
+    const { error: insertError } = await admin
       .from("reactions")
       .insert({ post_id: id, user_id: user.id, reaction_type })
 

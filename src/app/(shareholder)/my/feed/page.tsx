@@ -31,82 +31,94 @@ export default async function ShareholderFeedPage() {
     )
   }
 
-  const projectId: string = shareholder.project.id
+  const projectId: string = (shareholder.project as any).id
 
-  // 3. Fetch PUBLISHED posts
-  const { data: posts, error: postsError } = await getSupabaseAdmin()
-    .from("activity_posts")
-    .select("*, author:profiles!author_id(name), milestone:milestones!milestone_id(name)")
+  // 3. Fetch profile name
+  const { data: profile } = await supabase.from("profiles").select("name").eq("id", user.id).single()
+
+  // 4. Check if user is a committee member
+  const { data: committeeRow } = await getSupabaseAdmin()
+    .from("committee_members")
+    .select("id")
     .eq("project_id", projectId)
-    .eq("status", "PUBLISHED")
-    .order("created_at", { ascending: false })
-    .limit(20)
+    .eq("user_id", user.id)
+    .eq("is_active", true)
+    .single()
 
+  const isCommitteeMember = !!committeeRow
+
+  // 4. Fetch posts — committee members see all statuses (their own hidden ones too); others see PUBLISHED only
+  let postsQuery = getSupabaseAdmin()
+    .from("activity_posts")
+    .select("*, author:profiles!author_id(name, id), milestone:milestones!milestone_id(name)")
+    .eq("project_id", projectId)
+    .order("created_at", { ascending: false })
+    .limit(30)
+
+  if (!isCommitteeMember) {
+    postsQuery = postsQuery.eq("status", "PUBLISHED")
+  }
+
+  const { data: posts, error: postsError } = await postsQuery
   if (postsError) console.error("[ShareholderFeedPage] Fetch posts error:", postsError)
 
   const allPosts = posts || []
   const postIds = allPosts.map((p: any) => p.id)
 
-  // 4. My reactions
+  // 5. Reactions + views
   let myReactions: Record<string, string> = {}
-  // 5. All reaction counts
   let reactionCounts: Record<string, Record<string, number>> = {}
-  // 6. View counts
   let viewCounts: Record<string, number> = {}
 
   if (postIds.length > 0) {
     const [myReactionsRes, allReactionsRes, viewsRes] = await Promise.all([
-      supabase
-        .from("reactions")
-        .select("post_id, reaction_type")
-        .eq("user_id", user.id)
-        .in("post_id", postIds),
-      supabase
-        .from("reactions")
-        .select("post_id, reaction_type")
-        .in("post_id", postIds),
-      supabase
-        .from("post_views")
-        .select("post_id")
-        .in("post_id", postIds),
+      supabase.from("reactions").select("post_id, reaction_type").eq("user_id", user.id).in("post_id", postIds),
+      supabase.from("reactions").select("post_id, reaction_type").in("post_id", postIds),
+      supabase.from("post_views").select("post_id").in("post_id", postIds),
     ])
 
-    // Build my reactions map
     for (const row of myReactionsRes.data || []) {
       myReactions[row.post_id] = row.reaction_type
     }
-
-    // Build reaction counts map
     for (const row of allReactionsRes.data || []) {
-      if (!reactionCounts[row.post_id]) {
-        reactionCounts[row.post_id] = { LIKE: 0, LOVE: 0, APPRECIATE: 0 }
-      }
-      reactionCounts[row.post_id][row.reaction_type] =
-        (reactionCounts[row.post_id][row.reaction_type] || 0) + 1
+      if (!reactionCounts[row.post_id]) reactionCounts[row.post_id] = { LIKE: 0, LOVE: 0, APPRECIATE: 0 }
+      reactionCounts[row.post_id][row.reaction_type] = (reactionCounts[row.post_id][row.reaction_type] || 0) + 1
     }
-
-    // Build view counts map
     for (const row of viewsRes.data || []) {
       viewCounts[row.post_id] = (viewCounts[row.post_id] || 0) + 1
     }
   }
 
+  // 6. Milestones — needed for committee member post creation
+  let milestones: any[] = []
+  if (isCommitteeMember) {
+    const { data: milestonesData } = await supabase
+      .from("milestones")
+      .select("id, name")
+      .eq("project_id", projectId)
+      .order("sort_order", { ascending: true })
+    milestones = milestonesData || []
+  }
+
   return (
     <div className="max-w-2xl mx-auto py-6 px-4">
       <div className="mb-5">
-        <h1 className="text-2xl font-bold text-on-surface">Activity Feed</h1>
+        <h1 className="text-2xl font-bold text-on-surface">Project Update</h1>
         <p className="text-sm text-on-surface-variant mt-1">
-          {shareholder.project.name} — latest construction updates
+          {(shareholder.project as any).name} — latest construction updates
         </p>
       </div>
 
       <ShareholderFeedClient
         posts={allPosts}
         userId={user.id}
+        userName={profile?.name || ""}
         projectId={projectId}
         initialReactions={myReactions}
         reactionCounts={reactionCounts}
         viewCounts={viewCounts}
+        isCommitteeMember={isCommitteeMember}
+        milestones={milestones}
       />
     </div>
   )

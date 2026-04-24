@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { getSupabaseAdmin } from "@/lib/supabase/admin"
-import { requireProjectAdmin } from "@/lib/permissions"
+import { requireProjectAdmin, requireCommitteeMember } from "@/lib/permissions"
 
 export async function POST(
   request: Request,
@@ -16,9 +16,9 @@ export async function POST(
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-    // Only project admins can upload media to the feed for now
-    try { await requireProjectAdmin(supabase, projectId) } 
-    catch { return NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
+    const isAdmin = await requireProjectAdmin(supabase, projectId).catch(() => null)
+    const isCommittee = isAdmin ? null : await requireCommitteeMember(supabase, projectId).catch(() => null)
+    if (!isAdmin && !isCommittee) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
     const formData = await request.formData()
     const file = formData.get("file") as File
@@ -82,8 +82,9 @@ export async function DELETE(
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-    try { await requireProjectAdmin(supabase, projectId) } 
-    catch { return NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
+    const isAdmin = await requireProjectAdmin(supabase, projectId).catch(() => null)
+    const isCommittee = isAdmin ? null : await requireCommitteeMember(supabase, projectId).catch(() => null)
+    if (!isAdmin && !isCommittee) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
     const { path } = await request.json()
     if (!path) return NextResponse.json({ error: "Path required" }, { status: 400 })

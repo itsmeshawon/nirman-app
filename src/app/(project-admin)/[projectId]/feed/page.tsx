@@ -10,8 +10,11 @@ export default async function FeedPage(props: { params: Promise<{ projectId: str
 
   const supabase = await createClient()
 
-  // 1. Current user
+  // 1. Current user + profile name
   const { data: { user } } = await supabase.auth.getUser()
+  const { data: profile } = user
+    ? await supabase.from("profiles").select("name").eq("id", user.id).single()
+    : { data: null }
 
   // 2. Fetch all posts (admin sees all statuses)
   const { data: posts, error: postsError } = await getSupabaseAdmin()
@@ -67,6 +70,7 @@ export default async function FeedPage(props: { params: Promise<{ projectId: str
         initialPosts={postsWithCounts}
         milestones={milestones || []}
         userId={user?.id || ""}
+        userName={profile?.name || ""}
       />
     </div>
   )

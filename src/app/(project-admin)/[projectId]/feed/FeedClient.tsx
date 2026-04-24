@@ -11,12 +11,13 @@ interface FeedClientProps {
   initialPosts: any[]
   milestones: any[]
   userId: string
+  userName: string
 }
 
 type FilterMedia = "image" | "video" | "audio" | null
 type FilterStatus = "all" | "hidden"
 
-export function FeedClient({ projectId, initialPosts, milestones, userId }: FeedClientProps) {
+export function FeedClient({ projectId, initialPosts, milestones, userId, userName }: FeedClientProps) {
   const [posts, setPosts] = useState<any[]>(initialPosts)
   const [filterMedia, setFilterMedia] = useState<FilterMedia>(null)
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("all")
@@ -58,7 +59,7 @@ export function FeedClient({ projectId, initialPosts, milestones, userId }: Feed
     <div className="space-y-4">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-on-surface">Activity Feed</h1>
+        <h1 className="text-2xl font-bold text-on-surface">Project Update</h1>
         <p className="text-sm text-on-surface-variant mt-1">Share project updates with shareholders.</p>
       </div>
 
@@ -67,6 +68,7 @@ export function FeedClient({ projectId, initialPosts, milestones, userId }: Feed
         projectId={projectId}
         milestones={milestones}
         userId={userId}
+        userName={userName}
         onSuccess={handleSuccess}
       />
 

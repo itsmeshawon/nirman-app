@@ -1,18 +1,24 @@
 "use client"
 
 import { useState, useRef, useCallback } from "react"
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { toast } from "sonner"
-import { Upload, X, Music, Video, Image as ImageIcon, Tag } from "lucide-react"
+import { Upload, X, Music, Video, Tag } from "lucide-react"
 
 interface CreatePostFormProps {
   projectId: string
   milestones: any[]
   userId: string
+  userName?: string
   onSuccess: (post: any) => void
 }
 
@@ -37,8 +43,13 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
-export function CreatePostForm({ projectId, milestones, userId, onSuccess }: CreatePostFormProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
+function getInitials(name?: string): string {
+  if (!name) return "?"
+  return name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
+}
+
+export function CreatePostForm({ projectId, milestones, userName, onSuccess }: CreatePostFormProps) {
+  const [isOpen, setIsOpen] = useState(false)
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [tags, setTags] = useState<string[]>([])
@@ -64,7 +75,11 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
     setMediaPreview(null)
     setMediaPath(null)
     setUploadProgress(0)
-    setIsExpanded(false)
+  }
+
+  const handleClose = () => {
+    resetForm()
+    setIsOpen(false)
   }
 
   const handleFileSelect = useCallback(async (file: File) => {
@@ -74,7 +89,6 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
       return
     }
 
-    // Size validation
     const maxSizeMB = mediaType === "IMAGE" ? 10 : mediaType === "VIDEO" ? 50 : 20
     if (file.size > maxSizeMB * 1024 * 1024) {
       toast.error(`File too large. Maximum size for ${mediaType.toLowerCase()} is ${maxSizeMB}MB.`)
@@ -86,17 +100,12 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
       setMediaPreview(URL.createObjectURL(file))
     }
 
-    // Upload to Supabase Storage
     setMediaUploading(true)
     setUploadProgress(0)
 
-    // Simulate progress animation
     const progressInterval = setInterval(() => {
       setUploadProgress((prev) => {
-        if (prev >= 90) {
-          clearInterval(progressInterval)
-          return 90
-        }
+        if (prev >= 90) { clearInterval(progressInterval); return 90 }
         return prev + 10
       })
     }, 150)
@@ -141,9 +150,7 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ path: mediaPath })
         })
-      } catch {
-        // Non-critical — don't block UI
-      }
+      } catch {}
     }
     setMediaFile(null)
     setMediaPreview(null)
@@ -159,9 +166,7 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
   }
 
   const toggleTag = (tag: string) => {
-    setTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    )
+    setTags((prev) => prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag])
   }
 
   const addCustomTag = () => {
@@ -209,7 +214,7 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
 
       toast.success("Post published successfully!")
       onSuccess(data.post)
-      resetForm()
+      handleClose()
     } catch (err: any) {
       toast.error(err.message)
     } finally {
@@ -217,250 +222,226 @@ export function CreatePostForm({ projectId, milestones, userId, onSuccess }: Cre
     }
   }
 
-  if (!isExpanded) {
-    return (
+  return (
+    <>
+      {/* Trigger — looks like a compose input */}
       <div
         className="bg-surface rounded-xl border border-outline-variant/40 p-4 cursor-text"
-        onClick={() => setIsExpanded(true)}
+        onClick={() => setIsOpen(true)}
       >
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-primary-container/50 flex items-center justify-center text-primary font-semibold text-sm shrink-0">
-            PA
+            {getInitials(userName)}
           </div>
           <div className="flex-1 bg-surface-variant/20 rounded-lg px-4 py-2.5 text-sm text-outline border border-outline-variant/40 hover:border-primary-container transition-colors">
             Share a project update...
           </div>
         </div>
       </div>
-    )
-  }
 
-  return (
-    <div className="bg-surface rounded-xl border border-primary-container p-5 space-y-4">
-      {/* Title */}
-      <div className="space-y-1.5">
-        <Label htmlFor="post-title" className="text-xs text-on-surface-variant font-medium">
-          Title (optional)
-        </Label>
-        <Input
-          id="post-title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="e.g. Foundation work completed"
-          className="h-8 text-sm"
-        />
-      </div>
+      {/* Modal */}
+      <Dialog open={isOpen} onOpenChange={(open) => { if (!open) handleClose() }}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Share a Project Update</DialogTitle>
+          </DialogHeader>
 
-      {/* Description */}
-      <div className="space-y-1.5">
-        <Label htmlFor="post-desc" className="text-xs text-on-surface-variant font-medium">
-          Description <span className="text-red-500">*</span>
-        </Label>
-        <Textarea
-          id="post-desc"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="What's happening on site today?"
-          rows={4}
-          className="resize-none text-sm"
-        />
-        <p className="text-xs text-outline">{description.length} characters (min. 5)</p>
-      </div>
-
-      {/* Media Upload */}
-      <div className="space-y-2">
-        <Label className="text-xs text-on-surface-variant font-medium">Media (optional)</Label>
-
-        {!mediaFile ? (
-          <div
-            onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
-            onDragLeave={() => setIsDragging(false)}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current?.click()}
-            className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
-              isDragging
-                ? "border-primary/60 bg-primary-container/20"
-                : "border-outline-variant/40 hover:border-primary hover:bg-surface-variant/20"
-            }`}
-          >
-            <Upload className="w-6 h-6 text-outline mx-auto mb-2" />
-            <p className="text-sm text-on-surface-variant">Drag & drop or click to upload</p>
-            <p className="text-xs text-outline mt-1">Images ≤10MB · Videos ≤50MB · Audio ≤20MB</p>
-            <input
-              ref={fileInputRef}
-              type="file"
-              className="hidden"
-              accept="image/*,video/mp4,video/webm,audio/mpeg,audio/wav"
-              onChange={(e) => {
-                const file = e.target.files?.[0]
-                if (file) handleFileSelect(file)
-              }}
-            />
-          </div>
-        ) : (
-          <div className="border rounded-lg p-3 space-y-2">
-            {/* Preview */}
-            {mediaPreview && mediaFile.type.startsWith("image/") ? (
-              <img
-                src={mediaPreview}
-                alt="Preview"
-                className="w-full max-h-48 object-cover rounded-md"
+          <div className="space-y-4 pt-2">
+            {/* Title */}
+            <div className="space-y-1.5">
+              <Label htmlFor="post-title" className="text-xs text-on-surface-variant font-medium">
+                Title (optional)
+              </Label>
+              <Input
+                id="post-title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. Foundation work completed"
+                className="h-8 text-sm"
               />
-            ) : mediaFile.type.startsWith("video/") ? (
-              <div className="flex items-center gap-2 text-sm text-on-surface">
-                <Video className="w-4 h-4 text-blue-500" />
-                <span className="font-medium truncate">{mediaFile.name}</span>
-                <span className="text-outline text-xs shrink-0">{formatBytes(mediaFile.size)}</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 text-sm text-on-surface">
-                <Music className="w-4 h-4 text-purple-500" />
-                <span className="font-medium truncate">{mediaFile.name}</span>
-                <span className="text-outline text-xs shrink-0">{formatBytes(mediaFile.size)}</span>
-              </div>
-            )}
+            </div>
 
-            {/* Upload Progress */}
-            {mediaUploading && (
-              <div className="space-y-1">
-                <div className="w-full bg-surface-variant/50 rounded-full h-1.5 overflow-hidden">
-                  <div
-                    className="bg-primary-container/200 h-1.5 rounded-full transition-all duration-300"
-                    style={{ width: `${uploadProgress}%` }}
+            {/* Description */}
+            <div className="space-y-1.5">
+              <Label htmlFor="post-desc" className="text-xs text-on-surface-variant font-medium">
+                Description <span className="text-red-500">*</span>
+              </Label>
+              <Textarea
+                id="post-desc"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="What's happening on site today?"
+                rows={4}
+                className="resize-none text-sm"
+              />
+              <p className="text-xs text-outline">{description.length} characters (min. 5)</p>
+            </div>
+
+            {/* Media Upload */}
+            <div className="space-y-2">
+              <Label className="text-xs text-on-surface-variant font-medium">Media (optional)</Label>
+
+              {!mediaFile ? (
+                <>
+                  <input
+                    ref={fileInputRef}
+                    id="post-media-input"
+                    type="file"
+                    className="sr-only"
+                    accept="image/*,video/mp4,video/webm,audio/mpeg,audio/wav"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) handleFileSelect(file)
+                      e.target.value = ""
+                    }}
                   />
-                </div>
-                <p className="text-xs text-outline">Uploading... {uploadProgress}%</p>
-              </div>
-            )}
+                  <label
+                    htmlFor="post-media-input"
+                    onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onDrop={handleDrop}
+                    className={`flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+                      isDragging
+                        ? "border-primary/60 bg-primary-container/20"
+                        : "border-outline-variant/40 hover:border-primary hover:bg-surface-variant/20"
+                    }`}
+                  >
+                    <Upload className="w-6 h-6 text-outline mb-2" />
+                    <p className="text-sm text-on-surface-variant">Drag & drop or click to upload</p>
+                    <p className="text-xs text-outline mt-1">Images ≤10MB · Videos ≤50MB · Audio ≤20MB</p>
+                  </label>
+                </>
+              ) : (
+                <div className="border rounded-lg p-3 space-y-2">
+                  {mediaPreview && mediaFile.type.startsWith("image/") ? (
+                    <img src={mediaPreview} alt="Preview" className="w-full max-h-48 object-cover rounded-md" />
+                  ) : mediaFile.type.startsWith("video/") ? (
+                    <div className="flex items-center gap-2 text-sm text-on-surface">
+                      <Video className="w-4 h-4 text-blue-500" />
+                      <span className="font-medium truncate">{mediaFile.name}</span>
+                      <span className="text-outline text-xs shrink-0">{formatBytes(mediaFile.size)}</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 text-sm text-on-surface">
+                      <Music className="w-4 h-4 text-purple-500" />
+                      <span className="font-medium truncate">{mediaFile.name}</span>
+                      <span className="text-outline text-xs shrink-0">{formatBytes(mediaFile.size)}</span>
+                    </div>
+                  )}
 
-            {!mediaUploading && mediaPath && (
-              <p className="text-xs text-primary font-medium">Upload complete</p>
-            )}
+                  {mediaUploading && (
+                    <div className="space-y-1">
+                      <div className="w-full bg-surface-variant/50 rounded-full h-1.5 overflow-hidden">
+                        <div
+                          className="bg-primary h-1.5 rounded-full transition-all duration-300"
+                          style={{ width: `${uploadProgress}%` }}
+                        />
+                      </div>
+                      <p className="text-xs text-outline">Uploading... {uploadProgress}%</p>
+                    </div>
+                  )}
 
-            <button
-              type="button"
-              onClick={handleRemoveMedia}
-              className="flex items-center gap-1 text-xs text-red-500 hover:text-destructive"
-            >
-              <X className="w-3 h-3" /> Remove
-            </button>
-          </div>
-        )}
-      </div>
+                  {!mediaUploading && mediaPath && (
+                    <p className="text-xs text-primary font-medium">Upload complete</p>
+                  )}
 
-      {/* Tags */}
-      <div className="space-y-2">
-        <Label className="text-xs text-on-surface-variant font-medium">Tags</Label>
-
-        {/* Predefined tag pills */}
-        <div className="flex flex-wrap gap-1.5">
-          {PREDEFINED_TAGS.map((tag) => (
-            <button
-              key={tag}
-              type="button"
-              onClick={() => toggleTag(tag)}
-              className={`px-2.5 py-0.5 rounded-full text-xs font-medium border transition-all ${
-                tags.includes(tag)
-                  ? "bg-primary text-white border-primary"
-                  : "bg-surface text-on-surface-variant border-outline-variant/40 hover:border-primary"
-              }`}
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
-
-        {/* Custom tag input */}
-        <div className="flex gap-2">
-          <Input
-            value={customTagInput}
-            onChange={(e) => setCustomTagInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault()
-                addCustomTag()
-              }
-            }}
-            placeholder="Add custom tag and press Enter"
-            className="h-7 text-xs"
-          />
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={addCustomTag}
-            className="h-7 text-xs px-2"
-          >
-            <Tag className="w-3 h-3" />
-          </Button>
-        </div>
-
-        {/* Active custom tags */}
-        {tags.filter((t) => !PREDEFINED_TAGS.includes(t)).length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {tags
-              .filter((t) => !PREDEFINED_TAGS.includes(t))
-              .map((tag) => (
-                <span
-                  key={tag}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface-variant/50 text-on-surface text-xs rounded-full"
-                >
-                  {tag}
                   <button
                     type="button"
-                    onClick={() => removeTag(tag)}
-                    className="text-outline hover:text-red-500"
+                    onClick={handleRemoveMedia}
+                    className="flex items-center gap-1 text-xs text-red-500 hover:text-destructive"
                   >
-                    <X className="w-3 h-3" />
+                    <X className="w-3 h-3" /> Remove
                   </button>
-                </span>
-              ))}
+                </div>
+              )}
+            </div>
+
+            {/* Tags */}
+            <div className="space-y-2">
+              <Label className="text-xs text-on-surface-variant font-medium">Tags</Label>
+              <div className="flex flex-wrap gap-1.5">
+                {PREDEFINED_TAGS.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => toggleTag(tag)}
+                    className={`px-2.5 py-0.5 rounded-full text-xs font-medium border transition-all ${
+                      tags.includes(tag)
+                        ? "bg-primary text-white border-primary"
+                        : "bg-surface text-on-surface-variant border-outline-variant/40 hover:border-primary"
+                    }`}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex gap-2">
+                <Input
+                  value={customTagInput}
+                  onChange={(e) => setCustomTagInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") { e.preventDefault(); addCustomTag() }
+                  }}
+                  placeholder="Add custom tag and press Enter"
+                  className="h-7 text-xs"
+                />
+                <Button type="button" variant="outline" size="sm" onClick={addCustomTag} className="h-7 text-xs px-2">
+                  <Tag className="w-3 h-3" />
+                </Button>
+              </div>
+
+              {tags.filter((t) => !PREDEFINED_TAGS.includes(t)).length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {tags.filter((t) => !PREDEFINED_TAGS.includes(t)).map((tag) => (
+                    <span key={tag} className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface-variant/50 text-on-surface text-xs rounded-full">
+                      {tag}
+                      <button type="button" onClick={() => removeTag(tag)} className="text-outline hover:text-red-500">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Milestone */}
+            {milestones.length > 0 && (
+              <div className="space-y-1.5">
+                <Label htmlFor="post-milestone" className="text-xs text-on-surface-variant font-medium">
+                  Milestone (optional)
+                </Label>
+                <select
+                  id="post-milestone"
+                  value={milestoneId}
+                  onChange={(e) => setMilestoneId(e.target.value)}
+                  className="w-full h-8 rounded-md border border-outline-variant/40 bg-surface px-3 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                >
+                  <option value="">No milestone</option>
+                  {milestones.map((m) => (
+                    <option key={m.id} value={m.id}>{m.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex justify-end gap-2 pt-1 border-t">
+              <Button type="button" variant="ghost" onClick={handleClose} disabled={isSubmitting} className="text-on-surface-variant">
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={handlePublish}
+                disabled={isSubmitting || mediaUploading}
+                className="bg-primary hover:bg-primary/90 text-white"
+              >
+                {isSubmitting ? "Publishing..." : "Publish Post"}
+              </Button>
+            </div>
           </div>
-        )}
-      </div>
-
-      {/* Milestone */}
-      {milestones.length > 0 && (
-        <div className="space-y-1.5">
-          <Label htmlFor="post-milestone" className="text-xs text-on-surface-variant font-medium">
-            Milestone (optional)
-          </Label>
-          <select
-            id="post-milestone"
-            value={milestoneId}
-            onChange={(e) => setMilestoneId(e.target.value)}
-            className="w-full h-8 rounded-md border border-outline-variant/40 bg-surface px-3 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-          >
-            <option value="">No milestone</option>
-            {milestones.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
-      {/* Actions */}
-      <div className="flex justify-end gap-2 pt-1 border-t">
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={resetForm}
-          disabled={isSubmitting}
-          className="text-on-surface-variant"
-        >
-          Cancel
-        </Button>
-        <Button
-          type="button"
-          onClick={handlePublish}
-          disabled={isSubmitting || mediaUploading}
-          className="bg-primary hover:bg-primary text-white"
-        >
-          {isSubmitting ? "Publishing..." : "Publish Post"}
-        </Button>
-      </div>
-    </div>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }

@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { requireProjectAdmin } from "@/lib/permissions"
 import { logAction } from "@/lib/audit"
 
 export async function PATCH(
-  request: Request,
+  _request: Request,
   props: { params: Promise<{ projectId: string; id: string }> }
 ) {
   const params = await props.params
@@ -16,19 +17,20 @@ export async function PATCH(
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-    try { await requireProjectAdmin(supabase, projectId) }
-    catch { return NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
+    // Allow project admin OR the post's own author
+    const isAdmin = await requireProjectAdmin(supabase, projectId).catch(() => null)
 
-    // Get current status
-    const { data: post, error: fetchError } = await supabase
+    const { data: post, error: fetchError } = await getSupabaseAdmin()
       .from("activity_posts")
-      .select("status")
+      .select("status, author_id")
       .eq("id", id)
       .eq("project_id", projectId)
       .single()
 
-    if (fetchError || !post) {
-      return NextResponse.json({ error: "Post not found" }, { status: 404 })
+    if (fetchError || !post) return NextResponse.json({ error: "Post not found" }, { status: 404 })
+
+    if (!isAdmin && post.author_id !== user.id) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const isHiding = post.status === "PUBLISHED"
@@ -45,7 +47,7 @@ export async function PATCH(
       updates.hidden_by_id = null
     }
 
-    const { data: updated, error: updateError } = await supabase
+    const { data: updated, error: updateError } = await getSupabaseAdmin()
       .from("activity_posts")
       .update(updates)
       .eq("id", id)
@@ -66,7 +68,7 @@ export async function PATCH(
 
     return NextResponse.json({ post: updated }, { status: 200 })
 
-  } catch (err: any) {
+  } catch {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
   }
 }
