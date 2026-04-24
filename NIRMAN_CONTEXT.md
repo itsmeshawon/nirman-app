@@ -561,6 +561,7 @@ await createNotification({
 | Apr 2026 | Remove Finance Staff SQL | — | Dropped finance_staff table + all RLS policies it added |
 | Apr 2026 | Activity Log page + sidebar nav for Project Admin | `(project-admin)/[projectId]/activity-log/page.tsx`, `activity-log/ActivityLogClient.tsx`, `components/layouts/ProjectAdminShell.tsx`, `(project-admin)/[projectId]/dashboard/page.tsx` | None — queries existing audit_logs table |
 | Apr 2026 | Milestone expense totals in cards | `(project-admin)/[projectId]/milestones/page.tsx`, `(project-admin)/[projectId]/milestones/MilestoneTimeline.tsx`, `(shareholder)/my/milestones/page.tsx`, `(shareholder)/my/milestones/MilestoneReadonly.tsx` | None — queries existing expenses table grouped by milestone_id |
+| Apr 2026 | Mobile horizontal scroll for all data tables | `(shareholder)/my/defaulters/DefaultersClient.tsx`, `(shareholder)/my/expenses/ShareholderExpensesClient.tsx`, `(shareholder)/my/payments/ShareholderPaymentsClient.tsx`, `(project-admin)/[projectId]/defaulters/DefaultersClient.tsx`, `(project-admin)/[projectId]/expenses/ExpensesClient.tsx`, `(project-admin)/[projectId]/committee/CommitteeClient.tsx`, `(project-admin)/[projectId]/documents/DocumentsClient.tsx`, `(project-admin)/[projectId]/activity-log/ActivityLogClient.tsx`, `(project-admin)/[projectId]/payments/tabs/AllPaymentsTab.tsx`, `(project-admin)/[projectId]/payments/tabs/ScheduleTab.tsx`, `(project-admin)/[projectId]/payments/tabs/DefaultersTab.tsx` | None — UI only, replaced overflow-hidden with overflow-x-auto on table wrapper divs |
 
 ---
 

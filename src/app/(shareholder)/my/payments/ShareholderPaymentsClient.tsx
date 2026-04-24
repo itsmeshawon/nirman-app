@@ -98,7 +98,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
 
       <div className="animate-in fade-in duration-300">
          {activeTab === "SCHEDULE" && (
-            <div className="overflow-hidden">
+            <div className="overflow-x-auto">
                <Table>
                   <TableHeader>
                     <TableRow>
@@ -152,7 +152,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
          )}
 
          {activeTab === "HISTORY" && (
-            <div className="overflow-hidden">
+            <div className="overflow-x-auto">
                <Table>
                   <TableHeader>
                     <TableRow>

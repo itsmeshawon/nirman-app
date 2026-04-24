@@ -58,6 +58,7 @@ export default async function ReceiptPrintPage(props: { params: Promise<{ projec
           </div>
 
           <div className="mb-8">
+             <div className="overflow-x-auto">
              <table className="w-full text-left border-collapse">
                 <thead>
                    <tr className="border-b border-outline-variant">

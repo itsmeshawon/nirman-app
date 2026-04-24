@@ -98,8 +98,8 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
         </Button>
       </div>
 
-      <div className="overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="overflow-x-auto">
+        <div>
           <Table>
             <TableHeader>
               <TableRow>

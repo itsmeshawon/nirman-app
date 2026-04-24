@@ -65,7 +65,7 @@ export function ShareholderExpensesClient({ expenses }: ShareholderExpensesClien
        </div>
 
        {/* Table */}
-       <div className="overflow-hidden">
+       <div className="overflow-x-auto">
          <Table>
             <TableHeader>
               <TableRow className="bg-surface-variant/20/50">

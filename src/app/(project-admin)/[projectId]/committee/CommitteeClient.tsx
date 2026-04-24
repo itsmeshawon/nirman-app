@@ -200,7 +200,7 @@ export function CommitteeClient({
           </Button>
         </div>
 
-        <div className="overflow-hidden">
+        <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>

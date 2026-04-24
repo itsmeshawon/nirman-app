@@ -88,6 +88,7 @@ export default async function StatementPrintPage() {
           {/* Dues Schedule */}
           <div className="mb-10">
              <h3 className="text-sm font-bold text-on-surface uppercase border-b pb-2 mb-4">Obligation Schedule</h3>
+             <div className="overflow-x-auto">
              <table className="w-full text-left border-collapse text-sm">
                 <thead>
                    <tr className="border-b border-outline-variant">
@@ -106,11 +107,13 @@ export default async function StatementPrintPage() {
                    ))}
                 </tbody>
              </table>
+             </div>
           </div>
 
           {/* Payments Schedule */}
           <div className="mb-10">
              <h3 className="text-sm font-bold text-on-surface uppercase border-b pb-2 mb-4">Payments Applied</h3>
+             <div className="overflow-x-auto">
              <table className="w-full text-left border-collapse text-sm">
                 <thead>
                    <tr className="border-b border-outline-variant">
@@ -134,6 +137,7 @@ export default async function StatementPrintPage() {
                    ))}
                 </tbody>
              </table>
+             </div>
           </div>
 
           <div className="text-xs text-center text-outline mt-16 border-t pt-4">

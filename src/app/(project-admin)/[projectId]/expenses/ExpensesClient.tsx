@@ -167,7 +167,7 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
       </div>
 
       {/* Main Table */}
-      <div className="overflow-hidden">
+      <div className="overflow-x-auto">
          <Table>
             <TableHeader>
               <TableRow>

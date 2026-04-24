@@ -181,7 +181,7 @@ export default function ActivityLogClient({ logs }: ActivityLogClientProps) {
       </p>
 
       {/* Log List */}
-      <div className="rounded-xl border border-outline-variant/40 overflow-hidden">
+      <div className="rounded-xl border border-outline-variant/40 overflow-x-auto">
         {filtered.length === 0 ? (
           <div className="px-5 py-16 text-center text-sm text-outline">
             {hasFilters ? "No entries match your filters." : "No activity logged yet."}
