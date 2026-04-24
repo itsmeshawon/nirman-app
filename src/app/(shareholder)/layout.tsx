@@ -29,7 +29,7 @@ const navItems = [
   { href: "/my/payments", label: "My Payments", icon: CreditCard },
   { href: "/my/expenses", label: "Expenses", icon: Receipt },
   { href: "/my/documents", label: "Documents", icon: FileText },
-  { href: "/my/feed", label: "Project Update", icon: Newspaper },
+  { href: "/my/feed", label: "Project Update Feed", icon: Newspaper },
 ]
 
 export default function ShareholderLayout({ children }: { children: React.ReactNode }) {
@@ -113,7 +113,7 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
   let pageTitle = activeNavItem ? activeNavItem.label : "Dashboard"
 
   if (pathname === "/my/profile") pageTitle = "My Profile"
-  if (pathname === "/my/feed") pageTitle = "Project Update"
+  if (pathname === "/my/feed") pageTitle = "Project Update Feed"
   if (pathname === "/my/review") pageTitle = "Committee Review"
   if (pathname === "/my/defaulters") pageTitle = "Defaulter List"
   if (pathname === "/my/shareholders") pageTitle = "Shareholder List"

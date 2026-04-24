@@ -58,7 +58,7 @@ export default function ProjectAdminShell({
     { label: "Expenses", href: `/${projectId}/expenses`, icon: Receipt },
     { label: "Payments", href: `/${projectId}/payments`, icon: Banknote },
     { label: "Defaulters", href: `/${projectId}/defaulters`, icon: AlertTriangle },
-    { label: "Project Update", href: `/${projectId}/feed`, icon: Newspaper },
+    { label: "Project Update Feed", href: `/${projectId}/feed`, icon: Newspaper },
     { label: "Documents", href: `/${projectId}/documents`, icon: FolderOpen },
     { label: "Reports", href: `/${projectId}/reports`, icon: BarChart3 },
     { label: "Activity Log", href: `/${projectId}/activity-log`, icon: ClipboardList },
