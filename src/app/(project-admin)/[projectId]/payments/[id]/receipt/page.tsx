@@ -88,6 +88,7 @@ export default async function ReceiptPrintPage(props: { params: Promise<{ projec
                 </tbody>
              </table>
           </div>
+          </div>
 
           {/* Footer Annotations */}
           <div className="mt-16 pt-8 border-t flex justify-between items-end">
