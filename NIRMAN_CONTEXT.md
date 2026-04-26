@@ -165,7 +165,7 @@ src/
 │   │   ├── payments/
 │   │   │   ├── page.tsx
 │   │   │   ├── PaymentsClient.tsx
-│   │   │   └── tabs/AllPayments, Schedule, RecordPayment, Defaulters
+│   │   │   └── tabs/AllPayments, Schedule, RecordPayment  # RecordPayment + AddCustomCollection both rendered as modals via CTA buttons in PaymentsClient header
 │   │   ├── expenses/
 │   │   │   ├── page.tsx
 │   │   │   ├── ExpensesClient.tsx
@@ -570,6 +570,11 @@ await createNotification({
 | Apr 2026 | Fix reaction column name bug (reaction_type → type) across all reaction queries | `feed/page.tsx`, `(shareholder)/my/feed/page.tsx`, `api/.../react/route.ts`, `api/.../posts/route.ts` | None — code fix only |
 | Apr 2026 | Committee member avatar initials fix in CreatePostForm | `(shareholder)/my/feed/ShareholderFeedClient.tsx` | None — pass userName prop |
 | Apr 2026 | View count feature — per login session, live increment | `api/.../posts/[id]/view/route.ts`, `feed/AdminPostCard.tsx`, `(shareholder)/my/feed/PostCard.tsx`, `feed/page.tsx`, `(shareholder)/my/feed/page.tsx` | Dropped unique constraint on post_views(post_id,user_id); added session_id column + partial unique index on (post_id,user_id,session_id) |
+| Apr 2026 | Remove Defaulters tab from Project Admin payments page (dedicated menu exists) | `payments/PaymentsClient.tsx` | None — UI only |
+| Apr 2026 | Payments page redesign — 2 tabs only (Collection Schedule + Payment History); Record Payment → primary CTA modal; Add Custom Collection → secondary CTA modal; both buttons in page header | `payments/PaymentsClient.tsx`, `payments/tabs/RecordPaymentTab.tsx`, `payments/tabs/ScheduleTab.tsx` | None — UI only |
+| Apr 2026 | Record Payment modal — balance summary inline card (Principal/Penalties/Total in 3-col row, Paying Now full-width row); shareholder selector replaced with searchable Popover+Command combobox; all dropdowns (schedule link, payment method) converted to same combobox style | `payments/tabs/RecordPaymentTab.tsx` | None — UI only |
+| Apr 2026 | Add Custom Collection modal — shareholder dropdown converted to searchable combobox; Target Milestone and Status dropdowns converted to same combobox style; modal open state lifted to PaymentsClient | `payments/tabs/ScheduleTab.tsx`, `payments/PaymentsClient.tsx` | None — UI only |
+| Apr 2026 | Collection Schedule filter — replaced native select with Popover+Command combobox matching form dropdowns; removed wrapper background/border | `payments/tabs/ScheduleTab.tsx` | None — UI only |
 | Apr 2026 | Replace Appreciate reaction with Meh + Sad; swap icon to PartyPopper then Meh/Frown | `feed/AdminPostCard.tsx`, `(shareholder)/my/feed/PostCard.tsx`, `ShareholderFeedClient.tsx`, `feed/page.tsx`, `(shareholder)/my/feed/page.tsx`, `api/.../react/route.ts`, `components/icons/ClapIcon.tsx` (created then removed) | Added MEH, SAD to reaction_type enum; APPRECIATE deprecated but retained in DB |
 
 ---
