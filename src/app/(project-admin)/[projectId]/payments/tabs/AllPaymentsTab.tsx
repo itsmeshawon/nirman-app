@@ -79,8 +79,7 @@ export function AllPaymentsTab({ projectId, payments }: { projectId: string, pay
 
   return (
     <div>
-       <div className="p-4 border-b bg-surface-variant/30 flex justify-between items-center">
-         <h3 className="text-lg font-semibold text-on-surface">Payment Ledger</h3>
+       <div className="flex justify-end pb-3">
          <Button variant="outline" size="sm">
             <Download className="w-4 h-4 mr-2" /> Export CSV
          </Button>
