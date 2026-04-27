@@ -173,9 +173,16 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
     PARTIALLY_PAID:"bg-tertiary-container/40 text-on-tertiary-container",
   }
 
-  const filteredItems = filterStatus
-    ? scheduleItems.filter(item => item.status === filterStatus)
-    : scheduleItems
+  const [searchShareholder, setSearchShareholder] = useState("")
+
+  const filteredItems = scheduleItems.filter(item => {
+    const matchStatus = !filterStatus || item.status === filterStatus
+    const q = searchShareholder.toLowerCase()
+    const name = item.shareholder?.profiles?.name?.toLowerCase() || ""
+    const unit = item.shareholder?.unit_flat?.toLowerCase() || ""
+    const matchSearch = !q || name.includes(q) || unit.includes(q)
+    return matchStatus && matchSearch
+  })
 
   // Derived labels
   const selectedShareholder = shareholders.find(s => s.id === shareholderId)
@@ -187,7 +194,17 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
 
   return (
     <div>
-      <div className="pt-1 pb-3 w-48">
+      <div className="pt-1 pb-3 flex items-center gap-3 flex-wrap">
+        <div className="relative w-64">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <Input
+            placeholder="Search shareholder..."
+            value={searchShareholder}
+            onChange={e => setSearchShareholder(e.target.value)}
+            className="pl-9 h-10"
+          />
+        </div>
+        <div className="w-48">
         <ComboBox
           open={filterOpen}
           onOpenChange={setFilterOpen}
@@ -218,6 +235,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
             </CommandGroup>
           </CommandList>
         </ComboBox>
+        </div>
       </div>
 
       <Table>

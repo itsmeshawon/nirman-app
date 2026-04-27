@@ -165,7 +165,7 @@ src/
 │   │   ├── payments/
 │   │   │   ├── page.tsx
 │   │   │   ├── PaymentsClient.tsx
-│   │   │   └── tabs/AllPayments, Schedule, RecordPayment  # RecordPayment + AddCustomCollection both rendered as modals via CTA buttons in PaymentsClient header
+│   │   │   └── tabs/AllPayments, Schedule, RecordPayment, WaitingForApprovalTab  # RecordPayment + AddCustomCollection as modals; WaitingForApprovalTab lists submitted proofs with approve/reject actions
 │   │   ├── expenses/
 │   │   │   ├── page.tsx
 │   │   │   ├── ExpensesClient.tsx
@@ -183,7 +183,7 @@ src/
 │   │   ├── layout.tsx
 │   │   ├── dashboard/page.tsx                   # ⚠️ Uses supabaseAdmin for shareholder fetch
 │   │   ├── feed/page.tsx                        # ⚠️ Uses supabaseAdmin for shareholder fetch
-│   │   ├── payments/page.tsx + ShareholderPaymentsClient.tsx + statement/page.tsx
+│   │   ├── payments/page.tsx + ShareholderPaymentsClient.tsx + SubmitPaymentProofModal.tsx + statement/page.tsx
 │   │   ├── milestones/page.tsx + MilestoneReadonly.tsx
 │   │   ├── expenses/page.tsx + ShareholderExpensesClient.tsx
 │   │   ├── documents/page.tsx + ShareholderDocsClient.tsx
@@ -230,6 +230,9 @@ src/
 │       │   ├── penalties/apply/route.ts
 │       │   ├── penalties/[id]/waive/route.ts
 │       │   ├── penalty-config/route.ts
+│       │   ├── payment-proofs/route.ts                # GET (admin fetches all) | POST (shareholder submits with file)
+│       │   ├── payment-proofs/[id]/approve/route.ts   # POST → creates payment + marks APPROVED
+│       │   ├── payment-proofs/[id]/reject/route.ts    # POST → marks REJECTED
 │       │   ├── payment-schedule/route.ts
 │       │   ├── notification-config/route.ts
 │       │   ├── settings/route.ts
@@ -296,6 +299,7 @@ src/
 | `notification_configs` | Notification settings per project |
 | `notifications` | In-app notifications |
 | `audit_logs` | Full audit trail of all actions |
+| `payment_proofs` | Shareholder-submitted payment proof — links to project, shareholder, optional schedule_item, optional payment (set on approval). Columns: id, project_id, shareholder_id, schedule_item_id, amount, attachment_url, attachment_name, notes, rejection_note, status (PENDING/APPROVED/REJECTED), submitted_at, reviewed_at, reviewed_by, payment_id |
 
 ### 6B. FK Reference — Child Tables Without project_id
 
@@ -327,6 +331,7 @@ notification_type:   PAYMENT_REMINDER, PAYMENT_OVERDUE, EXPENSE_SUBMITTED, EXPEN
 media_type:          IMAGE, VIDEO, AUDIO
 reaction_type:       LIKE, LOVE, APPRECIATE (deprecated), MEH, SAD
 post_status:         PUBLISHED, HIDDEN
+payment_proof_status: PENDING, APPROVED, REJECTED
 ```
 
 ---
@@ -365,6 +370,8 @@ is_committee_member(pid)  -- EXISTS in committee_members
 **schedule_items:** Admin manages (via shareholders join) | Shareholder views own
 
 **activity_posts:** Admin manages all | Shareholders view PUBLISHED only
+
+**payment_proofs:** Shareholders INSERT own (WITH CHECK via shareholders.user_id) | Shareholders SELECT own | Project admins SELECT all for project | Project admins UPDATE (approve/reject)
 
 **packages:** Super admin manages | Anyone views active
 
@@ -417,6 +424,26 @@ DRAFT → (admin submits) → SUBMITTED → (committee reviews) → APPROVED or 
 - ⚠️ **Currently a STUB** — logs audit event but does not actually generate schedule_items
 - Real implementation: reads `payment_schedules` config + `shareholders` ownership_pct → generates `schedule_items`
 
+### G. Payment Proof Submission & Approval Flow
+```
+Shareholder → "Submit Payment Proof" modal → selects schedule item (optional) → enters amount (partial OK) → uploads attachment (mandatory) → submits
+                                                                                                                                                    ↓
+                                                              POST /api/projects/[projectId]/payment-proofs (multipart/form-data)
+                                                                    • Uploads file to expense-proofs storage bucket at path: payment-proofs/[projectId]/[proofId]/[file]
+                                                                    • Inserts payment_proofs row with status=PENDING
+                                                                    ↓
+                                             Project Admin → "Waiting for Approval" tab → sees proof card with attachment link → clicks "Record Payment"
+                                                                    ↓
+                                             POST /api/projects/[projectId]/payment-proofs/[id]/approve
+                                                                    • Creates payments row (standard record)
+                                                                    • Updates payment_proofs.status = APPROVED, links payment_id
+                                                              OR → "Reject" → POST /api/projects/[projectId]/payment-proofs/[id]/reject
+                                                                    • Updates payment_proofs.status = REJECTED
+```
+- Shareholder can see all their submitted proofs in "Submitted Proofs" tab with status badges
+- Admin sees pending count badge on "Waiting for Approval" tab (yellow when there are pending items)
+- After approval, the new payment appears in Payment History for both admin and shareholder
+
 ### D. Project Deletion — Mandatory Cascade Order
 Delete in this exact sequence to avoid FK constraint errors.
 ⚠️ Tables marked with `→` do NOT have project_id — see FK Reference (§6B) for how to delete them.
@@ -429,8 +456,9 @@ Delete in this exact sequence to avoid FK constraint errors.
 6. `expense_attachments` → via `expense_id` (fetch expense IDs first)
 7. `expense_approvals` → via `expense_id`
 8. `expenses` — direct project_id
-9. `payments` — direct project_id
-10. `penalties` → via `schedule_item_id` (fetch schedule IDs → item IDs first)
+9. `payment_proofs` — direct project_id
+10. `payments` — direct project_id
+11. `penalties` → via `schedule_item_id` (fetch schedule IDs → item IDs first)
 11. `schedule_items` → via `schedule_id` (fetch schedule IDs first)
 12. `payment_schedules` — direct project_id
 13. `milestones` — direct project_id
@@ -540,6 +568,8 @@ await createNotification({
 | `(project-admin)/[projectId]/committee/page.tsx` | Cross-table read: committee + shareholders |
 | `(shareholder)/my/dashboard/page.tsx` | RLS blocks shareholder reading own record |
 | `(shareholder)/my/feed/page.tsx` | Same as above |
+| `(shareholder)/my/payments/page.tsx` | Fetches own payment_proofs — supabaseAdmin used to bypass RLS on server page |
+| `(project-admin)/[projectId]/payments/page.tsx` | Fetches all payment_proofs for project — supabaseAdmin used |
 
 ---
 
@@ -576,6 +606,13 @@ await createNotification({
 | Apr 2026 | Add Custom Collection modal — shareholder dropdown converted to searchable combobox; Target Milestone and Status dropdowns converted to same combobox style; modal open state lifted to PaymentsClient | `payments/tabs/ScheduleTab.tsx`, `payments/PaymentsClient.tsx` | None — UI only |
 | Apr 2026 | Collection Schedule filter — replaced native select with Popover+Command combobox matching form dropdowns; removed wrapper background/border | `payments/tabs/ScheduleTab.tsx` | None — UI only |
 | Apr 2026 | Replace Appreciate reaction with Meh + Sad; swap icon to PartyPopper then Meh/Frown | `feed/AdminPostCard.tsx`, `(shareholder)/my/feed/PostCard.tsx`, `ShareholderFeedClient.tsx`, `feed/page.tsx`, `(shareholder)/my/feed/page.tsx`, `api/.../react/route.ts`, `components/icons/ClapIcon.tsx` (created then removed) | Added MEH, SAD to reaction_type enum; APPRECIATE deprecated but retained in DB |
+| Apr 2026 | Payment proof table view + search + rejection note — all proof tabs converted from cards to tables; search box added to all admin payment tab groups (Schedule, History, Waiting for Approval); reject modal now requires a written reason visible to shareholder; DB: added rejection_note column to payment_proofs | `payments/tabs/WaitingForApprovalTab.tsx`, `payments/tabs/AllPaymentsTab.tsx`, `payments/tabs/ScheduleTab.tsx`, `(shareholder)/my/payments/ShareholderPaymentsClient.tsx`, `api/.../payment-proofs/[id]/reject/route.ts` | Added `rejection_note TEXT` column to `payment_proofs` |
+| Apr 2026 | Waiting for Approval — single unified table (removed Pending/Reviewed split sections and titles); APPROVED proofs filtered out (already in Payment History); action buttons converted to ghost icon style (h-8 w-8) matching shareholders page | `payments/tabs/WaitingForApprovalTab.tsx` | None — UI only |
+| Apr 2026 | Fix approve route — removed non-existent project_id column from payments insert; added receipt_no generation (NRM-[PROJ]-YYYYMMDD-SEQ format) matching standard payment route | `api/projects/[projectId]/payment-proofs/[id]/approve/route.ts` | None — code fix |
+| Apr 2026 | Shareholder Submitted Proofs — hide APPROVED items (redundant with Payment History); tab badge count reflects only PENDING+REJECTED | `(shareholder)/my/payments/ShareholderPaymentsClient.tsx` | None — UI only |
+| Apr 2026 | Proof attachment — shown as Paperclip icon button (with filename tooltip) instead of text link in Payment History for both admin and shareholder; fetched via nested select proof:payment_proofs(attachment_url, attachment_name) on payments query | `payments/tabs/AllPaymentsTab.tsx`, `(shareholder)/my/payments/ShareholderPaymentsClient.tsx`, `(project-admin)/[projectId]/payments/page.tsx`, `(shareholder)/my/payments/page.tsx` | None — query change only |
+| Apr 2026 | Remove Notes column from Waiting for Approval table (admin) and Submitted Proofs table (shareholder) | `payments/tabs/WaitingForApprovalTab.tsx`, `(shareholder)/my/payments/ShareholderPaymentsClient.tsx` | None — UI only |
+| Apr 2026 | Submit Payment Proof — shareholder submits proof, admin reviews in new "Waiting for Approval" tab; approve creates payment record | `(shareholder)/my/payments/ShareholderPaymentsClient.tsx`, `(shareholder)/my/payments/SubmitPaymentProofModal.tsx` (NEW), `(shareholder)/my/payments/page.tsx`, `(project-admin)/[projectId]/payments/PaymentsClient.tsx`, `(project-admin)/[projectId]/payments/tabs/WaitingForApprovalTab.tsx` (NEW), `(project-admin)/[projectId]/payments/page.tsx`, `api/projects/[projectId]/payment-proofs/route.ts` (NEW), `api/projects/[projectId]/payment-proofs/[id]/approve/route.ts` (NEW), `api/projects/[projectId]/payment-proofs/[id]/reject/route.ts` (NEW) | New table: `payment_proofs`; New enum: `payment_proof_status (PENDING, APPROVED, REJECTED)`; 4 RLS policies; Storage: uses existing `expense-proofs` bucket at path `payment-proofs/[projectId]/[proofId]/[file]` |
 
 ---
 

@@ -1,12 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { Calendar, CreditCard, History, Plus } from "lucide-react"
+import { Calendar, CreditCard, History, Plus, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { ScheduleTab } from "./tabs/ScheduleTab"
 import { RecordPaymentTab } from "./tabs/RecordPaymentTab"
 import { AllPaymentsTab } from "./tabs/AllPaymentsTab"
+import { WaitingForApprovalTab } from "./tabs/WaitingForApprovalTab"
 
 interface PaymentsClientProps {
   projectId: string
@@ -14,15 +15,17 @@ interface PaymentsClientProps {
   payments: any[]
   shareholders: any[]
   milestones: any[]
+  paymentProofs: any[]
 }
 
-export function PaymentsClient({ projectId, scheduleItems, payments, shareholders, milestones }: PaymentsClientProps) {
+export function PaymentsClient({ projectId, scheduleItems, payments, shareholders, milestones, paymentProofs }: PaymentsClientProps) {
   const [activeTab, setActiveTab] = useState("SCHEDULE")
   const [showRecordModal, setShowRecordModal] = useState(false)
   const [showCollectionModal, setShowCollectionModal] = useState(false)
+  const [allPayments, setAllPayments] = useState(payments)
 
   const totalScheduled = scheduleItems.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0)
-  const totalCollected = payments.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0)
+  const totalCollected = allPayments.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0)
   const totalOutstanding = totalScheduled - totalCollected
 
   let totalPenalties = 0
@@ -39,6 +42,19 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
 
   const formatBD = (num: number) =>
     num.toLocaleString('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 })
+
+  const pendingProofsCount = paymentProofs.filter(p => p.status === "PENDING").length
+  const scheduleCount = scheduleItems.length
+  const historyCount = allPayments.length
+  const proofsCount = paymentProofs.length
+
+  const handleProofApproved = (proofId: string, payment: any) => {
+    setAllPayments(prev => [payment, ...prev])
+  }
+
+  const handleProofRejected = (_: string) => {
+    // proof status is updated inside WaitingForApprovalTab local state
+  }
 
   return (
     <div className="space-y-8">
@@ -86,18 +102,39 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
 
       {/* Tabs */}
       <div className="border-b border-outline-variant/40">
-        <nav className="flex space-x-8">
+        <nav className="flex space-x-6 overflow-x-auto whitespace-nowrap">
           <button
             onClick={() => setActiveTab("SCHEDULE")}
             className={`py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm transition-colors ${activeTab === "SCHEDULE" ? "border-primary text-primary" : "border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline-variant"}`}
           >
             <Calendar className="w-4 h-4" /> Collection Schedule
+            {scheduleCount > 0 && (
+              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none ${activeTab === "SCHEDULE" ? "bg-primary text-white" : "bg-surface-variant text-on-surface-variant"}`}>
+                {scheduleCount}
+              </span>
+            )}
           </button>
           <button
             onClick={() => setActiveTab("HISTORY")}
             className={`py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm transition-colors ${activeTab === "HISTORY" ? "border-primary text-primary" : "border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline-variant"}`}
           >
             <History className="w-4 h-4" /> Payment History
+            {historyCount > 0 && (
+              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none ${activeTab === "HISTORY" ? "bg-primary text-white" : "bg-surface-variant text-on-surface-variant"}`}>
+                {historyCount}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab("WAITING")}
+            className={`py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm transition-colors ${activeTab === "WAITING" ? "border-primary text-primary" : "border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline-variant"}`}
+          >
+            <Clock className="w-4 h-4" /> Waiting for Approval
+            {proofsCount > 0 && (
+              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none ${activeTab === "WAITING" ? "bg-primary text-white" : pendingProofsCount > 0 ? "bg-yellow-500 text-white" : "bg-surface-variant text-on-surface-variant"}`}>
+                {pendingProofsCount > 0 ? pendingProofsCount : proofsCount}
+              </span>
+            )}
           </button>
         </nav>
       </div>
@@ -108,14 +145,22 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
           <ScheduleTab
             projectId={projectId}
             scheduleItems={scheduleItems}
-            payments={payments}
+            payments={allPayments}
             milestones={milestones}
             shareholders={shareholders}
             createOpen={showCollectionModal}
             onCreateOpenChange={setShowCollectionModal}
           />
         )}
-        {activeTab === "HISTORY" && <AllPaymentsTab projectId={projectId} payments={payments} />}
+        {activeTab === "HISTORY" && <AllPaymentsTab projectId={projectId} payments={allPayments} />}
+        {activeTab === "WAITING" && (
+          <WaitingForApprovalTab
+            projectId={projectId}
+            proofs={paymentProofs}
+            onProofApproved={handleProofApproved}
+            onProofRejected={handleProofRejected}
+          />
+        )}
       </div>
 
       {/* Record Payment modal */}
@@ -128,7 +173,7 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
             projectId={projectId}
             scheduleItems={scheduleItems}
             shareholders={shareholders}
-            payments={payments}
+            payments={allPayments}
             onSuccess={() => setShowRecordModal(false)}
           />
         </DialogContent>

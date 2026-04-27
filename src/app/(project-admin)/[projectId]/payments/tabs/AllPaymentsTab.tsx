@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
@@ -6,13 +6,25 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
-import { Download, FileText, Pencil, Trash2, MoreVertical } from "lucide-react"
+import { Download, FileText, Pencil, Trash2, MoreVertical, Search, Paperclip } from "lucide-react"
 import { toast } from "sonner"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 export function AllPaymentsTab({ projectId, payments }: { projectId: string, payments: any[] }) {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [search, setSearch] = useState("")
+
+  const filteredPayments = useMemo(() => {
+    if (!search.trim()) return payments
+    const q = search.toLowerCase()
+    return payments.filter(p => {
+      const name = p.shareholder?.profiles?.name?.toLowerCase() || ""
+      const unit = p.shareholder?.unit_flat?.toLowerCase() || ""
+      const receipt = p.receipt_no?.toLowerCase() || ""
+      return name.includes(q) || unit.includes(q) || receipt.includes(q)
+    })
+  }, [payments, search])
 
   // Edit Modal State
   const [editingPayment, setEditingPayment] = useState<any>(null)
@@ -79,7 +91,16 @@ export function AllPaymentsTab({ projectId, payments }: { projectId: string, pay
 
   return (
     <div>
-       <div className="flex justify-end pb-3">
+       <div className="flex items-center justify-between gap-3 pb-3">
+         <div className="relative w-72">
+           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
+           <Input
+             placeholder="Search by shareholder, unit, receipt..."
+             value={search}
+             onChange={e => setSearch(e.target.value)}
+             className="pl-9 h-10"
+           />
+         </div>
          <Button variant="outline" size="sm">
             <Download className="w-4 h-4 mr-2" /> Export CSV
          </Button>
@@ -94,16 +115,17 @@ export function AllPaymentsTab({ projectId, payments }: { projectId: string, pay
               <TableHead>Method</TableHead>
               <TableHead>Reference</TableHead>
               <TableHead className="text-right">Amount (৳)</TableHead>
+              <TableHead>Proof</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {payments.length === 0 ? (
+            {filteredPayments.length === 0 ? (
                <TableRow>
-                 <TableCell colSpan={7} className="text-center py-8 text-on-surface-variant">No payments recorded yet.</TableCell>
+                 <TableCell colSpan={8} className="text-center py-8 text-on-surface-variant">No payments recorded yet.</TableCell>
                </TableRow>
             ) : (
-               payments.map((p) => (
+               filteredPayments.map((p) => (
                  <TableRow key={p.id}>
                     <TableCell className="text-sm">{new Date(p.created_at).toLocaleDateString()}</TableCell>
                     <TableCell className="font-mono text-xs font-semibold text-on-surface">{p.receipt_no}</TableCell>
@@ -114,6 +136,14 @@ export function AllPaymentsTab({ projectId, payments }: { projectId: string, pay
                     <TableCell className="text-sm uppercase text-[10px] font-bold text-slate-500">{p.method.replace("_", " ")}</TableCell>
                     <TableCell className="text-sm text-on-surface-variant font-mono text-xs">{p.reference_no || "N/A"}</TableCell>
                     <TableCell className="text-right font-bold text-primary">৳{parseFloat(p.amount).toLocaleString('en-IN')}</TableCell>
+                    <TableCell>
+                      {p.proof?.[0]?.attachment_url
+                        ? <a href={p.proof[0].attachment_url} target="_blank" rel="noopener noreferrer" title={p.proof[0].attachment_name}
+                            className="inline-flex items-center justify-center h-8 w-8 rounded-md text-primary hover:bg-primary-container/20 transition-colors">
+                            <Paperclip className="w-4 h-4" />
+                          </a>
+                        : <span className="text-xs text-on-surface-variant">—</span>}
+                    </TableCell>
                     <TableCell className="text-right">
                        <div className="flex justify-end gap-1">
                           <Button variant="ghost" size="sm" onClick={() => handleDownloadReceipt(p.id)} className="text-on-surface-variant hover:text-primary">
