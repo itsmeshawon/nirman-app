@@ -52,6 +52,9 @@ export function ProjectSettingsClient({
   const [graceDays, setGraceDays] = useState(penaltyConfig?.grace_days?.toString() || "5")
   const [penaltyType, setPenaltyType] = useState(penaltyConfig?.penalty_type || "NONE")
   const [fixedAmount, setFixedAmount] = useState(penaltyConfig?.fixed_amount?.toString() || "")
+  const [percentRate, setPercentRate] = useState(penaltyConfig?.percent_rate?.toString() || "")
+  const [dailyRate, setDailyRate] = useState(penaltyConfig?.daily_rate?.toString() || "")
+  const [penaltyCap, setPenaltyCap] = useState(penaltyConfig?.cap?.toString() || "")
 
   // -- Tab 5: My Profile --
   const [myName, setMyName] = useState(adminProfile?.name || "")
@@ -133,11 +136,14 @@ export function ProjectSettingsClient({
       const res = await fetch(`/api/projects/${projectId}/penalty-config`, {
          method: "PUT",
          headers: { "Content-Type": "application/json" },
-         body: JSON.stringify({ 
-           grace_days: graceDays,
-           penalty_type: penaltyType,
-           fixed_amount: fixedAmount
-         })
+        body: JSON.stringify({ 
+            grace_days: graceDays,
+            penalty_type: penaltyType,
+            fixed_amount: fixedAmount,
+            percent_rate: percentRate,
+            daily_rate: dailyRate,
+            cap: penaltyCap,
+          })
       })
       if (!res.ok) {
         const d = await res.json().catch(() => ({}));
@@ -368,7 +374,9 @@ export function ProjectSettingsClient({
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="NONE">No Penalties</SelectItem>
-                        <SelectItem value="FIXED_AMOUNT">Fixed Amount (Monthly Setup)</SelectItem>
+                        <SelectItem value="FIXED_AMOUNT">Fixed Amount</SelectItem>
+                        <SelectItem value="PERCENT_OF_DUE">Percentage of Due Amount</SelectItem>
+                        <SelectItem value="DAILY_PERCENT">Daily Percentage (Compounding)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -377,6 +385,32 @@ export function ProjectSettingsClient({
                     <div className="grid gap-2 bg-surface-variant/30 p-4 rounded border">
                        <Label htmlFor="fixed_amount">Fixed Penalty Amount (৳)</Label>
                        <Input id="fixed_amount" type="number" value={fixedAmount} onChange={(e) => setFixedAmount(e.target.value)} className="max-w-[200px]" />
+                    </div>
+                  )}
+
+                  {penaltyType === "PERCENT_OF_DUE" && (
+                    <div className="grid gap-2 bg-surface-variant/30 p-4 rounded border">
+                       <Label htmlFor="percent_rate">Penalty Rate (%)</Label>
+                       <Input id="percent_rate" type="number" step="0.1" value={percentRate} onChange={(e) => setPercentRate(e.target.value)} className="max-w-[200px]" placeholder="e.g. 2" />
+                       <p className="text-xs text-on-surface-variant">Charged once as a percentage of the outstanding due amount.</p>
+                    </div>
+                  )}
+
+                  {penaltyType === "DAILY_PERCENT" && (
+                    <div className="grid gap-3 bg-surface-variant/30 p-4 rounded border">
+                       <div className="grid gap-2">
+                         <Label htmlFor="daily_rate">Daily Penalty Rate (%)</Label>
+                         <Input id="daily_rate" type="number" step="0.01" value={dailyRate} onChange={(e) => setDailyRate(e.target.value)} className="max-w-[200px]" placeholder="e.g. 0.1" />
+                         <p className="text-xs text-on-surface-variant">Applied daily on the due amount. The longer the delay, the higher the penalty.</p>
+                       </div>
+                    </div>
+                  )}
+
+                  {penaltyType !== "NONE" && (
+                    <div className="grid gap-2 bg-surface-variant/30 p-4 rounded border">
+                       <Label htmlFor="penalty_cap">Maximum Penalty Cap (৳) <span className="text-on-surface-variant font-normal">(optional)</span></Label>
+                       <Input id="penalty_cap" type="number" value={penaltyCap} onChange={(e) => setPenaltyCap(e.target.value)} className="max-w-[200px]" placeholder="e.g. 10000" />
+                       <p className="text-xs text-on-surface-variant">Penalties will never exceed this amount per installment.</p>
                     </div>
                   )}
 

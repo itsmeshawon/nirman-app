@@ -6,9 +6,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
-import { Download, FileText, Pencil, Trash2, MoreVertical, Search, Paperclip } from "lucide-react"
+import { Download, FileText, Pencil, Trash2, Search, Paperclip } from "lucide-react"
 import { toast } from "sonner"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 export function AllPaymentsTab({ projectId, payments }: { projectId: string, payments: any[] }) {
   const router = useRouter()
@@ -144,26 +143,19 @@ export function AllPaymentsTab({ projectId, payments }: { projectId: string, pay
                           </a>
                         : <span className="text-xs text-on-surface-variant">—</span>}
                     </TableCell>
-                    <TableCell className="text-right">
-                       <div className="flex justify-end gap-1">
-                          <Button variant="ghost" size="sm" onClick={() => handleDownloadReceipt(p.id)} className="text-on-surface-variant hover:text-primary">
-                             <FileText className="w-4 h-4" />
-                          </Button>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger render={<Button variant="ghost" size="sm" className="size-8 p-0" />}>
-                              <MoreVertical className="h-4 w-4" />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => openEditDialog(p)}>
-                                <Pencil className="mr-2 h-4 w-4" /> Edit Record
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleDelete(p.id)} className="text-destructive">
-                                <Trash2 className="mr-2 h-4 w-4" /> Delete
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                       </div>
-                    </TableCell>
+                     <TableCell className="text-right">
+                        <div className="flex justify-end gap-1">
+                           <Button variant="ghost" size="sm" onClick={() => handleDownloadReceipt(p.id)} className="text-on-surface-variant hover:text-primary">
+                              <FileText className="w-4 h-4" />
+                           </Button>
+                           <Button variant="ghost" size="sm" onClick={() => openEditDialog(p)} className="size-8 p-0 text-on-surface-variant hover:text-primary">
+                              <Pencil className="h-4 w-4" />
+                           </Button>
+                           <Button variant="ghost" size="sm" onClick={() => handleDelete(p.id)} className="size-8 p-0 text-destructive hover:text-destructive">
+                              <Trash2 className="h-4 w-4" />
+                           </Button>
+                        </div>
+                     </TableCell>
                  </TableRow>
                ))
             )}

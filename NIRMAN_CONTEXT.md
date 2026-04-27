@@ -285,8 +285,8 @@ src/
 | `payment_schedules` | Schedule config (MONTHLY/MILESTONE/MIXED) |
 | `schedule_items` | Individual payment due items per shareholder |
 | `payments` | Recorded payments |
-| `penalties` | Late payment penalties per schedule_item |
-| `penalty_configs` | Penalty rules per project |
+| `penalties` | Late payment penalties per schedule_item. Columns: id, schedule_item_id, amount (zeroed on waiver), calculated_at, is_waived, waived_amount, waive_reason, waived_at |
+| `penalty_configs` | Penalty rules per project. Columns: id, project_id (unique), grace_days, penalty_type (NONE/FIXED_AMOUNT/PERCENT_OF_DUE/DAILY_PERCENT), fixed_amount, percent_rate, daily_rate, cap |
 | `expenses` | Project expenses (full lifecycle) |
 | `expense_categories` | Expense categories per project |
 | `expense_attachments` | Files attached to expenses |
@@ -324,6 +324,7 @@ shareholder_status:  ACTIVE, INACTIVE
 milestone_status:    UPCOMING, IN_PROGRESS, COMPLETED
 expense_status:      DRAFT, SUBMITTED, CHANGES_REQUESTED, REJECTED, APPROVED, PUBLISHED
 payment_method:      CASH, BANK_TRANSFER, BKASH, NAGAD, CHEQUE
+penalty_type:        NONE, FIXED_AMOUNT, PERCENT_OF_DUE, DAILY_PERCENT
 due_status:          UPCOMING, DUE, OVERDUE, PAID, PARTIALLY_PAID
 schedule_type:       MONTHLY, MILESTONE, MIXED
 approval_rule:       MAJORITY, ANY_SINGLE
@@ -481,6 +482,15 @@ Delete in this exact sequence to avoid FK constraint errors.
 - APPROVED with `ANY_SINGLE` rule → immediately marks APPROVED
 - APPROVED with `MAJORITY` rule → counts approvals, marks APPROVED only when > 50% of active committee members have approved
 
+### H. Penalty Engine
+- **Configuration:** Project Admin configures penalty rules in Settings → Penalties tab. One `penalty_configs` row per project (upserted).
+- **Penalty types:** `NONE` (no penalties), `FIXED_AMOUNT` (flat ৳ amount), `PERCENT_OF_DUE` (% of outstanding due), `DAILY_PERCENT` (% per day of delay, compounding). Optional `cap` limits maximum penalty per installment. Configurable `grace_days` — no penalty until grace period expires.
+- **Calculation engine:** `src/lib/penalty.ts` — `calculatePenalty()` evaluates a single schedule item against config; `applyPendingPenalties()` sweeps all DUE/OVERDUE/PARTIALLY_PAID items and upserts penalty rows.
+- **Trigger:** Manual — admin clicks "Trigger Penalty Sweep" on Defaulters page. Calls `POST /api/projects/[projectId]/penalties/apply`.
+- **Individual waiver:** Admin clicks "Waive" button on Defaulters page → dialog shows each active penalty → admin enters reason → calls `POST /api/projects/[projectId]/penalties/[id]/waive`. Sets `is_waived=true`, `amount=0`, records `waived_amount`, `waive_reason`, `waived_at`. Waived penalties are skipped on future sweeps.
+- **Payment-time waiver:** Admin can check "Waive late fees" when recording a payment. The payment API (`POST /api/projects/[projectId]/payments`) waives all active penalties for that shareholder with full audit trail (waived_amount, reason, timestamp).
+- **Display:** Penalties shown in Defaulters page (admin), Schedule tab, Payment History, Shareholder My Payments, and Shareholder Defaulters views.
+
 ---
 
 ## 9. CODE PATTERNS
@@ -613,6 +623,7 @@ await createNotification({
 | Apr 2026 | Proof attachment — shown as Paperclip icon button (with filename tooltip) instead of text link in Payment History for both admin and shareholder; fetched via nested select proof:payment_proofs(attachment_url, attachment_name) on payments query | `payments/tabs/AllPaymentsTab.tsx`, `(shareholder)/my/payments/ShareholderPaymentsClient.tsx`, `(project-admin)/[projectId]/payments/page.tsx`, `(shareholder)/my/payments/page.tsx` | None — query change only |
 | Apr 2026 | Remove Notes column from Waiting for Approval table (admin) and Submitted Proofs table (shareholder) | `payments/tabs/WaitingForApprovalTab.tsx`, `(shareholder)/my/payments/ShareholderPaymentsClient.tsx` | None — UI only |
 | Apr 2026 | Submit Payment Proof — shareholder submits proof, admin reviews in new "Waiting for Approval" tab; approve creates payment record | `(shareholder)/my/payments/ShareholderPaymentsClient.tsx`, `(shareholder)/my/payments/SubmitPaymentProofModal.tsx` (NEW), `(shareholder)/my/payments/page.tsx`, `(project-admin)/[projectId]/payments/PaymentsClient.tsx`, `(project-admin)/[projectId]/payments/tabs/WaitingForApprovalTab.tsx` (NEW), `(project-admin)/[projectId]/payments/page.tsx`, `api/projects/[projectId]/payment-proofs/route.ts` (NEW), `api/projects/[projectId]/payment-proofs/[id]/approve/route.ts` (NEW), `api/projects/[projectId]/payment-proofs/[id]/reject/route.ts` (NEW) | New table: `payment_proofs`; New enum: `payment_proof_status (PENDING, APPROVED, REJECTED)`; 4 RLS policies; Storage: uses existing `expense-proofs` bucket at path `payment-proofs/[projectId]/[proofId]/[file]` |
+| Apr 2026 | Fix Penalty Engine — 4 bugs fixed: (1) type string mismatch `FIXED` → `FIXED_AMOUNT` in calculation engine, (2) payment-time waiver now records full waive data (waived_amount, amount:0, waive_reason, waived_at), (3) individual penalty waive UI with reason dialog added to Defaulters page, (4) Settings dropdown now exposes all 4 penalty types (NONE, FIXED_AMOUNT, PERCENT_OF_DUE, DAILY_PERCENT) with conditional fields and cap | `src/lib/penalty.ts`, `src/app/api/projects/[projectId]/payments/route.ts`, `src/app/(project-admin)/[projectId]/defaulters/DefaultersClient.tsx`, `src/app/(project-admin)/[projectId]/settings/ProjectSettingsClient.tsx` | None — code fix + UI only |
 
 ---
 

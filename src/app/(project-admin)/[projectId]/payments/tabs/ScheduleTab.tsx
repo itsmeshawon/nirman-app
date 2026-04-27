@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { Calendar as CalendarIcon, Pencil, Trash2, MoreVertical, ChevronsUpDown, Check } from "lucide-react"
+import { Calendar as CalendarIcon, Pencil, Trash2, ChevronsUpDown, Check, Banknote } from "lucide-react"
 import { EmptyState } from "@/components/EmptyState"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 
 const SCHEDULE_STATUSES = [
@@ -19,6 +20,14 @@ const SCHEDULE_STATUSES = [
   { value: "OVERDUE",       label: "Overdue" },
   { value: "PARTIALLY_PAID",label: "Partially Paid" },
   { value: "PAID",          label: "Paid" },
+]
+
+const PAYMENT_METHODS = [
+  { value: "BANK_TRANSFER", label: "Bank Transfer" },
+  { value: "CASH",          label: "Cash" },
+  { value: "CHEQUE",        label: "Cheque" },
+  { value: "BKASH",         label: "bKash" },
+  { value: "NAGAD",         label: "Nagad" },
 ]
 
 function ComboBox({
@@ -74,6 +83,57 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
   const [milestoneId,   setMilestoneId]   = useState("")
   const [amount,        setAmount]        = useState("")
   const [dueDate,       setDueDate]       = useState("")
+
+  // Record payment dialog state
+  const [payDialogItem, setPayDialogItem] = useState<any>(null)
+  const [payAmount,     setPayAmount]     = useState("")
+  const [payMethod,     setPayMethod]     = useState("BANK_TRANSFER")
+  const [payReference,  setPayReference]  = useState("")
+  const [payNotes,      setPayNotes]      = useState("")
+  const [paySubmitting, setPaySubmitting] = useState(false)
+
+  const openPayDialog = (item: any) => {
+    const paid = payments
+      .filter(p => p.schedule_item_id === item.id)
+      .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
+    const leftToPay = Math.max(0, (parseFloat(item.amount) || 0) - paid)
+    setPayDialogItem(item)
+    setPayAmount(leftToPay > 0 ? leftToPay.toString() : "")
+    setPayMethod("BANK_TRANSFER")
+    setPayReference("")
+    setPayNotes("")
+  }
+
+  const handleRecordPayment = async () => {
+    if (!payDialogItem || !payAmount || !payMethod) {
+      toast.error("Please fill in amount and payment method.")
+      return
+    }
+    setPaySubmitting(true)
+    try {
+      const res = await fetch(`/api/projects/${projectId}/payments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          shareholder_id:   payDialogItem.shareholder_id,
+          schedule_item_id: payDialogItem.id,
+          amount:           parseFloat(payAmount) || 0,
+          method:           payMethod,
+          reference_no:     payReference || null,
+          notes:            payNotes || null,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      toast.success(`Payment recorded! Receipt: ${data.payment.receipt_no}`)
+      setPayDialogItem(null)
+      router.refresh()
+    } catch (err: any) {
+      toast.error(err.message)
+    } finally {
+      setPaySubmitting(false)
+    }
+  }
 
   const getPaidAmount = (scheduleId: string) =>
     payments.filter(p => p.schedule_item_id === scheduleId)
@@ -285,19 +345,19 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
                     </span>
                   </TableCell>
                   <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger render={<Button variant="ghost" size="sm" className="size-8 p-0" />}>
-                        <MoreVertical className="h-4 w-4" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => openEditDialog(item)}>
-                          <Pencil className="mr-2 h-4 w-4" /> Edit Installment
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDelete(item.id)} className="text-destructive">
-                          <Trash2 className="mr-2 h-4 w-4" /> Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className="flex items-center justify-end gap-1">
+                      {item.status !== 'PAID' && (
+                        <Button variant="ghost" size="sm" onClick={() => openPayDialog(item)} className="size-8 p-0 text-primary hover:text-primary">
+                          <Banknote className="h-4 w-4" />
+                        </Button>
+                      )}
+                      <Button variant="ghost" size="sm" onClick={() => openEditDialog(item)} className="size-8 p-0 text-on-surface-variant hover:text-primary">
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={() => handleDelete(item.id)} className="size-8 p-0 text-destructive hover:text-destructive">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               )
@@ -489,6 +549,82 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
               <Button variant="outline" onClick={() => setEditingItem(null)} disabled={isSubmitting}>Cancel</Button>
               <Button onClick={handleUpdate} disabled={isSubmitting} className="bg-primary hover:bg-primary/90">
                 {isSubmitting ? "Updating..." : "Save Changes"}
+              </Button>
+            </DialogFooter>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── RECORD PAYMENT DIALOG ── */}
+      <Dialog open={!!payDialogItem} onOpenChange={(open) => !open && setPayDialogItem(null)}>
+        <DialogContent className="sm:max-w-[480px]">
+          <DialogHeader>
+            <DialogTitle>Record Payment</DialogTitle>
+            <DialogDescription>
+              {payDialogItem?.shareholder?.profiles?.name} · Unit {payDialogItem?.shareholder?.unit_flat}
+              {payDialogItem?.milestone?.name ? ` · ${payDialogItem.milestone.name}` : ""}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div className="rounded-xl border border-outline-variant/40 overflow-hidden">
+              <div className="grid grid-cols-3 divide-x divide-outline-variant/40 bg-surface-variant/30">
+                <div className="p-3 text-center">
+                  <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-0.5">Expected</p>
+                  <p className="text-base font-black text-on-surface">৳{parseFloat(payDialogItem?.amount || 0).toLocaleString('en-IN')}</p>
+                </div>
+                <div className="p-3 text-center">
+                  <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-0.5">Paid</p>
+                  <p className="text-base font-black text-primary">৳{payments
+                    .filter(p => p.schedule_item_id === payDialogItem?.id)
+                    .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
+                    .toLocaleString('en-IN')}</p>
+                </div>
+                <div className="p-3 text-center bg-on-surface/5">
+                  <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-0.5">Remaining</p>
+                  <p className="text-base font-black text-on-surface">৳{Math.max(0,
+                    (parseFloat(payDialogItem?.amount || 0) -
+                      payments
+                        .filter(p => p.schedule_item_id === payDialogItem?.id)
+                        .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0))
+                  ).toLocaleString('en-IN')}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-4 items-end">
+              <div className="space-y-2 w-40 shrink-0">
+                <Label>Amount (৳) *</Label>
+                <Input className="h-11 text-lg font-semibold" type="number" step="0.01" value={payAmount} onChange={(e) => setPayAmount(e.target.value)} placeholder="0.00" />
+              </div>
+              <div className="space-y-2 flex-1">
+                <Label>Payment Method *</Label>
+                <Select value={payMethod} onValueChange={(v) => setPayMethod(v ?? "BANK_TRANSFER")}>
+                  <SelectTrigger className="h-11">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PAYMENT_METHODS.map(m => (
+                      <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Reference Number / Check No.</Label>
+              <Input className="h-11" value={payReference} onChange={(e) => setPayReference(e.target.value)} placeholder="e.g. Bank Ref #, bKash ID" />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Notes</Label>
+              <Textarea value={payNotes} onChange={(e) => setPayNotes(e.target.value)} placeholder="Optional internal note..." className="min-h-[60px]" />
+            </div>
+
+            <DialogFooter className="pt-4">
+              <Button variant="outline" onClick={() => setPayDialogItem(null)} disabled={paySubmitting}>Cancel</Button>
+              <Button onClick={handleRecordPayment} disabled={paySubmitting} className="bg-primary hover:bg-primary/90">
+                {paySubmitting ? "Recording..." : "Record Payment"}
               </Button>
             </DialogFooter>
           </div>

@@ -27,7 +27,7 @@ export function calculatePenalty(
   const dueAmount = parseFloat(scheduleItem.amount) || 0
   let penaltyAmount = 0
 
-  if (penaltyConfig.penalty_type === 'FIXED') {
+  if (penaltyConfig.penalty_type === 'FIXED_AMOUNT') {
     penaltyAmount = parseFloat(penaltyConfig.fixed_amount) || 0
   } 
   else if (penaltyConfig.penalty_type === 'PERCENT_OF_DUE') {

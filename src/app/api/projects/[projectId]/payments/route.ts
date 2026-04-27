@@ -39,8 +39,9 @@ export async function POST(
 
     // 1. Handle Penalty Waiving if requested
     if (waive_penalties) {
-      // Find all schedule items for this shareholder
-      const { data: shItems } = await supabase
+      const adminClient = getSupabaseAdmin()
+
+      const { data: shItems } = await adminClient
         .from("schedule_items")
         .select("id")
         .eq("shareholder_id", shareholder_id)
@@ -48,11 +49,35 @@ export async function POST(
       const shItemIds = shItems?.map(i => i.id) || []
       
       if (shItemIds.length > 0) {
-        await supabase
+        const { data: activePenalties } = await adminClient
           .from("penalties")
-          .update({ is_waived: true })
+          .select("id, amount")
           .in("schedule_item_id", shItemIds)
           .eq("is_waived", false)
+
+        if (activePenalties && activePenalties.length > 0) {
+          const now = new Date().toISOString()
+          for (const p of activePenalties) {
+            await adminClient
+              .from("penalties")
+              .update({
+                is_waived: true,
+                waived_amount: p.amount,
+                amount: 0,
+                waive_reason: "Waived during payment recording",
+                waived_at: now,
+              })
+              .eq("id", p.id)
+          }
+
+          await logAction({
+            projectId,
+            userId: user.id,
+            action: "WAIVE_PENALTIES_PAYMENT",
+            entityType: "payment",
+            details: { waived_count: activePenalties.length, waived_total: activePenalties.reduce((s, p) => s + parseFloat(p.amount), 0) }
+          }).catch(err => console.error("Audit failed:", err))
+        }
       }
     }
 
