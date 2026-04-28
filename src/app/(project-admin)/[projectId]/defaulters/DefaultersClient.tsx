@@ -191,7 +191,7 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-end items-start sm:items-center gap-4 bg-[var(--surface-container-low)] p-8 rounded-[28px] border border-[var(--outline-variant)]/30">
+      <div className="flex justify-end">
         <Button
           onClick={handleApplyPenalties}
           disabled={isProcessing}
@@ -265,19 +265,20 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
                     ৳ {(d.totalPrincipal + d.totalPenalty).toLocaleString('en-IN')}
                   </TableCell>
                   <TableCell className="text-right px-6">
-                    <div className="flex items-center justify-end gap-2">
+                    <div className="flex items-center justify-end gap-1">
                       {d.activePenalties.length > 0 && (
                         <Button
-                          variant="outline"
+                          variant="ghost"
                           size="sm"
-                          className="h-8 text-destructive hover:text-destructive"
+                          className="size-8 p-0 text-destructive hover:text-destructive"
                           onClick={() => openWaiveDialog(d)}
+                          title="Waive Penalty"
                         >
-                          <ShieldOff className="w-3.5 h-3.5 mr-1.5" /> Waive
+                          <ShieldOff className="w-4 h-4" />
                         </Button>
                       )}
-                      <Button variant="outline" size="sm" className="h-8">
-                        <Mail className="w-3.5 h-3.5 mr-2" /> Remind
+                      <Button variant="ghost" size="sm" className="size-8 p-0 text-on-surface-variant hover:text-primary" title="Send Reminder">
+                        <Mail className="w-4 h-4" />
                       </Button>
                     </div>
                   </TableCell>
