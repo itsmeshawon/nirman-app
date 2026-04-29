@@ -48,6 +48,10 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
   const historyCount = allPayments.length
   const proofsCount = paymentProofs.length
 
+  const handlePaymentRecorded = (payment: any) => {
+    setAllPayments(prev => [payment, ...prev])
+  }
+
   const handleProofApproved = (proofId: string, payment: any) => {
     setAllPayments(prev => [payment, ...prev])
   }
@@ -150,6 +154,7 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
             shareholders={shareholders}
             createOpen={showCollectionModal}
             onCreateOpenChange={setShowCollectionModal}
+            onPaymentRecorded={handlePaymentRecorded}
           />
         )}
         {activeTab === "HISTORY" && <AllPaymentsTab projectId={projectId} payments={allPayments} />}

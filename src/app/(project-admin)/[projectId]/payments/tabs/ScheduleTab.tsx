@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
@@ -56,10 +55,12 @@ function ComboBox({
   )
 }
 
-export function ScheduleTab({ projectId, scheduleItems, payments, milestones, shareholders, createOpen, onCreateOpenChange }: { projectId: string, scheduleItems: any[], payments: any[], milestones: any[], shareholders: any[], createOpen?: boolean, onCreateOpenChange?: (open: boolean) => void }) {
+export function ScheduleTab({ projectId, scheduleItems, payments, milestones, shareholders, createOpen, onCreateOpenChange, onPaymentRecorded }: { projectId: string, scheduleItems: any[], payments: any[], milestones: any[], shareholders: any[], createOpen?: boolean, onCreateOpenChange?: (open: boolean) => void, onPaymentRecorded?: (payment: any) => void }) {
   const router = useRouter()
   const [filterStatus, setFilterStatus] = useState("")
   const [filterOpen,   setFilterOpen]   = useState(false)
+  const [localPayments, setLocalPayments] = useState(payments)
+  const [localScheduleItems, setLocalScheduleItems] = useState(scheduleItems)
 
   // Create modal — controlled externally if props provided, else local fallback
   const [_localModalOpen, _setLocalModalOpen] = useState(false)
@@ -91,9 +92,10 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
   const [payReference,  setPayReference]  = useState("")
   const [payNotes,      setPayNotes]      = useState("")
   const [paySubmitting, setPaySubmitting] = useState(false)
+  const [payMethodOpen, setPayMethodOpen] = useState(false)
 
   const openPayDialog = (item: any) => {
-    const paid = payments
+    const paid = localPayments
       .filter(p => p.schedule_item_id === item.id)
       .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
     const leftToPay = Math.max(0, (parseFloat(item.amount) || 0) - paid)
@@ -126,6 +128,21 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
       toast.success(`Payment recorded! Receipt: ${data.payment.receipt_no}`)
+
+      const newPayment = data.payment
+      setLocalPayments(prev => [...prev, newPayment])
+      onPaymentRecorded?.(newPayment)
+
+      setLocalScheduleItems(prev => prev.map(si => {
+        if (si.id !== payDialogItem.id) return si
+        const totalPaid = localPayments
+          .filter(p => p.schedule_item_id === si.id)
+          .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
+          + (parseFloat(payAmount) || 0)
+        const newStatus = totalPaid >= parseFloat(si.amount) ? "PAID" : "PARTIALLY_PAID"
+        return { ...si, status: newStatus }
+      }))
+
       setPayDialogItem(null)
       router.refresh()
     } catch (err: any) {
@@ -136,7 +153,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
   }
 
   const getPaidAmount = (scheduleId: string) =>
-    payments.filter(p => p.schedule_item_id === scheduleId)
+    localPayments.filter(p => p.schedule_item_id === scheduleId)
       .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
 
   const getPenalty = (item: any) => {
@@ -235,7 +252,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
 
   const [searchShareholder, setSearchShareholder] = useState("")
 
-  const filteredItems = scheduleItems.filter(item => {
+  const filteredItems = localScheduleItems.filter(item => {
     const matchStatus = !filterStatus || item.status === filterStatus
     const q = searchShareholder.toLowerCase()
     const name = item.shareholder?.profiles?.name?.toLowerCase() || ""
@@ -574,7 +591,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
                 </div>
                 <div className="p-3 text-center">
                   <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-0.5">Paid</p>
-                  <p className="text-base font-black text-primary">৳{payments
+                  <p className="text-base font-black text-primary">৳{localPayments
                     .filter(p => p.schedule_item_id === payDialogItem?.id)
                     .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
                     .toLocaleString('en-IN')}</p>
@@ -583,7 +600,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
                   <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-0.5">Remaining</p>
                   <p className="text-base font-black text-on-surface">৳{Math.max(0,
                     (parseFloat(payDialogItem?.amount || 0) -
-                      payments
+                      localPayments
                         .filter(p => p.schedule_item_id === payDialogItem?.id)
                         .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0))
                   ).toLocaleString('en-IN')}</p>
@@ -592,39 +609,56 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
             </div>
 
             <div className="flex gap-4 items-end">
-              <div className="space-y-2 w-40 shrink-0">
-                <Label>Amount (৳) *</Label>
+              <div className="space-y-2 w-44 shrink-0">
+                <Label className="text-sm font-semibold text-on-surface">Amount (৳) *</Label>
                 <Input className="h-11 text-lg font-semibold" type="number" step="0.01" value={payAmount} onChange={(e) => setPayAmount(e.target.value)} placeholder="0.00" />
               </div>
               <div className="space-y-2 flex-1">
-                <Label>Payment Method *</Label>
-                <Select value={payMethod} onValueChange={(v) => setPayMethod(v ?? "BANK_TRANSFER")}>
-                  <SelectTrigger className="h-11">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PAYMENT_METHODS.map(m => (
-                      <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label className="text-sm font-semibold text-on-surface">Payment Method *</Label>
+                <Popover open={payMethodOpen} onOpenChange={setPayMethodOpen}>
+                  <PopoverTrigger className="flex h-11 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+                    {PAYMENT_METHODS.find(m => m.value === payMethod)?.label
+                      ? <span className="font-medium text-on-surface truncate text-left">{PAYMENT_METHODS.find(m => m.value === payMethod)?.label}</span>
+                      : <span className="text-muted-foreground text-left">Select method...</span>}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 ring-0 shadow-none border-0" align="start">
+                    <Command>
+                      <CommandList>
+                        <CommandGroup>
+                          {PAYMENT_METHODS.map(m => (
+                            <CommandItem
+                              key={m.value}
+                              value={m.label}
+                              onSelect={() => { setPayMethod(m.value); setPayMethodOpen(false) }}
+                              className="flex items-center justify-between py-2.5"
+                            >
+                              <span className="font-medium text-on-surface">{m.label}</span>
+                              <Check className={cn("h-4 w-4 text-primary", payMethod === m.value ? "opacity-100" : "opacity-0")} />
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label>Reference Number / Check No.</Label>
-              <Input className="h-11" value={payReference} onChange={(e) => setPayReference(e.target.value)} placeholder="e.g. Bank Ref #, bKash ID" />
+              <Label className="text-sm font-semibold text-on-surface">Reference Number / Check No.</Label>
+              <Input className="h-11" value={payReference} onChange={(e) => setPayReference(e.target.value)} placeholder="e.g. Bank Ref #, bKash ID, Check Digit" />
             </div>
 
             <div className="space-y-2">
-              <Label>Notes</Label>
-              <Textarea value={payNotes} onChange={(e) => setPayNotes(e.target.value)} placeholder="Optional internal note..." className="min-h-[60px]" />
+              <Label className="text-sm font-semibold text-on-surface">Internal Notes</Label>
+              <Textarea value={payNotes} onChange={(e) => setPayNotes(e.target.value)} placeholder="Note for physical receipt location or specific instructions..." className="min-h-[80px]" />
             </div>
 
             <DialogFooter className="pt-4">
               <Button variant="outline" onClick={() => setPayDialogItem(null)} disabled={paySubmitting}>Cancel</Button>
-              <Button onClick={handleRecordPayment} disabled={paySubmitting} className="bg-primary hover:bg-primary/90">
-                {paySubmitting ? "Recording..." : "Record Payment"}
+              <Button onClick={handleRecordPayment} disabled={paySubmitting} className="h-11 px-8 bg-primary hover:bg-primary/90">
+                {paySubmitting ? "Recording..." : "Confirm & Record Payment"}
               </Button>
             </DialogFooter>
           </div>

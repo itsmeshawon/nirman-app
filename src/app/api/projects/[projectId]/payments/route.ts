@@ -96,7 +96,7 @@ export async function POST(
       .from("payments")
       .insert({
          shareholder_id,
-         schedule_item_id: schedule_item_id || null, // null if manual ad-hoc payment
+         schedule_item_id: schedule_item_id || null,
          amount: payAmount,
          method,
          reference_no: reference_no || null,
@@ -105,7 +105,7 @@ export async function POST(
          receipt_no,
          recorded_by_id: user.id
       })
-      .select()
+      .select("*, shareholder:shareholders(id, unit_flat, profiles(name))")
       .single()
 
     if (pErr) return NextResponse.json({ error: pErr.message }, { status: 400 })
