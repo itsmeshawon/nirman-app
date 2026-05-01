@@ -11,15 +11,15 @@ const DEFAULT_CATEGORIES = [
 
 const createProjectSchema = z.object({
   name: z.string().min(3, "Project name must be at least 3 characters"),
-  address: z.string().optional(),
-  area: z.string().optional(),
-  start_date: z.string().optional(),
-  expected_handover: z.string().optional(),
+  address: z.string().nullable().optional(),
+  area: z.string().nullable().optional(),
+  start_date: z.string().nullable().optional(),
+  expected_handover: z.string().nullable().optional(),
   status: z.enum(["PILOT", "ACTIVE"]).default("PILOT"),
-  floors: z.number().int().min(1).optional(),
-  units: z.number().int().min(1).optional(),
-  salesperson_name: z.string().optional().nullable(),
-  package_id: z.string().uuid().optional().nullable(),
+  floors: z.number().int().min(1).nullable().optional(),
+  units: z.number().int().min(1).nullable().optional(),
+  salesperson_name: z.string().nullable().optional(),
+  package_id: z.string().uuid().nullable().optional(),
 })
 
 export async function GET() {

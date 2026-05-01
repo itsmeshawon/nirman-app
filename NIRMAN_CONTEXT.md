@@ -242,7 +242,7 @@ src/
 │       ├── super-admin/admins/route.ts          # GET | POST create admin
 │       ├── super-admin/admins/[adminId]/route.ts # DELETE
 │       ├── packages/route.ts | [id]/route.ts | [id]/status/route.ts
-│       ├── profile/route.ts | avatar/route.ts
+│       ├── profile/route.ts | avatar/route.ts | password/route.ts
 │       ├── profiles/[userId]/route.ts
 │       ├── notifications/route.ts | [id]/read | read-all
 │       └── dashboard/platform/route.ts
@@ -491,6 +491,13 @@ Delete in this exact sequence to avoid FK constraint errors.
 - **Payment-time waiver:** Admin can check "Waive late fees" when recording a payment. The payment API (`POST /api/projects/[projectId]/payments`) waives all active penalties for that shareholder with full audit trail (waived_amount, reason, timestamp).
 - **Display:** Penalties shown in Defaulters page (admin), Schedule tab, Payment History, Shareholder My Payments, and Shareholder Defaulters views.
 
+### I. Password Change Flow
+- Any authenticated user (SUPER_ADMIN, PROJECT_ADMIN, SHAREHOLDER) can change their own password from the Profile page.
+- **UI:** "Manage Password" section at the bottom of the Profile page with three fields: Current Password, New Password, Confirm New Password.
+- **API:** `POST /api/profile/password` — validates current password via `signInWithPassword`, then calls `supabase.auth.updateUser({ password })` to set the new one.
+- **Validation:** Current password required, new password min 8 chars, confirm must match.
+- **Audit:** Logs `CHANGE_PASSWORD` action on success.
+
 ---
 
 ## 9. CODE PATTERNS
@@ -624,6 +631,7 @@ await createNotification({
 | Apr 2026 | Remove Notes column from Waiting for Approval table (admin) and Submitted Proofs table (shareholder) | `payments/tabs/WaitingForApprovalTab.tsx`, `(shareholder)/my/payments/ShareholderPaymentsClient.tsx` | None — UI only |
 | Apr 2026 | Submit Payment Proof — shareholder submits proof, admin reviews in new "Waiting for Approval" tab; approve creates payment record | `(shareholder)/my/payments/ShareholderPaymentsClient.tsx`, `(shareholder)/my/payments/SubmitPaymentProofModal.tsx` (NEW), `(shareholder)/my/payments/page.tsx`, `(project-admin)/[projectId]/payments/PaymentsClient.tsx`, `(project-admin)/[projectId]/payments/tabs/WaitingForApprovalTab.tsx` (NEW), `(project-admin)/[projectId]/payments/page.tsx`, `api/projects/[projectId]/payment-proofs/route.ts` (NEW), `api/projects/[projectId]/payment-proofs/[id]/approve/route.ts` (NEW), `api/projects/[projectId]/payment-proofs/[id]/reject/route.ts` (NEW) | New table: `payment_proofs`; New enum: `payment_proof_status (PENDING, APPROVED, REJECTED)`; 4 RLS policies; Storage: uses existing `expense-proofs` bucket at path `payment-proofs/[projectId]/[proofId]/[file]` |
 | Apr 2026 | Fix Penalty Engine — 4 bugs fixed: (1) type string mismatch `FIXED` → `FIXED_AMOUNT` in calculation engine, (2) payment-time waiver now records full waive data (waived_amount, amount:0, waive_reason, waived_at), (3) individual penalty waive UI with reason dialog added to Defaulters page, (4) Settings dropdown now exposes all 4 penalty types (NONE, FIXED_AMOUNT, PERCENT_OF_DUE, DAILY_PERCENT) with conditional fields and cap | `src/lib/penalty.ts`, `src/app/api/projects/[projectId]/payments/route.ts`, `src/app/(project-admin)/[projectId]/defaulters/DefaultersClient.tsx`, `src/app/(project-admin)/[projectId]/settings/ProjectSettingsClient.tsx` | None — code fix + UI only |
+| May 2026 | Manage Password — profile page password change for all roles (Super Admin, Project Admin, Shareholder) | `src/app/api/profile/password/route.ts` (NEW), `src/components/profile/ManagePassword.tsx` (NEW), `(super-admin)/profile/page.tsx`, `(project-admin)/[projectId]/profile/page.tsx`, `(shareholder)/my/profile/page.tsx` | None — uses Supabase Auth `updateUser` |
 
 ---
 

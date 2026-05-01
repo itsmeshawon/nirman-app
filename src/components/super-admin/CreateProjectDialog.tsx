@@ -132,7 +132,16 @@ export default function ProjectDialog({ open, onOpenChange, onSuccess, project }
 
       if (!res.ok) {
         const err = await res.json()
-        throw new Error(err.error?.message ?? `Failed to ${isEdit ? 'update' : 'create'} project`)
+        let message = `Failed to ${isEdit ? 'update' : 'create'} project`
+        if (typeof err.error === 'string') {
+          message = err.error
+        } else if (err.error?.fieldErrors) {
+          const fieldMsgs = Object.values(err.error.fieldErrors).flat().filter(Boolean) as string[]
+          if (fieldMsgs.length) message = fieldMsgs.join('; ')
+        } else if (err.error?.message) {
+          message = err.error.message
+        }
+        throw new Error(message)
       }
 
       const data = await res.json()

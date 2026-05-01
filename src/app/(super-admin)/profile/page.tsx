@@ -1,4 +1,5 @@
 import { ProfileForm } from "@/components/profile/ProfileForm"
+import { ManagePassword } from "@/components/profile/ManagePassword"
 
 export default function SuperAdminProfilePage() {
   return (
@@ -7,6 +8,7 @@ export default function SuperAdminProfilePage() {
         <p className="text-on-surface-variant">Manage your root administrator credentials and system access.</p>
       </div>
       <ProfileForm />
+      <ManagePassword />
     </div>
   )
 }
