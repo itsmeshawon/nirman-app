@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { CheckCircle2, Clock, Circle, Pencil, ArrowUp, ArrowDown, Plus, Banknote } from "lucide-react"
+import { CheckCircle2, Clock, Circle, Pencil, ArrowUp, ArrowDown, Plus, Banknote, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -165,6 +165,26 @@ export function MilestoneTimeline({ projectId, initialMilestones, expenseTotals 
     }
   }
 
+  const handleDelete = async (milestoneId: string) => {
+    if (!confirm("Are you sure you want to delete this milestone?")) return
+
+    try {
+      const res = await fetch(`/api/projects/${projectId}/milestones/${milestoneId}`, {
+        method: "DELETE",
+      })
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}))
+        throw new Error(errorData.error || "Failed to delete milestone")
+      }
+
+      toast.success("Milestone deleted")
+      setMilestones(prev => prev.filter(m => m.id !== milestoneId))
+    } catch (err: any) {
+      toast.error(err.message)
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-end items-center p-6 sm:p-8 rounded-[1.25rem] border border-[var(--outline-variant)]/40 bg-[var(--surface-container-low)]">
@@ -275,14 +295,21 @@ export function MilestoneTimeline({ projectId, initialMilestones, expenseTotals 
                                ><ArrowDown className="w-3.5 h-3.5"/></button>
                              </div>
                             
+                              <Button 
+                              variant="outline" 
+                              size="icon"
+                              onClick={() => openDialog(milestone)}
+                              className="h-8 w-8 text-[var(--on-surface-variant)] hover:text-[var(--primary)] border-[var(--outline-variant)]/40"
+                            >
+                              <Pencil className="h-3.5 w-3.5" />
+                            </Button>
                             <Button 
                               variant="outline" 
-                              size="sm" 
-                              onClick={() => openDialog(milestone)}
-                              className="text-[var(--on-surface-variant)] hover:text-[var(--primary)] border-[var(--outline-variant)]/40"
+                              size="icon"
+                              onClick={() => handleDelete(milestone.id)}
+                              className="h-8 w-8 text-[var(--on-surface-variant)] hover:text-[var(--error)] hover:border-[var(--error)]/40 border-[var(--outline-variant)]/40"
                             >
-                              <Pencil className="h-3.5 w-3.5 mr-1.5" />
-                              Edit
+                              <Trash2 className="h-3.5 w-3.5" />
                             </Button>
                           </div>
                         </div>
