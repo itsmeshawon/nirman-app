@@ -264,6 +264,10 @@ src/
     │   └── CreateAdminDialog.tsx
     ├── icons/
     │   └── ClapIcon.tsx    # (unused — kept for reference; app uses Lucide Meh/Frown/PartyPopper instead)
+    ├── profile/
+    │   ├── ProfileForm.tsx          # Read-only profile view with "Edit Profile" button (all roles)
+    │   ├── EditProfileModal.tsx     # Modal dialog form for editing profile info (all roles)
+    │   └── ManagePassword.tsx       # Password change section (all roles)
     └── ui/                 # shadcn/ui: Button, Input, Dialog, Table, Card, Select, Label, Skeleton, Badge...
 ```
 
@@ -498,6 +502,13 @@ Delete in this exact sequence to avoid FK constraint errors.
 - **Validation:** Current password required, new password min 8 chars, confirm must match.
 - **Audit:** Logs `CHANGE_PASSWORD` action on success.
 
+### J. Profile Edit Flow
+- All roles (SUPER_ADMIN, PROJECT_ADMIN, SHAREHOLDER) see profile as a read-only card on the Profile page.
+- **UI:** "Edit Profile" button in the profile header opens a modal dialog (`EditProfileModal`) with a form to update: name, phone, whatsapp_no, profession, designation, organization, present_address. Avatar can also be changed from within the modal.
+- **API:** Uses existing `PUT /api/profile` to update profile fields; `POST /api/profile/avatar` for avatar upload.
+- **State:** After successful save, the read-only view updates instantly via local state (no `router.refresh()`).
+- **Audit:** Logs `UPDATE_PROFILE` action on success.
+
 ---
 
 ## 9. CODE PATTERNS
@@ -632,6 +643,7 @@ await createNotification({
 | Apr 2026 | Submit Payment Proof — shareholder submits proof, admin reviews in new "Waiting for Approval" tab; approve creates payment record | `(shareholder)/my/payments/ShareholderPaymentsClient.tsx`, `(shareholder)/my/payments/SubmitPaymentProofModal.tsx` (NEW), `(shareholder)/my/payments/page.tsx`, `(project-admin)/[projectId]/payments/PaymentsClient.tsx`, `(project-admin)/[projectId]/payments/tabs/WaitingForApprovalTab.tsx` (NEW), `(project-admin)/[projectId]/payments/page.tsx`, `api/projects/[projectId]/payment-proofs/route.ts` (NEW), `api/projects/[projectId]/payment-proofs/[id]/approve/route.ts` (NEW), `api/projects/[projectId]/payment-proofs/[id]/reject/route.ts` (NEW) | New table: `payment_proofs`; New enum: `payment_proof_status (PENDING, APPROVED, REJECTED)`; 4 RLS policies; Storage: uses existing `expense-proofs` bucket at path `payment-proofs/[projectId]/[proofId]/[file]` |
 | Apr 2026 | Fix Penalty Engine — 4 bugs fixed: (1) type string mismatch `FIXED` → `FIXED_AMOUNT` in calculation engine, (2) payment-time waiver now records full waive data (waived_amount, amount:0, waive_reason, waived_at), (3) individual penalty waive UI with reason dialog added to Defaulters page, (4) Settings dropdown now exposes all 4 penalty types (NONE, FIXED_AMOUNT, PERCENT_OF_DUE, DAILY_PERCENT) with conditional fields and cap | `src/lib/penalty.ts`, `src/app/api/projects/[projectId]/payments/route.ts`, `src/app/(project-admin)/[projectId]/defaulters/DefaultersClient.tsx`, `src/app/(project-admin)/[projectId]/settings/ProjectSettingsClient.tsx` | None — code fix + UI only |
 | May 2026 | Manage Password — profile page password change for all roles (Super Admin, Project Admin, Shareholder) | `src/app/api/profile/password/route.ts` (NEW), `src/components/profile/ManagePassword.tsx` (NEW), `(super-admin)/profile/page.tsx`, `(project-admin)/[projectId]/profile/page.tsx`, `(shareholder)/my/profile/page.tsx` | None — uses Supabase Auth `updateUser` |
+| May 2026 | Profile read-only view + Edit Profile modal — all roles see profile as read-only card with "Edit Profile" button that opens a modal dialog form to update profile info (name, phone, whatsapp, profession, designation, organization, address) | `src/components/profile/ProfileForm.tsx` (rewritten), `src/components/profile/EditProfileModal.tsx` (NEW) | None — reuses existing PUT /api/profile endpoint |
 
 ---
 
