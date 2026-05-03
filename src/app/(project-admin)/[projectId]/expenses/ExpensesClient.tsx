@@ -1,14 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Plus, CheckCircle, FileText, SendHorizontal, AlertCircle, RefreshCw, XCircle, Eye, Edit2, Trash2, Receipt as ReceiptIcon } from "lucide-react"
+import { Plus, CheckCircle, FileText, SendHorizontal, RefreshCw, XCircle, Trash2, Eye, Edit2, Receipt as ReceiptIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { toast } from "sonner"
 import { ExpenseForm } from "./ExpenseForm"
+import { ExpenseDetailModal } from "./ExpenseDetailModal"
 import { EmptyState } from "@/components/EmptyState"
-import Link from "next/link"
 
 interface ExpensesClientProps {
   projectId: string
@@ -27,7 +26,6 @@ const statusConfig: Record<string, { label: string, color: string, icon: any }> 
 }
 
 export function ExpensesClient({ projectId, expenses: initialExpenses, milestones, categories }: ExpensesClientProps) {
-  const router = useRouter()
   const [expenses, setExpenses] = useState<any[]>(initialExpenses)
   const [filterStatus, setFilterStatus] = useState<string | null>(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
@@ -35,6 +33,7 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
   const [isPublishing, setIsPublishing] = useState(false)
   const [publishingId, setPublishingId] = useState<string | null>(null)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [detailExpenseId, setDetailExpenseId] = useState<string | null>(null)
 
   // Pipeline counts
   const counts = expenses.reduce((acc, exp) => {
@@ -58,13 +57,13 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to permanently delete this expense?")) return
-    setIsPublishing(true) // Reuse layout blocking state
+    setIsPublishing(true)
     try {
       const res = await fetch(`/api/projects/${projectId}/expenses/${id}`, { method: "DELETE" })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
       toast.success("Expense deleted successfully.")
-      router.refresh()
+      setExpenses(prev => prev.filter(e => e.id !== id))
     } catch (err: any) {
       toast.error(err.message)
     } finally {
@@ -109,7 +108,7 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
        }
        toast.success("Expenses published successfully!")
        setSelectedIds(new Set())
-       router.refresh()
+       setExpenses(prev => prev.map(e => selectedIds.has(e.id) ? { ...e, status: "PUBLISHED" } : e))
      } catch (err: any) {
        toast.error(err.message)
      } finally {
@@ -117,11 +116,13 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
      }
   }
 
-  const toggleSelect = (id: string) => {
-    const next = new Set(selectedIds)
-    if (next.has(id)) next.delete(id)
-    else next.add(id)
-    setSelectedIds(next)
+  const handleExpenseSaved = (savedExpense: any) => {
+    const isEdit = !!editingExpense
+    if (isEdit) {
+      setExpenses(prev => prev.map(e => e.id === savedExpense.id ? savedExpense : e))
+    } else {
+      setExpenses(prev => [savedExpense, ...prev])
+    }
   }
 
   return (
@@ -167,7 +168,6 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
          <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[30px]"></TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Title</TableHead>
                 <TableHead>Category</TableHead>
@@ -179,7 +179,7 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
             <TableBody>
               {filteredExpenses.length === 0 ? (
                  <TableRow>
-                   <TableCell colSpan={7} className="p-0 border-0">
+                   <TableCell colSpan={6} className="p-0 border-0">
                       <EmptyState
                         icon={ReceiptIcon}
                         title="No expenses recorded yet"
@@ -195,21 +195,11 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
                     const statusUI = statusConfig[expense.status] || statusConfig.DRAFT
                     return (
                       <TableRow key={expense.id}>
-                        <TableCell>
-                          {expense.status === "APPROVED" && (
-                            <input 
-                              type="checkbox" 
-                              checked={selectedIds.has(expense.id)}
-                              onChange={() => toggleSelect(expense.id)}
-                              className="rounded border-outline-variant text-primary focus:ring-primary"
-                            />
-                          )}
-                        </TableCell>
                         <TableCell className="text-sm">{new Date(expense.date).toLocaleDateString()}</TableCell>
                         <TableCell className="font-medium text-on-surface">
-                           <Link href={`/${projectId}/expenses/${expense.id}`} className="hover:text-primary hover:underline">
+                           <button onClick={() => setDetailExpenseId(expense.id)} className="hover:text-primary hover:underline text-left">
                              {expense.title}
-                           </Link>
+                           </button>
                         </TableCell>
                         <TableCell className="text-sm text-on-surface-variant">{expense.category?.name}</TableCell>
                         <TableCell className="text-sm font-medium text-on-surface">
@@ -237,9 +227,9 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
                                   {publishingId === expense.id ? "Publishing..." : "Publish"}
                                </Button>
                              )}
-                             <Link href={`/${projectId}/expenses/${expense.id}`} className="inline-flex items-center justify-center w-8 h-8 rounded-full hover:text-on-primary-container hover:bg-primary-container/20 transition-colors" title="View Details">
+                             <Button variant="ghost" size="icon" onClick={() => setDetailExpenseId(expense.id)} className="hover:text-on-primary-container hover:bg-primary-container/20 w-8 h-8 rounded-full" title="View Details">
                                <Eye className="w-4 h-4" />
-                             </Link>
+                             </Button>
                              <Button variant="ghost" size="icon" onClick={() => handleDelete(expense.id)} className="text-red-500 hover:text-destructive hover:bg-error-container/20 w-8 h-8 rounded-full" title="Delete Expense">
                                 <Trash2 className="w-4 h-4" />
                              </Button>
@@ -257,9 +247,20 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
          projectId={projectId}
          isOpen={isFormOpen}
          onClose={() => setIsFormOpen(false)}
+         onSave={handleExpenseSaved}
          milestones={milestones}
          categories={categories}
          expense={editingExpense}
+      />
+
+      <ExpenseDetailModal
+         projectId={projectId}
+         expenseId={detailExpenseId}
+         milestones={milestones}
+         categories={categories}
+         onClose={() => setDetailExpenseId(null)}
+         onDeleted={(id) => { setExpenses(prev => prev.filter(e => e.id !== id)); setDetailExpenseId(null) }}
+         onUpdated={(updated) => setExpenses(prev => prev.map(e => e.id === updated.id ? { ...e, ...updated } : e))}
       />
     </div>
   )

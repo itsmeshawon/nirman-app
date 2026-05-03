@@ -88,7 +88,11 @@ export async function PUT(
       })
       .eq("id", id)
       .eq("project_id", projectId)
-      .select()
+      .select(`
+        *,
+        category:expense_categories(id, name),
+        milestone:milestones(id, name)
+      `)
       .single()
 
     if (error) return NextResponse.json({ error: error.message }, { status: 400 })

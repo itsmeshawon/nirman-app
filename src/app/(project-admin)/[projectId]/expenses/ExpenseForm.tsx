@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -16,13 +15,13 @@ interface ExpenseFormProps {
   projectId: string
   isOpen: boolean
   onClose: () => void
+  onSave: (expense: any) => void
   milestones: any[]
   categories: any[]
   expense?: any // Optional: if provided, we are in edit mode
 }
 
-export function ExpenseForm({ projectId, isOpen, onClose, milestones, categories, expense }: ExpenseFormProps) {
-  const router = useRouter()
+export function ExpenseForm({ projectId, isOpen, onClose, onSave, milestones, categories, expense }: ExpenseFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [files, setFiles] = useState<File[]>([])
 
@@ -80,7 +79,8 @@ export function ExpenseForm({ projectId, isOpen, onClose, milestones, categories
     setIsSubmitting(true)
     try {
       let expenseId = expense?.id
-      
+      let savedExpense: any = null
+
       const payload = {
          title,
          milestone_id: milestoneId,
@@ -101,6 +101,7 @@ export function ExpenseForm({ projectId, isOpen, onClose, milestones, categories
         })
         const data = await res.json()
         if (!res.ok) throw new Error(data.error)
+        savedExpense = data.expense
       } else {
         // Create Mode
         const res = await fetch(`/api/projects/${projectId}/expenses`, {
@@ -110,7 +111,8 @@ export function ExpenseForm({ projectId, isOpen, onClose, milestones, categories
         })
         const data = await res.json()
         if (!res.ok) throw new Error(data.error)
-        expenseId = data.expense.id
+        savedExpense = data.expense
+        expenseId = savedExpense.id
       }
 
       // Upload new attachments if any
@@ -118,7 +120,7 @@ export function ExpenseForm({ projectId, isOpen, onClose, milestones, categories
         const uploadPromises = files.map(async (file) => {
            const formData = new FormData()
            formData.append("file", file)
-           
+
            const attRes = await fetch(`/api/projects/${projectId}/expenses/${expenseId}/attachments`, {
              method: "POST",
              body: formData
@@ -139,6 +141,7 @@ export function ExpenseForm({ projectId, isOpen, onClose, milestones, categories
             const submitData = await submitRes.json()
             throw new Error(submitData.error || "Failed to submit for approval")
          }
+         savedExpense = { ...savedExpense, status: "SUBMITTED" }
          toast.success("Expense submitted for approval!")
       } else {
          toast.success(expense ? "Expense updated." : "Expense saved as draft.")
@@ -146,7 +149,7 @@ export function ExpenseForm({ projectId, isOpen, onClose, milestones, categories
 
       resetForm()
       onClose()
-      router.refresh()
+      onSave(savedExpense)
     } catch (err: any) {
       toast.error(err.message)
     } finally {

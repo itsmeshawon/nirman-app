@@ -659,6 +659,8 @@ await createNotification({
 | May 2026 | Add Waive Penalty option to inline Record Payment dialog on Collection Schedule — shows penalty amount and checkbox to waive when item has active penalties | `(project-admin)/[projectId]/payments/tabs/ScheduleTab.tsx` | None — UI only |
 | May 2026 | Defaulters page — each overdue item shown as separate row instead of grouped by shareholder; columns: shareholder, installment, due date, expected, paid, due, penalty, actions | `(project-admin)/[projectId]/defaulters/DefaultersClient.tsx` | None — UI only |
 | May 2026 | Defaulters page instant update on waive — tracks waived penalty IDs in a Set state; useMemo filters them out, triggering instant re-render without page reload | `(project-admin)/[projectId]/defaulters/DefaultersClient.tsx` | None — code fix only |
+| May 2026 | Fix expenses not showing instantly after add/edit/submit — replaced router.refresh() with onSave callback; POST and PUT APIs now return nested category+milestone joins; ExpensesClient updates local state on save | `expenses/ExpenseForm.tsx`, `expenses/ExpensesClient.tsx`, `api/projects/[projectId]/expenses/route.ts`, `api/projects/[projectId]/expenses/[id]/route.ts` | None — code fix only |
+| May 2026 | Expense detail modal for Project Admin — clicking expense title or eye icon opens ExpenseDetailModal instead of navigating to separate page; supports submit, publish, delete, edit actions with instant local state sync | `expenses/ExpenseDetailModal.tsx` (NEW), `expenses/ExpensesClient.tsx` | None — UI only |
 
 ---
 

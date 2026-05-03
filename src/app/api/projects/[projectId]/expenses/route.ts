@@ -86,7 +86,11 @@ export async function POST(
         status: "DRAFT", // Always draft on creation
         created_by_id: user.id
       })
-      .select()
+      .select(`
+        *,
+        category:expense_categories(id, name),
+        milestone:milestones(id, name)
+      `)
       .single()
 
     if (error) return NextResponse.json({ error: error.message }, { status: 400 })
