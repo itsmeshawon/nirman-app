@@ -19,17 +19,29 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { data, error } = await supabase
+    const url = new URL(request.url)
+    const page = Math.max(0, parseInt(url.searchParams.get("page") ?? "0"))
+    const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get("limit") ?? "20")))
+    const from = page * limit
+
+    const { data: milestones, error, count } = await supabase
       .from("milestones")
-      .select("*")
+      .select("*", { count: "exact" })
       .eq("project_id", projectId)
       .order("sort_order", { ascending: true })
+      .range(from, from + limit - 1)
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
-    return NextResponse.json(data, { status: 200 })
+    return NextResponse.json({
+      milestones,
+      total: count ?? 0,
+      page,
+      limit,
+      hasMore: (count ?? 0) > from + limit,
+    }, { status: 200 })
 
   } catch (err: any) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })

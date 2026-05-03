@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
+import { cacheGet, cacheSet } from "@/lib/cache"
 
 export async function GET(
   request: NextRequest,
@@ -24,6 +25,10 @@ export async function GET(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
+    const cacheKey = `project:${projectId}`
+    const cached = cacheGet<object>(cacheKey)
+    if (cached) return NextResponse.json(cached)
+
     const { data: project, error } = await getSupabaseAdmin()
       .from("projects")
       .select("*")
@@ -34,6 +39,7 @@ export async function GET(
       return NextResponse.json({ error: "Project not found" }, { status: 404 })
     }
 
+    cacheSet(cacheKey, project)
     return NextResponse.json(project)
   } catch (err) {
     console.error("[GET /api/projects/[id]]", err)

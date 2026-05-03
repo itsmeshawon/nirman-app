@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { getSupabaseAdmin } from "@/lib/supabase/admin"
+import { cacheGet, cacheSet } from "@/lib/cache"
 
 export async function GET(
   request: Request,
@@ -14,6 +15,10 @@ export async function GET(
 
     const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
     if (profile?.role !== "SUPER_ADMIN") return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+
+    const cacheKey = `project-details:${projectId}`
+    const cached = cacheGet<object>(cacheKey)
+    if (cached) return NextResponse.json(cached)
 
     // Fetch project with package info
     const { data: projectRaw } = await getSupabaseAdmin()
@@ -52,9 +57,11 @@ export async function GET(
       : { data: [] }
 
     // Merge shareholder profiles
+    const profileById = new Map((shareholderProfiles || []).map((p: any) => [p.id, p]))
+
     const shareholdersWithProfiles = (shareholders || []).map((sh: any) => ({
       ...sh,
-      profile: shareholderProfiles?.find((p: any) => p.id === sh.user_id) || null
+      profile: profileById.get(sh.user_id) ?? null
     }))
 
     // Fetch committee members
@@ -64,17 +71,22 @@ export async function GET(
       .eq("project_id", projectId)
       .eq("is_active", true)
 
-    const committeeWithProfiles = (committeeMembers || []).map((cm: any) => {
-      const sh = shareholdersWithProfiles.find((s: any) => s.id === cm.shareholder_id)
-      return { ...cm, shareholder: sh || null }
-    })
+    const shareholderById = new Map(shareholdersWithProfiles.map((s: any) => [s.id, s]))
 
-    return NextResponse.json({
+    const committeeWithProfiles = (committeeMembers || []).map((cm: any) => ({
+      ...cm,
+      shareholder: shareholderById.get(cm.shareholder_id) ?? null
+    }))
+
+    const payload = {
       project,
       admins: adminProfiles || [],
       shareholders: shareholdersWithProfiles,
       committeeMembers: committeeWithProfiles,
-    })
+    }
+
+    cacheSet(cacheKey, payload)
+    return NextResponse.json(payload)
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 })
   }

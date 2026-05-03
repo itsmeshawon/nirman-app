@@ -11,12 +11,21 @@ export async function GET(request: Request, { params }: { params: Promise<{ proj
 
     const { data: project } = await supabase.from("projects").select("name").eq("id", projectId).single()
 
-    const { data: logs } = await getSupabaseAdmin()
+    const url = new URL(request.url)
+    const from = url.searchParams.get("from")
+    const to = url.searchParams.get("to")
+
+    let query = getSupabaseAdmin()
       .from("audit_logs")
       .select("action, entity_type, entity_id, details, ip_address, created_at, user_id")
       .eq("project_id", projectId)
       .order("created_at", { ascending: false })
-      .limit(1000)
+      .limit(100)
+
+    if (from) query = query.gte("created_at", new Date(from).toISOString())
+    if (to)   query = query.lte("created_at", new Date(to).toISOString())
+
+    const { data: logs } = await query
 
     const rows = [
       ["NirmaN — Audit Log Report"],

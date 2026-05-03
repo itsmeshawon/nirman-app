@@ -17,6 +17,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ proj
       .eq("project_id", projectId)
       .eq("status", "PUBLISHED")
       .order("date", { ascending: true })
+      .limit(100)
 
     const rows = [
       ["NirmaN — Expense Ledger Report"],

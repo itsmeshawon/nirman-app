@@ -44,14 +44,10 @@ export async function POST(
       return NextResponse.json({ error: "Unsupported file type" }, { status: 400 })
     }
 
-    // Convert File to ArrayBuffer then Buffer for upload
-    const arrayBuffer = await file.arrayBuffer()
-    const buffer = Buffer.from(arrayBuffer)
-
     // Upload to Supabase Storage using admin client to bypass RLS
     const { data, error: uploadError } = await getSupabaseAdmin().storage
       .from("activity-media")
-      .upload(path, buffer, {
+      .upload(path, file, {
         contentType: file.type,
         upsert: false
       })

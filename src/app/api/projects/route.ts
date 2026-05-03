@@ -34,40 +34,25 @@ export async function GET() {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
-    // Fetch projects with package info
-    const { data: projects, error } = await supabase
+    // Fetch projects with package info and embedded counts — single query, no JS count maps
+    const { data: projects, error } = await getSupabaseAdmin()
       .from("projects")
-      .select("*, packages(id, name, features)")
+      .select(`
+        *,
+        packages(id, name, features),
+        shareholders(count),
+        project_admins(count)
+      `)
       .order("created_at", { ascending: false })
 
     if (error) throw error
 
-    const projectIds = (projects ?? []).map((p: any) => p.id)
-
-    // Use supabaseAdmin to bypass RLS — Super Admin needs cross-project counts
-    const [{ data: shareholders }, { data: projectAdmins }] = await Promise.all([
-      projectIds.length
-        ? getSupabaseAdmin().from("shareholders").select("project_id").in("project_id", projectIds)
-        : Promise.resolve({ data: [] }),
-      projectIds.length
-        ? getSupabaseAdmin().from("project_admins").select("project_id").in("project_id", projectIds)
-        : Promise.resolve({ data: [] }),
-    ])
-
-    // Build count maps
-    const shareholderCountMap: Record<string, number> = {}
-    for (const s of shareholders ?? []) {
-      shareholderCountMap[s.project_id] = (shareholderCountMap[s.project_id] ?? 0) + 1
-    }
-    const adminCountMap: Record<string, number> = {}
-    for (const a of projectAdmins ?? []) {
-      adminCountMap[a.project_id] = (adminCountMap[a.project_id] ?? 0) + 1
-    }
-
     const result = (projects ?? []).map((p: any) => ({
       ...p,
-      shareholderCount: shareholderCountMap[p.id] ?? 0,
-      adminCount: adminCountMap[p.id] ?? 0,
+      shareholderCount: p.shareholders?.[0]?.count ?? 0,
+      adminCount: p.project_admins?.[0]?.count ?? 0,
+      shareholders: undefined,
+      project_admins: undefined,
       salesperson_name: p.building_meta?.salesperson_name ?? null,
       package_name: p.packages?.name ?? null,
       package_features: p.packages?.features ?? [],

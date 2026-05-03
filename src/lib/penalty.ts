@@ -72,49 +72,58 @@ export async function applyPendingPenalties(projectId: string, supabase: any) {
 
   let appliedCount = 0
 
-  // 3. Evaluate each item
-  for (const item of unpaidItems) {
-    const penaltyValue = calculatePenalty(item, config)
+  // 3. Pre-calculate all penalty values, discard items with no penalty
+  const itemsWithPenalties = unpaidItems
+    .map((item: any) => ({ item, penaltyValue: calculatePenalty(item, config) }))
+    .filter(({ penaltyValue }: any) => penaltyValue > 0)
 
-    if (penaltyValue > 0) {
-       // Check if penalty row already exists
-       const { data: existingPenalty } = await supabase
-         .from("penalties")
-         .select("*")
-         .eq("schedule_item_id", item.id)
-         .single()
+  if (itemsWithPenalties.length > 0) {
+    // Single batch read — fetch ALL existing penalties at once
+    const itemIds = itemsWithPenalties.map(({ item }: any) => item.id)
+    const { data: existingPenalties } = await supabase
+      .from("penalties")
+      .select("*")
+      .in("schedule_item_id", itemIds)
 
-       if (existingPenalty) {
-          if (existingPenalty.is_waived) continue // Skip waived
-          
-          if (existingPenalty.amount !== penaltyValue) {
-             await supabase
-               .from("penalties")
-               .update({ amount: penaltyValue, calculated_at: new Date().toISOString() })
-               .eq("id", existingPenalty.id)
-             appliedCount++
-          }
-       } else {
-          // Insert new penalty row
-          await supabase
-            .from("penalties")
-            .insert({
-               schedule_item_id: item.id,
-               amount: penaltyValue,
-               calculated_at: new Date().toISOString()
-            })
-          
-          // Also mark the schedule_item as OVERDUE if it was just DUE
-          if (item.status === 'DUE') {
-             await supabase
-               .from("schedule_items")
-               .update({ status: 'OVERDUE' })
-               .eq("id", item.id)
-          }
+    // Map for O(1) lookup per item
+    const penaltyByItemId = new Map<string, any>(
+      (existingPenalties || []).map((p: any) => [p.schedule_item_id, p])
+    )
 
+    // Collect all writes — zero DB calls in this loop
+    const now = new Date().toISOString()
+    const toInsert: any[] = []
+    const toUpdate: any[] = []
+    const toMarkOverdue: string[] = []
+
+    for (const { item, penaltyValue } of itemsWithPenalties) {
+      const existing = penaltyByItemId.get(item.id)
+
+      if (existing) {
+        if (existing.is_waived) continue
+        if (existing.amount !== penaltyValue) {
+          toUpdate.push({ id: existing.id, amount: penaltyValue, calculated_at: now })
           appliedCount++
-       }
+        }
+      } else {
+        toInsert.push({ schedule_item_id: item.id, amount: penaltyValue, calculated_at: now })
+        if (item.status === 'DUE') toMarkOverdue.push(item.id)
+        appliedCount++
+      }
     }
+
+    // Execute all writes in 3 parallel queries — regardless of how many items there are
+    await Promise.all([
+      toInsert.length
+        ? supabase.from("penalties").insert(toInsert)
+        : Promise.resolve(),
+      toUpdate.length
+        ? supabase.from("penalties").upsert(toUpdate)
+        : Promise.resolve(),
+      toMarkOverdue.length
+        ? supabase.from("schedule_items").update({ status: 'OVERDUE' }).in("id", toMarkOverdue)
+        : Promise.resolve(),
+    ])
   }
 
   return { appliedCount, message: `Successfully swept ${appliedCount} penalties.` }

@@ -36,13 +36,16 @@ export async function POST(
     const { name, email, phone, password } = parsed.data
 
     // Check if auth user already exists
-    const { data: userList } = await getSupabaseAdmin().auth.admin.listUsers()
-    const existingAuthUser = userList?.users.find((u) => u.email === email)
+    const { data: existingProfile } = await getSupabaseAdmin()
+      .from("profiles")
+      .select("id")
+      .eq("email", email)
+      .maybeSingle()
 
     let targetUserId: string
 
-    if (existingAuthUser) {
-      targetUserId = existingAuthUser.id
+    if (existingProfile) {
+      targetUserId = existingProfile.id
     } else {
       // Create the auth user
       const { data: newUser, error: createError } = await getSupabaseAdmin().auth.admin.createUser({

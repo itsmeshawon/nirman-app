@@ -20,20 +20,31 @@ export async function GET(
     try { await requireProjectAdmin(supabase, projectId) } 
     catch { return NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
 
-    // Fetch expenses with category and milestone details
-    const { data: expenses, error } = await supabase
+    const url = new URL(request.url)
+    const page = Math.max(0, parseInt(url.searchParams.get("page") ?? "0"))
+    const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get("limit") ?? "20")))
+    const from = page * limit
+
+    const { data: expenses, error, count } = await supabase
       .from("expenses")
       .select(`
         *,
         category:expense_categories(id, name),
         milestone:milestones(id, name)
-      `)
+      `, { count: "exact" })
       .eq("project_id", projectId)
       .order("created_at", { ascending: false })
+      .range(from, from + limit - 1)
 
     if (error) throw new Error(error.message)
 
-    return NextResponse.json({ expenses }, { status: 200 })
+    return NextResponse.json({
+      expenses,
+      total: count ?? 0,
+      page,
+      limit,
+      hasMore: (count ?? 0) > from + limit,
+    }, { status: 200 })
   } catch (err: any) {
     console.error("GET Expenses Error:", err)
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })

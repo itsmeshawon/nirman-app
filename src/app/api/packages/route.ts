@@ -3,6 +3,7 @@ import { z } from "zod"
 import { createClient } from "@/lib/supabase/server"
 import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
+import { cacheGet, cacheSet } from "@/lib/cache"
 
 const createPackageSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -24,18 +25,29 @@ async function getSuperAdmin() {
   return { user, error: null }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const { user, error } = await getSuperAdmin()
+    const { error } = await getSuperAdmin()
     if (error) return error
+
+    const url = new URL(request.url)
+    const page = Math.max(0, parseInt(url.searchParams.get("page") ?? "0"))
+    const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get("limit") ?? "20")))
+    const from = page * limit
+
+    const cacheKey = `packages:${page}:${limit}`
+    const cached = cacheGet<unknown[]>(cacheKey)
+    if (cached) return NextResponse.json(cached)
 
     const { data: packages, error: dbError } = await getSupabaseAdmin()
       .from("packages")
       .select("*")
       .order("created_at", { ascending: false })
+      .range(from, from + limit - 1)
 
     if (dbError) throw dbError
 
+    cacheSet(cacheKey, packages ?? [])
     return NextResponse.json(packages ?? [])
   } catch (err) {
     console.error("[GET /api/packages]", err)

@@ -49,7 +49,7 @@ export async function GET(
         created_at,
         updated_at,
         profiles!activity_posts_author_id_fkey ( id, name ),
-        reactions ( type ),
+        reactions ( type, count:id.count() ),
         post_views ( id )
       `)
       .eq("project_id", projectId)
@@ -70,15 +70,13 @@ export async function GET(
 
     // Aggregate reactions per type and view count
     const formatted = (posts || []).map((post: any) => {
-      const reactionCounts: Record<string, number> = {}
-      for (const r of post.reactions || []) {
-        reactionCounts[r.type] = (reactionCounts[r.type] || 0) + 1
-      }
       return {
         ...post,
         reactions: undefined,
         post_views: undefined,
-        reaction_counts: reactionCounts,
+        reaction_counts: Object.fromEntries(
+          (post.reactions || []).map((r: any) => [r.type, Number(r.count)])
+        ),
         view_count: post.post_views?.length || 0,
         author_name: post.profiles?.full_name || null,
       }

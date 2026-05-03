@@ -40,10 +40,9 @@ export async function POST(request: Request) {
     const filePath = `${user.id}/${fileName}`
 
     // Upload to Storage
-    const arrayBuffer = await file.arrayBuffer()
     const { error: uploadError } = await getSupabaseAdmin().storage
       .from("avatars")
-      .upload(filePath, arrayBuffer, {
+      .upload(filePath, file, {
         contentType: file.type,
         upsert: true
       })

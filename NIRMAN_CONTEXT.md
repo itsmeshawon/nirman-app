@@ -1,5 +1,5 @@
 # NIRMAN — AI Agent Source of Truth
-> Version: 1.0 | Last Updated: April 2026
+> Version: 1.1 | Last Updated: May 2026
 > This file is the SINGLE SOURCE OF TRUTH for the NirmaN application.
 > Every AI agent MUST read this entire file before starting any task.
 > Every AI agent MUST update this file after completing any task.
@@ -28,7 +28,7 @@
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | Next.js 15 App Router (Server Components by default) |
+| Framework | Next.js 16.2.3 App Router (Server Components by default) — ⚠️ middleware renamed to `proxy.ts` in v16 |
 | Language | TypeScript (strict) |
 | Database | Supabase (PostgreSQL) with RLS on ALL tables |
 | Auth | Supabase Auth (JWT, role in profiles table) |
@@ -61,8 +61,10 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 **Rule:** Always verify auth first, then use `supabaseAdmin` for system-level reads/writes.
 
-### Middleware (`src/lib/supabase/middleware.ts`)
-- Runs on every request
+### Proxy / Middleware (`src/proxy.ts` + `src/lib/supabase/middleware.ts`)
+- ⚠️ Next.js 16 renamed `middleware.ts` → `proxy.ts`. The entry point is `src/proxy.ts`, which calls `updateSession` from `src/lib/supabase/middleware.ts`.
+- Runs on every request (matcher excludes static assets)
+- Applies rate limiting before any API route: 60 req/min general, 20 req/min on upload paths
 - Refreshes Supabase session cookies
 - Redirects unauthenticated users to `/login`
 - Does NOT handle role-based routing (roles handled in each layout)
@@ -252,6 +254,7 @@ src/
 │   ├── audit.ts            # logAction()
 │   ├── notifications.ts    # createNotification()
 │   ├── penalty.ts          # Penalty calculation logic
+│   ├── cache.ts            # In-memory TTL cache (5 min) — cacheGet, cacheSet, cacheInvalidate
 │   ├── utils.ts            # formatBDT(), formatDate(), cn()
 │   └── validations.ts
 │
@@ -646,8 +649,8 @@ await createNotification({
 | Apr 2026 | Fix Penalty Engine — 4 bugs fixed: (1) type string mismatch `FIXED` → `FIXED_AMOUNT` in calculation engine, (2) payment-time waiver now records full waive data (waived_amount, amount:0, waive_reason, waived_at), (3) individual penalty waive UI with reason dialog added to Defaulters page, (4) Settings dropdown now exposes all 4 penalty types (NONE, FIXED_AMOUNT, PERCENT_OF_DUE, DAILY_PERCENT) with conditional fields and cap | `src/lib/penalty.ts`, `src/app/api/projects/[projectId]/payments/route.ts`, `src/app/(project-admin)/[projectId]/defaulters/DefaultersClient.tsx`, `src/app/(project-admin)/[projectId]/settings/ProjectSettingsClient.tsx` | None — code fix + UI only |
 | May 2026 | Manage Password — profile page password change for all roles (Super Admin, Project Admin, Shareholder) | `src/app/api/profile/password/route.ts` (NEW), `src/components/profile/ManagePassword.tsx` (NEW), `(super-admin)/profile/page.tsx`, `(project-admin)/[projectId]/profile/page.tsx`, `(shareholder)/my/profile/page.tsx` | None — uses Supabase Auth `updateUser` |
 | May 2026 | Profile read-only view + Edit Profile modal — all roles see profile as read-only card with "Edit Profile" button that opens a modal dialog form to update profile info (name, phone, whatsapp, profession, designation, organization, address) | `src/components/profile/ProfileForm.tsx` (rewritten), `src/components/profile/EditProfileModal.tsx` (NEW) | None — reuses existing PUT /api/profile endpoint |
-| May 2026 | Sticky search + add shareholder button on Shareholders page (Project Admin) — search bar and "Add Shareholder" button remain fixed at top while scrolling | `(project-admin)/[projectId]/shareholders/ShareholdersTable.tsx` | None — UI only |
-| May 2026 | Fix payment delete/edit not updating instantly in Payment History — replaced router.refresh() with local state updates via callbacks from PaymentsClient | `(project-admin)/[projectId]/payments/tabs/AllPaymentsTab.tsx`, `(project-admin)/[projectId]/payments/PaymentsClient.tsx` | None — code fix only |
+| May 2026 | Sticky search + add shareholder button on Shareholders page (Project Admin) — search bar, stats badges, and "Add Shareholder" button remain fixed at top with sticky positioning while scrolling | `(project-admin)/[projectId]/shareholders/ShareholdersTable.tsx` | None — UI only |
+| May 2026 | Fix payment delete/edit not updating instantly in Payment History — replaced router.refresh() with local state updates via callbacks from PaymentsClient; fixed data.data → data.payment reference error | `(project-admin)/[projectId]/payments/tabs/AllPaymentsTab.tsx`, `(project-admin)/[projectId]/payments/PaymentsClient.tsx` | None — code fix only |
 | May 2026 | Fix schedule item deletion blocked by payment_proofs FK — nullify schedule_item_id on linked payment_proofs and delete linked penalties before deleting schedule_item | `api/projects/[projectId]/schedules/[id]/route.ts` | None — code fix only |
 | May 2026 | Fix schedule item CRUD instant update — replaced all router.refresh() calls with local state updates (setLocalScheduleItems / setLocalPayments) in ScheduleTab | `(project-admin)/[projectId]/payments/tabs/ScheduleTab.tsx` | None — code fix only |
 | May 2026 | Fix custom collection missing shareholder info after create — API now returns schedule_item with nested joins (shareholder+profiles, milestone, penalties) matching the page fetch query | `api/projects/[projectId]/schedules/route.ts` | None — code fix only |
@@ -656,11 +659,25 @@ await createNotification({
 | May 2026 | Remove Status Override from Edit Installment dialog — status is auto-calculated based on payments, no manual override | `(project-admin)/[projectId]/payments/tabs/ScheduleTab.tsx` | None — UI only |
 | May 2026 | Auto-recalculate schedule item status on edit — PATCH now recalculates UPCOMING/DUE/OVERDUE/PAID/PARTIALLY_PAID based on new due_date, amount, and existing payments; returns full joined data for instant UI update | `api/projects/[projectId]/schedules/[id]/route.ts` | None — code fix only |
 | May 2026 | Fix Record Payment not reflecting instantly — replaced router.refresh() with callback pattern; PaymentsClient now manages allScheduleItems state; schedule item status updates on payment; ScheduleTab syncs local state via useEffect | `(project-admin)/[projectId]/payments/tabs/RecordPaymentTab.tsx`, `(project-admin)/[projectId]/payments/PaymentsClient.tsx`, `(project-admin)/[projectId]/payments/tabs/ScheduleTab.tsx` | None — code fix only |
-| May 2026 | Add Waive Penalty option to inline Record Payment dialog on Collection Schedule — shows penalty amount and checkbox to waive when item has active penalties | `(project-admin)/[projectId]/payments/tabs/ScheduleTab.tsx` | None — UI only |
-| May 2026 | Defaulters page — each overdue item shown as separate row instead of grouped by shareholder; columns: shareholder, installment, due date, expected, paid, due, penalty, actions | `(project-admin)/[projectId]/defaulters/DefaultersClient.tsx` | None — UI only |
+| May 2026 | Fix schedule item status not updating after payment deletion — handlePaymentDeleted finds deleted payment's schedule_item_id and recalculates status (OVERDUE/DUE/UPCOMING) if paid amount drops to 0 | `(project-admin)/[projectId]/payments/PaymentsClient.tsx` | None — code fix only |
+| May 2026 | Add Waive Penalty option to inline Record Payment dialog on Collection Schedule — shows penalty amount and checkbox to waive when item has active penalties; fixed payDialogItem null crash with optional chaining | `(project-admin)/[projectId]/payments/tabs/ScheduleTab.tsx` | None — UI only |
+| May 2026 | Defaulters page — each overdue item shown as separate row instead of grouped by shareholder; columns: shareholder, milestone, due date, expected, paid, due, penalty, actions | `(project-admin)/[projectId]/defaulters/DefaultersClient.tsx` | None — UI only |
 | May 2026 | Defaulters page instant update on waive — tracks waived penalty IDs in a Set state; useMemo filters them out, triggering instant re-render without page reload | `(project-admin)/[projectId]/defaulters/DefaultersClient.tsx` | None — code fix only |
+| May 2026 | Defaulters page show milestone data — added milestone:milestones(id, name) join to server query so column displays actual milestone name instead of "General" | `(project-admin)/[projectId]/defaulters/page.tsx` | None — code fix only |
 | May 2026 | Fix expenses not showing instantly after add/edit/submit — replaced router.refresh() with onSave callback; POST and PUT APIs now return nested category+milestone joins; ExpensesClient updates local state on save | `expenses/ExpenseForm.tsx`, `expenses/ExpensesClient.tsx`, `api/projects/[projectId]/expenses/route.ts`, `api/projects/[projectId]/expenses/[id]/route.ts` | None — code fix only |
 | May 2026 | Expense detail modal for Project Admin — clicking expense title or eye icon opens ExpenseDetailModal instead of navigating to separate page; supports submit, publish, delete, edit actions with instant local state sync | `expenses/ExpenseDetailModal.tsx` (NEW), `expenses/ExpensesClient.tsx` | None — UI only |
+| May 2026 | Performance #12 — Enable gzip/brotli compression | `next.config.ts` — added `compress: true` | None |
+| May 2026 | Performance #10 — Rate limiting on all API endpoints via proxy; 60 req/min general, 20 req/min on upload paths (`/api/projects/`, `/api/profile/avatar`); returns 429 with Retry-After header; keyed by IP | `src/proxy.ts` | None |
+| May 2026 | Performance #9 — Parallel permission queries in `requireProjectMember`; replaced sequential awaits with `Promise.all` for shareholder + admin check | `src/lib/permissions.ts` | None |
+| May 2026 | Performance #8 — Report query limits: audit-log reduced from 1000→100 records, added `?from=` and `?to=` date filter params; expense-ledger capped at 100; defaulters capped at 100 | `api/.../reports/audit-log/route.ts`, `api/.../reports/expense-ledger/route.ts`, `api/.../reports/defaulters/route.ts` | None |
+| May 2026 | Performance #7 — In-memory TTL cache (5 min) for project details, basic project fetch, and packages list; new `src/lib/cache.ts` utility (cacheGet, cacheSet, cacheInvalidate) | `src/lib/cache.ts` (NEW), `api/.../details/route.ts`, `api/projects/[projectId]/route.ts`, `api/packages/route.ts` | None |
+| May 2026 | Performance #6 — Replace nested `.find()` array scans in details route with O(1) Map lookups; `profileById` Map for shareholder→profile merge, `shareholderById` Map for committee→shareholder merge | `api/.../details/route.ts` | None |
+| May 2026 | Performance #11 — Move aggregations out of JS loops: reactions now use `count:id.count()` in DB select (no raw rows); project shareholder/admin counts use embedded `count` in single query (eliminates 2 extra parallel queries); collection-summary builds Maps before shareholder loop (O(n+m) instead of O(n×m)) | `api/.../posts/route.ts`, `api/projects/route.ts`, `api/.../reports/collection-summary/route.ts` | None |
+| May 2026 | Performance #4 — Pagination (default 20, max 100) on all list GET endpoints; supports `?page=` and `?limit=` query params; response includes `total`, `page`, `limit`, `hasMore` | `api/.../expenses/route.ts`, `api/.../milestones/route.ts`, `api/.../documents/route.ts`, `api/.../payment-proofs/route.ts`, `api/packages/route.ts` | None |
+| May 2026 | Performance #5 — Streaming file uploads: removed `file.arrayBuffer()` and `Buffer.from(arrayBuffer)` conversions; pass `File` (Blob) directly to Supabase storage — eliminates full file load into RAM before upload | `api/.../documents/route.ts`, `api/profile/avatar/route.ts`, `api/.../posts/media/route.ts` | None |
+| May 2026 | Performance #3 — Combined 4 sequential permission round trips in `getProjectRole` into a single `Promise.all`; profile + admin + committee + shareholder queries all fire simultaneously; also reduced select fields to `id`-only on role tables | `src/lib/permissions.ts` | None |
+| May 2026 | Performance #1 — Replaced `auth.admin.listUsers()` (fetches all users) with targeted `profiles` table lookup by email using `.maybeSingle()`; applies to both add-admin and add-shareholder flows | `api/.../admin/route.ts`, `api/.../shareholders/route.ts` | None |
+| May 2026 | Performance #2 — Replaced N+1 penalty loop (up to 3 DB calls per item) with batch approach: single `.in()` read before loop, Map for O(1) lookup, then 3 parallel writes (batch insert, batch upsert, batch status update) regardless of item count; worst case 152 queries → 5 queries | `src/lib/penalty.ts` | None |
 
 ---
 

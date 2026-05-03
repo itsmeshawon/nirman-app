@@ -40,9 +40,24 @@ export async function GET(request: Request, { params }: { params: Promise<{ proj
       ["Unit", "Owner Name", "Email", "Ownership %", "Total Due (৳)", "Total Paid (৳)", "Overdue (৳)", "Active Penalties (৳)", "Collection Rate"],
     ]
 
+    // Build Maps once — O(items) — so each shareholder lookup below is O(1) not O(items)
+    const itemsByShareholder = new Map<string, NonNullable<typeof scheduleItems>>()
+    for (const item of scheduleItems ?? []) {
+      const bucket = itemsByShareholder.get(item.shareholder_id) ?? []
+      bucket.push(item)
+      itemsByShareholder.set(item.shareholder_id, bucket)
+    }
+
+    const penaltiesByShareholder = new Map<string, NonNullable<typeof penalties>>()
+    for (const p of penalties ?? []) {
+      const bucket = penaltiesByShareholder.get(p.shareholder_id) ?? []
+      bucket.push(p)
+      penaltiesByShareholder.set(p.shareholder_id, bucket)
+    }
+
     for (const sh of shareholders) {
-      const myItems = scheduleItems?.filter(i => i.shareholder_id === sh.id) || []
-      const myPenalties = penalties?.filter(p => p.shareholder_id === sh.id) || []
+      const myItems = itemsByShareholder.get(sh.id) ?? []
+      const myPenalties = penaltiesByShareholder.get(sh.id) ?? []
       const totalDue = myItems.reduce((s, i) => s + (i.amount || 0), 0)
       const totalPaid = myItems.filter(i => i.status === "PAID").reduce((s, i) => s + (i.amount || 0), 0)
       const overdue = myItems.filter(i => i.status === "OVERDUE").reduce((s, i) => s + (i.amount || 0), 0)

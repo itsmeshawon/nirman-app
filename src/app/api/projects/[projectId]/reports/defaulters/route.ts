@@ -23,6 +23,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ proj
       .in("schedule_id", scheduleIds.length ? scheduleIds : ["00000000-0000-0000-0000-000000000000"])
       .eq("status", "OVERDUE")
       .order("due_date", { ascending: true })
+      .limit(100)
 
     const rows = [
       ["NirmaN — Defaulters Report"],

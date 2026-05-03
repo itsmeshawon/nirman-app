@@ -38,17 +38,19 @@ export async function POST(
     let newUserId: string
     let tempPassword = ""
 
-    const { data: listData, error: listError } = await getSupabaseAdmin().auth.admin.listUsers()
-    
-    if (listError) {
-      console.error("List users error:", listError)
+    const { data: existingProfile, error: profileError } = await getSupabaseAdmin()
+      .from("profiles")
+      .select("id")
+      .eq("email", email)
+      .maybeSingle()
+
+    if (profileError) {
+      console.error("Profile lookup error:", profileError)
       return NextResponse.json({ error: "Failed to query users" }, { status: 500 })
     }
 
-    const existingUser = listData.users.find(u => u.email === email)
-
-    if (existingUser) {
-      newUserId = existingUser.id
+    if (existingProfile) {
+      newUserId = existingProfile.id
     } else {
       // 3. Create new user
       tempPassword = password || "test1234"
@@ -115,7 +117,7 @@ export async function POST(
     return NextResponse.json(
       { 
         success: true, 
-        message: existingUser ? "Shareholder linked successfully" : "Shareholder created successfully",
+        message: existingProfile ? "Shareholder linked successfully" : "Shareholder created successfully",
         tempPassword: tempPassword || null 
       },
       { status: 201 }

@@ -18,19 +18,31 @@ export async function GET(
     try { await requireProjectAdmin(supabase, projectId) }
     catch { return NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
 
-    const { data, error } = await getSupabaseAdmin()
+    const url = new URL(request.url)
+    const page = Math.max(0, parseInt(url.searchParams.get("page") ?? "0"))
+    const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get("limit") ?? "20")))
+    const from = page * limit
+
+    const { data, error, count } = await getSupabaseAdmin()
       .from("payment_proofs")
       .select(`
         *,
         shareholder:shareholders(id, unit_flat, profiles(name, email)),
         schedule_item:schedule_items(id, amount, due_date, milestone:milestones(name)),
         reviewer:profiles!reviewed_by(name)
-      `)
+      `, { count: "exact" })
       .eq("project_id", projectId)
       .order("submitted_at", { ascending: false })
+      .range(from, from + limit - 1)
 
     if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-    return NextResponse.json({ data })
+    return NextResponse.json({
+      data,
+      total: count ?? 0,
+      page,
+      limit,
+      hasMore: (count ?? 0) > from + limit,
+    })
   } catch {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
