@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import { mutate } from "swr"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -88,6 +89,7 @@ export function WaitingForApprovalTab({
       if (!res.ok) throw new Error(data.error)
 
       toast.success(`Payment recorded! Receipt: ${data.payment.receipt_no}`)
+      mutate(`/api/projects/${projectId}/page-data/payments`)
       setProofs(prev => prev.map(p => p.id === approveModal.proof!.id ? { ...p, status: "APPROVED" } : p))
       onProofApproved(approveModal.proof.id, data.payment)
       setApproveModal({ open: false, proof: null })
@@ -116,6 +118,7 @@ export function WaitingForApprovalTab({
       if (!res.ok) throw new Error(data.error)
 
       toast.success("Proof rejected.")
+      mutate(`/api/projects/${projectId}/page-data/payments`)
       setProofs(prev => prev.map(p => p.id === rejectModal.proof!.id ? { ...p, status: "REJECTED", rejection_note: rejectionNote } : p))
       onProofRejected(rejectModal.proof.id)
       setRejectModal({ open: false, proof: null })

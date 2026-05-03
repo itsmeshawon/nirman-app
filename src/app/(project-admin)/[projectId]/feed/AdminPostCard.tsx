@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useCallback, useRef, useEffect } from "react"
+import { mutate } from "swr"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -107,6 +108,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
       if (!res.ok) throw new Error(data.error || "Failed to update post visibility.")
       onHide(post.id, data.post.status)
       toast.success(data.post.status === "HIDDEN" ? "Post hidden from shareholders." : "Post is now visible to shareholders.")
+      mutate(`/api/projects/${projectId}/page-data/feed`)
     } catch (err: any) {
       toast.error(err.message)
     } finally {
@@ -122,6 +124,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
       if (!res.ok) throw new Error("Failed to delete post.")
       onDelete(post.id)
       toast.success("Post deleted.")
+      mutate(`/api/projects/${projectId}/page-data/feed`)
     } catch (err: any) {
       toast.error(err.message)
     } finally {
@@ -219,6 +222,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
       onEdit(data.post)
       closeEdit()
       toast.success("Post updated.")
+      mutate(`/api/projects/${projectId}/page-data/feed`)
     } catch (err: any) {
       toast.error(err.message)
     } finally {

@@ -1,34 +1,21 @@
-import { getSupabaseAdmin } from "@/lib/supabase/admin"
-import { createClient } from "@/lib/supabase/server"
-import { requireProjectAdmin } from "@/lib/permissions"
-import { redirect } from "next/navigation"
+"use client"
+
+import { useParams } from "next/navigation"
+import useSWR from "swr"
 import ActivityLogClient from "./ActivityLogClient"
+import Loading from "./loading"
 
-export const dynamic = "force-dynamic"
+const fetcher = (url: string) => fetch(url).then(r => r.json())
 
-export default async function ActivityLogPage(props: { params: Promise<{ projectId: string }> }) {
-  const { projectId } = await props.params
-  const supabase = await createClient()
+export default function ActivityLogPage() {
+  const { projectId } = useParams<{ projectId: string }>()
+  const { data } = useSWR(`/api/projects/${projectId}/page-data/activity-log`, fetcher)
 
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect("/login")
-
-  try {
-    await requireProjectAdmin(supabase, projectId)
-  } catch {
-    redirect(`/${projectId}/dashboard`)
-  }
-
-  const { data: logs } = await getSupabaseAdmin()
-    .from("audit_logs")
-    .select("id, action, entity_type, details, created_at, user_id")
-    .eq("project_id", projectId)
-    .order("created_at", { ascending: false })
-    .limit(500)
+  if (!data) return <Loading />
 
   return (
     <div className="space-y-6 pb-12">
-      <ActivityLogClient logs={logs ?? []} />
+      <ActivityLogClient logs={data.logs} />
     </div>
   )
 }

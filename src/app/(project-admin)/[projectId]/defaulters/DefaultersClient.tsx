@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { mutate } from "swr"
 import { AlertTriangle, Settings2, Mail, ShieldOff, Loader2 } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
@@ -116,7 +117,8 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
       toast.success(data.message || "Penalty sweeps completed.")
-      window.location.reload()
+      mutate(`/api/projects/${projectId}/page-data/defaulters`)
+      mutate(`/api/projects/${projectId}/page-data/payments`)
     } catch (err: any) {
       toast.error(err.message)
     } finally {
@@ -153,6 +155,7 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
       if (!res.ok) throw new Error(data.error)
 
       toast.success("Penalty waived successfully.")
+      mutate(`/api/projects/${projectId}/page-data/defaulters`)
 
       setSelectedDefaulter(prev =>
         prev ? { ...prev, penalties: prev.penalties.filter(p => p.id !== penaltyId) } : null
@@ -187,6 +190,7 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
         if (res.ok) waivedCount++
       }
       toast.success(`${waivedCount} penalty(ies) waived.`)
+      mutate(`/api/projects/${projectId}/page-data/defaulters`)
       setWaiveDialogOpen(false)
 
       setWaivedIds(prev => {

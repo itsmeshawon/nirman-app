@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useCallback } from "react"
+import { mutate } from "swr"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -213,6 +214,7 @@ export function CreatePostForm({ projectId, milestones, userName, onSuccess }: C
       if (!res.ok) throw new Error(data.error || "Failed to publish post.")
 
       toast.success("Post published successfully!")
+      mutate(`/api/projects/${projectId}/page-data/feed`)
       onSuccess(data.post)
       handleClose()
     } catch (err: any) {

@@ -4,7 +4,6 @@ import { useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { User } from "@supabase/supabase-js"
 import {
   LayoutDashboard,
   Users,
@@ -31,9 +30,10 @@ interface ProjectAdminShellProps {
   projectId: string
   projectName: string
   projectStatus: string
-  user: User | null
   profileName: string
   avatarUrl?: string | null
+  isArchived?: boolean
+  isLoading?: boolean
 }
 
 export default function ProjectAdminShell({
@@ -41,9 +41,10 @@ export default function ProjectAdminShell({
   projectId,
   projectName,
   projectStatus,
-  user,
   profileName,
   avatarUrl,
+  isArchived = false,
+  isLoading = false,
 }: ProjectAdminShellProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const pathname = usePathname()
@@ -75,18 +76,6 @@ export default function ProjectAdminShell({
   let pageTitle = activeNavItem ? activeNavItem.label : "Dashboard"
 
   if (pathname.endsWith("/profile")) pageTitle = "My Profile"
-
-  const statusColor = (status: string) => {
-    switch (status) {
-      case "COMPLETED":
-        return "bg-primary-container text-on-primary-container"
-      case "IN_PROGRESS":
-      case "PILOT":
-        return "bg-tertiary-container text-on-tertiary-container"
-      default:
-        return "bg-surface-variant text-on-surface-variant"
-    }
-  }
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
@@ -153,7 +142,7 @@ export default function ProjectAdminShell({
         </nav>
 
         {/* Portal Type Card */}
-        <div className="mx-3 my-3 px-4 space-y-2">
+        <div className={cn("mx-3 my-3 px-4 space-y-2", isLoading && "animate-pulse")}>
           {projectStatus && (
             <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-secondary-container text-on-secondary-container`}>
               {projectStatus.replace("_", " ")}
@@ -162,7 +151,7 @@ export default function ProjectAdminShell({
           <div>
             <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Project Admin</p>
             <p className="text-sm font-semibold text-foreground truncate" title={projectName}>
-              {projectName}
+              {projectName || " "}
             </p>
           </div>
         </div>
@@ -180,7 +169,7 @@ export default function ProjectAdminShell({
               </div>
               <div className="flex flex-col truncate min-w-0">
                 <span className="text-sm font-semibold text-foreground truncate">
-                  {profileName || user?.email}
+                  {profileName || "Admin"}
                 </span>
                 <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
                   Admin
@@ -223,7 +212,21 @@ export default function ProjectAdminShell({
         {/* Main Content Scroll Area */}
         <main className="flex-1 overflow-y-auto">
           <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-10">
-            {children}
+            {isArchived ? (
+              <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-8 w-full">
+                <div className="max-w-md w-full bg-surface p-8 rounded-xl border border-outline-variant/40">
+                  <div className="w-16 h-16 bg-error-container/20 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                  <h2 className="text-xl font-bold text-on-surface mb-2">Project Archived</h2>
+                  <p className="text-on-surface-variant mb-0">Communicate with the Admin.</p>
+                </div>
+              </div>
+            ) : (
+              children
+            )}
           </div>
         </main>
       </div>

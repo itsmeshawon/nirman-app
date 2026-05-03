@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react"
+import { mutate } from "swr"
 import { toast } from "sonner"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
@@ -131,6 +132,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
       toast.success(`Payment recorded! Receipt: ${data.payment.receipt_no}`)
+      mutate(`/api/projects/${projectId}/page-data/payments`)
 
       const newPayment = data.payment
       setLocalPayments(prev => [...prev, newPayment])
@@ -186,6 +188,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
       if (!res.ok) throw new Error(data.error)
 
       toast.success("Schedule collection created successfully!")
+      mutate(`/api/projects/${projectId}/page-data/payments`)
       setIsModalOpen(false)
       setShareholderId(""); setMilestoneId(""); setAmount(""); setDueDate("")
       if (data.scheduleItem) setLocalScheduleItems(prev => [...prev, data.scheduleItem])
@@ -220,6 +223,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
       if (!res.ok) throw new Error(data.error)
 
       toast.success("Installment updated successfully")
+      mutate(`/api/projects/${projectId}/page-data/payments`)
       setEditingItem(null)
       setLocalScheduleItems(prev => prev.map(si => si.id === editingItem.id ? { ...si, ...data.item } : si))
     } catch (err: any) {
@@ -236,6 +240,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
       toast.success("Installment deleted")
+      mutate(`/api/projects/${projectId}/page-data/payments`)
       setLocalScheduleItems(prev => prev.filter(si => si.id !== itemId))
     } catch (err: any) {
       toast.error(err.message)

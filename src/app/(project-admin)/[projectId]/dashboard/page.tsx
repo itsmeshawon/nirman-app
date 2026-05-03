@@ -1,80 +1,54 @@
-import { createClient } from "@/lib/supabase/server"
-import { getUserProfile } from "@/lib/permissions"
+"use client"
+
+import { useParams } from "next/navigation"
+import useSWR from "swr"
 import { formatBDT, formatDateTime } from "@/lib/utils"
 import {
-  TrendingUp, TrendingDown, AlertCircle, Clock,
+  TrendingUp, TrendingDown, AlertCircle,
   CheckCircle, FileText, Users, Banknote,
   ArrowRight, BarChart2, ShieldAlert, CalendarClock,
   RefreshCw, SendHorizontal
 } from "lucide-react"
 import Link from "next/link"
 
-export const dynamic = "force-dynamic"
+type DashboardStats = {
+  totalScheduled: number
+  totalPaid: number
+  overdueAmount: number
+  overdueCount: number
+  totalExpenses: number
+  collectionRate: number
+  balance: number
+  pendingApproval: number
+  changesRequested: number
+  approvedUnpublished: number
+  activePenalties: number
+  upcomingDues: number
+  recentAudit: any[]
+}
 
-export default async function ProjectDashboardPage(props: { params: Promise<{ projectId: string }> }) {
-  const { projectId } = await props.params
-  const supabase = await createClient()
-  const profile = await getUserProfile(supabase)
+export default function ProjectDashboardPage() {
+  const { projectId } = useParams<{ projectId: string }>()
+  const { data: stats } = useSWR<DashboardStats>(`/api/projects/${projectId}/dashboard-stats`, (url: string) => fetch(url).then(r => r.json()))
 
-  const { data: project } = await supabase
-    .from("projects")
-    .select("name, status")
-    .eq("id", projectId)
-    .single()
+  if (!stats) {
+    return (
+      <div className="space-y-6 pb-12 animate-pulse">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="rounded-xl border border-outline-variant/40 bg-surface-container/20 p-6 h-36" />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="rounded-xl border border-outline-variant/40 h-48" />
+          <div className="rounded-xl border border-outline-variant/40 h-48" />
+        </div>
+        <div className="rounded-xl border border-outline-variant/40 h-64" />
+      </div>
+    )
+  }
 
-  // Direct DB queries
-  const { data: schedules } = await supabase.from("payment_schedules").select("id").eq("project_id", projectId)
-  const scheduleIds = schedules?.map((s: any) => s.id) || []
-
-  const { data: scheduleItems } = await supabase
-    .from("schedule_items")
-    .select("amount, status")
-    .in("schedule_id", scheduleIds.length ? scheduleIds : ["00000000-0000-0000-0000-000000000000"])
-
-  const totalScheduled = scheduleItems?.reduce((sum: number, i: any) => sum + (i.amount || 0), 0) || 0
-  const totalPaid = scheduleItems?.filter((i: any) => i.status === "PAID").reduce((sum: number, i: any) => sum + (i.amount || 0), 0) || 0
-  const overdueAmount = scheduleItems?.filter((i: any) => i.status === "OVERDUE").reduce((sum: number, i: any) => sum + (i.amount || 0), 0) || 0
-  const collectionRate = totalScheduled > 0 ? Math.round((totalPaid / totalScheduled) * 100) : 0
-
-  const { data: publishedExpenses } = await supabase
-    .from("expenses")
-    .select("amount, vat_amount")
-    .eq("project_id", projectId)
-    .eq("status", "PUBLISHED")
-  const totalExpenses = publishedExpenses?.reduce((sum: number, e: any) => sum + (e.amount || 0) + (e.vat_amount || 0), 0) || 0
-
-  const { count: pendingApproval } = await supabase.from("expenses").select("*", { count: "exact", head: true }).eq("project_id", projectId).eq("status", "SUBMITTED")
-  const { count: changesRequested } = await supabase.from("expenses").select("*", { count: "exact", head: true }).eq("project_id", projectId).eq("status", "CHANGES_REQUESTED")
-  const { count: approvedUnpublished } = await supabase.from("expenses").select("*", { count: "exact", head: true }).eq("project_id", projectId).eq("status", "APPROVED")
-
-  const { data: projectShareholders } = await supabase.from("shareholders").select("id").eq("project_id", projectId)
-  const shareholderIds = projectShareholders?.map((s: any) => s.id) || []
-
-  const { count: activePenalties } = await supabase
-    .from("penalties")
-    .select("*", { count: "exact", head: true })
-    .in("shareholder_id", shareholderIds.length ? shareholderIds : ["00000000-0000-0000-0000-000000000000"])
-    .eq("status", "ACTIVE")
-
-  const today = new Date()
-  const in30Days = new Date(today)
-  in30Days.setDate(today.getDate() + 30)
-  const { count: upcomingDues } = await supabase
-    .from("schedule_items")
-    .select("*", { count: "exact", head: true })
-    .in("schedule_id", scheduleIds.length ? scheduleIds : ["00000000-0000-0000-0000-000000000000"])
-    .eq("status", "PENDING")
-    .gte("due_date", today.toISOString().split("T")[0])
-    .lte("due_date", in30Days.toISOString().split("T")[0])
-
-  const { data: recentAudit } = await supabase
-    .from("audit_logs")
-    .select("id, action, entity_type, details, created_at")
-    .eq("project_id", projectId)
-    .order("created_at", { ascending: false })
-    .limit(8)
-
-  const balance = totalPaid - totalExpenses
+  const { totalScheduled, totalPaid, overdueAmount, overdueCount, totalExpenses, collectionRate, balance, pendingApproval, changesRequested, approvedUnpublished, activePenalties, upcomingDues, recentAudit } = stats
 
   return (
     <div className="space-y-6 pb-12">
@@ -191,21 +165,21 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
           <div className="divide-y divide-outline-variant/20">
             <PipelineRow
               label="Awaiting Review"
-              count={pendingApproval || 0}
+              count={pendingApproval}
               icon={<SendHorizontal className="w-4 h-4 text-[var(--primary)]" />}
               color="text-[var(--primary)]"
               bg="bg-primary-container/20"
             />
             <PipelineRow
               label="Changes Requested"
-              count={changesRequested || 0}
+              count={changesRequested}
               icon={<RefreshCw className="w-4 h-4 text-orange-500" />}
               color="text-orange-600"
               bg="bg-primary-container/20"
             />
             <PipelineRow
               label="Approved — Unpublished"
-              count={approvedUnpublished || 0}
+              count={approvedUnpublished}
               icon={<CheckCircle className="w-4 h-4 text-green-500" />}
               color="text-primary"
               bg="bg-primary-container/20"
@@ -224,21 +198,21 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
           <div className="divide-y divide-outline-variant/20">
             <PipelineRow
               label="Active Penalties"
-              count={activePenalties || 0}
+              count={activePenalties}
               icon={<ShieldAlert className="w-4 h-4 text-[var(--destructive)]" />}
               color="text-[var(--destructive)]"
               bg="bg-primary-container/20"
             />
             <PipelineRow
               label="Defaulting Installments"
-              count={scheduleItems?.filter((i: any) => i.status === "OVERDUE").length || 0}
+              count={overdueCount}
               icon={<AlertCircle className="w-4 h-4 text-orange-500" />}
               color="text-orange-600"
               bg="bg-primary-container/20"
             />
             <PipelineRow
               label="Due in Next 30 Days"
-              count={upcomingDues || 0}
+              count={upcomingDues}
               icon={<CalendarClock className="w-4 h-4 text-amber-500" />}
               color="text-tertiary"
               bg="bg-primary-container/20"
@@ -255,7 +229,7 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
             Full Log <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
-        {recentAudit && recentAudit.length > 0 ? (
+        {recentAudit.length > 0 ? (
           <ul className="divide-y divide-outline-variant/20">
             {recentAudit.map((log: any) => (
               <li key={log.id} className="flex items-start gap-4 px-5 py-4 hover:bg-surface-container-low/50 transition-colors">
@@ -269,7 +243,7 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
                     </span>
                     {log.entity_type && (
                       <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium bg-primary-container/20 text-primary border border-primary-container/30">
-                        {({ activity_post: "Post", approval_config: "Approval Config", committee_member: "Committee", document: "Document", expense: "Expense", milestone: "Milestone", milestones: "Milestones", notification_config: "Notifications", package: "Package", payment: "Payment", payment_schedule: "Payment Schedule", penalty: "Penalty", penalty_config: "Penalty Config", profile: "Profile", project: "Project", project_admin: "Project Admin", schedule_items: "Schedule", shareholder: "Shareholder", user: "User" } as Record<string,string>)[log.entity_type] ?? log.entity_type}
+                        {({ activity_post: "Post", approval_config: "Approval Config", committee_member: "Committee", document: "Document", expense: "Expense", milestone: "Milestone", milestones: "Milestones", notification_config: "Notifications", package: "Package", payment: "Payment", payment_schedule: "Payment Schedule", penalty: "Penalty", penalty_config: "Penalty Config", profile: "Profile", project: "Project", project_admin: "Project Admin", schedule_items: "Schedule", shareholder: "Shareholder", user: "User" } as Record<string, string>)[log.entity_type] ?? log.entity_type}
                       </span>
                     )}
                   </div>
@@ -300,13 +274,12 @@ export default async function ProjectDashboardPage(props: { params: Promise<{ pr
           <div className="px-5 py-8 text-center text-sm text-outline">No activity logged yet.</div>
         )}
       </div>
-
     </div>
   )
 }
 
-function FinancialCard({ label, value, sub, icon, bg, accent }: {
-  label: string; value: string; sub: string; icon: React.ReactNode; bg: string; accent: string
+function FinancialCard({ label, value, sub, icon, bg }: {
+  label: string; value: string; sub: string; icon: React.ReactNode; bg: string; accent?: string
 }) {
   return (
     <div className="rounded-xl border border-outline-variant/40 bg-surface-container/20 p-6 transition-all duration-300 group cursor-default hover:border-outline-variant/40">

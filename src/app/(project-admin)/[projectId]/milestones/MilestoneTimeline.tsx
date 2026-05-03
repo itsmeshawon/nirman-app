@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { mutate } from "swr"
 import { CheckCircle2, Clock, Circle, Pencil, ArrowUp, ArrowDown, Plus, Banknote, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -45,7 +45,7 @@ interface MilestoneTimelineProps {
 }
 
 export function MilestoneTimeline({ projectId, initialMilestones, expenseTotals }: MilestoneTimelineProps) {
-  const router = useRouter()
+
   const [milestones, setMilestones] = useState<Milestone[]>(initialMilestones)
   
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -114,6 +114,7 @@ export function MilestoneTimeline({ projectId, initialMilestones, expenseTotals 
 
       toast.success(isEdit ? "Milestone updated" : "Milestone created")
       setIsDialogOpen(false)
+      mutate(`/api/projects/${projectId}/page-data/milestones`)
 
       // Update local state immediately with the response data
       if (isEdit) {
@@ -157,11 +158,10 @@ export function MilestoneTimeline({ projectId, initialMilestones, expenseTotals 
         body: JSON.stringify({ items: mappedUpdates }),
       })
       if (!res.ok) throw new Error("Failed to reorder")
-      router.refresh()
+      mutate(`/api/projects/${projectId}/page-data/milestones`)
     } catch (err: any) {
       toast.error(err.message)
-      // revert on fail by refreshing to DB state
-      router.refresh()
+      mutate(`/api/projects/${projectId}/page-data/milestones`)
     }
   }
 
@@ -180,6 +180,7 @@ export function MilestoneTimeline({ projectId, initialMilestones, expenseTotals 
 
       toast.success("Milestone deleted")
       setMilestones(prev => prev.filter(m => m.id !== milestoneId))
+      mutate(`/api/projects/${projectId}/page-data/milestones`)
     } catch (err: any) {
       toast.error(err.message)
     }

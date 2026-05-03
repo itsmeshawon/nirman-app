@@ -1,52 +1,25 @@
-import { createClient } from "@/lib/supabase/server"
+"use client"
+
+import { useParams } from "next/navigation"
+import useSWR from "swr"
 import { ProjectSettingsClient } from "./ProjectSettingsClient"
+import Loading from "./loading"
 
-export default async function SettingsPage(props: { params: Promise<{ projectId: string }> }) {
-  const params = await props.params;
+const fetcher = (url: string) => fetch(url).then(r => r.json())
 
-  const {
-    projectId
-  } = params;
+export default function SettingsPage() {
+  const { projectId } = useParams<{ projectId: string }>()
+  const { data } = useSWR(`/api/projects/${projectId}/page-data/settings`, fetcher)
 
-  const supabase = await createClient()
-
-  // 1. Fetch Project profile
-  const { data: project, error: pError } = await supabase
-    .from("projects")
-    .select("*")
-    .eq("id", projectId)
-    .single()
-
-  if (pError) return <div>Error loading project profile.</div>
-
-  // 2. Fetch Payment Schedule settings
-  const { data: paySched } = await supabase
-    .from("payment_schedules")
-    .select("*")
-    .eq("project_id", projectId)
-    .single() // Assume 1 active for now as per schema design intent for Sprint 2
-
-  // 3. Fetch Penalty Config
-  const { data: penalty } = await supabase
-    .from("penalty_configs")
-    .select("*")
-    .eq("project_id", projectId)
-    .single()
-
-  // 4. Fetch Notification Config
-  const { data: notify } = await supabase
-    .from("notification_configs")
-    .select("*")
-    .eq("project_id", projectId)
-    .single()
+  if (!data) return <Loading />
 
   return (
     <ProjectSettingsClient
       projectId={projectId}
-      project={project || {}}
-      paymentSchedule={paySched || {}}
-      penaltyConfig={penalty || {}}
-      notificationConfig={notify || {}}
+      project={data.project}
+      paymentSchedule={data.paymentSchedule}
+      penaltyConfig={data.penaltyConfig}
+      notificationConfig={data.notificationConfig}
     />
   )
 }

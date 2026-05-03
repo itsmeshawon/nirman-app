@@ -1,55 +1,24 @@
-import { createClient } from "@/lib/supabase/server"
+"use client"
+
+import { useParams } from "next/navigation"
+import useSWR from "swr"
 import { DefaultersClient } from "./DefaultersClient"
+import Loading from "./loading"
 
-export const dynamic = "force-dynamic"
+const fetcher = (url: string) => fetch(url).then(r => r.json())
 
-export default async function ProjectDefaultersPage(props: { params: Promise<{ projectId: string }> }) {
-  const { projectId } = await props.params
-  const supabase = await createClient()
+export default function ProjectDefaultersPage() {
+  const { projectId } = useParams<{ projectId: string }>()
+  const { data } = useSWR(`/api/projects/${projectId}/page-data/defaulters`, fetcher)
 
-  // 1. Identify the project's schedules
-  const { data: schedules } = await supabase
-    .from("payment_schedules")
-    .select("id")
-    .eq("project_id", projectId)
-  
-  const scheduleIds = schedules?.map(s => s.id) || []
-
-  // 2. Fetch overdue schedule items for these schedules
-  const { data: overdueItems } = await supabase
-    .from("schedule_items")
-    .select(`
-      *,
-      shareholder:shareholders (
-        *,
-        profiles (name, email, phone)
-      ),
-      milestone:milestones (id, name),
-      penalties (*)
-    `)
-    .in("schedule_id", scheduleIds.length ? scheduleIds : ["00000000-0000-0000-0000-000000000000"])
-    .eq("status", "OVERDUE")
-    .order("due_date", { ascending: true })
-
-  // 3. Fetch all payments for project shareholders (to calculate precise principal due)
-  const { data: projectShareholders } = await supabase
-    .from("shareholders")
-    .select("id")
-    .eq("project_id", projectId)
-
-  const shareholderIds = projectShareholders?.map(s => s.id) || []
-
-  const { data: payments } = await supabase
-    .from("payments")
-    .select("*")
-    .in("shareholder_id", shareholderIds.length ? shareholderIds : ["00000000-0000-0000-0000-000000000000"])
+  if (!data) return <Loading />
 
   return (
     <div className="w-full">
-      <DefaultersClient 
+      <DefaultersClient
         projectId={projectId}
-        overdueItems={overdueItems || []} 
-        payments={payments || []} 
+        overdueItems={data.overdueItems}
+        payments={data.payments}
       />
     </div>
   )

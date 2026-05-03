@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { mutate } from "swr"
 import { Plus, CheckCircle, FileText, SendHorizontal, RefreshCw, XCircle, Trash2, Eye, Edit2, Receipt as ReceiptIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -64,6 +65,7 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
       if (!res.ok) throw new Error(data.error)
       toast.success("Expense deleted successfully.")
       setExpenses(prev => prev.filter(e => e.id !== id))
+      mutate(`/api/projects/${projectId}/page-data/expenses`)
     } catch (err: any) {
       toast.error(err.message)
     } finally {
@@ -84,6 +86,7 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
       ))
 
       toast.success("Expense published successfully.")
+      mutate(`/api/projects/${projectId}/page-data/expenses`)
     } catch (err: any) {
       toast.error(err.message)
     } finally {
@@ -109,6 +112,7 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
        toast.success("Expenses published successfully!")
        setSelectedIds(new Set())
        setExpenses(prev => prev.map(e => selectedIds.has(e.id) ? { ...e, status: "PUBLISHED" } : e))
+       mutate(`/api/projects/${projectId}/page-data/expenses`)
      } catch (err: any) {
        toast.error(err.message)
      } finally {
@@ -123,6 +127,7 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
     } else {
       setExpenses(prev => [savedExpense, ...prev])
     }
+    mutate(`/api/projects/${projectId}/page-data/expenses`)
   }
 
   return (

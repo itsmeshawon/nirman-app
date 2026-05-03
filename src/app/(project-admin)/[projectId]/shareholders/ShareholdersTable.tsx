@@ -30,7 +30,7 @@ import {
 import { CheckCircle2, Crown, Mail, MapPin, MoreHorizontal, Pencil, Phone, Search, ToggleLeft, ToggleRight, Trash2, UserPlus, Users, XCircle } from "lucide-react"
 import { ShareholderDialog } from "./ShareholdersForms"
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
+import { mutate } from "swr"
 import { EmptyState } from "@/components/EmptyState"
 import {
   Sheet,
@@ -48,7 +48,6 @@ interface ShareholdersTableProps {
 
 export function ShareholdersTable({ projectId, data, committeeShareholderIds = [] }: ShareholdersTableProps) {
   const committeeSet = new Set(committeeShareholderIds)
-  const router = useRouter()
   const [sorting, setSorting] = useState<SortingState>([{ id: "unit_flat", desc: false }])
   const [globalFilter, setGlobalFilter] = useState("")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -85,7 +84,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
 
       if (!res.ok) throw new Error("Failed to update status")
       toast.success(`Status updated to ${newStatus}`)
-      router.refresh()
+      mutate(`/api/projects/${projectId}/page-data/shareholders`)
     } catch (err: any) {
       toast.error(err.message)
     }
@@ -105,7 +104,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
       }
 
       toast.success("Shareholder deleted successfully")
-      router.refresh()
+      mutate(`/api/projects/${projectId}/page-data/shareholders`)
     } catch (err: any) {
       toast.error(err.message)
     }

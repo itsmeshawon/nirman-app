@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import { mutate } from "swr"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -125,6 +126,7 @@ export function RecordPaymentTab({
       if (!res.ok) throw new Error(data.error)
 
       toast.success(`Payment recorded! Receipt: ${data.payment.receipt_no}`)
+      mutate(`/api/projects/${projectId}/page-data/payments`)
       setAmount(""); setReferenceNo(""); setScheduleItemId("")
       setNotes(""); setWaivePenalties(false); setShareholderId("")
       onPaymentRecorded?.(data.payment)

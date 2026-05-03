@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { mutate } from "swr"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Building, Banknote, CalendarClock, Bell, LayoutGrid } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -72,6 +73,7 @@ export function ProjectSettingsClient({
       })
       if (!res.ok) throw new Error("Failed to save project profile")
       toast.success("Profile saved successfully")
+      mutate(`/api/projects/${projectId}/page-data/settings`)
     } catch(err: any) {
       toast.error(err.message)
     } finally {
@@ -94,6 +96,7 @@ export function ProjectSettingsClient({
       })
       if (!res.ok) throw new Error("Failed to save payment model")
       toast.success("Payment model saved")
+      mutate(`/api/projects/${projectId}/page-data/settings`)
     } catch(err: any) {
       toast.error(err.message)
     } finally {
@@ -109,6 +112,7 @@ export function ProjectSettingsClient({
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
       toast.success(data.message)
+      mutate(`/api/projects/${projectId}/page-data/settings`)
     } catch(err: any) {
       toast.error(err.message)
     } finally {
@@ -137,6 +141,7 @@ export function ProjectSettingsClient({
         throw new Error(d.error || "Failed to save penalty config");
       }
       toast.success("Penalties configuration saved")
+      mutate(`/api/projects/${projectId}/page-data/settings`)
     } catch(err: any) {
       toast.error(err.message)
     } finally {
@@ -166,6 +171,7 @@ export function ProjectSettingsClient({
       })
       if (!res.ok) throw new Error("Failed to save notification config")
       toast.success("Notifications configuration saved")
+      mutate(`/api/projects/${projectId}/page-data/settings`)
     } catch(err: any) {
       toast.error(err.message)
     } finally {

@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react"
+import { mutate } from "swr"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
@@ -67,6 +68,7 @@ export function AllPaymentsTab({ projectId, payments, onDelete, onUpdate }: AllP
       if (!res.ok) throw new Error(data.error)
       
       toast.success("Payment record updated")
+      mutate(`/api/projects/${projectId}/page-data/payments`)
       setEditingPayment(null)
       onUpdate?.(data.payment)
     } catch (err: any) {
@@ -87,6 +89,7 @@ export function AllPaymentsTab({ projectId, payments, onDelete, onUpdate }: AllP
       if (!res.ok) throw new Error(data.error)
       
       toast.success("Payment deleted successfully")
+      mutate(`/api/projects/${projectId}/page-data/payments`)
       onDelete?.(paymentId)
     } catch (err: any) {
       toast.error(err.message)

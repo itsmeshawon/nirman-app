@@ -1,47 +1,25 @@
-import { createClient } from "@/lib/supabase/server"
+"use client"
+
+import { useParams } from "next/navigation"
+import useSWR from "swr"
 import { MilestoneTimeline } from "./MilestoneTimeline"
+import Loading from "./loading"
 
-export const dynamic = "force-dynamic"
+const fetcher = (url: string) => fetch(url).then(r => r.json())
 
-export default async function MilestonesPage(props: { params: Promise<{ projectId: string }> }) {
-  const params = await props.params;
+export default function MilestonesPage() {
+  const { projectId } = useParams<{ projectId: string }>()
+  const { data } = useSWR(`/api/projects/${projectId}/page-data/milestones`, fetcher)
 
-  const {
-    projectId
-  } = params;
-
-  const supabase = await createClient()
-
-  // Fetch milestones
-  const { data: milestones, error } = await supabase
-    .from("milestones")
-    .select("*")
-    .eq("project_id", projectId)
-    .order("sort_order", { ascending: true })
-
-  if (error) {
-    console.error("Error fetching milestones:", error)
-    return <div>Failed to load milestones</div>
-  }
-
-  const { data: expenses } = await supabase
-    .from("expenses")
-    .select("milestone_id, amount, vat_amount")
-    .eq("project_id", projectId)
-
-  const expenseTotals: Record<string, { total: number; count: number }> = {}
-  for (const e of expenses || []) {
-    if (!e.milestone_id) continue
-    if (!expenseTotals[e.milestone_id]) {
-      expenseTotals[e.milestone_id] = { total: 0, count: 0 }
-    }
-    expenseTotals[e.milestone_id].total += (e.amount || 0) + (e.vat_amount || 0)
-    expenseTotals[e.milestone_id].count += 1
-  }
+  if (!data) return <Loading />
 
   return (
     <div className="w-full">
-      <MilestoneTimeline projectId={projectId} initialMilestones={milestones || []} expenseTotals={expenseTotals} />
+      <MilestoneTimeline
+        projectId={projectId}
+        initialMilestones={data.milestones}
+        expenseTotals={data.expenseTotals}
+      />
     </div>
   )
 }

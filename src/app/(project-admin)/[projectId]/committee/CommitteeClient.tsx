@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { mutate } from "swr"
 import { ShieldCheck, UserPlus, Trash2, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -34,7 +34,6 @@ export function CommitteeClient({
   members,
   availableShareholders,
 }: CommitteeClientProps) {
-  const router = useRouter()
   const [rule, setRule] = useState(currentRule || "MAJORITY")
   const [isSavingRule, setIsSavingRule] = useState(false)
   
@@ -52,7 +51,7 @@ export function CommitteeClient({
       })
       if (!res.ok) throw new Error("Failed to update rule")
       toast.success("Approval rule updated successfully")
-      router.refresh()
+      mutate(`/api/projects/${projectId}/page-data/committee`)
     } catch (err: any) {
       toast.error(err.message)
     } finally {
@@ -73,7 +72,7 @@ export function CommitteeClient({
       
       toast.success("Member added to committee")
       setIsAddDialogOpen(false)
-      router.refresh()
+      mutate(`/api/projects/${projectId}/page-data/committee`)
     } catch (err: any) {
       toast.error(err.message)
     } finally {
@@ -90,7 +89,7 @@ export function CommitteeClient({
       })
       if (!res.ok) throw new Error("Failed to remove committee member")
       toast.success("Member removed from committee")
-      router.refresh()
+      mutate(`/api/projects/${projectId}/page-data/committee`)
     } catch (err: any) {
       toast.error(err.message)
     }
