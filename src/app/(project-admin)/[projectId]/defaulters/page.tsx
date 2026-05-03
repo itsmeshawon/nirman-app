@@ -24,6 +24,7 @@ export default async function ProjectDefaultersPage(props: { params: Promise<{ p
         *,
         profiles (name, email, phone)
       ),
+      milestone:milestones (id, name),
       penalties (*)
     `)
     .in("schedule_id", scheduleIds.length ? scheduleIds : ["00000000-0000-0000-0000-000000000000"])

@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react"
-import { useRouter } from "next/navigation"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
@@ -9,8 +8,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/u
 import { Download, FileText, Pencil, Trash2, Search, Paperclip } from "lucide-react"
 import { toast } from "sonner"
 
-export function AllPaymentsTab({ projectId, payments }: { projectId: string, payments: any[] }) {
-  const router = useRouter()
+interface AllPaymentsTabProps {
+  projectId: string
+  payments: any[]
+  onDelete?: (paymentId: string) => void
+  onUpdate?: (payment: any) => void
+}
+
+export function AllPaymentsTab({ projectId, payments, onDelete, onUpdate }: AllPaymentsTabProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [search, setSearch] = useState("")
 
@@ -63,7 +68,7 @@ export function AllPaymentsTab({ projectId, payments }: { projectId: string, pay
       
       toast.success("Payment record updated")
       setEditingPayment(null)
-      router.refresh()
+      onUpdate?.(data.payment)
     } catch (err: any) {
       toast.error(err.message)
     } finally {
@@ -82,7 +87,7 @@ export function AllPaymentsTab({ projectId, payments }: { projectId: string, pay
       if (!res.ok) throw new Error(data.error)
       
       toast.success("Payment deleted successfully")
-      router.refresh()
+      onDelete?.(paymentId)
     } catch (err: any) {
       toast.error(err.message)
     }

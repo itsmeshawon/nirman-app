@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -38,15 +37,16 @@ export function RecordPaymentTab({
   scheduleItems,
   shareholders,
   payments,
+  onPaymentRecorded,
   onSuccess
 }: {
   projectId: string
   scheduleItems: any[]
   shareholders: any[]
   payments: any[]
+  onPaymentRecorded?: (payment: any) => void
   onSuccess?: () => void
 }) {
-  const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [shareholderOpen, setShareholderOpen] = useState(false)
@@ -127,7 +127,7 @@ export function RecordPaymentTab({
       toast.success(`Payment recorded! Receipt: ${data.payment.receipt_no}`)
       setAmount(""); setReferenceNo(""); setScheduleItemId("")
       setNotes(""); setWaivePenalties(false); setShareholderId("")
-      router.refresh()
+      onPaymentRecorded?.(data.payment)
       onSuccess?.()
     } catch (err: any) {
       toast.error(err.message)

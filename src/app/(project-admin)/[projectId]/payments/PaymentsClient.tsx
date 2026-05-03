@@ -23,13 +23,14 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
   const [showRecordModal, setShowRecordModal] = useState(false)
   const [showCollectionModal, setShowCollectionModal] = useState(false)
   const [allPayments, setAllPayments] = useState(payments)
+  const [allScheduleItems, setAllScheduleItems] = useState(scheduleItems)
 
-  const totalScheduled = scheduleItems.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0)
+  const totalScheduled = allScheduleItems.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0)
   const totalCollected = allPayments.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0)
   const totalOutstanding = totalScheduled - totalCollected
 
   let totalPenalties = 0
-  scheduleItems.forEach(item => {
+  allScheduleItems.forEach(item => {
     if (item.penalties && Array.isArray(item.penalties)) {
       item.penalties.forEach((p: any) => {
         if (!p.is_waived) totalPenalties += (parseFloat(p.amount) || 0)
@@ -44,12 +45,50 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
     num.toLocaleString('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 })
 
   const pendingProofsCount = paymentProofs.filter(p => p.status === "PENDING").length
-  const scheduleCount = scheduleItems.length
+  const scheduleCount = allScheduleItems.length
   const historyCount = allPayments.length
   const proofsCount = paymentProofs.length
 
   const handlePaymentRecorded = (payment: any) => {
     setAllPayments(prev => [payment, ...prev])
+    if (payment.schedule_item_id) {
+      setAllScheduleItems(prev => prev.map(si => {
+        if (si.id !== payment.schedule_item_id) return si
+        const totalPaid = parseFloat(payment.amount) + allPayments
+          .filter(p => p.schedule_item_id === si.id)
+          .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
+        const newStatus = totalPaid >= parseFloat(si.amount) ? "PAID" : "PARTIALLY_PAID"
+        return { ...si, status: newStatus }
+      }))
+    }
+  }
+
+  const handlePaymentDeleted = (paymentId: string) => {
+    const deleted = allPayments.find(p => p.id === paymentId)
+    setAllPayments(prev => prev.filter(p => p.id !== paymentId))
+    if (deleted?.schedule_item_id) {
+      setAllScheduleItems(prev => prev.map(si => {
+        if (si.id !== deleted.schedule_item_id) return si
+        const remaining = allPayments
+          .filter(p => p.schedule_item_id === si.id && p.id !== paymentId)
+          .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
+        const expected = parseFloat(si.amount)
+        let newStatus: string
+        if (remaining <= 0) {
+          const daysDiff = (new Date(si.due_date).getTime() - Date.now()) / (1000 * 3600 * 24)
+          newStatus = daysDiff < 0 ? "OVERDUE" : daysDiff <= 7 ? "DUE" : "UPCOMING"
+        } else if (remaining >= expected) {
+          newStatus = "PAID"
+        } else {
+          newStatus = "PARTIALLY_PAID"
+        }
+        return { ...si, status: newStatus }
+      }))
+    }
+  }
+
+  const handlePaymentUpdated = (updated: any) => {
+    setAllPayments(prev => prev.map(p => p.id === updated.id ? { ...p, ...updated } : p))
   }
 
   const handleProofApproved = (proofId: string, payment: any) => {
@@ -148,7 +187,7 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
         {activeTab === "SCHEDULE" && (
           <ScheduleTab
             projectId={projectId}
-            scheduleItems={scheduleItems}
+            scheduleItems={allScheduleItems}
             payments={allPayments}
             milestones={milestones}
             shareholders={shareholders}
@@ -157,7 +196,7 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
             onPaymentRecorded={handlePaymentRecorded}
           />
         )}
-        {activeTab === "HISTORY" && <AllPaymentsTab projectId={projectId} payments={allPayments} />}
+        {activeTab === "HISTORY" && <AllPaymentsTab projectId={projectId} payments={allPayments} onDelete={handlePaymentDeleted} onUpdate={handlePaymentUpdated} />}
         {activeTab === "WAITING" && (
           <WaitingForApprovalTab
             projectId={projectId}
@@ -176,9 +215,10 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
           </DialogHeader>
           <RecordPaymentTab
             projectId={projectId}
-            scheduleItems={scheduleItems}
+            scheduleItems={allScheduleItems}
             shareholders={shareholders}
             payments={allPayments}
+            onPaymentRecorded={handlePaymentRecorded}
             onSuccess={() => setShowRecordModal(false)}
           />
         </DialogContent>

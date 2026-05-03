@@ -1,5 +1,4 @@
-import { useState, useMemo } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useMemo, useEffect } from "react"
 import { toast } from "sonner"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
@@ -9,8 +8,9 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { Calendar as CalendarIcon, Pencil, Trash2, ChevronsUpDown, Check, Banknote } from "lucide-react"
+import { Calendar as CalendarIcon, Pencil, Trash2, ChevronsUpDown, Check, Banknote, Ban } from "lucide-react"
 import { EmptyState } from "@/components/EmptyState"
+import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 
 const SCHEDULE_STATUSES = [
@@ -56,11 +56,13 @@ function ComboBox({
 }
 
 export function ScheduleTab({ projectId, scheduleItems, payments, milestones, shareholders, createOpen, onCreateOpenChange, onPaymentRecorded }: { projectId: string, scheduleItems: any[], payments: any[], milestones: any[], shareholders: any[], createOpen?: boolean, onCreateOpenChange?: (open: boolean) => void, onPaymentRecorded?: (payment: any) => void }) {
-  const router = useRouter()
   const [filterStatus, setFilterStatus] = useState("")
   const [filterOpen,   setFilterOpen]   = useState(false)
   const [localPayments, setLocalPayments] = useState(payments)
   const [localScheduleItems, setLocalScheduleItems] = useState(scheduleItems)
+
+  useEffect(() => { setLocalPayments(payments) }, [payments])
+  useEffect(() => { setLocalScheduleItems(scheduleItems) }, [scheduleItems])
 
   // Create modal — controlled externally if props provided, else local fallback
   const [_localModalOpen, _setLocalModalOpen] = useState(false)
@@ -74,10 +76,8 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
   const [editingItem,     setEditingItem]     = useState<any>(null)
   const [editAmount,      setEditAmount]      = useState("")
   const [editDate,        setEditDate]        = useState("")
-  const [editStatus,      setEditStatus]      = useState("")
   const [editMilestoneId, setEditMilestoneId] = useState("")
   const [editMilestoneOpen, setEditMilestoneOpen] = useState(false)
-  const [editStatusOpen,    setEditStatusOpen]    = useState(false)
 
   // Create form state
   const [shareholderId, setShareholderId] = useState("")
@@ -93,6 +93,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
   const [payNotes,      setPayNotes]      = useState("")
   const [paySubmitting, setPaySubmitting] = useState(false)
   const [payMethodOpen, setPayMethodOpen] = useState(false)
+  const [waivePenalties, setWaivePenalties] = useState(false)
 
   const openPayDialog = (item: any) => {
     const paid = localPayments
@@ -104,6 +105,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
     setPayMethod("BANK_TRANSFER")
     setPayReference("")
     setPayNotes("")
+    setWaivePenalties(false)
   }
 
   const handleRecordPayment = async () => {
@@ -123,6 +125,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
           method:           payMethod,
           reference_no:     payReference || null,
           notes:            payNotes || null,
+          waive_penalties:  waivePenalties,
         }),
       })
       const data = await res.json()
@@ -144,7 +147,6 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
       }))
 
       setPayDialogItem(null)
-      router.refresh()
     } catch (err: any) {
       toast.error(err.message)
     } finally {
@@ -157,7 +159,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
       .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
 
   const getPenalty = (item: any) => {
-    if (!item.penalties) return 0
+    if (!item?.penalties) return 0
     return item.penalties
       .filter((p: any) => !p.is_waived)
       .reduce((sum: number, p: any) => sum + (parseFloat(p.amount) || 0), 0)
@@ -186,7 +188,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
       toast.success("Schedule collection created successfully!")
       setIsModalOpen(false)
       setShareholderId(""); setMilestoneId(""); setAmount(""); setDueDate("")
-      router.refresh()
+      if (data.scheduleItem) setLocalScheduleItems(prev => [...prev, data.scheduleItem])
     } catch (err: any) {
       toast.error(err.message)
     } finally {
@@ -198,7 +200,6 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
     setEditingItem(item)
     setEditAmount(item.amount.toString())
     setEditDate(new Date(item.due_date).toISOString().split('T')[0])
-    setEditStatus(item.status)
     setEditMilestoneId(item.milestone_id || "none")
   }
 
@@ -212,7 +213,6 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
         body: JSON.stringify({
           amount:       editAmount,
           due_date:     editDate,
-          status:       editStatus,
           milestone_id: editMilestoneId,
         }),
       })
@@ -221,7 +221,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
 
       toast.success("Installment updated successfully")
       setEditingItem(null)
-      router.refresh()
+      setLocalScheduleItems(prev => prev.map(si => si.id === editingItem.id ? { ...si, ...data.item } : si))
     } catch (err: any) {
       toast.error(err.message)
     } finally {
@@ -236,7 +236,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
       toast.success("Installment deleted")
-      router.refresh()
+      setLocalScheduleItems(prev => prev.filter(si => si.id !== itemId))
     } catch (err: any) {
       toast.error(err.message)
     }
@@ -265,7 +265,6 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
   const selectedShareholder = shareholders.find(s => s.id === shareholderId)
   const selectedMilestone   = milestones.find(m => m.id === milestoneId)
   const editMilestone       = milestones.find(m => m.id === editMilestoneId)
-  const editStatusLabel     = SCHEDULE_STATUSES.find(s => s.value === editStatus)?.label
 
   const filterLabel = SCHEDULE_STATUSES.find(s => s.value === filterStatus)?.label
 
@@ -534,34 +533,6 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
               </ComboBox>
             </div>
 
-            {/* Status */}
-            <div className="space-y-2">
-              <Label>Status Override</Label>
-              <ComboBox
-                open={editStatusOpen}
-                onOpenChange={setEditStatusOpen}
-                placeholder="Select status..."
-                label={editStatusLabel}
-              >
-                <CommandList>
-                  <CommandGroup>
-                    {SCHEDULE_STATUSES.map(s => (
-                      <CommandItem
-                        key={s.value}
-                        value={s.label}
-                        onSelect={() => { setEditStatus(s.value); setEditStatusOpen(false) }}
-                        className="flex items-center justify-between py-2.5"
-                      >
-                        <span className="font-medium text-on-surface">{s.label}</span>
-                        <Check className={cn("h-4 w-4 text-primary", editStatus === s.value ? "opacity-100" : "opacity-0")} />
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </ComboBox>
-              <p className="text-[10px] text-on-surface-variant italic">Note: Manually overriding status might be reverted by the payment engine if it detects conflicting records.</p>
-            </div>
-
             <DialogFooter className="pt-4">
               <Button variant="outline" onClick={() => setEditingItem(null)} disabled={isSubmitting}>Cancel</Button>
               <Button onClick={handleUpdate} disabled={isSubmitting} className="bg-primary hover:bg-primary/90">
@@ -607,6 +578,23 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
                 </div>
               </div>
             </div>
+
+            {getPenalty(payDialogItem) > 0 && (
+              <div className="flex items-center space-x-3 p-4 bg-error-container/30 border border-error-container rounded-xl">
+                <Checkbox
+                  id="waive-inline"
+                  checked={waivePenalties}
+                  onCheckedChange={(checked) => setWaivePenalties(!!checked)}
+                  className="w-5 h-5 border-red-300 data-[state=checked]:bg-red-600"
+                />
+                <div className="grid gap-0.5 leading-none">
+                  <label htmlFor="waive-inline" className="text-sm font-bold text-red-900 cursor-pointer flex items-center gap-1.5 uppercase tracking-tight">
+                    <Ban className="w-4 h-4" /> Waive Penalty on This Item
+                  </label>
+                  <p className="text-xs text-destructive">Removes ৳{getPenalty(payDialogItem).toLocaleString('en-IN')} in late fees for this installment.</p>
+                </div>
+              </div>
+            )}
 
             <div className="flex gap-4 items-end">
               <div className="space-y-2 w-44 shrink-0">

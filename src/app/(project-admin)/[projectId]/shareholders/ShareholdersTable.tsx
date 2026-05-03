@@ -241,40 +241,38 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
   const inactive = total - active
 
   return (
-    <div className="space-y-4">
-      {/* Top Bar */}
-      <div className="flex flex-col sm:flex-row justify-end items-start sm:items-center gap-4">
-        <Button 
-          onClick={() => {
-            setEditingShareholder(null)
-            setIsDialogOpen(true)
-          }} 
-          className="bg-primary hover:bg-primary"
-        >
-          <UserPlus className="mr-2 h-4 w-4" />
-          Add Shareholder
-        </Button>
-      </div>
-
-      {/* Stats Badges */}
-      <div className="flex gap-2">
-         <Badge variant="outline" className="text-on-surface-variant bg-surface">Total: {total}</Badge>
-         <Badge variant="outline" className="text-primary bg-primary-container/20 border-green-200">Active: {active}</Badge>
-         <Badge variant="outline" className="text-on-surface-variant bg-surface-variant/20 border-outline-variant/40">Inactive: {inactive}</Badge>
-      </div>
-
-      <div>
-        <div className="py-4 pr-4">
-           <div className="relative max-w-sm">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
-            <Input
-              placeholder="Search by name, email or unit..."
-              value={globalFilter ?? ""}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-              className="pl-10 pr-4 py-2.5 rounded-full border border-outline-variant/40 focus:ring-2 focus:ring-primary/20"
-            />
+    <div className="space-y-0">
+      <div className="sticky top-0 z-10 -mx-4 sm:-mx-6 lg:-mx-10 px-4 sm:px-6 lg:px-10 pt-4 pb-4 bg-background/95 backdrop-blur-md space-y-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex gap-2">
+            <Badge variant="outline" className="text-on-surface-variant bg-surface">Total: {total}</Badge>
+            <Badge variant="outline" className="text-primary bg-primary-container/20 border-green-200">Active: {active}</Badge>
+            <Badge variant="outline" className="text-on-surface-variant bg-surface-variant/20 border-outline-variant/40">Inactive: {inactive}</Badge>
           </div>
+          <Button 
+            onClick={() => {
+              setEditingShareholder(null)
+              setIsDialogOpen(true)
+            }} 
+            className="bg-primary hover:bg-primary"
+          >
+            <UserPlus className="mr-2 h-4 w-4" />
+            Add Shareholder
+          </Button>
         </div>
+
+        <div className="relative max-w-sm">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
+          <Input
+            placeholder="Search by name, email or unit..."
+            value={globalFilter ?? ""}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="pl-10 pr-4 py-2.5 rounded-full border border-outline-variant/40 focus:ring-2 focus:ring-primary/20"
+          />
+        </div>
+      </div>
+
+      <div className="pt-4">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

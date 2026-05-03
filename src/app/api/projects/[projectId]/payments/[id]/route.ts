@@ -1,15 +1,10 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { logAction } from "@/lib/audit"
-import { requireProjectAdmin } from "@/lib/permissions"
 
-/**
- * Re-calculates and updates the status of a schedule item based on its total payments.
- */
 async function syncScheduleItemStatus(supabase: any, scheduleItemId: string) {
   if (!scheduleItemId) return
 
-  // 1. Get schedule item details
   const { data: item } = await supabase
     .from("schedule_items")
     .select("amount, due_date")
@@ -18,7 +13,6 @@ async function syncScheduleItemStatus(supabase: any, scheduleItemId: string) {
   
   if (!item) return
 
-  // 2. Get all payments for this item
   const { data: payments } = await supabase
     .from("payments")
     .select("amount")
@@ -27,7 +21,6 @@ async function syncScheduleItemStatus(supabase: any, scheduleItemId: string) {
   const totalPaid = payments?.reduce((sum: number, p: any) => sum + parseFloat(p.amount), 0) || 0
   const expected = parseFloat(item.amount)
 
-  // 3. Determine new status
   let newStatus = "DUE"
   if (totalPaid <= 0) {
     const isOverdue = new Date(item.due_date) < new Date()
@@ -38,7 +31,6 @@ async function syncScheduleItemStatus(supabase: any, scheduleItemId: string) {
     newStatus = "PARTIALLY_PAID"
   }
 
-  // 4. Update
   await supabase
     .from("schedule_items")
     .update({ status: newStatus })
@@ -50,19 +42,24 @@ export async function PATCH(
   props: { params: Promise<{ projectId: string, id: string }> }
 ) {
   const { projectId, id } = await props.params
-  const supabase = await createClient()
 
   try {
+    const supabase = await createClient()
+
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-    try { await requireProjectAdmin(supabase, projectId) } 
-    catch { return NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
+    const { data: adminCheck } = await supabase
+      .from("project_admins")
+      .select("id")
+      .eq("project_id", projectId)
+      .eq("user_id", user.id)
+      .single()
+    if (!adminCheck) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
     const body = await request.json()
     const { amount, method, reference_no, notes } = body
 
-    // Get old record to check for schedule link
     const { data: oldPayment } = await supabase.from("payments").select("schedule_item_id").eq("id", id).single()
 
     const { data: updatedPayment, error } = await supabase
@@ -79,22 +76,21 @@ export async function PATCH(
 
     if (error) return NextResponse.json({ error: error.message }, { status: 400 })
 
-    // Sync status if linked
     if (oldPayment?.schedule_item_id) {
-        await syncScheduleItemStatus(supabase, oldPayment.schedule_item_id)
+      syncScheduleItemStatus(supabase, oldPayment.schedule_item_id)
     }
 
-    await logAction({
+    logAction({
       projectId,
       userId: user.id,
       action: "UPDATE_PAYMENT",
       entityType: "payment",
       entityId: id,
       details: body
-    })
+    }).catch(err => console.error("Audit failed:", err))
 
     return NextResponse.json({ success: true, payment: updatedPayment })
-  } catch (err: any) {
+  } catch {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
   }
 }
@@ -104,17 +100,30 @@ export async function DELETE(
   props: { params: Promise<{ projectId: string, id: string }> }
 ) {
   const { projectId, id } = await props.params
-  const supabase = await createClient()
 
   try {
+    const supabase = await createClient()
+
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-    try { await requireProjectAdmin(supabase, projectId) } 
-    catch { return NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
+    const [adminResult, paymentResult] = await Promise.all([
+      supabase
+        .from("project_admins")
+        .select("id")
+        .eq("project_id", projectId)
+        .eq("user_id", user.id)
+        .single(),
+      supabase.from("payments").select("schedule_item_id").eq("id", id).single()
+    ])
 
-    // Get old record for schedule link sync before deleting
-    const { data: payment } = await supabase.from("payments").select("schedule_item_id").eq("id", id).single()
+    if (!adminResult.data) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+    if (paymentResult.error) return NextResponse.json({ error: "Payment not found" }, { status: 404 })
+
+    await supabase
+      .from("payment_proofs")
+      .update({ payment_id: null })
+      .eq("payment_id", id)
 
     const { error } = await supabase
       .from("payments")
@@ -123,21 +132,20 @@ export async function DELETE(
 
     if (error) return NextResponse.json({ error: error.message }, { status: 400 })
 
-    // Sync status if it was linked
-    if (payment?.schedule_item_id) {
-        await syncScheduleItemStatus(supabase, payment.schedule_item_id)
+    if (paymentResult.data?.schedule_item_id) {
+      syncScheduleItemStatus(supabase, paymentResult.data.schedule_item_id)
     }
 
-    await logAction({
+    logAction({
       projectId,
       userId: user.id,
       action: "DELETE_PAYMENT",
       entityType: "payment",
       entityId: id
-    })
+    }).catch(err => console.error("Audit failed:", err))
 
     return NextResponse.json({ success: true })
-  } catch (err: any) {
+  } catch {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
   }
 }

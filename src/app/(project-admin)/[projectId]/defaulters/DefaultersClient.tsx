@@ -1,8 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { useRouter } from "next/navigation"
-import { Phone, Calendar, AlertTriangle, Settings2, Mail, ShieldOff, Loader2 } from "lucide-react"
+import { AlertTriangle, Settings2, Mail, ShieldOff, Loader2 } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -34,7 +33,6 @@ interface PenaltyRow {
 }
 
 export function DefaultersClient({ projectId, overdueItems, payments }: DefaultersClientProps) {
-  const router = useRouter()
   const [isProcessing, setIsProcessing] = useState(false)
   const [waiveDialogOpen, setWaiveDialogOpen] = useState(false)
   const [selectedDefaulter, setSelectedDefaulter] = useState<{
@@ -45,46 +43,41 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
   } | null>(null)
   const [waiveReasonMap, setWaiveReasonMap] = useState<Record<string, string>>({})
   const [waivingPenaltyId, setWaivingPenaltyId] = useState<string | null>(null)
+  const [waivedIds, setWaivedIds] = useState<Set<string>>(new Set())
 
   const defaulters = useMemo(() => {
-    const map = new Map()
+    const rows: {
+      shareholderId: string
+      shareholderName: string
+      unit: string
+      phone: string
+      itemId: string
+      milestoneName: string | null
+      dueDate: Date
+      installmentAmount: number
+      paid: number
+      principalDue: number
+      penalty: number
+      penalties: PenaltyRow[]
+    }[] = []
 
     overdueItems.forEach(item => {
       const sh = item.shareholder
       if (!sh) return
-
-      const shId = sh.id
-      const key = shId
-
-      if (!map.has(key)) {
-        map.set(key, {
-          id: shId,
-          unit: sh.unit_flat,
-          name: sh.profiles?.name || "Unknown",
-          phone: sh.profiles?.phone || "N/A",
-          overdueCount: 0,
-          totalPrincipal: 0,
-          totalPenalty: 0,
-          oldestDue: new Date(item.due_date),
-          activePenalties: [] as PenaltyRow[],
-        })
-      }
-
-      const d = map.get(key)
-      d.overdueCount++
 
       const paid = payments
         .filter(p => p.schedule_item_id === item.id)
         .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
 
       const principalDue = Math.max(0, (parseFloat(item.amount) || 0) - paid)
-      d.totalPrincipal += principalDue
 
+      let itemPenalty = 0
+      const itemPenalties: PenaltyRow[] = []
       if (item.penalties) {
         item.penalties.forEach((p: any) => {
-          if (!p.is_waived && parseFloat(p.amount) > 0) {
-            d.totalPenalty += parseFloat(p.amount)
-            d.activePenalties.push({
+          if (!p.is_waived && !waivedIds.has(p.id) && parseFloat(p.amount) > 0) {
+            itemPenalty += parseFloat(p.amount)
+            itemPenalties.push({
               id: p.id,
               amount: parseFloat(p.amount),
               calculated_at: p.calculated_at,
@@ -97,12 +90,24 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
         })
       }
 
-      const itemDate = new Date(item.due_date)
-      if (itemDate < d.oldestDue) d.oldestDue = itemDate
+      rows.push({
+        shareholderId: sh.id,
+        shareholderName: sh.profiles?.name || "Unknown",
+        unit: sh.unit_flat,
+        phone: sh.profiles?.phone || "N/A",
+        itemId: item.id,
+        milestoneName: item.milestone?.name || null,
+        dueDate: new Date(item.due_date),
+        installmentAmount: parseFloat(item.amount) || 0,
+        paid,
+        principalDue,
+        penalty: itemPenalty,
+        penalties: itemPenalties,
+      })
     })
 
-    return Array.from(map.values()).sort((a, b) => b.totalPrincipal - a.totalPrincipal)
-  }, [overdueItems, payments])
+    return rows.sort((a, b) => b.principalDue - a.principalDue)
+  }, [overdueItems, payments, waivedIds])
 
   const handleApplyPenalties = async () => {
     setIsProcessing(true)
@@ -111,7 +116,7 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
       toast.success(data.message || "Penalty sweeps completed.")
-      router.refresh()
+      window.location.reload()
     } catch (err: any) {
       toast.error(err.message)
     } finally {
@@ -119,12 +124,12 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
     }
   }
 
-  const openWaiveDialog = (defaulter: any) => {
+  const openWaiveDialog = (item: any) => {
     setSelectedDefaulter({
-      id: defaulter.id,
-      name: defaulter.name,
-      unit: defaulter.unit,
-      penalties: defaulter.activePenalties,
+      id: item.shareholderId,
+      name: item.shareholderName,
+      unit: item.unit,
+      penalties: item.penalties,
     })
     setWaiveReasonMap({})
     setWaiveDialogOpen(true)
@@ -152,6 +157,8 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
       setSelectedDefaulter(prev =>
         prev ? { ...prev, penalties: prev.penalties.filter(p => p.id !== penaltyId) } : null
       )
+
+      setWaivedIds(prev => new Set(prev).add(penaltyId))
     } catch (err: any) {
       toast.error(err.message)
     } finally {
@@ -181,7 +188,12 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
       }
       toast.success(`${waivedCount} penalty(ies) waived.`)
       setWaiveDialogOpen(false)
-      router.refresh()
+
+      setWaivedIds(prev => {
+        const next = new Set(prev)
+        selectedDefaulter.penalties.forEach(p => next.add(p.id))
+        return next
+      })
     } catch (err: any) {
       toast.error(err.message)
     } finally {
@@ -207,18 +219,19 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
           <TableHeader>
             <TableRow>
               <TableHead className="px-6">Shareholder</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead>Overdue Status</TableHead>
-              <TableHead className="text-right">Principal Due</TableHead>
-              <TableHead className="text-right text-[var(--destructive)]">Active Penalty</TableHead>
-              <TableHead className="text-right px-6">Total Owed</TableHead>
+              <TableHead>Milestone</TableHead>
+              <TableHead>Due Date</TableHead>
+              <TableHead className="text-right">Expected (৳)</TableHead>
+              <TableHead className="text-right">Paid (৳)</TableHead>
+              <TableHead className="text-right">Due (৳)</TableHead>
+              <TableHead className="text-right text-[var(--destructive)]">Penalty (৳)</TableHead>
               <TableHead className="text-right px-6">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {defaulters.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-20">
+                <TableCell colSpan={8} className="text-center py-20">
                   <div className="flex flex-col items-center justify-center text-outline">
                     <AlertTriangle className="w-12 h-12 mb-4 opacity-10 text-primary" />
                     <p className="text-lg font-medium text-on-surface-variant">No active defaulters</p>
@@ -232,41 +245,36 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
                   <TableCell className="px-6 py-5">
                     <div className="flex flex-col">
                       <span className="text-[14px] font-semibold text-[var(--foreground)]">
-                        {d.name}
+                        {d.shareholderName}
                       </span>
                       <span className="text-[12px] text-[var(--on-surface-variant)] mt-0.5">
                         Unit: {d.unit}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1.5 text-[14px] font-medium text-[var(--on-surface-variant)]">
-                      <Phone className="w-3.5 h-3.5 text-[var(--m3-outline)]" />
-                      {d.phone}
-                    </div>
+                  <TableCell className="text-sm font-medium text-on-surface">
+                    {d.milestoneName || "General"}
                   </TableCell>
                   <TableCell>
-                    <div className="flex flex-col">
-                      <span className="text-[11px] font-bold text-[#964B00] bg-[#FFDDB3] px-3 py-1 rounded-full w-fit uppercase tracking-wider">
-                        {d.overdueCount} Items Overdue
-                      </span>
-                      <span className="text-[11px] text-[var(--on-surface-variant)] mt-1.5 flex items-center gap-1">
-                        <Calendar className="w-3 h-3" /> Since {d.oldestDue.toLocaleDateString()}
-                      </span>
-                    </div>
+                    <span className="text-[11px] font-bold text-[#964B00] bg-[#FFDDB3] px-3 py-1 rounded-full uppercase tracking-wider">
+                      {d.dueDate.toLocaleDateString()}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-right text-sm text-on-surface-variant">
+                    ৳ {d.installmentAmount.toLocaleString('en-IN')}
+                  </TableCell>
+                  <TableCell className="text-right text-sm text-primary font-semibold">
+                    ৳ {d.paid.toLocaleString('en-IN')}
                   </TableCell>
                   <TableCell className="text-right font-medium text-on-surface">
-                    ৳ {d.totalPrincipal.toLocaleString('en-IN')}
+                    ৳ {d.principalDue.toLocaleString('en-IN')}
                   </TableCell>
                   <TableCell className="text-right font-medium text-destructive">
-                    ৳ {d.totalPenalty.toLocaleString('en-IN')}
-                  </TableCell>
-                  <TableCell className="text-right font-black text-on-surface px-6">
-                    ৳ {(d.totalPrincipal + d.totalPenalty).toLocaleString('en-IN')}
+                    ৳ {d.penalty.toLocaleString('en-IN')}
                   </TableCell>
                   <TableCell className="text-right px-6">
                     <div className="flex items-center justify-end gap-1">
-                      {d.activePenalties.length > 0 && (
+                      {d.penalties.length > 0 && (
                         <Button
                           variant="ghost"
                           size="sm"
