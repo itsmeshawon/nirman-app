@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { mutate } from "swr"
 import { toast } from "sonner"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -92,7 +92,6 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
   const [payMethod,     setPayMethod]     = useState("BANK_TRANSFER")
   const [payReference,  setPayReference]  = useState("")
   const [payNotes,      setPayNotes]      = useState("")
-  const [paySubmitting, setPaySubmitting] = useState(false)
   const [payMethodOpen, setPayMethodOpen] = useState(false)
   const [waivePenalties, setWaivePenalties] = useState(false)
 
@@ -114,45 +113,56 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
       toast.error("Please fill in amount and payment method.")
       return
     }
-    setPaySubmitting(true)
+
+    const capturedItem = payDialogItem
+    const paid = parseFloat(payAmount) || 0
+    const tempId = `temp-${Date.now()}`
+
+    const payload = {
+      shareholder_id:   capturedItem.shareholder_id,
+      schedule_item_id: capturedItem.id,
+      amount:           paid,
+      method:           payMethod,
+      reference_no:     payReference || null,
+      notes:            payNotes || null,
+      waive_penalties:  waivePenalties,
+    }
+
+    // Calculate optimistic status
+    const alreadyPaid = localPayments
+      .filter(p => p.schedule_item_id === capturedItem.id)
+      .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
+    const totalPaid = alreadyPaid + paid
+    const optimisticStatus = totalPaid >= parseFloat(capturedItem.amount) ? "PAID" : "PARTIALLY_PAID"
+
+    // Update UI immediately
+    setLocalPayments(prev => [...prev, { id: tempId, schedule_item_id: capturedItem.id, amount: paid }])
+    setLocalScheduleItems(prev => prev.map(si =>
+      si.id === capturedItem.id ? { ...si, status: optimisticStatus } : si
+    ))
+    setPayDialogItem(null)
+
+    // Finish in background
     try {
       const res = await fetch(`/api/projects/${projectId}/payments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          shareholder_id:   payDialogItem.shareholder_id,
-          schedule_item_id: payDialogItem.id,
-          amount:           parseFloat(payAmount) || 0,
-          method:           payMethod,
-          reference_no:     payReference || null,
-          notes:            payNotes || null,
-          waive_penalties:  waivePenalties,
-        }),
+        body: JSON.stringify(payload),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
+
+      setLocalPayments(prev => prev.map(p => p.id === tempId ? data.payment : p))
+      onPaymentRecorded?.(data.payment)
       toast.success(`Payment recorded! Receipt: ${data.payment.receipt_no}`)
       mutate(`/api/projects/${projectId}/page-data/payments`)
-
-      const newPayment = data.payment
-      setLocalPayments(prev => [...prev, newPayment])
-      onPaymentRecorded?.(newPayment)
-
-      setLocalScheduleItems(prev => prev.map(si => {
-        if (si.id !== payDialogItem.id) return si
-        const totalPaid = localPayments
-          .filter(p => p.schedule_item_id === si.id)
-          .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
-          + (parseFloat(payAmount) || 0)
-        const newStatus = totalPaid >= parseFloat(si.amount) ? "PAID" : "PARTIALLY_PAID"
-        return { ...si, status: newStatus }
-      }))
-
-      setPayDialogItem(null)
     } catch (err: any) {
+      // Roll back
+      setLocalPayments(prev => prev.filter(p => p.id !== tempId))
+      setLocalScheduleItems(prev => prev.map(si =>
+        si.id === capturedItem.id ? { ...si, status: capturedItem.status } : si
+      ))
       toast.error(err.message)
-    } finally {
-      setPaySubmitting(false)
     }
   }
 
@@ -172,30 +182,53 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
       toast.error("Please fill in shareholder, amount, and due date.")
       return
     }
-    setIsSubmitting(true)
+
+    // Build optimistic item to show immediately
+    const dueDateObj = new Date(dueDate)
+    const daysDiff = (dueDateObj.getTime() - Date.now()) / (1000 * 3600 * 24)
+    const optimisticStatus = daysDiff < 0 ? "OVERDUE" : daysDiff <= 7 ? "DUE" : "UPCOMING"
+    const tempId = `temp-${Date.now()}`
+    const optimisticItem = {
+      id: tempId,
+      shareholder_id: shareholderId,
+      milestone_id: milestoneId && milestoneId !== "none" ? milestoneId : null,
+      amount: parseFloat(amount),
+      due_date: dueDateObj.toISOString(),
+      status: optimisticStatus,
+      shareholder: shareholders.find(s => s.id === shareholderId),
+      milestone: milestones.find(m => m.id === milestoneId) || null,
+      penalties: [],
+    }
+
+    // Add to table immediately and close dialog
+    setLocalScheduleItems(prev => [...prev, optimisticItem])
+    const payload = {
+      shareholder_id: shareholderId,
+      milestone_id:   milestoneId || null,
+      amount,
+      due_date:       dueDate,
+    }
+    setIsModalOpen(false)
+    setShareholderId(""); setMilestoneId(""); setAmount(""); setDueDate("")
+
+    // Finish in background
     try {
       const res = await fetch(`/api/projects/${projectId}/schedules`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          shareholder_id: shareholderId,
-          milestone_id:   milestoneId || null,
-          amount,
-          due_date:       dueDate,
-        }),
+        body: JSON.stringify(payload),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
 
+      // Replace temp item with real server item
+      setLocalScheduleItems(prev => prev.map(si => si.id === tempId ? data.scheduleItem : si))
       toast.success("Schedule collection created successfully!")
       mutate(`/api/projects/${projectId}/page-data/payments`)
-      setIsModalOpen(false)
-      setShareholderId(""); setMilestoneId(""); setAmount(""); setDueDate("")
-      if (data.scheduleItem) setLocalScheduleItems(prev => [...prev, data.scheduleItem])
     } catch (err: any) {
+      // Roll back on failure
+      setLocalScheduleItems(prev => prev.filter(si => si.id !== tempId))
       toast.error(err.message)
-    } finally {
-      setIsSubmitting(false)
     }
   }
 
@@ -649,9 +682,9 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
             </div>
 
             <DialogFooter className="pt-4">
-              <Button variant="outline" onClick={() => setPayDialogItem(null)} disabled={paySubmitting}>Cancel</Button>
-              <Button onClick={handleRecordPayment} disabled={paySubmitting} className="h-11 px-8 bg-primary hover:bg-primary/90">
-                {paySubmitting ? "Recording..." : "Confirm & Record Payment"}
+              <Button variant="outline" onClick={() => setPayDialogItem(null)}>Cancel</Button>
+              <Button onClick={handleRecordPayment} className="h-11 px-8 bg-primary hover:bg-primary/90">
+                Confirm & Record Payment
               </Button>
             </DialogFooter>
           </div>

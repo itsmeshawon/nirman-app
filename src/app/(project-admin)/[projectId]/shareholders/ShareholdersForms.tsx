@@ -18,7 +18,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
 import { Copy, Check } from "lucide-react"
 
 const shareholderSchema = z.object({
@@ -43,11 +42,12 @@ interface Props {
   isOpen: boolean
   onClose: () => void
   shareholder?: any // If provided, it's an edit
+  onSaved?: (shareholder: any) => void
+  onRemove?: (tempId: string) => void
 }
 
-export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: Props) {
+export function ShareholderDialog({ projectId, isOpen, onClose, shareholder, onSaved, onRemove }: Props) {
   const isEdit = !!shareholder
-  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [tempCredentials, setTempCredentials] = useState<{email: string, pass: string, name: string} | null>(null)
   const [copied, setCopied] = useState(false)
@@ -103,42 +103,72 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder }: P
 
 
   const onSubmit = async (data: ShareholderFormValues) => {
-    setIsLoading(true)
-    try {
-      const url = isEdit
-        ? `/api/projects/${projectId}/shareholders/${shareholder.id}`
-        : `/api/projects/${projectId}/shareholders`
-      
-      const method = isEdit ? "PATCH" : "POST"
-
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      })
-
-      const json = await res.json()
-
-      if (!res.ok) throw new Error(json.error || "Something went wrong")
-
-      toast.success(`Shareholder ${isEdit ? "updated" : "added"} successfully!`)
-      
-      if (!isEdit && !shareholder) {
-        setTempCredentials({ email: data.email, pass: data.password || "test1234", name: data.name })
-      } else {
-        onClose()
+    if (isEdit && shareholder) {
+      // EDIT: update local state immediately, then sync with server
+      setIsLoading(true)
+      const profile = Array.isArray(shareholder.profiles) ? shareholder.profiles[0] : shareholder.profiles
+      const updatedShareholder = {
+        ...shareholder,
+        unit_flat: data.unit_flat,
+        ownership_pct: data.ownership_pct ? parseFloat(data.ownership_pct) : shareholder.ownership_pct,
+        opening_balance: data.opening_balance ? parseFloat(data.opening_balance) : shareholder.opening_balance,
+        profiles: { ...profile, name: data.name, phone: data.phone, profession: data.profession, designation: data.designation, organization: data.organization, present_address: data.present_address, whatsapp_no: data.whatsapp_no },
       }
-      
-      router.refresh()
-    } catch (err: any) {
-      toast.error(err.message)
-    } finally {
-      setIsLoading(false)
+      onSaved?.(updatedShareholder)
+      onClose()
+      try {
+        const res = await fetch(`/api/projects/${projectId}/shareholders/${shareholder.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        })
+        const json = await res.json()
+        if (!res.ok) throw new Error(json.error || "Something went wrong")
+        toast.success("Shareholder updated successfully!")
+      } catch (err: any) {
+        toast.error(err.message)
+        onSaved?.(shareholder) // revert
+      } finally {
+        setIsLoading(false)
+      }
+      return
     }
+
+    // CREATE: show optimistic row instantly, close dialog, fire API in background
+    const tempId = `temp-${Date.now()}`
+    const optimistic = {
+      id: tempId,
+      unit_flat: data.unit_flat,
+      ownership_pct: data.ownership_pct ? parseFloat(data.ownership_pct) : null,
+      opening_balance: data.opening_balance ? parseFloat(data.opening_balance) : null,
+      status: "ACTIVE",
+      project_id: projectId,
+      profiles: { name: data.name, email: data.email, phone: data.phone || null, profession: data.profession || null, designation: data.designation || null, organization: data.organization || null, present_address: data.present_address || null, whatsapp_no: data.whatsapp_no || null },
+    }
+    onSaved?.(optimistic)
+    setTempCredentials({ email: data.email, pass: data.password || "test1234", name: data.name })
+
+    ;(async () => {
+      try {
+        const res = await fetch(`/api/projects/${projectId}/shareholders`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        })
+        const json = await res.json()
+        if (!res.ok) throw new Error(json.error || "Something went wrong")
+        toast.success("Shareholder added successfully!")
+        onSaved?.(null) // trigger mutate to replace temp with real data
+      } catch (err: any) {
+        onRemove?.(tempId)
+        toast.error(err.message)
+      }
+    })()
   }
 
   const handleCloseCreds = () => {
     setTempCredentials(null)
+    onSaved?.(null)
     onClose()
     setCopied(false)
   }

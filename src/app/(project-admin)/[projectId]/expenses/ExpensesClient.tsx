@@ -121,12 +121,11 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
   }
 
   const handleExpenseSaved = (savedExpense: any) => {
-    const isEdit = !!editingExpense
-    if (isEdit) {
-      setExpenses(prev => prev.map(e => e.id === savedExpense.id ? savedExpense : e))
-    } else {
-      setExpenses(prev => [savedExpense, ...prev])
-    }
+    setExpenses(prev => {
+      const exists = prev.some(e => e.id === savedExpense.id)
+      if (exists) return prev.map(e => e.id === savedExpense.id ? { ...e, ...savedExpense } : e)
+      return [savedExpense, ...prev]
+    })
     mutate(`/api/projects/${projectId}/page-data/expenses`)
   }
 

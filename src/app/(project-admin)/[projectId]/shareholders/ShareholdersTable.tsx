@@ -46,8 +46,13 @@ interface ShareholdersTableProps {
   committeeShareholderIds?: string[]
 }
 
-export function ShareholdersTable({ projectId, data, committeeShareholderIds = [] }: ShareholdersTableProps) {
+export function ShareholdersTable({ projectId, data: initialData, committeeShareholderIds = [] }: ShareholdersTableProps) {
   const committeeSet = new Set(committeeShareholderIds)
+  const [shareholders, setShareholders] = useState<any[]>(initialData)
+
+  useEffect(() => {
+    setShareholders(initialData)
+  }, [initialData])
   const [sorting, setSorting] = useState<SortingState>([{ id: "unit_flat", desc: false }])
   const [globalFilter, setGlobalFilter] = useState("")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -73,19 +78,36 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
     return () => observer.disconnect()
   }, [])
 
+  const handleSaved = (saved: any) => {
+    if (saved) {
+      setShareholders(prev => {
+        const exists = prev.some(s => s.id === saved.id)
+        if (exists) return prev.map(s => s.id === saved.id ? { ...s, ...saved } : s)
+        return [saved, ...prev]
+      })
+    } else {
+      mutate(`/api/projects/${projectId}/page-data/shareholders`)
+    }
+  }
+
+  const handleRemove = (id: string) => {
+    setShareholders(prev => prev.filter(s => s.id !== id))
+  }
+
   const handleStatusToggle = async (shareholder: any) => {
     const newStatus = shareholder.status === "ACTIVE" ? "INACTIVE" : "ACTIVE"
+    setShareholders(prev => prev.map(s => s.id === shareholder.id ? { ...s, status: newStatus } : s))
     try {
       const res = await fetch(`/api/projects/${projectId}/shareholders/${shareholder.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
       })
-
       if (!res.ok) throw new Error("Failed to update status")
       toast.success(`Status updated to ${newStatus}`)
       mutate(`/api/projects/${projectId}/page-data/shareholders`)
     } catch (err: any) {
+      setShareholders(prev => prev.map(s => s.id === shareholder.id ? { ...s, status: shareholder.status } : s))
       toast.error(err.message)
     }
   }
@@ -93,19 +115,19 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
   const handleDelete = async (shareholder: any) => {
     if (!confirm(`Are you sure you want to delete ${shareholder.profiles?.name}? This action cannot be undone.`)) return
 
+    setShareholders(prev => prev.filter(s => s.id !== shareholder.id))
     try {
       const res = await fetch(`/api/projects/${projectId}/shareholders/${shareholder.id}`, {
         method: "DELETE",
       })
-
       if (!res.ok) {
         const json = await res.json()
         throw new Error(json.error || "Failed to delete shareholder")
       }
-
       toast.success("Shareholder deleted successfully")
       mutate(`/api/projects/${projectId}/page-data/shareholders`)
     } catch (err: any) {
+      setShareholders(prev => [shareholder, ...prev])
       toast.error(err.message)
     }
   }
@@ -221,7 +243,7 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
   ]
 
   const table = useReactTable({
-    data,
+    data: shareholders,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -235,8 +257,8 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
   })
 
   // Basic Stats calculation
-  const total = data.length
-  const active = data.filter(s => s.status === "ACTIVE").length
+  const total = shareholders.length
+  const active = shareholders.filter((s: any) => s.status === "ACTIVE").length
   const inactive = total - active
 
   return (
@@ -333,6 +355,8 @@ export function ShareholdersTable({ projectId, data, committeeShareholderIds = [
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         shareholder={editingShareholder}
+        onSaved={handleSaved}
+        onRemove={handleRemove}
       />
 
       {/* Shareholder Detail Sheet */}

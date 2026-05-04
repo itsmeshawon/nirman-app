@@ -48,8 +48,6 @@ export function RecordPaymentTab({
   onPaymentRecorded?: (payment: any) => void
   onSuccess?: () => void
 }) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
   const [shareholderOpen, setShareholderOpen] = useState(false)
   const [scheduleOpen,    setScheduleOpen]    = useState(false)
   const [methodOpen,      setMethodOpen]      = useState(false)
@@ -107,34 +105,37 @@ export function RecordPaymentTab({
       toast.error("Please fill in shareholder, amount, and payment method.")
       return
     }
-    setIsSubmitting(true)
+
+    const payload = {
+      shareholder_id:   shareholderId,
+      schedule_item_id: scheduleItemId && scheduleItemId !== "none" ? scheduleItemId : null,
+      amount:           parseFloat(amount) || 0,
+      method,
+      reference_no:     referenceNo,
+      notes,
+      waive_penalties:  waivePenalties,
+    }
+
+    // Close modal immediately
+    setAmount(""); setReferenceNo(""); setScheduleItemId("")
+    setNotes(""); setWaivePenalties(false); setShareholderId("")
+    onSuccess?.()
+
+    // Finish in background
     try {
       const res = await fetch(`/api/projects/${projectId}/payments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          shareholder_id:   shareholderId,
-          schedule_item_id: scheduleItemId && scheduleItemId !== "none" ? scheduleItemId : null,
-          amount:           parseFloat(amount) || 0,
-          method,
-          reference_no:     referenceNo,
-          notes,
-          waive_penalties:  waivePenalties,
-        }),
+        body: JSON.stringify(payload),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
 
       toast.success(`Payment recorded! Receipt: ${data.payment.receipt_no}`)
       mutate(`/api/projects/${projectId}/page-data/payments`)
-      setAmount(""); setReferenceNo(""); setScheduleItemId("")
-      setNotes(""); setWaivePenalties(false); setShareholderId("")
       onPaymentRecorded?.(data.payment)
-      onSuccess?.()
     } catch (err: any) {
       toast.error(err.message)
-    } finally {
-      setIsSubmitting(false)
     }
   }
 
@@ -369,8 +370,8 @@ export function RecordPaymentTab({
 
       {/* ── Submit ── */}
       <div className="pt-2 border-t border-outline-variant/40 flex justify-end">
-        <Button onClick={handleCreate} disabled={isSubmitting} className="h-11 px-8 bg-primary hover:bg-primary/90">
-          {isSubmitting ? "Recording..." : "Confirm & Record Payment"}
+        <Button onClick={handleCreate} className="h-11 px-8 bg-primary hover:bg-primary/90">
+          Confirm & Record Payment
         </Button>
       </div>
 

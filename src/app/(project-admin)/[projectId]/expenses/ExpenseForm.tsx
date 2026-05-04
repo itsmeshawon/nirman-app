@@ -63,96 +63,130 @@ export function ExpenseForm({ projectId, isOpen, onClose, onSave, milestones, ca
     setFiles([])
   }
 
+  const uploadAttachments = async (expenseId: string, filesToUpload: File[]) => {
+    await Promise.all(filesToUpload.map(async (file) => {
+      const formData = new FormData()
+      formData.append("file", file)
+      const attRes = await fetch(`/api/projects/${projectId}/expenses/${expenseId}/attachments`, {
+        method: "POST",
+        body: formData,
+      })
+      if (!attRes.ok) {
+        const attData = await attRes.json()
+        throw new Error(attData.error || `Failed to upload ${file.name}`)
+      }
+    }))
+  }
+
   const handleSave = async (submitForApproval: boolean) => {
     if (!title || !milestoneId || !categoryId || !amount || !date) {
       toast.error("Please fill all required fields")
       return
     }
 
-    // Must have at least 1 file attached total if submitting for approval
-    // Note: if editing and already has attachments in db we ideally should check that, but for simplicity we'll just check if files array has something OR it's an edit and we assume they uploaded before.
     if (submitForApproval && files.length === 0 && !expense?.attachments?.length) {
       toast.error("You must upload at least one proof attachment to submit for approval.")
       return
     }
 
+    const payload = {
+      title,
+      milestone_id: milestoneId,
+      category_id: categoryId,
+      amount,
+      date,
+      vat_amount: vatAmount,
+      invoice_no: invoiceNo,
+      notes,
+    }
+
     setIsSubmitting(true)
-    try {
-      let expenseId = expense?.id
-      let savedExpense: any = null
 
-      const payload = {
-         title,
-         milestone_id: milestoneId,
-         category_id: categoryId,
-         amount,
-         date,
-         vat_amount: vatAmount,
-         invoice_no: invoiceNo,
-         notes
-      }
-
-      if (expense) {
-        // Edit Mode
+    if (expense) {
+      // EDIT MODE — wait for everything, then close
+      try {
         const res = await fetch(`/api/projects/${projectId}/expenses/${expense.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload),
         })
         const data = await res.json()
         if (!res.ok) throw new Error(data.error)
-        savedExpense = data.expense
-      } else {
-        // Create Mode
-        const res = await fetch(`/api/projects/${projectId}/expenses`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        const data = await res.json()
-        if (!res.ok) throw new Error(data.error)
-        savedExpense = data.expense
-        expenseId = savedExpense.id
+        let savedExpense = data.expense
+
+        if (files.length > 0) {
+          await uploadAttachments(expense.id, files)
+        }
+
+        if (submitForApproval) {
+          const submitRes = await fetch(`/api/projects/${projectId}/expenses/${expense.id}/submit`, { method: "POST" })
+          if (!submitRes.ok) {
+            const d = await submitRes.json()
+            throw new Error(d.error || "Failed to submit for approval")
+          }
+          savedExpense = { ...savedExpense, status: "SUBMITTED" }
+          toast.success("Expense submitted for approval!")
+        } else {
+          toast.success("Expense updated.")
+        }
+
+        resetForm()
+        onClose()
+        onSave(savedExpense)
+      } catch (err: any) {
+        toast.error(err.message)
+      } finally {
+        setIsSubmitting(false)
       }
+      return
+    }
 
-      // Upload new attachments if any
-      if (files.length > 0 && expenseId) {
-        const uploadPromises = files.map(async (file) => {
-           const formData = new FormData()
-           formData.append("file", file)
+    // CREATE MODE — close dialog right after expense is created, finish in background
+    try {
+      const res = await fetch(`/api/projects/${projectId}/expenses`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      const savedExpense = data.expense
 
-           const attRes = await fetch(`/api/projects/${projectId}/expenses/${expenseId}/attachments`, {
-             method: "POST",
-             body: formData
-           })
-           if (!attRes.ok) {
-             const attData = await attRes.json()
-             console.error("Attachment err:", attData.error)
-             throw new Error(attData.error || `Failed to upload ${file.name}`)
-           }
-        })
-        await Promise.all(uploadPromises)
-      }
-
-      // Mark as submitted if requested
-      if (submitForApproval && expenseId) {
-         const submitRes = await fetch(`/api/projects/${projectId}/expenses/${expenseId}/submit`, { method: "POST" })
-         if (!submitRes.ok) {
-            const submitData = await submitRes.json()
-            throw new Error(submitData.error || "Failed to submit for approval")
-         }
-         savedExpense = { ...savedExpense, status: "SUBMITTED" }
-         toast.success("Expense submitted for approval!")
-      } else {
-         toast.success(expense ? "Expense updated." : "Expense saved as draft.")
-      }
-
+      // Show in table immediately and close dialog
+      onSave(savedExpense)
+      const capturedFiles = [...files]
       resetForm()
       onClose()
-      onSave(savedExpense)
+      setIsSubmitting(false)
+
+      // Background: upload attachments + submit
+      ;(async () => {
+        let finalExpense = { ...savedExpense }
+
+        if (capturedFiles.length > 0) {
+          try {
+            await uploadAttachments(savedExpense.id, capturedFiles)
+          } catch {
+            toast.error("Expense added but some attachments failed to upload.")
+          }
+        }
+
+        if (submitForApproval) {
+          const submitRes = await fetch(`/api/projects/${projectId}/expenses/${savedExpense.id}/submit`, { method: "POST" })
+          if (!submitRes.ok) {
+            const d = await submitRes.json()
+            toast.error(d.error || "Expense saved but couldn't submit for approval.")
+          } else {
+            finalExpense = { ...finalExpense, status: "SUBMITTED" }
+            onSave(finalExpense)
+            toast.success("Expense submitted for approval!")
+          }
+        } else {
+          toast.success("Expense saved as draft.")
+        }
+      })()
     } catch (err: any) {
       toast.error(err.message)
-    } finally {
       setIsSubmitting(false)
     }
   }

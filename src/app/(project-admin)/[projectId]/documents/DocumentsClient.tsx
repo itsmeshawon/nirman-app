@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { mutate } from "swr"
 import { 
   Table, 
   TableBody, 
@@ -31,13 +31,12 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
 import { 
-  FileText, 
-  Download, 
-  Plus, 
-  Trash2, 
-  Search, 
+  FileText,
+  Download,
+  Plus,
+  Trash2,
+  Search,
   File as FileIcon,
-  Loader2
 } from "lucide-react"
 import { format } from "date-fns"
 import { DOCUMENT_CATEGORIES } from "@/lib/validations"
@@ -59,11 +58,9 @@ interface DocumentsClientProps {
 }
 
 export function DocumentsClient({ projectId, initialDocuments }: DocumentsClientProps) {
-  const router = useRouter()
   const [documents, setDocuments] = useState<Document[]>(initialDocuments)
   const [searchQuery, setSearchQuery] = useState("")
   const [isUploadOpen, setIsUploadOpen] = useState(false)
-  const [isUploading, setIsUploading] = useState(false)
   
   // Upload form state
   const [uploadName, setUploadName] = useState("")
@@ -79,32 +76,47 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
       return
     }
 
-    setIsUploading(true)
+    const tempId = `temp-${Date.now()}`
+    const optimisticDoc: Document = {
+      id: tempId,
+      name: uploadName,
+      category: uploadCategory,
+      file_path: "",
+      file_type: uploadFile.type,
+      file_size: uploadFile.size,
+      uploaded_at: new Date().toISOString(),
+    }
+
+    // Add to table and close dialog immediately
+    setDocuments(prev => [optimisticDoc, ...prev])
+    setIsUploadOpen(false)
+    const capturedFile = uploadFile
+    const capturedName = uploadName
+    const capturedCategory = uploadCategory
+    setUploadName("")
+    setUploadCategory("")
+    setUploadFile(null)
+
+    // Upload in background
     const formData = new FormData()
-    formData.append("file", uploadFile)
-    formData.append("name", uploadName)
-    formData.append("category", uploadCategory)
+    formData.append("file", capturedFile)
+    formData.append("name", capturedName)
+    formData.append("category", capturedCategory)
 
     try {
       const res = await fetch(`/api/projects/${projectId}/documents`, {
         method: "POST",
-        body: formData
+        body: formData,
       })
-
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || "Upload failed")
 
-      setDocuments([data.document, ...documents])
+      setDocuments(prev => prev.map(d => d.id === tempId ? data.document : d))
       toast.success("Document uploaded successfully")
-      setIsUploadOpen(false)
-      // Reset form
-      setUploadName("")
-      setUploadCategory("")
-      setUploadFile(null)
+      mutate(`/api/projects/${projectId}/page-data/documents`)
     } catch (err: any) {
+      setDocuments(prev => prev.filter(d => d.id !== tempId))
       toast.error(err.message)
-    } finally {
-      setIsUploading(false)
     }
   }
 
@@ -201,17 +213,8 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
                 />
               </div>
               <div className="flex justify-end pt-4">
-                <Button 
-                  type="submit" 
-                  className="bg-primary hover:bg-primary w-full"
-                  disabled={isUploading}
-                >
-                  {isUploading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Uploading...
-                    </>
-                  ) : "Upload"}
+                <Button type="submit" className="bg-primary hover:bg-primary w-full">
+                  Upload
                 </Button>
               </div>
             </form>
