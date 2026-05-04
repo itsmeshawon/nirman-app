@@ -1,5 +1,5 @@
 # NIRMAN — AI Agent Source of Truth
-> Version: 1.1 | Last Updated: May 2026
+> Version: 1.2 | Last Updated: May 2026
 > This file is the SINGLE SOURCE OF TRUTH for the NirmaN application.
 > Every AI agent MUST read this entire file before starting any task.
 > Every AI agent MUST update this file after completing any task.
@@ -678,6 +678,11 @@ await createNotification({
 | May 2026 | Performance #3 — Combined 4 sequential permission round trips in `getProjectRole` into a single `Promise.all`; profile + admin + committee + shareholder queries all fire simultaneously; also reduced select fields to `id`-only on role tables | `src/lib/permissions.ts` | None |
 | May 2026 | Performance #1 — Replaced `auth.admin.listUsers()` (fetches all users) with targeted `profiles` table lookup by email using `.maybeSingle()`; applies to both add-admin and add-shareholder flows | `api/.../admin/route.ts`, `api/.../shareholders/route.ts` | None |
 | May 2026 | Performance #2 — Replaced N+1 penalty loop (up to 3 DB calls per item) with batch approach: single `.in()` read before loop, Map for O(1) lookup, then 3 parallel writes (batch insert, batch upsert, batch status update) regardless of item count; worst case 152 queries → 5 queries | `src/lib/penalty.ts` | None |
+| May 2026 | Optimistic UI — Add Expense (was 13s): dialog closes immediately after expense POST succeeds; attachment upload + approval submit fire in background IIFE; table row appears instantly via `onSave` callback; smart upsert in `handleExpenseSaved` handles both insert and status update | `expenses/ExpenseForm.tsx`, `expenses/ExpensesClient.tsx` | None — UI pattern only |
+| May 2026 | Optimistic UI — Add Custom Collection (was 6.5s): optimistic row built client-side from form data + temp ID; dialog closes instantly; background API fires; temp row replaced with real data on success or removed on failure | `payments/tabs/ScheduleTab.tsx` | None — UI pattern only |
+| May 2026 | Optimistic UI — Record Payment (was 3s): modal closes immediately, local schedule item status updated optimistically; API fires in background; rollback on failure | `payments/tabs/RecordPaymentTab.tsx`, `payments/tabs/ScheduleTab.tsx` | None — UI pattern only |
+| May 2026 | Optimistic UI — Upload Document (was 8s): optimistic row from File metadata (name, type, size) added instantly; dialog closes; file uploads to Supabase Storage in background; temp row replaced with real doc on success or removed on failure | `documents/DocumentsClient.tsx` | None — UI pattern only |
+| May 2026 | Optimistic UI — Add Shareholder: removed `router.refresh()` (slow full server re-render); for create — optimistic row appears instantly using form data + temp ID, API fires in background, `mutate()` replaces temp with real data on success, `onRemove` rolls back on failure; for edit — local state updated immediately from reconstructed object, API syncs in background with revert on failure; status toggle + delete also update local state instantly | `shareholders/ShareholdersForms.tsx`, `shareholders/ShareholdersTable.tsx` | None — UI pattern only |
 
 ---
 

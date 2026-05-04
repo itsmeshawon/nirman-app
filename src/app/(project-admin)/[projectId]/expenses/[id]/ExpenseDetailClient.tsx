@@ -260,6 +260,7 @@ export function ExpenseDetailClient({ projectId, expense, milestones, categories
          projectId={projectId}
          isOpen={isEditFormOpen}
          onClose={() => setIsEditFormOpen(false)}
+         onSave={() => { setIsEditFormOpen(false); router.refresh() }}
          milestones={milestones}
          categories={categories}
          expense={expense}
