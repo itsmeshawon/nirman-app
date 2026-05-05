@@ -270,7 +270,8 @@ src/
     ├── profile/
     │   ├── ProfileForm.tsx          # Read-only profile view with "Edit Profile" button (all roles)
     │   ├── EditProfileModal.tsx     # Modal dialog form for editing profile info (all roles)
-    │   └── ManagePassword.tsx       # Password change section (all roles)
+    │   ├── ManagePassword.tsx       # Password change section (all roles)
+    │   └── ShareholderPaymentModelCard.tsx  # Read-only payment model display on shareholder profile
     └── ui/                 # shadcn/ui: Button, Input, Dialog, Table, Card, Select, Label, Skeleton, Badge...
 ```
 
@@ -307,6 +308,7 @@ src/
 | `notifications` | In-app notifications |
 | `audit_logs` | Full audit trail of all actions |
 | `payment_proofs` | Shareholder-submitted payment proof — links to project, shareholder, optional schedule_item, optional payment (set on approval). Columns: id, project_id, shareholder_id, schedule_item_id, amount, attachment_url, attachment_name, notes, rejection_note, status (PENDING/APPROVED/REJECTED), submitted_at, reviewed_at, reviewed_by, payment_id |
+| `shareholder_payment_models` | One row per shareholder (unique on shareholder_id). Columns: id, shareholder_id, project_id, monthly_enabled, monthly_amount, monthly_due_day (1–28), milestone_based_enabled, milestone_amount, created_at, updated_at. Either or both modes can be active for a single shareholder. |
 
 ### 6B. FK Reference — Child Tables Without project_id
 
@@ -319,6 +321,7 @@ src/
 | `expense_attachments` | `expense_id` | `expenses.id` | Get expense IDs first → delete where `expense_id IN [expenseIds]` |
 | `expense_approvals` | `expense_id` | `expenses.id` | Same as attachments |
 | `schedule_items` | `schedule_id` | `payment_schedules.id` | Get schedule IDs first → delete where `schedule_id IN [scheduleIds]` |
+| `shareholder_payment_models` | `shareholder_id` | `shareholders.id` | Cascades automatically (ON DELETE CASCADE) |
 | `penalties` | `schedule_item_id` | `schedule_items.id` | Get schedule IDs → get item IDs → delete where `schedule_item_id IN [itemIds]` |
 
 > ⚠️ `payment_proofs` has a direct `project_id` BUT also has FKs to both `schedule_items` and `payments`. Before deleting a schedule_item, must set `payment_proofs.schedule_item_id = NULL`. Before deleting a payment, must set `payment_proofs.payment_id = NULL`. See delete handlers in `schedules/[id]/route.ts` and `payments/[id]/route.ts`.
@@ -454,6 +457,18 @@ Shareholder → "Submit Payment Proof" modal → selects schedule item (optional
 - Admin sees pending count badge on "Waiting for Approval" tab (yellow when there are pending items)
 - After approval, the new payment appears in Payment History for both admin and shareholder
 
+### K. Payment Model + Schedule Generation Flow
+- **Payment Model:** Configured per shareholder in the Add/Edit Shareholder dialog. Two modes (both selectable simultaneously):
+  - **Monthly Fixed Amount** — requires `monthly_amount` (৳) and `monthly_due_day` (1–28). Generates items whose due_date falls within today → today+30 calendar days (checks up to 3 months ahead to cover windows spanning two months). Deduped by shareholder_id + due_date.
+  - **Milestone Based** — requires `milestone_amount > 0` (skipped if null or 0 — never generates ৳0 items). Generates one `schedule_item` per UPCOMING/IN_PROGRESS milestone not already scheduled for that shareholder.
+- **Storage:** `shareholder_payment_models` table, one row per shareholder (unique constraint). Upserted on create/edit; deleted if both modes disabled on edit.
+- **Generate Schedule Items button** (Payments page → header): `POST /api/projects/[projectId]/generate-schedule`. Reads all ACTIVE shareholders with a payment model, deduplicates against existing `schedule_items`, inserts new items in a single batch. Returns count of newly generated items.
+- **After generation:** PaymentsClient re-fetches `page-data/payments` to refresh the Collection Schedule tab with new items.
+- **Milestone mapping:** Admin can edit any generated schedule item to attach/change its `milestone_id` via the existing Edit Installment dialog on the Collection Schedule tab.
+- **Add Custom Collection:** Multi-select shareholder picker — admin can select one or more shareholders; one schedule item is created per shareholder in parallel with optimistic rows. Popover stays open during selection. Column header is "Payment Type / Milestone"; items without a milestone show "General (Monthly Payment)".
+- **Payment Model form rule:** At least one mode must be selected when adding a new shareholder (enforced client-side). Editing an existing shareholder has no minimum requirement.
+- **Shareholder visibility:** Shareholders see their payment model on their own Profile page (`/my/profile`) as a read-only card (`ShareholderPaymentModelCard`). They cannot see other shareholders' models.
+
 ### D. Project Deletion — Mandatory Cascade Order
 Delete in this exact sequence to avoid FK constraint errors.
 ⚠️ Tables marked with `→` do NOT have project_id — see FK Reference (§6B) for how to delete them.
@@ -588,7 +603,7 @@ await createNotification({
 | Feature | Status | Notes |
 |---------|--------|-------|
 | Finance Staff | ❌ Not built | Enum exists. DO NOT add finance_staff table yet. When building: use separate RLS policies per operation, do NOT add to is_project_member() |
-| Payment Schedule Generation | ⚠️ Stub | Route exists but only logs audit. Real logic needs implementation |
+| Payment Schedule Generation | ✅ Implemented | Real engine generates monthly + milestone-based schedule items per active shareholder payment models |
 
 ---
 
@@ -603,6 +618,7 @@ await createNotification({
 | `(shareholder)/my/feed/page.tsx` | Same as above |
 | `(shareholder)/my/payments/page.tsx` | Fetches own payment_proofs — supabaseAdmin used to bypass RLS on server page |
 | `(project-admin)/[projectId]/payments/page.tsx` | Fetches all payment_proofs for project — supabaseAdmin used |
+| `(shareholder)/my/profile/page.tsx` | Fetches own shareholder record + payment model — supabaseAdmin used |
 
 ---
 
@@ -683,6 +699,11 @@ await createNotification({
 | May 2026 | Optimistic UI — Record Payment (was 3s): modal closes immediately, local schedule item status updated optimistically; API fires in background; rollback on failure | `payments/tabs/RecordPaymentTab.tsx`, `payments/tabs/ScheduleTab.tsx` | None — UI pattern only |
 | May 2026 | Optimistic UI — Upload Document (was 8s): optimistic row from File metadata (name, type, size) added instantly; dialog closes; file uploads to Supabase Storage in background; temp row replaced with real doc on success or removed on failure | `documents/DocumentsClient.tsx` | None — UI pattern only |
 | May 2026 | Optimistic UI — Add Shareholder: removed `router.refresh()` (slow full server re-render); for create — optimistic row appears instantly using form data + temp ID, API fires in background, `mutate()` replaces temp with real data on success, `onRemove` rolls back on failure; for edit — local state updated immediately from reconstructed object, API syncs in background with revert on failure; status toggle + delete also update local state instantly | `shareholders/ShareholdersForms.tsx`, `shareholders/ShareholdersTable.tsx` | None — UI pattern only |
+| May 2026 | Payment Model + Schedule Generator — Per-shareholder payment model (Monthly Fixed Amount + Milestone Based) added to Add/Edit Shareholder form; model displayed read-only in shareholder detail side panel (Project Admin) and on shareholder's own profile page; "Generate Schedule Items" button on Payments page runs engine: generates monthly items for next 12 months and/or milestone-linked items for all UPCOMING/IN_PROGRESS milestones, skipping duplicates; unit/flat field made optional on shareholder form | `shareholders/ShareholdersForms.tsx`, `shareholders/ShareholdersTable.tsx`, `api/.../shareholders/route.ts`, `api/.../shareholders/[shareholderId]/route.ts`, `api/.../generate-schedule/route.ts`, `payments/PaymentsClient.tsx`, `(shareholder)/my/profile/page.tsx`, `components/profile/ShareholderPaymentModelCard.tsx` (NEW), `api/.../page-data/shareholders/route.ts` (already had payment_model join) | New table: `shareholder_payment_models` with 5 RLS policies (SELECT×2 for admin+shareholder, INSERT, UPDATE, DELETE) |
+| May 2026 | Payment Model form validation — at least one Payment Model option (Monthly Fixed Amount or Milestone Based) is mandatory when adding a new shareholder; editing an existing shareholder does not require it | `shareholders/ShareholdersForms.tsx` | None |
+| May 2026 | Generate Schedule refinements — monthly items now only generated for due dates within the next 30 calendar days (not 12 months); milestone-based items skipped entirely if `milestone_amount` is null or 0 (no more ৳0 placeholder items) | `api/.../generate-schedule/route.ts` | None |
+| May 2026 | Collection Schedule column rename — "Milestone" header → "Payment Type / Milestone"; fallback cell label "General" → "General (Monthly Payment)" to distinguish monthly installments from milestone-linked items | `payments/tabs/ScheduleTab.tsx` | None — UI only |
+| May 2026 | Add Custom Collection multi-select shareholders — shareholder selector converted from single-select combobox to multi-select; popover stays open on each pick; count badge shows how many selected; one schedule item created per selected shareholder in parallel with individual optimistic rows | `payments/tabs/ScheduleTab.tsx` | None — UI + client logic only |
 | May 2026 | Expense detail modal instant open — modal previously fetched all data from API on open (causing spinner); now accepts `initialExpense` prop from table row (already in memory) and renders immediately; API fetch fires in background to enrich with `attachments` + `approvals`; `ExpensesClient` passes expense object alongside ID when opening modal | `expenses/ExpenseDetailModal.tsx`, `expenses/ExpensesClient.tsx` | None — UI pattern only |
 
 ---

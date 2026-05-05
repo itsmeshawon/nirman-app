@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Checkbox } from "@/components/ui/checkbox"
 import { toast } from "sonner"
 import { Copy, Check } from "lucide-react"
 
@@ -25,7 +26,7 @@ const shareholderSchema = z.object({
   email: z.string().email("Invalid email address"),
   phone: z.string().optional(),
   password: z.string().min(8, "Password must be at least 8 characters").optional(),
-  unit_flat: z.string().min(1, "Unit/Flat is required"),
+  unit_flat: z.string().optional(),
   ownership_pct: z.string().optional(),
   opening_balance: z.string().optional(),
   profession: z.string().optional(),
@@ -37,11 +38,19 @@ const shareholderSchema = z.object({
 
 type ShareholderFormValues = z.infer<typeof shareholderSchema>
 
+interface PaymentModel {
+  monthly_enabled: boolean
+  monthly_amount: string
+  monthly_due_day: string
+  milestone_based_enabled: boolean
+  milestone_amount: string
+}
+
 interface Props {
   projectId: string
   isOpen: boolean
   onClose: () => void
-  shareholder?: any // If provided, it's an edit
+  shareholder?: any
   onSaved?: (shareholder: any) => void
   onRemove?: (tempId: string) => void
 }
@@ -51,6 +60,14 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder, onS
   const [isLoading, setIsLoading] = useState(false)
   const [tempCredentials, setTempCredentials] = useState<{email: string, pass: string, name: string} | null>(null)
   const [copied, setCopied] = useState(false)
+
+  const [paymentModel, setPaymentModel] = useState<PaymentModel>({
+    monthly_enabled: false,
+    monthly_amount: "",
+    monthly_due_day: "",
+    milestone_based_enabled: false,
+    milestone_amount: "",
+  })
 
   const getProfile = (sh: any) => {
     if (!sh?.profiles) return null
@@ -80,31 +97,66 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder, onS
     },
   })
 
-  // Reset form when opened with new data
   useEffect(() => {
     if (isOpen) {
-        const profile = getProfile(shareholder)
-        reset({
-            name: profile?.name || "",
-            email: profile?.email || "",
-            password: "test1234",
-            phone: profile?.phone || "",
-            unit_flat: shareholder?.unit_flat || "",
-            ownership_pct: shareholder?.ownership_pct?.toString() || "",
-            opening_balance: shareholder?.opening_balance?.toString() || "",
-            profession: profile?.profession || "",
-            designation: profile?.designation || "",
-            organization: profile?.organization || "",
-            present_address: profile?.present_address || "",
-            whatsapp_no: profile?.whatsapp_no || "",
-        })
+      const profile = getProfile(shareholder)
+      reset({
+        name: profile?.name || "",
+        email: profile?.email || "",
+        password: "test1234",
+        phone: profile?.phone || "",
+        unit_flat: shareholder?.unit_flat || "",
+        ownership_pct: shareholder?.ownership_pct?.toString() || "",
+        opening_balance: shareholder?.opening_balance?.toString() || "",
+        profession: profile?.profession || "",
+        designation: profile?.designation || "",
+        organization: profile?.organization || "",
+        present_address: profile?.present_address || "",
+        whatsapp_no: profile?.whatsapp_no || "",
+      })
+
+      const pm = shareholder?.payment_model
+      setPaymentModel({
+        monthly_enabled: pm?.monthly_enabled ?? false,
+        monthly_amount: pm?.monthly_amount?.toString() ?? "",
+        monthly_due_day: pm?.monthly_due_day?.toString() ?? "",
+        milestone_based_enabled: pm?.milestone_based_enabled ?? false,
+        milestone_amount: pm?.milestone_amount?.toString() ?? "",
+      })
     }
   }, [isOpen, shareholder, reset])
 
+  const buildPaymentModelPayload = () => {
+    if (!paymentModel.monthly_enabled && !paymentModel.milestone_based_enabled) return null
+    return {
+      monthly_enabled: paymentModel.monthly_enabled,
+      monthly_amount: paymentModel.monthly_enabled && paymentModel.monthly_amount ? parseFloat(paymentModel.monthly_amount) : null,
+      monthly_due_day: paymentModel.monthly_enabled && paymentModel.monthly_due_day ? parseInt(paymentModel.monthly_due_day) : null,
+      milestone_based_enabled: paymentModel.milestone_based_enabled,
+      milestone_amount: paymentModel.milestone_based_enabled && paymentModel.milestone_amount ? parseFloat(paymentModel.milestone_amount) : null,
+    }
+  }
 
   const onSubmit = async (data: ShareholderFormValues) => {
+    if (!isEdit && !paymentModel.monthly_enabled && !paymentModel.milestone_based_enabled) {
+      toast.error("Please select at least one Payment Model option")
+      return
+    }
+
+    if (paymentModel.monthly_enabled) {
+      if (!paymentModel.monthly_amount || parseFloat(paymentModel.monthly_amount) <= 0) {
+        toast.error("Monthly amount is required when Monthly Fixed Amount is enabled")
+        return
+      }
+      if (!paymentModel.monthly_due_day || parseInt(paymentModel.monthly_due_day) < 1 || parseInt(paymentModel.monthly_due_day) > 28) {
+        toast.error("Due day must be between 1 and 28")
+        return
+      }
+    }
+
+    const payload = { ...data, payment_model: buildPaymentModelPayload() }
+
     if (isEdit && shareholder) {
-      // EDIT: update local state immediately, then sync with server
       setIsLoading(true)
       const profile = Array.isArray(shareholder.profiles) ? shareholder.profiles[0] : shareholder.profiles
       const updatedShareholder = {
@@ -113,6 +165,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder, onS
         ownership_pct: data.ownership_pct ? parseFloat(data.ownership_pct) : shareholder.ownership_pct,
         opening_balance: data.opening_balance ? parseFloat(data.opening_balance) : shareholder.opening_balance,
         profiles: { ...profile, name: data.name, phone: data.phone, profession: data.profession, designation: data.designation, organization: data.organization, present_address: data.present_address, whatsapp_no: data.whatsapp_no },
+        payment_model: buildPaymentModelPayload(),
       }
       onSaved?.(updatedShareholder)
       onClose()
@@ -120,21 +173,20 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder, onS
         const res = await fetch(`/api/projects/${projectId}/shareholders/${shareholder.id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
+          body: JSON.stringify(payload),
         })
         const json = await res.json()
         if (!res.ok) throw new Error(json.error || "Something went wrong")
         toast.success("Shareholder updated successfully!")
       } catch (err: any) {
         toast.error(err.message)
-        onSaved?.(shareholder) // revert
+        onSaved?.(shareholder)
       } finally {
         setIsLoading(false)
       }
       return
     }
 
-    // CREATE: show optimistic row instantly, close dialog, fire API in background
     const tempId = `temp-${Date.now()}`
     const optimistic = {
       id: tempId,
@@ -144,6 +196,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder, onS
       status: "ACTIVE",
       project_id: projectId,
       profiles: { name: data.name, email: data.email, phone: data.phone || null, profession: data.profession || null, designation: data.designation || null, organization: data.organization || null, present_address: data.present_address || null, whatsapp_no: data.whatsapp_no || null },
+      payment_model: buildPaymentModelPayload(),
     }
     onSaved?.(optimistic)
     setTempCredentials({ email: data.email, pass: data.password || "test1234", name: data.name })
@@ -153,12 +206,12 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder, onS
         const res = await fetch(`/api/projects/${projectId}/shareholders`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
+          body: JSON.stringify(payload),
         })
         const json = await res.json()
         if (!res.ok) throw new Error(json.error || "Something went wrong")
         toast.success("Shareholder added successfully!")
-        onSaved?.(null) // trigger mutate to replace temp with real data
+        onSaved?.(null)
       } catch (err: any) {
         onRemove?.(tempId)
         toast.error(err.message)
@@ -264,19 +317,19 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder, onS
           )}
 
           <div className="grid grid-cols-2 gap-4">
-             <div className="grid gap-2">
+            <div className="grid gap-2">
               <Label htmlFor="phone">Phone</Label>
               <Input id="phone" {...register("phone")} disabled={isLoading} />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="unit_flat">Unit/Flat *</Label>
-              <Input id="unit_flat" placeholder="e.g. 3A" {...register("unit_flat")} disabled={isLoading} />
+              <Label htmlFor="unit_flat">Unit/Flat</Label>
+              <Input id="unit_flat" placeholder="e.g. 3A (optional)" {...register("unit_flat")} disabled={isLoading} />
               {errors.unit_flat && <span className="text-xs text-red-500">{errors.unit_flat.message}</span>}
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-             <div className="grid gap-2">
+            <div className="grid gap-2">
               <Label htmlFor="ownership_pct">Ownership (%)</Label>
               <Input id="ownership_pct" type="number" step="0.01" min="0" max="100" {...register("ownership_pct")} disabled={isLoading} />
             </div>
@@ -286,6 +339,97 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder, onS
             </div>
           </div>
 
+          {/* Payment Model Section */}
+          <div className="border-t pt-4">
+            <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-wide mb-1">Payment Model *</p>
+            <p className="text-xs text-outline mb-4">Select how this shareholder will make payments. At least one option must be chosen before generating a schedule.</p>
+
+            <div className="space-y-4">
+              {/* Monthly Fixed Amount */}
+              <div className="rounded-lg border border-outline-variant/40 p-4 space-y-3">
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    id="monthly_enabled"
+                    checked={paymentModel.monthly_enabled}
+                    onCheckedChange={(checked) =>
+                      setPaymentModel(prev => ({ ...prev, monthly_enabled: !!checked }))
+                    }
+                    disabled={isLoading}
+                  />
+                  <Label htmlFor="monthly_enabled" className="text-sm font-medium cursor-pointer">
+                    Monthly Fixed Amount
+                  </Label>
+                </div>
+
+                {paymentModel.monthly_enabled && (
+                  <div className="grid grid-cols-2 gap-3 pl-7">
+                    <div className="grid gap-1.5">
+                      <Label className="text-xs text-on-surface-variant">Monthly Amount (৳) *</Label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        placeholder="e.g. 50000"
+                        value={paymentModel.monthly_amount}
+                        onChange={(e) => setPaymentModel(prev => ({ ...prev, monthly_amount: e.target.value }))}
+                        disabled={isLoading}
+                      />
+                    </div>
+                    <div className="grid gap-1.5">
+                      <Label className="text-xs text-on-surface-variant">Due Day of Month *</Label>
+                      <Input
+                        type="number"
+                        min="1"
+                        max="28"
+                        placeholder="e.g. 10"
+                        value={paymentModel.monthly_due_day}
+                        onChange={(e) => setPaymentModel(prev => ({ ...prev, monthly_due_day: e.target.value }))}
+                        disabled={isLoading}
+                      />
+                      <p className="text-xs text-outline">Day 1–28</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Milestone Based */}
+              <div className="rounded-lg border border-outline-variant/40 p-4 space-y-3">
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    id="milestone_based_enabled"
+                    checked={paymentModel.milestone_based_enabled}
+                    onCheckedChange={(checked) =>
+                      setPaymentModel(prev => ({ ...prev, milestone_based_enabled: !!checked }))
+                    }
+                    disabled={isLoading}
+                  />
+                  <Label htmlFor="milestone_based_enabled" className="text-sm font-medium cursor-pointer">
+                    Milestone Based
+                  </Label>
+                </div>
+
+                {paymentModel.milestone_based_enabled && (
+                  <div className="pl-7">
+                    <div className="grid gap-1.5">
+                      <Label className="text-xs text-on-surface-variant">Amount per Milestone (৳)</Label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        placeholder="Optional — leave blank to set per milestone"
+                        value={paymentModel.milestone_amount}
+                        onChange={(e) => setPaymentModel(prev => ({ ...prev, milestone_amount: e.target.value }))}
+                        disabled={isLoading}
+                      />
+                      <p className="text-xs text-outline">If set, this amount is used when generating milestone-linked items.</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Additional Info */}
           <div className="border-t pt-4">
             <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-wide mb-4">Additional Info (Optional)</p>
             <div className="space-y-4">

@@ -28,9 +28,9 @@ export async function POST(
 
     const body = await request.json()
     const { name, email, phone, password, unit_flat, ownership_pct, opening_balance } = body
-    const { profession, designation, organization, present_address, whatsapp_no } = body
+    const { profession, designation, organization, present_address, whatsapp_no, payment_model } = body
 
-    if (!name || !email || !unit_flat) {
+    if (!name || !email) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
@@ -104,7 +104,23 @@ export async function POST(
       return NextResponse.json({ error: shError.message }, { status: 400 })
     }
 
-    // 5. Audit Log
+    // 5. Save payment model if provided
+    if (payment_model && (payment_model.monthly_enabled || payment_model.milestone_based_enabled)) {
+      await getSupabaseAdmin()
+        .from("shareholder_payment_models")
+        .upsert({
+          shareholder_id: shData.id,
+          project_id: projectId,
+          monthly_enabled: payment_model.monthly_enabled ?? false,
+          monthly_amount: payment_model.monthly_amount ?? null,
+          monthly_due_day: payment_model.monthly_due_day ?? null,
+          milestone_based_enabled: payment_model.milestone_based_enabled ?? false,
+          milestone_amount: payment_model.milestone_amount ?? null,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: "shareholder_id" })
+    }
+
+    // 6. Audit Log
     await logAction({
       projectId,
       userId: user.id,

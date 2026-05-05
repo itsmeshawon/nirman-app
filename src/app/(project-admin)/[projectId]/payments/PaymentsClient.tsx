@@ -1,8 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Calendar, CreditCard, History, Plus, Clock } from "lucide-react"
+import { Calendar, CreditCard, History, Plus, Clock, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { ScheduleTab } from "./tabs/ScheduleTab"
 import { RecordPaymentTab } from "./tabs/RecordPaymentTab"
@@ -24,6 +25,32 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
   const [showCollectionModal, setShowCollectionModal] = useState(false)
   const [allPayments, setAllPayments] = useState(payments)
   const [allScheduleItems, setAllScheduleItems] = useState(scheduleItems)
+  const [isGenerating, setIsGenerating] = useState(false)
+
+  const handleGenerateSchedule = async () => {
+    setIsGenerating(true)
+    const loadingId = toast.loading("Generating schedule items...")
+    try {
+      const res = await fetch(`/api/projects/${projectId}/generate-schedule`, { method: "POST" })
+      const json = await res.json()
+      toast.dismiss(loadingId)
+      if (!res.ok) { toast.error(json.error || "Failed to generate schedule"); return }
+      toast.success(json.message || "Schedule generated successfully")
+      if (json.generated > 0) {
+        // Fetch the new schedule items and append them
+        const itemsRes = await fetch(`/api/projects/${projectId}/page-data/payments`)
+        if (itemsRes.ok) {
+          const itemsJson = await itemsRes.json()
+          if (itemsJson.scheduleItems) setAllScheduleItems(itemsJson.scheduleItems)
+        }
+      }
+    } catch {
+      toast.dismiss(loadingId)
+      toast.error("Failed to generate schedule")
+    } finally {
+      setIsGenerating(false)
+    }
+  }
 
   const totalScheduled = allScheduleItems.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0)
   const totalCollected = allPayments.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0)
@@ -125,7 +152,16 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
       </div>
 
       {/* CTAs */}
-      <div className="flex justify-end gap-3">
+      <div className="flex justify-end gap-3 flex-wrap">
+        <Button
+          variant="outline"
+          onClick={handleGenerateSchedule}
+          disabled={isGenerating}
+          className="border-primary/40 text-primary hover:bg-primary-container/30 hover:text-primary"
+        >
+          <Zap className="mr-2 h-4 w-4" />
+          {isGenerating ? "Generating..." : "Generate Schedule Items"}
+        </Button>
         <Button
           variant="outline"
           onClick={() => setShowCollectionModal(true)}

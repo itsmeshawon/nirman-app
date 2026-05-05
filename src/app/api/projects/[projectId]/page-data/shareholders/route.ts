@@ -15,7 +15,7 @@ export async function GET(
   }
 
   const [{ data: shareholders }, { data: committeeMembers }] = await Promise.all([
-    supabase.from("shareholders").select("*, profiles(*)").eq("project_id", projectId).order("unit_flat", { ascending: true }),
+    supabase.from("shareholders").select("*, profiles(*), payment_model:shareholder_payment_models(*)").eq("project_id", projectId).order("unit_flat", { ascending: true }),
     supabase.from("committee_members").select("shareholder_id").eq("project_id", projectId).eq("is_active", true),
   ])
 

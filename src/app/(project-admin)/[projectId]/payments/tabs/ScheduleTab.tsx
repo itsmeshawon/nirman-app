@@ -81,7 +81,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
   const [editMilestoneOpen, setEditMilestoneOpen] = useState(false)
 
   // Create form state
-  const [shareholderId, setShareholderId] = useState("")
+  const [selectedShareholderIds, setSelectedShareholderIds] = useState<string[]>([])
   const [milestoneId,   setMilestoneId]   = useState("")
   const [amount,        setAmount]        = useState("")
   const [dueDate,       setDueDate]       = useState("")
@@ -178,58 +178,59 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
   }
 
   const handleCreate = async () => {
-    if (!shareholderId || !amount || !dueDate) {
-      toast.error("Please fill in shareholder, amount, and due date.")
+    if (selectedShareholderIds.length === 0 || !amount || !dueDate) {
+      toast.error("Please select at least one shareholder, amount, and due date.")
       return
     }
 
-    // Build optimistic item to show immediately
     const dueDateObj = new Date(dueDate)
     const daysDiff = (dueDateObj.getTime() - Date.now()) / (1000 * 3600 * 24)
     const optimisticStatus = daysDiff < 0 ? "OVERDUE" : daysDiff <= 7 ? "DUE" : "UPCOMING"
-    const tempId = `temp-${Date.now()}`
-    const optimisticItem = {
-      id: tempId,
-      shareholder_id: shareholderId,
-      milestone_id: milestoneId && milestoneId !== "none" ? milestoneId : null,
+    const resolvedMilestoneId = milestoneId && milestoneId !== "none" ? milestoneId : null
+
+    // Build one optimistic row per selected shareholder
+    const tempIds = selectedShareholderIds.map((_, i) => `temp-${Date.now()}-${i}`)
+    const optimisticItems = selectedShareholderIds.map((sid, i) => ({
+      id: tempIds[i],
+      shareholder_id: sid,
+      milestone_id: resolvedMilestoneId,
       amount: parseFloat(amount),
       due_date: dueDateObj.toISOString(),
       status: optimisticStatus,
-      shareholder: shareholders.find(s => s.id === shareholderId),
+      shareholder: shareholders.find(s => s.id === sid),
       milestone: milestones.find(m => m.id === milestoneId) || null,
       penalties: [],
-    }
+    }))
 
-    // Add to table immediately and close dialog
-    setLocalScheduleItems(prev => [...prev, optimisticItem])
-    const payload = {
-      shareholder_id: shareholderId,
-      milestone_id:   milestoneId || null,
-      amount,
-      due_date:       dueDate,
-    }
+    setLocalScheduleItems(prev => [...prev, ...optimisticItems])
     setIsModalOpen(false)
-    setShareholderId(""); setMilestoneId(""); setAmount(""); setDueDate("")
+    setSelectedShareholderIds([]); setMilestoneId(""); setAmount(""); setDueDate("")
 
-    // Finish in background
-    try {
-      const res = await fetch(`/api/projects/${projectId}/schedules`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error)
+    // Fire one API call per shareholder in parallel
+    await Promise.all(selectedShareholderIds.map(async (sid, i) => {
+      const tempId = tempIds[i]
+      try {
+        const res = await fetch(`/api/projects/${projectId}/schedules`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            shareholder_id: sid,
+            milestone_id: resolvedMilestoneId,
+            amount,
+            due_date: dueDate,
+          }),
+        })
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.error)
+        setLocalScheduleItems(prev => prev.map(si => si.id === tempId ? data.scheduleItem : si))
+      } catch (err: any) {
+        setLocalScheduleItems(prev => prev.filter(si => si.id !== tempId))
+        toast.error(err.message)
+      }
+    }))
 
-      // Replace temp item with real server item
-      setLocalScheduleItems(prev => prev.map(si => si.id === tempId ? data.scheduleItem : si))
-      toast.success("Schedule collection created successfully!")
-      mutate(`/api/projects/${projectId}/page-data/payments`)
-    } catch (err: any) {
-      // Roll back on failure
-      setLocalScheduleItems(prev => prev.filter(si => si.id !== tempId))
-      toast.error(err.message)
-    }
+    toast.success(`${selectedShareholderIds.length} collection item${selectedShareholderIds.length > 1 ? "s" : ""} created!`)
+    mutate(`/api/projects/${projectId}/page-data/payments`)
   }
 
   const openEditDialog = (item: any) => {
@@ -300,8 +301,12 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
   })
 
   // Derived labels
-  const selectedShareholder = shareholders.find(s => s.id === shareholderId)
-  const selectedMilestone   = milestones.find(m => m.id === milestoneId)
+  const selectedMilestone = milestones.find(m => m.id === milestoneId)
+  const shareholderLabel = selectedShareholderIds.length === 0
+    ? undefined
+    : selectedShareholderIds.length === 1
+      ? (() => { const s = shareholders.find(x => x.id === selectedShareholderIds[0]); return s ? `${s.profiles?.name} · Unit ${s.unit_flat}` : undefined })()
+      : `${selectedShareholderIds.length} shareholders selected`
   const editMilestone       = milestones.find(m => m.id === editMilestoneId)
 
   const filterLabel = SCHEDULE_STATUSES.find(s => s.value === filterStatus)?.label
@@ -357,7 +362,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
           <TableRow>
             <TableHead>Due Date</TableHead>
             <TableHead>Shareholder</TableHead>
-            <TableHead>Milestone</TableHead>
+            <TableHead>Payment Type / Milestone</TableHead>
             <TableHead className="text-right">Expected (৳)</TableHead>
             <TableHead className="text-right">Paid (৳)</TableHead>
             <TableHead className="text-right text-destructive">Penalty</TableHead>
@@ -389,7 +394,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
                     <div className="text-sm font-medium text-on-surface">{item.shareholder?.profiles?.name}</div>
                     <div className="text-xs text-on-surface-variant">Unit: {item.shareholder?.unit_flat}</div>
                   </TableCell>
-                  <TableCell className="text-sm text-on-surface-variant">{item.milestone?.name || 'General'}</TableCell>
+                  <TableCell className="text-sm text-on-surface-variant">{item.milestone?.name || 'General (Monthly Payment)'}</TableCell>
                   <TableCell className="text-right font-medium text-on-surface">{parseFloat(item.amount).toLocaleString('en-IN')}</TableCell>
                   <TableCell className="text-right text-sm text-primary font-semibold">{getPaidAmount(item.id).toLocaleString('en-IN')}</TableCell>
                   <TableCell className="text-right text-sm text-destructive">{getPenalty(item).toLocaleString('en-IN')}</TableCell>
@@ -429,36 +434,47 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
           </DialogHeader>
           <div className="space-y-4 mt-4">
 
-            {/* Shareholder — searchable combobox */}
+            {/* Shareholder — multi-select combobox */}
             <div className="space-y-2">
-              <Label>Shareholder *</Label>
+              <Label>Shareholder * <span className="font-normal text-on-surface-variant">(select one or more)</span></Label>
               <ComboBox
                 open={shareholderOpen}
                 onOpenChange={setShareholderOpen}
                 placeholder="Search shareholder by name or unit..."
-                label={selectedShareholder ? `${selectedShareholder.profiles?.name} · Unit ${selectedShareholder.unit_flat}` : undefined}
+                label={shareholderLabel}
               >
                 <CommandInput placeholder="Search by name or unit..." />
                 <CommandList>
                   <CommandEmpty>No shareholder found.</CommandEmpty>
                   <CommandGroup>
-                    {shareholders.map(s => (
-                      <CommandItem
-                        key={s.id}
-                        value={`${s.profiles?.name} ${s.unit_flat}`}
-                        onSelect={() => { setShareholderId(s.id); setShareholderOpen(false) }}
-                        className="flex items-center justify-between py-3"
-                      >
-                        <div>
-                          <p className="font-semibold text-on-surface">{s.profiles?.name}</p>
-                          <p className="text-xs text-on-surface-variant">Unit: {s.unit_flat}</p>
-                        </div>
-                        <Check className={cn("h-4 w-4 text-primary", shareholderId === s.id ? "opacity-100" : "opacity-0")} />
-                      </CommandItem>
-                    ))}
+                    {shareholders.map(s => {
+                      const checked = selectedShareholderIds.includes(s.id)
+                      return (
+                        <CommandItem
+                          key={s.id}
+                          value={`${s.profiles?.name} ${s.unit_flat}`}
+                          onSelect={() => {
+                            setSelectedShareholderIds(prev =>
+                              checked ? prev.filter(id => id !== s.id) : [...prev, s.id]
+                            )
+                            // keep popover open for multi-select
+                          }}
+                          className="flex items-center justify-between py-3"
+                        >
+                          <div>
+                            <p className="font-semibold text-on-surface">{s.profiles?.name}</p>
+                            <p className="text-xs text-on-surface-variant">Unit: {s.unit_flat || "—"}</p>
+                          </div>
+                          <Check className={cn("h-4 w-4 text-primary", checked ? "opacity-100" : "opacity-0")} />
+                        </CommandItem>
+                      )
+                    })}
                   </CommandGroup>
                 </CommandList>
               </ComboBox>
+              {selectedShareholderIds.length > 0 && (
+                <p className="text-xs text-primary font-medium">{selectedShareholderIds.length} shareholder{selectedShareholderIds.length > 1 ? "s" : ""} selected</p>
+              )}
             </div>
 
             {/* Milestone */}

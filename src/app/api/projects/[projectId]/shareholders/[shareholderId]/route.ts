@@ -28,7 +28,7 @@ export async function PATCH(
 
     const body = await request.json()
     // Don't allow changing project_id, user_id from this endpoint
-    const { unit_flat, ownership_pct, opening_balance, status } = body
+    const { unit_flat, ownership_pct, opening_balance, status, payment_model } = body
     const { name, phone, profession, designation, organization, present_address, whatsapp_no } = body
 
     // 2. Update the shareholder record
@@ -73,7 +73,31 @@ export async function PATCH(
       }
     }
 
-    // 3. Audit Log
+    // 3. Upsert payment model if provided
+    if (payment_model !== undefined) {
+      if (payment_model && (payment_model.monthly_enabled || payment_model.milestone_based_enabled)) {
+        await getSupabaseAdmin()
+          .from("shareholder_payment_models")
+          .upsert({
+            shareholder_id: shareholderId,
+            project_id: projectId,
+            monthly_enabled: payment_model.monthly_enabled ?? false,
+            monthly_amount: payment_model.monthly_amount ?? null,
+            monthly_due_day: payment_model.monthly_due_day ?? null,
+            milestone_based_enabled: payment_model.milestone_based_enabled ?? false,
+            milestone_amount: payment_model.milestone_amount ?? null,
+            updated_at: new Date().toISOString(),
+          }, { onConflict: "shareholder_id" })
+      } else {
+        // Both disabled — remove the payment model row
+        await getSupabaseAdmin()
+          .from("shareholder_payment_models")
+          .delete()
+          .eq("shareholder_id", shareholderId)
+      }
+    }
+
+    // 4. Audit Log
     await logAction({
       projectId,
       userId: user.id,
