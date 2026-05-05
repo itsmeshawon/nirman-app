@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { CheckCircle, XCircle, FileText, Download, SendHorizontal, Edit, Trash2, Loader2 } from "lucide-react"
+import { CheckCircle, FileText, Download, SendHorizontal, Edit, Trash2 } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
@@ -11,6 +11,7 @@ import { ExpenseForm } from "./ExpenseForm"
 interface ExpenseDetailModalProps {
   projectId: string
   expenseId: string | null
+  initialExpense?: any | null
   milestones: any[]
   categories: any[]
   onClose: () => void
@@ -30,6 +31,7 @@ const statusConfig: Record<string, { label: string; color: string }> = {
 export function ExpenseDetailModal({
   projectId,
   expenseId,
+  initialExpense,
   milestones,
   categories,
   onClose,
@@ -37,19 +39,18 @@ export function ExpenseDetailModal({
   onUpdated,
 }: ExpenseDetailModalProps) {
   const supabase = createClient()
-  const [expense, setExpense] = useState<any>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [expense, setExpense] = useState<any>(initialExpense ?? null)
   const [isProcessing, setIsProcessing] = useState(false)
   const [isEditFormOpen, setIsEditFormOpen] = useState(false)
 
   useEffect(() => {
     if (!expenseId) { setExpense(null); return }
-    setIsLoading(true)
+    // Render immediately from initialExpense, then enrich with attachments + approvals
+    setExpense(initialExpense ?? null)
     fetch(`/api/projects/${projectId}/expenses/${expenseId}`)
       .then(r => r.json())
-      .then(d => setExpense(d.expense ?? null))
-      .catch(() => toast.error("Failed to load expense details."))
-      .finally(() => setIsLoading(false))
+      .then(d => { if (d.expense) setExpense(d.expense) })
+      .catch(() => {})
   }, [expenseId, projectId])
 
   const handleSubmit = async () => {
@@ -122,10 +123,8 @@ export function ExpenseDetailModal({
             <DialogTitle>Expense Details</DialogTitle>
           </DialogHeader>
 
-          {isLoading || !expense ? (
-            <div className="flex items-center justify-center py-16">
-              <Loader2 className="w-6 h-6 animate-spin text-on-surface-variant" />
-            </div>
+          {!expense ? (
+            <div className="flex items-center justify-center py-16 text-sm text-on-surface-variant">Loading...</div>
           ) : (
             <div className="space-y-6 mt-2">
               {/* Status + Actions */}

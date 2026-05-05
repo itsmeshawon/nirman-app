@@ -35,6 +35,7 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
   const [publishingId, setPublishingId] = useState<string | null>(null)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [detailExpenseId, setDetailExpenseId] = useState<string | null>(null)
+  const [detailExpense, setDetailExpense] = useState<any>(null)
 
   // Pipeline counts
   const counts = expenses.reduce((acc, exp) => {
@@ -201,7 +202,7 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
                       <TableRow key={expense.id}>
                         <TableCell className="text-sm">{new Date(expense.date).toLocaleDateString()}</TableCell>
                         <TableCell className="font-medium text-on-surface">
-                           <button onClick={() => setDetailExpenseId(expense.id)} className="hover:text-primary hover:underline text-left">
+                           <button onClick={() => { setDetailExpenseId(expense.id); setDetailExpense(expense) }} className="hover:text-primary hover:underline text-left">
                              {expense.title}
                            </button>
                         </TableCell>
@@ -231,7 +232,7 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
                                   {publishingId === expense.id ? "Publishing..." : "Publish"}
                                </Button>
                              )}
-                             <Button variant="ghost" size="icon" onClick={() => setDetailExpenseId(expense.id)} className="hover:text-on-primary-container hover:bg-primary-container/20 w-8 h-8 rounded-full" title="View Details">
+                             <Button variant="ghost" size="icon" onClick={() => { setDetailExpenseId(expense.id); setDetailExpense(expense) }} className="hover:text-on-primary-container hover:bg-primary-container/20 w-8 h-8 rounded-full" title="View Details">
                                <Eye className="w-4 h-4" />
                              </Button>
                              <Button variant="ghost" size="icon" onClick={() => handleDelete(expense.id)} className="text-red-500 hover:text-destructive hover:bg-error-container/20 w-8 h-8 rounded-full" title="Delete Expense">
