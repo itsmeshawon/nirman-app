@@ -141,7 +141,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
               <TableHeader>
                 <TableRow>
                   <TableHead>Due Date</TableHead>
-                  <TableHead>Milestone</TableHead>
+                  <TableHead>Payment Type / Milestone</TableHead>
                   <TableHead className="text-right">Expected (৳)</TableHead>
                   <TableHead className="text-right">Paid (৳)</TableHead>
                   <TableHead className="text-right">Penalty</TableHead>
@@ -164,7 +164,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
                     return (
                       <TableRow key={item.id}>
                         <TableCell className="text-sm font-medium">{new Date(item.due_date).toLocaleDateString()}</TableCell>
-                        <TableCell className="text-sm text-on-surface-variant">{item.milestone?.name || 'General'}</TableCell>
+                        <TableCell className="text-sm text-on-surface-variant">{item.milestone?.name || 'General (Monthly Payment)'}</TableCell>
                         <TableCell className="text-right font-medium text-on-surface">{parseFloat(item.amount).toLocaleString('en-IN')}</TableCell>
                         <TableCell className="text-right text-sm text-primary">{paid.toLocaleString('en-IN')}</TableCell>
                         <TableCell className="text-right text-sm text-destructive">{pen.toLocaleString('en-IN')}</TableCell>
@@ -270,8 +270,8 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
                       </TableCell>
                       <TableCell className="text-sm">
                         {proof.schedule_item
-                          ? <>{proof.schedule_item.milestone?.name || "Installment"}<br /><span className="text-xs text-on-surface-variant">Due {new Date(proof.schedule_item.due_date).toLocaleDateString()}</span></>
-                          : <span className="text-xs text-on-surface-variant italic">General</span>}
+                          ? <>{proof.schedule_item.milestone?.name || "General (Monthly Payment)"}<br /><span className="text-xs text-on-surface-variant">Due {new Date(proof.schedule_item.due_date).toLocaleDateString()}</span></>
+                          : <span className="text-xs text-on-surface-variant italic">General (Monthly Payment)</span>}
                       </TableCell>
                       <TableCell className="text-right font-bold text-on-surface">
                         ৳ {parseFloat(proof.amount).toLocaleString("en-IN")}

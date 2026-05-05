@@ -101,7 +101,7 @@ export default async function StatementPrintPage() {
                    {items.map(item => (
                      <tr key={item.id} className="border-b border-outline-variant/40">
                         <td className="py-2 text-on-surface-variant">{new Date(item.due_date).toLocaleDateString()}</td>
-                        <td className="py-2 text-on-surface-variant">{item.milestone?.name || "General"}</td>
+                        <td className="py-2 text-on-surface-variant">{item.milestone?.name || "General (Monthly Payment)"}</td>
                         <td className="py-2 text-right font-medium text-on-surface">{parseFloat(item.amount).toLocaleString('en-IN')}</td>
                      </tr>
                    ))}

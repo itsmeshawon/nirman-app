@@ -223,7 +223,7 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
           <TableHeader>
             <TableRow>
               <TableHead className="px-6">Shareholder</TableHead>
-              <TableHead>Milestone</TableHead>
+              <TableHead>Payment Type / Milestone</TableHead>
               <TableHead>Due Date</TableHead>
               <TableHead className="text-right">Expected (৳)</TableHead>
               <TableHead className="text-right">Paid (৳)</TableHead>
@@ -257,7 +257,7 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
                     </div>
                   </TableCell>
                   <TableCell className="text-sm font-medium text-on-surface">
-                    {d.milestoneName || "General"}
+                    {d.milestoneName || "General (Monthly Payment)"}
                   </TableCell>
                   <TableCell>
                     <span className="text-[11px] font-bold text-[#964B00] bg-[#FFDDB3] px-3 py-1 rounded-full uppercase tracking-wider">
@@ -320,7 +320,7 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-on-surface">
-                        {p.milestone_name || "Payment Installment"}
+                        {p.milestone_name || "General (Monthly Payment)"}
                       </p>
                       <p className="text-xs text-on-surface-variant">
                         Due: {new Date(p.due_date).toLocaleDateString()} · Installment: ৳{p.installment_amount.toLocaleString('en-IN')}

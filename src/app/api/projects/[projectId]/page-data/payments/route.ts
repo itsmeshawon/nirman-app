@@ -27,7 +27,7 @@ export async function GET(
     supabase.from("schedule_items").select("*, shareholder:shareholders(id, unit_flat, profiles(name, email, phone)), milestone:milestones(id, name), penalties(*)").in("schedule_id", safe).order("due_date", { ascending: true }),
     supabase.from("payments").select("*, shareholder:shareholders(id, unit_flat, profiles(name)), recorded_by:profiles!recorded_by_id(name), schedule_item:schedule_items(milestone:milestones(name)), proof:payment_proofs(attachment_url, attachment_name)").in("shareholder_id", safeSh).order("created_at", { ascending: false }),
     supabase.from("milestones").select("id, name").eq("project_id", projectId).order("sort_order", { ascending: true }),
-    getSupabaseAdmin().from("payment_proofs").select("*, shareholder:shareholders(id, unit_flat, profiles(name, email)), schedule_item:schedule_items(id, amount, due_date, milestone:milestones(name))").eq("project_id", projectId).order("submitted_at", { ascending: false }),
+    getSupabaseAdmin().from("payment_proofs").select("*, shareholder:shareholders(id, unit_flat, profiles(name, email, phone)), schedule_item:schedule_items(id, amount, due_date, milestone:milestones(name))").eq("project_id", projectId).order("submitted_at", { ascending: false }),
   ])
 
   return NextResponse.json({

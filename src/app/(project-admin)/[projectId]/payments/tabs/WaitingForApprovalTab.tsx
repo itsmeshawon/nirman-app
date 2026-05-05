@@ -172,7 +172,7 @@ export function WaitingForApprovalTab({
               </TableRow>
             ) : filtered.map(proof => {
               const name = proof.shareholder?.profiles?.name || "—"
-              const unit = proof.shareholder?.unit_flat || ""
+              const phone = proof.shareholder?.profiles?.phone
               const statusCfg = STATUS_CONFIG[proof.status] || STATUS_CONFIG.PENDING
               const isPending = proof.status === "PENDING"
 
@@ -180,15 +180,15 @@ export function WaitingForApprovalTab({
                 <TableRow key={proof.id}>
                   <TableCell>
                     <p className="text-sm font-semibold text-on-surface">{name}</p>
-                    {unit && <p className="text-xs text-on-surface-variant">Unit {unit}</p>}
+                    {phone && <p className="text-xs text-on-surface-variant">{phone}</p>}
                   </TableCell>
                   <TableCell className="font-bold text-on-surface">
                     ৳ {parseFloat(proof.amount).toLocaleString("en-IN")}
                   </TableCell>
                   <TableCell className="text-sm text-on-surface-variant">
                     {proof.schedule_item
-                      ? <>{proof.schedule_item.milestone?.name || "Installment"}<br /><span className="text-xs">Due {new Date(proof.schedule_item.due_date).toLocaleDateString()}</span></>
-                      : <span className="italic text-xs">General</span>}
+                      ? <>{proof.schedule_item.milestone?.name || "General (Monthly Payment)"}<br /><span className="text-xs">Due {new Date(proof.schedule_item.due_date).toLocaleDateString()}</span></>
+                      : <span className="italic text-xs">General (Monthly Payment)</span>}
                   </TableCell>
                   <TableCell className="text-sm text-on-surface-variant whitespace-nowrap">
                     {new Date(proof.submitted_at).toLocaleDateString()}
