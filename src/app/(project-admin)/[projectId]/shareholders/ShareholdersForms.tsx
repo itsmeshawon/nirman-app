@@ -24,7 +24,7 @@ import { Copy, Check } from "lucide-react"
 const shareholderSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
-  phone: z.string().optional(),
+  phone: z.string().min(1, "Phone number is required"),
   password: z.string().min(8, "Password must be at least 8 characters").optional(),
   unit_flat: z.string().optional(),
   ownership_pct: z.string().optional(),
@@ -318,8 +318,9 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder, onS
 
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone">Phone *</Label>
               <Input id="phone" {...register("phone")} disabled={isLoading} />
+              {errors.phone && <span className="text-xs text-red-500">{errors.phone.message}</span>}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="unit_flat">Unit/Flat</Label>

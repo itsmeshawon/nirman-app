@@ -252,7 +252,7 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
                         {d.shareholderName}
                       </span>
                       <span className="text-[12px] text-[var(--on-surface-variant)] mt-0.5">
-                        Unit: {d.unit}
+                        {d.phone !== "N/A" ? d.phone : "—"}
                       </span>
                     </div>
                   </TableCell>

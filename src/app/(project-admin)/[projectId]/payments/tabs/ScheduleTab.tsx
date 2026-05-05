@@ -392,7 +392,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
                   <TableCell className="text-sm font-medium">{new Date(item.due_date).toLocaleDateString()}</TableCell>
                   <TableCell>
                     <div className="text-sm font-medium text-on-surface">{item.shareholder?.profiles?.name}</div>
-                    <div className="text-xs text-on-surface-variant">Unit: {item.shareholder?.unit_flat}</div>
+                    <div className="text-xs text-on-surface-variant">{item.shareholder?.profiles?.phone || "—"}</div>
                   </TableCell>
                   <TableCell className="text-sm text-on-surface-variant">{item.milestone?.name || 'General (Monthly Payment)'}</TableCell>
                   <TableCell className="text-right font-medium text-on-surface">{parseFloat(item.amount).toLocaleString('en-IN')}</TableCell>

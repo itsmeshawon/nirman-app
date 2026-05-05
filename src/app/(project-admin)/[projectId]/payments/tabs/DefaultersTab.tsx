@@ -96,7 +96,7 @@ export function DefaultersTab({ projectId, scheduleItems, payments }: { projectI
                  <TableRow key={i}>
                     <TableCell>
                       <div className="text-sm font-semibold text-on-surface">{d.shareholder?.profiles?.name}</div>
-                      <div className="text-xs text-on-surface-variant">Unit: {d.shareholder?.unit_flat}</div>
+                      <div className="text-xs text-on-surface-variant">{d.shareholder?.profiles?.phone || "—"}</div>
                     </TableCell>
                     <TableCell className="text-sm font-medium">{d.overdueCount} items</TableCell>
                     <TableCell className="text-sm text-on-surface-variant">{d.oldestDue.toLocaleDateString()}</TableCell>

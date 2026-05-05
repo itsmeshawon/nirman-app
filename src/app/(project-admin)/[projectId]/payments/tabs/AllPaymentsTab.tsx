@@ -138,7 +138,7 @@ export function AllPaymentsTab({ projectId, payments, onDelete, onUpdate }: AllP
                     <TableCell className="font-mono text-xs font-semibold text-on-surface">{p.receipt_no}</TableCell>
                     <TableCell>
                       <div className="text-sm font-medium text-on-surface">{p.shareholder?.profiles?.name}</div>
-                      <div className="text-xs text-on-surface-variant">Unit: {p.shareholder?.unit_flat}</div>
+                      <div className="text-xs text-on-surface-variant">{p.shareholder?.profiles?.phone || "—"}</div>
                     </TableCell>
                     <TableCell className="text-sm uppercase text-[10px] font-bold text-slate-500">{p.method.replace("_", " ")}</TableCell>
                     <TableCell className="text-sm text-on-surface-variant font-mono text-xs">{p.reference_no || "N/A"}</TableCell>
