@@ -21,6 +21,13 @@ import {
 import NotificationBell from "@/components/NotificationBell"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { cn } from "@/lib/utils"
+import { PageTitleProvider, usePageTitle } from "@/context/PageTitleContext"
+
+function PageTitleSuffix() {
+  const { pageTitleSuffix } = usePageTitle()
+  if (!pageTitleSuffix) return null
+  return <span className="text-[var(--on-surface-variant)]"> — {pageTitleSuffix}</span>
+}
 
 const navItems = [
   { href: "/my/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -120,6 +127,7 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
   if (pathname === "/my/milestones") pageTitle = "Project Milestones"
 
   return (
+    <PageTitleProvider>
     <div className="flex h-screen bg-[var(--background)] overflow-hidden">
       {/* Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
@@ -297,7 +305,7 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
             >
               <Menu className="h-6 w-6" />
             </button>
-            <h1 className="text-[22px] font-normal text-[var(--foreground)]">{pageTitle}</h1>
+            <h1 className="text-[22px] font-normal text-[var(--foreground)]">{pageTitle}<PageTitleSuffix /></h1>
           </div>
 
           <div className="flex items-center gap-4">
@@ -314,5 +322,6 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
         </main>
       </div>
     </div>
+    </PageTitleProvider>
   )
 }

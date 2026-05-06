@@ -46,7 +46,10 @@ export default async function ShareholderDirectoryPage() {
         phone,
         avatar_url,
         profession,
-        organization
+        designation,
+        organization,
+        present_address,
+        whatsapp_no
       )
     `)
     .in("project_id", projectIds)
@@ -64,8 +67,8 @@ export default async function ShareholderDirectoryPage() {
 
   return (
     <div className="space-y-6">
-      <ShareholdersList 
-        data={neighbors || []} 
+      <ShareholdersList
+        data={neighbors || []}
         committeeShareholderIds={committeeShareholderIds}
       />
     </div>

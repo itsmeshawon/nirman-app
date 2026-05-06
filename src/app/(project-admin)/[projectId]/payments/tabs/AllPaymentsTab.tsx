@@ -12,24 +12,48 @@ import { toast } from "sonner"
 interface AllPaymentsTabProps {
   projectId: string
   payments: any[]
+  scheduleItems?: any[]
+  milestones?: any[]
   onDelete?: (paymentId: string) => void
   onUpdate?: (payment: any) => void
 }
 
-export function AllPaymentsTab({ projectId, payments, onDelete, onUpdate }: AllPaymentsTabProps) {
+export function AllPaymentsTab({ projectId, payments, scheduleItems = [], milestones = [], onDelete, onUpdate }: AllPaymentsTabProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [search, setSearch] = useState("")
+  const [filterMilestones, setFilterMilestones] = useState<Set<string>>(new Set())
+
+  const toggleMilestone = (id: string) => {
+    setFilterMilestones(prev => {
+      const next = new Set(prev)
+      next.has(id) ? next.delete(id) : next.add(id)
+      return next
+    })
+  }
 
   const filteredPayments = useMemo(() => {
-    if (!search.trim()) return payments
-    const q = search.toLowerCase()
-    return payments.filter(p => {
-      const name = p.shareholder?.profiles?.name?.toLowerCase() || ""
-      const unit = p.shareholder?.unit_flat?.toLowerCase() || ""
-      const receipt = p.receipt_no?.toLowerCase() || ""
-      return name.includes(q) || unit.includes(q) || receipt.includes(q)
-    })
-  }, [payments, search])
+    let result = payments
+
+    if (search.trim()) {
+      const q = search.toLowerCase()
+      result = result.filter(p => {
+        const name = p.shareholder?.profiles?.name?.toLowerCase() || ""
+        const unit = p.shareholder?.unit_flat?.toLowerCase() || ""
+        const receipt = p.receipt_no?.toLowerCase() || ""
+        return name.includes(q) || unit.includes(q) || receipt.includes(q)
+      })
+    }
+
+    if (filterMilestones.size > 0) {
+      result = result.filter(p => {
+        const scheduleItem = scheduleItems.find(si => si.id === p.schedule_item_id)
+        const milestoneId = scheduleItem?.milestone?.id ?? "none"
+        return filterMilestones.has(milestoneId)
+      })
+    }
+
+    return result
+  }, [payments, scheduleItems, search, filterMilestones])
 
   // Edit Modal State
   const [editingPayment, setEditingPayment] = useState<any>(null)
@@ -98,16 +122,66 @@ export function AllPaymentsTab({ projectId, payments, onDelete, onUpdate }: AllP
 
   return (
     <div>
-       <div className="flex items-center justify-between gap-3 pb-3">
-         <div className="relative w-72">
-           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
-           <Input
-             placeholder="Search by shareholder, unit, receipt..."
-             value={search}
-             onChange={e => setSearch(e.target.value)}
-             className="pl-9 h-10"
-           />
+       <div className="flex items-center justify-between gap-3 pb-3 flex-wrap">
+         <div className="flex gap-3 items-center flex-wrap">
+           <div className="relative w-72">
+             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
+             <Input
+               placeholder="Search by shareholder, unit, receipt..."
+               value={search}
+               onChange={e => setSearch(e.target.value)}
+               className="pl-9 h-10"
+             />
+           </div>
+
+           {/* Milestone multi-select filter */}
+           <div className="relative">
+             <details className="group">
+               <summary className="flex items-center gap-2 cursor-pointer list-none px-3 py-2 rounded-lg border border-outline-variant/40 bg-surface text-sm text-on-surface-variant hover:bg-surface-variant/20 select-none">
+                 <span>
+                   {filterMilestones.size === 0
+                     ? "All Milestones"
+                     : filterMilestones.size === 1
+                       ? (milestones.find(m => filterMilestones.has(m.id))?.name ?? (filterMilestones.has("none") ? "No Milestone" : "1 selected"))
+                       : `${filterMilestones.size} milestones`}
+                 </span>
+                 <svg className="w-4 h-4 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd"/></svg>
+               </summary>
+               <div className="absolute z-20 mt-1 w-56 bg-surface border border-outline-variant/40 rounded-xl shadow-lg py-1 overflow-hidden">
+                 {/* "No Milestone" option */}
+                 <button
+                   onClick={() => toggleMilestone("none")}
+                   className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-surface-variant/20 text-on-surface"
+                 >
+                   <span className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${filterMilestones.has("none") ? "bg-primary border-primary" : "border-outline-variant"}`}>
+                     {filterMilestones.has("none") && <svg className="w-3 h-3 text-white" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                   </span>
+                   No Milestone
+                 </button>
+                 {milestones.map(m => (
+                   <button
+                     key={m.id}
+                     onClick={() => toggleMilestone(m.id)}
+                     className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-surface-variant/20 text-on-surface"
+                   >
+                     <span className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${filterMilestones.has(m.id) ? "bg-primary border-primary" : "border-outline-variant"}`}>
+                       {filterMilestones.has(m.id) && <svg className="w-3 h-3 text-white" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                     </span>
+                     {m.name}
+                   </button>
+                 ))}
+                 {filterMilestones.size > 0 && (
+                   <div className="border-t border-outline-variant/30 mt-1 pt-1">
+                     <button onClick={() => setFilterMilestones(new Set())} className="w-full px-3 py-1.5 text-xs text-primary hover:bg-primary-container/20 text-left">
+                       Clear filter
+                     </button>
+                   </div>
+                 )}
+               </div>
+             </details>
+           </div>
          </div>
+
          <Button variant="outline" size="sm">
             <Download className="w-4 h-4 mr-2" /> Export CSV
          </Button>
@@ -119,6 +193,7 @@ export function AllPaymentsTab({ projectId, payments, onDelete, onUpdate }: AllP
               <TableHead>Date Recorded</TableHead>
               <TableHead>Receipt #</TableHead>
               <TableHead>Shareholder</TableHead>
+              <TableHead>Payment Type / Milestone</TableHead>
               <TableHead>Method</TableHead>
               <TableHead>Reference</TableHead>
               <TableHead className="text-right">Amount (৳)</TableHead>
@@ -129,10 +204,13 @@ export function AllPaymentsTab({ projectId, payments, onDelete, onUpdate }: AllP
           <TableBody>
             {filteredPayments.length === 0 ? (
                <TableRow>
-                 <TableCell colSpan={8} className="text-center py-8 text-on-surface-variant">No payments recorded yet.</TableCell>
+                 <TableCell colSpan={9} className="text-center py-8 text-on-surface-variant">No payments recorded yet.</TableCell>
                </TableRow>
             ) : (
-               filteredPayments.map((p) => (
+               filteredPayments.map((p) => {
+                 const scheduleItem = scheduleItems.find(si => si.id === p.schedule_item_id)
+                 const milestoneName = scheduleItem?.milestone?.name || "General (Monthly Payment)"
+                 return (
                  <TableRow key={p.id}>
                     <TableCell className="text-sm">{new Date(p.created_at).toLocaleDateString()}</TableCell>
                     <TableCell className="font-mono text-xs font-semibold text-on-surface">{p.receipt_no}</TableCell>
@@ -140,6 +218,7 @@ export function AllPaymentsTab({ projectId, payments, onDelete, onUpdate }: AllP
                       <div className="text-sm font-medium text-on-surface">{p.shareholder?.profiles?.name}</div>
                       <div className="text-xs text-on-surface-variant">{p.shareholder?.profiles?.phone || "—"}</div>
                     </TableCell>
+                    <TableCell className="text-sm text-on-surface-variant">{milestoneName}</TableCell>
                     <TableCell className="text-sm uppercase text-[10px] font-bold text-slate-500">{p.method.replace("_", " ")}</TableCell>
                     <TableCell className="text-sm text-on-surface-variant font-mono text-xs">{p.reference_no || "N/A"}</TableCell>
                     <TableCell className="text-right font-bold text-primary">৳{parseFloat(p.amount).toLocaleString('en-IN')}</TableCell>
@@ -165,7 +244,8 @@ export function AllPaymentsTab({ projectId, payments, onDelete, onUpdate }: AllP
                         </div>
                      </TableCell>
                  </TableRow>
-               ))
+               )
+               })
             )}
           </TableBody>
        </Table>

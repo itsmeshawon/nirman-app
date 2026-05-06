@@ -232,7 +232,7 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
             onPaymentRecorded={handlePaymentRecorded}
           />
         )}
-        {activeTab === "HISTORY" && <AllPaymentsTab projectId={projectId} payments={allPayments} onDelete={handlePaymentDeleted} onUpdate={handlePaymentUpdated} />}
+        {activeTab === "HISTORY" && <AllPaymentsTab projectId={projectId} payments={allPayments} scheduleItems={allScheduleItems} milestones={milestones} onDelete={handlePaymentDeleted} onUpdate={handlePaymentUpdated} />}
         {activeTab === "WAITING" && (
           <WaitingForApprovalTab
             projectId={projectId}

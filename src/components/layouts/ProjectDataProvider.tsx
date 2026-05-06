@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { ProjectAdminContext, ShellData } from "@/context/ProjectAdminContext"
+import { PageTitleProvider } from "@/context/PageTitleContext"
 import ProjectAdminShell from "./ProjectAdminShell"
 
 export default function ProjectDataProvider({
@@ -32,18 +33,20 @@ export default function ProjectDataProvider({
   }, [projectId, router])
 
   return (
-    <ProjectAdminContext.Provider value={{ projectId, shellData, isLoading }}>
-      <ProjectAdminShell
-        projectId={projectId}
-        projectName={shellData?.project?.name ?? ""}
-        projectStatus={shellData?.project?.status ?? ""}
-        profileName={shellData?.profile?.name ?? ""}
-        avatarUrl={shellData?.profile?.avatar_url}
-        isArchived={shellData?.project?.status === "ARCHIVED"}
-        isLoading={isLoading}
-      >
-        {children}
-      </ProjectAdminShell>
-    </ProjectAdminContext.Provider>
+    <PageTitleProvider>
+      <ProjectAdminContext.Provider value={{ projectId, shellData, isLoading }}>
+        <ProjectAdminShell
+          projectId={projectId}
+          projectName={shellData?.project?.name ?? ""}
+          projectStatus={shellData?.project?.status ?? ""}
+          profileName={shellData?.profile?.name ?? ""}
+          avatarUrl={shellData?.profile?.avatar_url}
+          isArchived={shellData?.project?.status === "ARCHIVED"}
+          isLoading={isLoading}
+        >
+          {children}
+        </ProjectAdminShell>
+      </ProjectAdminContext.Provider>
+    </PageTitleProvider>
   )
 }

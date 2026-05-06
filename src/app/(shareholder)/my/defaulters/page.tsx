@@ -64,7 +64,12 @@ export default async function DefaultersPage() {
           phone
         )
       ),
+      milestone:milestones (
+        id,
+        name
+      ),
       penalties (
+        id,
         amount,
         is_waived
       )

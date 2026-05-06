@@ -188,8 +188,11 @@ export function MilestoneTimeline({ projectId, initialMilestones, expenseTotals 
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-end items-center p-6 sm:p-8 rounded-[1.25rem] border border-[var(--outline-variant)]/40 bg-[var(--surface-container-low)]">
-        <Button onClick={() => openDialog()}>
+      <div className="flex justify-end">
+        <Button
+          onClick={() => openDialog()}
+          className="bg-primary hover:bg-primary"
+        >
           <Plus className="mr-2 h-4 w-4" />
           Add Milestone
         </Button>

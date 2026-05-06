@@ -1,9 +1,20 @@
 "use client"
 
 import { useMemo } from "react"
-import { Building, Mail, Phone, Calendar, AlertTriangle } from "lucide-react"
+import { AlertTriangle } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
+
+interface DefaulterRow {
+  shareholderName: string
+  phone: string | null
+  unit: string
+  milestoneName: string | null
+  dueDate: Date
+  installmentAmount: number
+  paid: number
+  principalDue: number
+  penalty: number
+}
 
 interface DefaultersClientProps {
   overdueItems: any[]
@@ -11,130 +22,103 @@ interface DefaultersClientProps {
   projectMap: Record<string, string>
 }
 
-export function DefaultersClient({ overdueItems, payments, projectMap }: DefaultersClientProps) {
-  const defaulters = useMemo(() => {
-    const map = new Map()
+export function DefaultersClient({ overdueItems, payments }: DefaultersClientProps) {
+  const defaulters = useMemo<DefaulterRow[]>(() => {
+    return overdueItems
+      .map((item): DefaulterRow | null => {
+        const sh = item.shareholder
+        if (!sh) return null
 
-    overdueItems.forEach(item => {
-      const sh = item.shareholder
-      if (!sh) return
-      
-      const shId = sh.id
-      // Use project_id from shareholder record if direct link is missing
-      const projectId = sh.project_id
+        const paid = payments
+          .filter(p => p.schedule_item_id === item.id)
+          .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
 
-      // Key by project + unit to handle users with multiple properties
-      const key = `${projectId}-${sh.unit_flat}`
+        const installmentAmount = parseFloat(item.amount) || 0
+        const principalDue = Math.max(0, installmentAmount - paid)
 
-      if (!map.has(key)) {
-        map.set(key, {
-          projectId,
-          projectName: projectMap[projectId] || "Unknown Project",
-          unit: sh.unit_flat,
-          name: typeof sh.profiles === 'object' && sh.profiles !== null ? (sh.profiles as any).name : "Unknown",
-          email: typeof sh.profiles === 'object' && sh.profiles !== null ? (sh.profiles as any).email : null,
-          phone: typeof sh.profiles === 'object' && sh.profiles !== null ? (sh.profiles as any).phone : null,
-          overdueCount: 0,
-          totalPrincipal: 0,
-          totalPenalty: 0,
-          oldestDue: new Date(item.due_date)
-        })
-      }
-
-      const d = map.get(key)
-      d.overdueCount++
-
-      // Calculate paid so far for this specific item
-      const paid = payments
-        .filter(p => p.schedule_item_id === item.id)
-        .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
-      
-      const principalDue = Math.max(0, (parseFloat(item.amount) || 0) - paid)
-      d.totalPrincipal += principalDue
-
-      // Calculate penalties
-      if (item.penalties) {
-        d.totalPenalty += item.penalties
-          .filter((p: any) => !p.is_waived)
+        const penalty = (item.penalties || [])
+          .filter((p: any) => !p.is_waived && parseFloat(p.amount) > 0)
           .reduce((sum: number, p: any) => sum + (parseFloat(p.amount) || 0), 0)
-      }
 
-      const itemDate = new Date(item.due_date)
-      if (itemDate < d.oldestDue) d.oldestDue = itemDate
-    })
-
-    return Array.from(map.values()).sort((a, b) => b.totalPrincipal - a.totalPrincipal)
-  }, [overdueItems, payments, projectMap])
+        return {
+          shareholderName: sh.profiles?.name || "Unknown",
+          phone: sh.profiles?.phone || null,
+          unit: sh.unit_flat,
+          milestoneName: item.milestone?.name || null,
+          dueDate: new Date(item.due_date),
+          installmentAmount,
+          paid,
+          principalDue,
+          penalty,
+        }
+      })
+      .filter((r): r is DefaulterRow => r !== null)
+      .sort((a, b) => b.principalDue - a.principalDue)
+  }, [overdueItems, payments])
 
   return (
     <div className="overflow-x-auto">
-      <div>
-        <Table>
-          <TableHeader className="bg-surface-variant/20">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="px-6">Shareholder</TableHead>
+            <TableHead>Payment Type / Milestone</TableHead>
+            <TableHead>Due Date</TableHead>
+            <TableHead className="text-right">Expected (৳)</TableHead>
+            <TableHead className="text-right">Paid (৳)</TableHead>
+            <TableHead className="text-right">Due (৳)</TableHead>
+            <TableHead className="text-right text-[var(--destructive)]">Penalty (৳)</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {defaulters.length === 0 ? (
             <TableRow>
-              <TableHead className="font-semibold text-on-surface px-6 py-4">Shareholder Name</TableHead>
-              <TableHead className="font-semibold text-on-surface">Phone Number</TableHead>
-              <TableHead className="font-semibold text-on-surface">Overdue Status</TableHead>
-              <TableHead className="text-right font-semibold text-on-surface">Principal Due</TableHead>
-              <TableHead className="text-right font-semibold text-destructive">Active Penalty</TableHead>
-              <TableHead className="text-right font-bold text-on-surface pr-6">Total Owed</TableHead>
+              <TableCell colSpan={7} className="text-center py-20">
+                <div className="flex flex-col items-center justify-center text-outline">
+                  <AlertTriangle className="w-12 h-12 mb-4 opacity-10 text-primary" />
+                  <p className="text-lg font-medium text-on-surface-variant">No active defaulters</p>
+                  <p className="text-sm">All shareholders are currently up to date on payments.</p>
+                </div>
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {defaulters.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center py-20">
-                  <div className="flex flex-col items-center justify-center text-outline">
-                    <AlertTriangle className="w-12 h-12 mb-4 opacity-20" />
-                    <p className="text-lg font-medium">No active defaulters</p>
-                    <p className="text-sm">All shareholders are currently up to date on payments.</p>
+          ) : (
+            defaulters.map((d, i) => (
+              <TableRow key={i} className="group">
+                <TableCell className="px-6 py-5">
+                  <div className="flex flex-col">
+                    <span className="text-[14px] font-semibold text-[var(--foreground)]">
+                      {d.shareholderName}
+                    </span>
+                    <span className="text-[12px] text-[var(--on-surface-variant)] mt-0.5">
+                      {d.phone ?? "—"}
+                    </span>
                   </div>
                 </TableCell>
+                <TableCell className="text-sm font-medium text-on-surface">
+                  {d.milestoneName || "General (Monthly Payment)"}
+                </TableCell>
+                <TableCell>
+                  <span className="text-[11px] font-bold text-[#964B00] bg-[#FFDDB3] px-3 py-1 rounded-full uppercase tracking-wider">
+                    {d.dueDate.toLocaleDateString()}
+                  </span>
+                </TableCell>
+                <TableCell className="text-right text-sm text-on-surface-variant">
+                  ৳ {d.installmentAmount.toLocaleString('en-IN')}
+                </TableCell>
+                <TableCell className="text-right text-sm text-primary font-semibold">
+                  ৳ {d.paid.toLocaleString('en-IN')}
+                </TableCell>
+                <TableCell className="text-right font-medium text-on-surface">
+                  ৳ {d.principalDue.toLocaleString('en-IN')}
+                </TableCell>
+                <TableCell className="text-right font-medium text-destructive">
+                  ৳ {d.penalty.toLocaleString('en-IN')}
+                </TableCell>
               </TableRow>
-            ) : (
-              defaulters.map((d, i) => (
-                <TableRow key={i} className="hover:bg-surface-variant/20 transition-colors group">
-                  <TableCell className="px-6 py-4">
-                    <div className="flex flex-col">
-                      <span className="text-sm font-bold text-on-surface group-hover:text-primary transition-colors">
-                        {d.name}
-                      </span>
-                      <span className="text-xs text-on-surface-variant mt-0.5">
-                        Unit: {d.unit}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1.5 text-sm text-on-surface-variant">
-                      <Phone className="w-3.5 h-3.5 text-outline" />
-                      {d.phone || "N/A"}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col">
-                      <span className="text-xs font-semibold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full w-fit">
-                        {d.overdueCount} Items Overdue
-                      </span>
-                      <span className="text-[10px] text-outline mt-1 flex items-center gap-1">
-                        <Calendar className="w-3 h-3" /> Since {d.oldestDue.toLocaleDateString()}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right font-medium">
-                    ৳ {d.totalPrincipal.toLocaleString('en-IN')}
-                  </TableCell>
-                  <TableCell className="text-right font-medium text-destructive">
-                    ৳ {d.totalPenalty.toLocaleString('en-IN')}
-                  </TableCell>
-                  <TableCell className="text-right font-bold text-on-surface pr-6">
-                    ৳ {(d.totalPrincipal + d.totalPenalty).toLocaleString('en-IN')}
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+            ))
+          )}
+        </TableBody>
+      </Table>
     </div>
   )
 }

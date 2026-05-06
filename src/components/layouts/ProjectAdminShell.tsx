@@ -24,6 +24,7 @@ import {
 import NotificationBell from "@/components/NotificationBell"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { cn } from "@/lib/utils"
+import { usePageTitle } from "@/context/PageTitleContext"
 
 interface ProjectAdminShellProps {
   children: React.ReactNode
@@ -70,6 +71,8 @@ export default function ProjectAdminShell({
     await supabase.auth.signOut()
     router.push("/login")
   }
+
+  const { pageTitleSuffix } = usePageTitle()
 
   // Determine current page title
   const activeNavItem = navItems.find((item) => pathname?.includes(item.href))
@@ -199,7 +202,9 @@ export default function ProjectAdminShell({
               <span className="sr-only">Open sidebar</span>
               <Menu className="h-6 w-6" />
             </button>
-            <h1 className="text-[22px] font-normal text-foreground">{pageTitle}</h1>
+            <h1 className="text-[22px] font-normal text-foreground">
+              {pageTitle}{pageTitleSuffix ? <span className="text-on-surface-variant"> — {pageTitleSuffix}</span> : null}
+            </h1>
           </div>
 
           {/* Header Right Actions */}

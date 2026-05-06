@@ -555,23 +555,23 @@ export default function SuperAdminProjectDetailPage() {
               : "?"
             return (
               <>
-                {/* Hero */}
-                <div className="bg-gradient-to-br from-primary to-primary/80 px-6 pt-10 pb-6 text-white">
+                {/* Profile Header */}
+                <div className="px-6 pt-8 pb-5 border-b border-outline-variant/40">
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-full bg-surface/20 flex items-center justify-center text-2xl font-bold shrink-0">
+                    <div className="w-14 h-14 rounded-full bg-primary-container/30 flex items-center justify-center text-xl font-bold text-primary shrink-0">
                       {initials}
                     </div>
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h2 className="text-xl font-bold leading-tight">{p?.name || "—"}</h2>
+                        <h2 className="text-xl font-bold text-on-surface leading-tight">{p?.name || "—"}</h2>
                         {isCommittee && (
-                          <span className="flex items-center gap-1 text-xs bg-amber-400/20 text-amber-200 border border-amber-400/30 px-2 py-0.5 rounded-full font-medium">
+                          <span className="flex items-center gap-1 text-xs bg-amber-100 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-medium">
                             <Crown className="h-3 w-3" /> Committee
                           </span>
                         )}
                       </div>
-                      <p className="text-primary-foreground text-sm mt-0.5">Unit {detailShareholder.unit_flat || "—"}</p>
-                      <span className={`mt-2 inline-block text-xs font-semibold px-2 py-0.5 rounded-full ${isActive ? "bg-green-400/20 text-green-100 border border-green-400/30" : "bg-outline/20 text-outline-variant border border-outline/30"}`}>
+                      <p className="text-sm text-outline mt-0.5">Unit {detailShareholder.unit_flat || "—"}</p>
+                      <span className={`mt-2 inline-block text-xs font-semibold px-2 py-0.5 rounded-full ${isActive ? "bg-primary-container/30 text-primary border border-primary-container" : "bg-surface-variant/50 text-on-surface-variant border border-outline-variant/40"}`}>
                         {isActive ? "Active" : "Inactive"}
                       </span>
                     </div>
@@ -623,22 +623,24 @@ export default function SuperAdminProjectDetailPage() {
 }
 
 function SheetDetailRow({ icon, label, value }: { icon: React.ReactNode; label: string; value?: string | null }) {
+  if (!value) return null
   return (
     <div className="flex items-start gap-3">
       <div className="mt-0.5 shrink-0">{icon}</div>
       <div className="min-w-0">
         <p className="text-xs text-outline">{label}</p>
-        <p className="text-sm text-on-surface font-medium break-words">{value || "—"}</p>
+        <p className="text-sm text-on-surface font-medium break-words">{value}</p>
       </div>
     </div>
   )
 }
 
 function SheetStatField({ label, value, className }: { label: string; value?: string | null; className?: string }) {
+  if (!value) return null
   return (
     <div className={className}>
       <p className="text-xs text-outline uppercase tracking-wide mb-0.5">{label}</p>
-      <p className="text-sm font-semibold text-on-surface">{value || "—"}</p>
+      <p className="text-sm font-semibold text-on-surface">{value}</p>
     </div>
   )
 }

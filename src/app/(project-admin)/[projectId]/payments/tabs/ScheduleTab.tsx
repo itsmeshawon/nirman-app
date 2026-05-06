@@ -59,8 +59,17 @@ function ComboBox({
 export function ScheduleTab({ projectId, scheduleItems, payments, milestones, shareholders, createOpen, onCreateOpenChange, onPaymentRecorded }: { projectId: string, scheduleItems: any[], payments: any[], milestones: any[], shareholders: any[], createOpen?: boolean, onCreateOpenChange?: (open: boolean) => void, onPaymentRecorded?: (payment: any) => void }) {
   const [filterStatus, setFilterStatus] = useState("")
   const [filterOpen,   setFilterOpen]   = useState(false)
+  const [filterMilestones, setFilterMilestones] = useState<Set<string>>(new Set())
   const [localPayments, setLocalPayments] = useState(payments)
   const [localScheduleItems, setLocalScheduleItems] = useState(scheduleItems)
+
+  const toggleMilestone = (id: string) => {
+    setFilterMilestones(prev => {
+      const next = new Set(prev)
+      next.has(id) ? next.delete(id) : next.add(id)
+      return next
+    })
+  }
 
   useEffect(() => { setLocalPayments(payments) }, [payments])
   useEffect(() => { setLocalScheduleItems(scheduleItems) }, [scheduleItems])
@@ -297,7 +306,9 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
     const name = item.shareholder?.profiles?.name?.toLowerCase() || ""
     const unit = item.shareholder?.unit_flat?.toLowerCase() || ""
     const matchSearch = !q || name.includes(q) || unit.includes(q)
-    return matchStatus && matchSearch
+    const milestoneId = item.milestone?.id ?? "none"
+    const matchMilestone = filterMilestones.size === 0 || filterMilestones.has(milestoneId)
+    return matchStatus && matchSearch && matchMilestone
   })
 
   // Derived labels
@@ -354,6 +365,53 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
             </CommandGroup>
           </CommandList>
         </ComboBox>
+        </div>
+
+        {/* Milestone multi-select filter */}
+        <div className="relative">
+          <details className="group">
+            <summary className="flex items-center gap-2 cursor-pointer list-none px-3 py-2 rounded-lg border border-outline-variant/40 bg-surface text-sm text-on-surface-variant hover:bg-surface-variant/20 select-none">
+              <span>
+                {filterMilestones.size === 0
+                  ? "All Milestones"
+                  : filterMilestones.size === 1
+                    ? (milestones.find(m => filterMilestones.has(m.id))?.name ?? (filterMilestones.has("none") ? "No Milestone" : "1 selected"))
+                    : `${filterMilestones.size} milestones`}
+              </span>
+              <svg className="w-4 h-4 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd"/></svg>
+            </summary>
+            <div className="absolute z-20 mt-1 w-56 bg-surface border border-outline-variant/40 rounded-xl shadow-lg py-1 overflow-hidden">
+              {/* "No Milestone" option */}
+              <button
+                onClick={() => toggleMilestone("none")}
+                className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-surface-variant/20 text-on-surface"
+              >
+                <span className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${filterMilestones.has("none") ? "bg-primary border-primary" : "border-outline-variant"}`}>
+                  {filterMilestones.has("none") && <svg className="w-3 h-3 text-white" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                </span>
+                No Milestone
+              </button>
+              {milestones.map(m => (
+                <button
+                  key={m.id}
+                  onClick={() => toggleMilestone(m.id)}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-surface-variant/20 text-on-surface"
+                >
+                  <span className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${filterMilestones.has(m.id) ? "bg-primary border-primary" : "border-outline-variant"}`}>
+                    {filterMilestones.has(m.id) && <svg className="w-3 h-3 text-white" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                  </span>
+                  {m.name}
+                </button>
+              ))}
+              {filterMilestones.size > 0 && (
+                <div className="border-t border-outline-variant/30 mt-1 pt-1">
+                  <button onClick={() => setFilterMilestones(new Set())} className="w-full px-3 py-1.5 text-xs text-primary hover:bg-primary-container/20 text-left">
+                    Clear filter
+                  </button>
+                </div>
+              )}
+            </div>
+          </details>
         </div>
       </div>
 

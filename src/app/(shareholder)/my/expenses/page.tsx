@@ -35,15 +35,23 @@ export default async function ShareholderExpensesPage() {
     .select(`
        *,
        category:expense_categories(id, name),
+       milestone:milestones(id, name),
        attachments:expense_attachments(*)
     `)
     .in("project_id", projectIds)
     .eq("status", "PUBLISHED")
     .order("published_at", { ascending: false })
 
+  // Derive unique milestones for filter
+  const milestonesMap = new Map<string, string>()
+  ;(expenses || []).forEach(e => {
+    if (e.milestone) milestonesMap.set(e.milestone.id, e.milestone.name)
+  })
+  const milestones = Array.from(milestonesMap.entries()).map(([id, name]) => ({ id, name }))
+
   return (
     <div className="max-w-5xl mx-auto p-4 md:p-8">
-      <ShareholderExpensesClient expenses={expenses || []} />
+      <ShareholderExpensesClient expenses={expenses || []} milestones={milestones} />
     </div>
   )
 }

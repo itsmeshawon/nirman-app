@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Search, Crown, Mail, Phone, MapPin } from "lucide-react"
+import { usePageTitle } from "@/context/PageTitleContext"
 import {
   Table,
   TableBody,
@@ -11,7 +12,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
 import { EmptyState } from "@/components/EmptyState"
 import {
   Sheet,
@@ -27,6 +27,12 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedShareholder, setSelectedShareholder] = useState<any>(null)
   const committeeSet = new Set(committeeShareholderIds)
+  const { setPageTitleSuffix } = usePageTitle()
+
+  useEffect(() => {
+    setPageTitleSuffix(`(${data.length})`)
+    return () => setPageTitleSuffix(null)
+  }, [data.length])
 
   const filteredData = useMemo(() => {
     return data.filter((item) => {
@@ -41,16 +47,8 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
     return Array.isArray(row.profiles) ? row.profiles[0] : row.profiles
   }
 
-  // Stats calculation
-  const total = data.length
-
   return (
     <div className="space-y-4">
-      {/* Stats Badge */}
-      <div className="flex gap-2">
-        <Badge variant="outline" className="text-on-surface-variant bg-surface">Total: {total}</Badge>
-      </div>
-
       <div>
         <div className="py-4 pr-4">
           <div className="relative max-w-sm">
@@ -137,22 +135,22 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
               : "?"
             return (
               <>
-                {/* Hero */}
-                <div className="bg-gradient-to-br from-primary to-primary/80 px-6 pt-10 pb-6 text-white">
+                {/* Profile Header */}
+                <div className="px-6 pt-8 pb-5 border-b border-outline-variant/40">
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-full bg-surface/20 flex items-center justify-center text-2xl font-bold shrink-0">
+                    <div className="w-14 h-14 rounded-full bg-primary-container/30 flex items-center justify-center text-xl font-bold text-primary shrink-0">
                       {initials}
                     </div>
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h2 className="text-xl font-bold leading-tight">{profile?.name || "—"}</h2>
+                        <h2 className="text-xl font-bold text-on-surface leading-tight">{profile?.name || "—"}</h2>
                         {isCommittee && (
-                          <span title="Committee Member" className="flex items-center gap-1 text-xs bg-amber-400/20 text-amber-200 border border-amber-400/30 px-2 py-0.5 rounded-full font-medium">
+                          <span title="Committee Member" className="flex items-center gap-1 text-xs bg-amber-100 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-medium">
                             <Crown className="h-3 w-3" /> Committee
                           </span>
                         )}
                       </div>
-                      <p className="text-primary-foreground text-sm mt-0.5">Unit {selectedShareholder.unit_flat || "—"}</p>
+                      <p className="text-sm text-outline mt-0.5">Unit {selectedShareholder.unit_flat || "—"}</p>
                     </div>
                   </div>
                 </div>
@@ -194,7 +192,7 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
                     <div className="grid grid-cols-2 gap-3">
                       <StatField label="Unit / Flat" value={selectedShareholder.unit_flat} />
                       <StatField label="Ownership" value={selectedShareholder.ownership_pct != null ? `${selectedShareholder.ownership_pct}%` : undefined} />
-                      <StatField label="Opening Balance" value={selectedShareholder.opening_balance != null ? `৳${Number(selectedShareholder.opening_balance).toLocaleString()}` : undefined} />
+                      <StatField label="Status" value={selectedShareholder.status} />
                     </div>
                   </section>
                 </div>
@@ -208,22 +206,24 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
 }
 
 function DetailRow({ icon, label, value }: { icon: React.ReactNode; label: string; value?: string | null }) {
+  if (!value) return null
   return (
     <div className="flex items-start gap-3">
       <div className="mt-0.5 shrink-0">{icon}</div>
       <div className="min-w-0">
         <p className="text-xs text-outline">{label}</p>
-        <p className="text-sm text-on-surface font-medium break-words">{value || "—"}</p>
+        <p className="text-sm text-on-surface font-medium break-words">{value}</p>
       </div>
     </div>
   )
 }
 
 function StatField({ label, value, className }: { label: string; value?: string | null; className?: string }) {
+  if (!value) return null
   return (
     <div className={className}>
       <p className="text-xs text-outline uppercase tracking-wide mb-0.5">{label}</p>
-      <p className="text-sm font-semibold text-on-surface">{value || "—"}</p>
+      <p className="text-sm font-semibold text-on-surface">{value}</p>
     </div>
   )
 }

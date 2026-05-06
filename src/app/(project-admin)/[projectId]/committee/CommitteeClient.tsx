@@ -36,9 +36,10 @@ export function CommitteeClient({
 }: CommitteeClientProps) {
   const [rule, setRule] = useState(currentRule || "MAJORITY")
   const [isSavingRule, setIsSavingRule] = useState(false)
-  
+
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isAddingMember, setIsAddingMember] = useState(false)
+  const [isRulesModalOpen, setIsRulesModalOpen] = useState(false)
 
   // -- handlers --
   const handleSaveRule = async () => {
@@ -97,106 +98,25 @@ export function CommitteeClient({
 
   return (
     <div className="space-y-8">
-      {/* Approval Rule Card */}
-      <section className="border border-outline-variant/40 rounded-xl overflow-hidden">
-        <div className="p-6 border-b border-outline-variant/40 bg-surface-variant">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-primary-container/50 text-primary rounded-lg">
-              <ShieldCheck className="h-6 w-6" />
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold text-on-surface">Governance & Approval Rule</h2>
-              <p className="text-sm text-on-surface-variant">Define how project expenses and decisions are approved.</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="p-6">
-          <div className="grid sm:grid-cols-2 gap-4">
-            <label
-              className={`relative flex cursor-pointer rounded-lg border p-4 focus:outline-none ${
-                rule === "MAJORITY" ? "border-primary ring-1 ring-primary" : "border-outline-variant"
-              }`}
-            >
-              <input
-                type="radio"
-                name="approvalRule"
-                value="MAJORITY"
-                className="sr-only"
-                checked={rule === "MAJORITY"}
-                onChange={(e) => setRule(e.target.value)}
-              />
-              <span className="flex flex-1">
-                <span className="flex flex-col">
-                  <span className="block text-sm font-medium text-on-surface">Majority Approval</span>
-                  <span className="mt-1 flex items-center text-sm text-on-surface-variant">
-                    Requires &gt; 50% of active committee members to approve. Ideal for balanced decision-making.
-                  </span>
-                </span>
-              </span>
-              <ShieldCheck
-                className={`h-5 w-5 ${rule === "MAJORITY" ? "text-primary" : "text-transparent"}`}
-                aria-hidden="true"
-              />
-            </label>
-
-            <label
-              className={`relative flex cursor-pointer rounded-lg border p-4 focus:outline-none ${
-                rule === "ANY_SINGLE" ? "border-primary ring-1 ring-primary" : "border-outline-variant"
-              }`}
-            >
-              <input
-                type="radio"
-                name="approvalRule"
-                value="ANY_SINGLE"
-                className="sr-only"
-                checked={rule === "ANY_SINGLE"}
-                onChange={(e) => setRule(e.target.value)}
-              />
-              <span className="flex flex-1">
-                <span className="flex flex-col">
-                  <span className="block text-sm font-medium text-on-surface">Any Single Member</span>
-                  <span className="mt-1 flex items-center text-sm text-on-surface-variant">
-                    Allows any single active committee member to approve. Faster, but requires high trust.
-                  </span>
-                </span>
-              </span>
-              <ShieldCheck
-                 className={`h-5 w-5 ${rule === "ANY_SINGLE" ? "text-primary" : "text-transparent"}`}
-                aria-hidden="true"
-              />
-            </label>
-          </div>
-          <div className="mt-6 flex justify-end">
-            <Button
-              onClick={handleSaveRule}
-              disabled={isSavingRule || rule === currentRule}
-              className="bg-primary hover:bg-primary"
-            >
-              {isSavingRule ? "Saving..." : "Save Rule"}
-            </Button>
-          </div>
-        </div>
-      </section>
-
       {/* Committee Members Table */}
       <section>
-        <div className="flex items-center justify-between mb-4">
-           <div>
-            <h3 className="text-lg font-medium leading-6 text-on-surface flex items-center gap-2">
-              Committee Members
-               <span className="inline-flex items-center rounded-full bg-surface-variant/50 px-2.5 py-0.5 text-xs font-medium text-on-surface">
-                  {members.length}
-                </span>
-            </h3>
-           </div>
-          <Button
-            onClick={() => setIsAddDialogOpen(true)}
-            variant="default"
-          >
-            <UserPlus className="mr-2 h-4 w-4" />
-            Add Member
-          </Button>
+        <div className="flex items-center justify-end mb-4">
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setIsRulesModalOpen(true)}
+              variant="outline"
+            >
+              <ShieldCheck className="mr-2 h-4 w-4" />
+              Governance & Approval Rules
+            </Button>
+            <Button
+              onClick={() => setIsAddDialogOpen(true)}
+              variant="default"
+            >
+              <UserPlus className="mr-2 h-4 w-4" />
+              Add Member
+            </Button>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -204,10 +124,10 @@ export function CommitteeClient({
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Unit/Flat</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Added</TableHead>
-                <TableHead className="w-[100px]"></TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>Added Date</TableHead>
+                <TableHead className="w-[100px]">Quick Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -217,8 +137,8 @@ export function CommitteeClient({
                     <TableCell className="font-medium text-on-surface">
                       {member.shareholders?.profiles?.name}
                     </TableCell>
-                    <TableCell>{member.shareholders?.unit_flat}</TableCell>
                     <TableCell className="text-on-surface-variant">{member.shareholders?.profiles?.email}</TableCell>
+                    <TableCell className="text-on-surface-variant">{member.shareholders?.profiles?.phone || "—"}</TableCell>
                     <TableCell className="text-on-surface-variant text-sm">
                       {new Date(member.created_at).toLocaleDateString()}
                     </TableCell>
@@ -281,6 +201,95 @@ export function CommitteeClient({
                  No eligible shareholders found to add.
                </div>
             )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Governance & Approval Rules Modal */}
+      <Dialog open={isRulesModalOpen} onOpenChange={setIsRulesModalOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Governance & Approval Rules</DialogTitle>
+            <DialogDescription>
+              Define how project expenses and decisions are approved.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="mt-4 space-y-4">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <label
+                className={`relative flex cursor-pointer rounded-lg border p-4 focus:outline-none ${
+                  rule === "MAJORITY" ? "border-primary ring-1 ring-primary" : "border-outline-variant"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="approvalRule"
+                  value="MAJORITY"
+                  className="sr-only"
+                  checked={rule === "MAJORITY"}
+                  onChange={(e) => setRule(e.target.value)}
+                />
+                <span className="flex flex-1">
+                  <span className="flex flex-col">
+                    <span className="block text-sm font-medium text-on-surface">Majority Approval</span>
+                    <span className="mt-1 flex items-center text-sm text-on-surface-variant">
+                      Requires &gt; 50% of active committee members to approve. Ideal for balanced decision-making.
+                    </span>
+                  </span>
+                </span>
+                <ShieldCheck
+                  className={`h-5 w-5 ${rule === "MAJORITY" ? "text-primary" : "text-transparent"}`}
+                  aria-hidden="true"
+                />
+              </label>
+
+              <label
+                className={`relative flex cursor-pointer rounded-lg border p-4 focus:outline-none ${
+                  rule === "ANY_SINGLE" ? "border-primary ring-1 ring-primary" : "border-outline-variant"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="approvalRule"
+                  value="ANY_SINGLE"
+                  className="sr-only"
+                  checked={rule === "ANY_SINGLE"}
+                  onChange={(e) => setRule(e.target.value)}
+                />
+                <span className="flex flex-1">
+                  <span className="flex flex-col">
+                    <span className="block text-sm font-medium text-on-surface">Any Single Member</span>
+                    <span className="mt-1 flex items-center text-sm text-on-surface-variant">
+                      Allows any single active committee member to approve. Faster, but requires high trust.
+                    </span>
+                  </span>
+                </span>
+                <ShieldCheck
+                   className={`h-5 w-5 ${rule === "ANY_SINGLE" ? "text-primary" : "text-transparent"}`}
+                  aria-hidden="true"
+                />
+              </label>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setRule(currentRule)
+                  setIsRulesModalOpen(false)
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSaveRule}
+                disabled={isSavingRule || rule === currentRule}
+                className="bg-primary hover:bg-primary"
+              >
+                {isSavingRule ? "Saving..." : "Save Rule"}
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
