@@ -42,17 +42,17 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
   const formatBD = (num: number) => num.toLocaleString('en-IN')
 
   const statusConfig: Record<string, string> = {
-    UPCOMING: "bg-surface-variant/50 text-on-surface",
-    DUE: "bg-tertiary-container/50 text-tertiary",
-    OVERDUE: "bg-error-container/50 text-destructive",
-    PAID: "bg-primary-container/50 text-primary",
-    PARTIALLY_PAID: "bg-yellow-100 text-on-tertiary-container"
+    UPCOMING: "bg-surface-variant/50 text-on-surface-variant",
+    DUE: "bg-secondary-container text-on-secondary-container",
+    OVERDUE: "bg-error-container text-on-error-container",
+    PAID: "bg-success-container text-on-success-container",
+    PARTIALLY_PAID: "bg-warning-container text-on-warning-container"
   }
 
   const proofStatusConfig: Record<string, { label: string; style: string }> = {
-    PENDING: { label: "Pending Review", style: "bg-yellow-100 text-yellow-800" },
-    APPROVED: { label: "Approved", style: "bg-primary-container/50 text-primary" },
-    REJECTED: { label: "Rejected", style: "bg-error-container/50 text-destructive" },
+    PENDING: { label: "Pending Review", style: "bg-warning-container text-on-warning-container" },
+    APPROVED: { label: "Approved", style: "bg-success-container text-on-success-container" },
+    REJECTED: { label: "Rejected", style: "bg-error-container text-on-error-container" },
   }
 
   const handleDownloadReceipt = (paymentId: string) => {
@@ -92,12 +92,12 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
           <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest mb-2">Penalty Balance</p>
           <p className="text-2xl font-bold text-destructive">৳ {formatBD(totalPenalties)}</p>
         </div>
-        <div className="border rounded-[1.25rem] p-5 bg-orange-50 border-orange-100">
-          <p className="text-xs font-semibold text-orange-800 uppercase tracking-widest mb-2">Next Scheduled Due</p>
+        <div className="border rounded-[1.25rem] p-5 bg-warning-container/30 border-warning-container">
+          <p className="text-xs font-semibold text-on-warning-container uppercase tracking-widest mb-2">Next Scheduled Due</p>
           <p className="text-2xl font-bold text-on-surface">
             {nextPayment ? `৳ ${formatBD(parseFloat(nextPayment.amount))}` : "None"}
           </p>
-          <p className="text-xs font-medium text-orange-700 mt-1">
+          <p className="text-xs font-medium text-on-warning-container mt-1">
             {nextPayment ? `Due ${new Date(nextPayment.due_date).toLocaleDateString()}` : "Fully Paid!"}
           </p>
         </div>
@@ -126,7 +126,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
             <Clock className="w-4 h-4" />
             Submitted Proofs
             {visibleProofs.length > 0 && (
-              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none ${activeTab === "PROOFS" ? "bg-primary text-white" : pendingProofsCount > 0 ? "bg-yellow-500 text-white" : "bg-surface-variant text-on-surface-variant"}`}>
+              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none ${activeTab === "PROOFS" ? "bg-primary text-white" : pendingProofsCount > 0 ? "bg-warning text-white" : "bg-surface-variant text-on-surface-variant"}`}>
                 {visibleProofs.length}
               </span>
             )}

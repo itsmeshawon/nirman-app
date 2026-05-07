@@ -116,8 +116,8 @@ export const CredentialPDF = ({ name, email, password, projectName }: Credential
   <Document>
     <Page size="A5" style={styles.page}>
       <View style={styles.header}>
-        <Text style={styles.title}>NirmaN</Text>
-        <Text style={styles.subtitle}>Construction Transparency Platform</Text>
+        <Text style={styles.title}>Truzo</Text>
+        <Text style={styles.subtitle}>Trust. Transparent. Built.</Text>
       </View>
 
       <View style={styles.welcomeSection}>

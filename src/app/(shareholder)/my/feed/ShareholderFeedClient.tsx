@@ -158,7 +158,7 @@ export function ShareholderFeedClient({
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <p className="text-3xl mb-3">🏗️</p>
           <p className="text-on-surface-variant font-medium">No updates yet.</p>
-          <p className="text-outline text-sm mt-1">
+          <p className="text-on-surface-variant text-sm mt-1">
             {isCommitteeMember
               ? "Share the first project update with shareholders."
               : "Your project team will post construction progress here."}

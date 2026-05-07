@@ -198,7 +198,7 @@ export function MilestoneTimeline({ projectId, initialMilestones, expenseTotals 
         </Button>
       </div>
 
-      <div className="p-6 rounded-[1.25rem] border border-[var(--outline-variant)]/40 bg-[var(--surface)]">
+      <div className="p-6 rounded-[1.25rem] border border-outline-variant/40">
          {milestones.length === 0 ? (
             <div className="text-center py-20 text-[var(--on-surface-variant)]">
                <div className="w-12 h-12 rounded-full bg-[var(--surface-variant)]/50 flex items-center justify-center mx-auto mb-4">
@@ -216,15 +216,15 @@ export function MilestoneTimeline({ projectId, initialMilestones, expenseTotals 
                 return (
                   <div key={milestone.id} className="relative group">
                     <span className={`absolute -left-[41px] flex h-8 w-8 items-center justify-center rounded-full ring-8
-                      ${isCompleted ? 'bg-[var(--primary-container)] ring-[var(--surface)]' : ''}
-                      ${isInProgress ? 'bg-[var(--primary-container)] ring-[var(--surface)]' : ''}
-                      ${isUpcoming ? 'bg-[var(--surface-variant)] border-2 border-[var(--outline)] ring-[var(--surface)]' : ''}
+                      ${isCompleted ? 'bg-success-container ring-background' : ''}
+                      ${isInProgress ? 'bg-secondary-container ring-background' : ''}
+                      ${isUpcoming ? 'bg-surface-variant border-2 border-outline-variant ring-background' : ''}
                     `}>
-                      {isCompleted && <CheckCircle2 className="h-5 w-5 text-[var(--on-primary-container)]" />}
+                      {isCompleted && <CheckCircle2 className="h-5 w-5 text-on-success-container" />}
                       {isInProgress && (
                         <div className="relative">
-                          <Clock className="h-5 w-5 text-[var(--on-primary-container)] relative z-10" />
-                          <div className="absolute inset-0 rounded-full bg-[var(--primary-container)] animate-ping opacity-25"></div>
+                          <Clock className="h-5 w-5 text-on-secondary-container relative z-10" />
+                          <div className="absolute inset-0 rounded-full bg-secondary-container animate-ping opacity-25"></div>
                         </div>
                       )}
                       {isUpcoming && <Circle className="h-5 w-5 text-[var(--on-surface-variant)]" />}
@@ -239,9 +239,9 @@ export function MilestoneTimeline({ projectId, initialMilestones, expenseTotals 
 
                     <div className={`
                       p-5 rounded-2xl border transition-all duration-200
-                      ${isCompleted ? 'bg-[var(--primary-container)]/10 border-[var(--primary-container)]/30' : ''}
-                      ${isInProgress ? 'bg-[var(--primary-container)]/20 border-[var(--primary)]/40' : 'border-[var(--outline-variant)]/40'}
-                      ${isUpcoming ? 'opacity-60 bg-[var(--surface-variant)]/20' : ''}
+                      ${isCompleted ? 'bg-success-container/20 border-success-container/50' : ''}
+                      ${isInProgress ? 'bg-secondary-container/30 border-secondary/40' : 'border-outline-variant/40'}
+                      ${isUpcoming ? 'opacity-60 bg-surface-variant/20' : ''}
                     `}>
                       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                         <div className="flex-1">
@@ -279,7 +279,7 @@ export function MilestoneTimeline({ projectId, initialMilestones, expenseTotals 
                         <div className="flex items-center gap-3 shrink-0">
                           <span className={`
                             px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider
-                            ${isCompleted ? 'bg-[var(--primary-container)]/50 text-[var(--on-primary-container)]' : ''}
+                            ${isCompleted ? 'bg-[var(--primary-container)]/50 text-on-success-container' : ''}
                             ${isInProgress ? 'bg-[var(--tertiary-container)]/50 text-[var(--on-tertiary-container)]' : ''}
                             ${isUpcoming ? 'bg-[var(--surface-variant)]/50 text-[var(--on-surface-variant)]' : ''}
                           `}>

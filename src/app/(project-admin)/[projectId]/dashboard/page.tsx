@@ -63,8 +63,8 @@ export default function ProjectDashboardPage() {
               label: "Add Expense",
               desc: "Log and publish new project costs to the ledger",
               bg: "bg-[var(--surface-container)]",
-              iconColor: "text-primary",
-              iconBg: "bg-primary-container/50"
+              iconColor: "text-on-tertiary-container",
+              iconBg: "bg-tertiary-container"
             },
             {
               href: `/${projectId}/payments`,
@@ -72,8 +72,8 @@ export default function ProjectDashboardPage() {
               label: "Record Payment",
               desc: "Quickly post and verify shareholder receipts",
               bg: "bg-[var(--surface-container)]",
-              iconColor: "text-secondary",
-              iconBg: "bg-primary-container/50"
+              iconColor: "text-on-secondary-container",
+              iconBg: "bg-secondary-container"
             },
             {
               href: `/${projectId}/shareholders`,
@@ -81,8 +81,8 @@ export default function ProjectDashboardPage() {
               label: "Shareholders",
               desc: "Manage project members and unit allocation",
               bg: "bg-[var(--surface-container)]",
-              iconColor: "text-tertiary",
-              iconBg: "bg-primary-container/50"
+              iconColor: "text-on-tertiary-container",
+              iconBg: "bg-tertiary-container"
             },
             {
               href: `/${projectId}/reports`,
@@ -90,8 +90,8 @@ export default function ProjectDashboardPage() {
               label: "Financial Reports",
               desc: "View detailed analytics and collection trends",
               bg: "bg-[var(--surface-container)]",
-              iconColor: "text-primary",
-              iconBg: "bg-primary-container/50"
+              iconColor: "text-on-success-container",
+              iconBg: "bg-success-container"
             },
           ].map(({ href, icon: Icon, label, desc, bg, iconColor, iconBg }) => (
             <Link
@@ -121,33 +121,33 @@ export default function ProjectDashboardPage() {
             label="Total Collected"
             value={formatBDT(totalPaid)}
             sub={`of ${formatBDT(totalScheduled)} scheduled`}
-            icon={<TrendingUp className="w-5 h-5 text-primary" />}
-            bg="bg-primary-container/20"
-            accent="border-primary-container"
+            icon={<TrendingUp className="w-5 h-5 text-on-success-container" />}
+            bg="bg-success-container"
+            accent="border-success-container"
           />
           <FinancialCard
             label="Total Expenses"
             value={formatBDT(totalExpenses)}
             sub="published to ledger"
-            icon={<Banknote className="w-5 h-5 text-secondary" />}
-            bg="bg-primary-container/20"
-            accent="border-purple-200"
+            icon={<Banknote className="w-5 h-5 text-on-tertiary-container" />}
+            bg="bg-tertiary-container"
+            accent="border-tertiary-container"
           />
           <FinancialCard
             label="Collection Rate"
             value={`${collectionRate}%`}
             sub={overdueAmount > 0 ? `${formatBDT(overdueAmount)} overdue` : "No overdue amounts"}
-            icon={<BarChart2 className="w-5 h-5 text-tertiary" />}
-            bg="bg-primary-container/20"
-            accent="border-blue-200"
+            icon={<BarChart2 className="w-5 h-5 text-on-secondary-container" />}
+            bg="bg-secondary-container"
+            accent="border-secondary-container"
           />
           <FinancialCard
             label="Net Balance"
             value={formatBDT(Math.abs(balance))}
             sub={balance >= 0 ? "surplus" : "deficit"}
-            icon={balance >= 0 ? <TrendingUp className="w-5 h-5 text-primary" /> : <TrendingDown className="w-5 h-5 text-destructive" />}
-            bg="bg-primary-container/20"
-            accent={balance >= 0 ? "border-green-200" : "border-error-container"}
+            icon={balance >= 0 ? <TrendingUp className="w-5 h-5 text-on-success-container" /> : <TrendingDown className="w-5 h-5 text-on-error-container" />}
+            bg={balance >= 0 ? "bg-success-container" : "bg-error-container"}
+            accent={balance >= 0 ? "border-success-container" : "border-error-container"}
           />
         </div>
       </div>
@@ -166,23 +166,23 @@ export default function ProjectDashboardPage() {
             <PipelineRow
               label="Awaiting Review"
               count={pendingApproval}
-              icon={<SendHorizontal className="w-4 h-4 text-[var(--primary)]" />}
-              color="text-[var(--primary)]"
-              bg="bg-primary-container/20"
+              icon={<SendHorizontal className="w-4 h-4 text-on-secondary-container" />}
+              color="text-on-secondary-container"
+              bg="bg-secondary-container"
             />
             <PipelineRow
               label="Changes Requested"
               count={changesRequested}
-              icon={<RefreshCw className="w-4 h-4 text-orange-500" />}
-              color="text-orange-600"
-              bg="bg-primary-container/20"
+              icon={<RefreshCw className="w-4 h-4 text-on-warning-container" />}
+              color="text-on-warning-container"
+              bg="bg-warning-container"
             />
             <PipelineRow
               label="Approved — Unpublished"
               count={approvedUnpublished}
-              icon={<CheckCircle className="w-4 h-4 text-green-500" />}
-              color="text-primary"
-              bg="bg-primary-container/20"
+              icon={<CheckCircle className="w-4 h-4 text-on-success-container" />}
+              color="text-on-success-container"
+              bg="bg-success-container"
             />
           </div>
         </div>
@@ -199,23 +199,23 @@ export default function ProjectDashboardPage() {
             <PipelineRow
               label="Active Penalties"
               count={activePenalties}
-              icon={<ShieldAlert className="w-4 h-4 text-[var(--destructive)]" />}
-              color="text-[var(--destructive)]"
-              bg="bg-primary-container/20"
+              icon={<ShieldAlert className="w-4 h-4 text-on-error-container" />}
+              color="text-on-error-container"
+              bg="bg-error-container"
             />
             <PipelineRow
               label="Defaulting Installments"
               count={overdueCount}
-              icon={<AlertCircle className="w-4 h-4 text-orange-500" />}
-              color="text-orange-600"
-              bg="bg-primary-container/20"
+              icon={<AlertCircle className="w-4 h-4 text-on-error-container" />}
+              color="text-on-error-container"
+              bg="bg-error-container"
             />
             <PipelineRow
               label="Due in Next 30 Days"
               count={upcomingDues}
-              icon={<CalendarClock className="w-4 h-4 text-amber-500" />}
-              color="text-tertiary"
-              bg="bg-primary-container/20"
+              icon={<CalendarClock className="w-4 h-4 text-on-warning-container" />}
+              color="text-on-warning-container"
+              bg="bg-warning-container"
             />
           </div>
         </div>
@@ -233,8 +233,8 @@ export default function ProjectDashboardPage() {
           <ul className="divide-y divide-outline-variant/20">
             {recentAudit.map((log: any) => (
               <li key={log.id} className="flex items-start gap-4 px-5 py-4 hover:bg-surface-container-low/50 transition-colors">
-                <div className="mt-0.5 w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center flex-shrink-0">
-                  <FileText className="w-4 h-4 text-primary" />
+                <div className="mt-0.5 w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center flex-shrink-0">
+                  <FileText className="w-4 h-4 text-on-surface-variant" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2 mb-0.5">
@@ -242,13 +242,13 @@ export default function ProjectDashboardPage() {
                       {log.action.replace(/_/g, " ")}
                     </span>
                     {log.entity_type && (
-                      <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium bg-primary-container/20 text-primary border border-primary-container/30">
+                      <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium bg-surface-container-high text-on-surface-variant border border-outline-variant/40">
                         {({ activity_post: "Post", approval_config: "Approval Config", committee_member: "Committee", document: "Document", expense: "Expense", milestone: "Milestone", milestones: "Milestones", notification_config: "Notifications", package: "Package", payment: "Payment", payment_schedule: "Payment Schedule", penalty: "Penalty", penalty_config: "Penalty Config", profile: "Profile", project: "Project", project_admin: "Project Admin", schedule_items: "Schedule", shareholder: "Shareholder", user: "User" } as Record<string, string>)[log.entity_type] ?? log.entity_type}
                       </span>
                     )}
                   </div>
                   {log.details && Object.keys(log.details).length > 0 && (
-                    <p className="text-xs text-outline break-words">
+                    <p className="text-xs text-on-surface-variant break-words">
                       {Object.entries(log.details)
                         .filter(([k, v]: [string, any]) => v !== null && v !== undefined && !["ids", "milestone_id", "tags"].includes(k))
                         .map(([k, v]: [string, any]) => {
@@ -265,13 +265,13 @@ export default function ProjectDashboardPage() {
                         .join(" · ")}
                     </p>
                   )}
-                  <p className="text-xs text-outline mt-1">{formatDateTime(log.created_at)}</p>
+                  <p className="text-xs text-on-surface-variant mt-1">{formatDateTime(log.created_at)}</p>
                 </div>
               </li>
             ))}
           </ul>
         ) : (
-          <div className="px-5 py-8 text-center text-sm text-outline">No activity logged yet.</div>
+          <div className="px-5 py-8 text-center text-sm text-on-surface-variant">No activity logged yet.</div>
         )}
       </div>
     </div>
@@ -304,7 +304,7 @@ function PipelineRow({ label, count, icon, color, bg }: {
         </div>
         <span className="text-[14px] font-medium text-[var(--foreground)]">{label}</span>
       </div>
-      <span className={`text-[12px] font-bold px-3 py-1 rounded-full ${count > 0 ? `bg-primary-container/20 ${color}` : "bg-[var(--outline-variant)]/10 text-[var(--on-surface-variant)]"}`}>
+      <span className={`text-[12px] font-bold px-3 py-1 rounded-full ${count > 0 ? `${bg} ${color}` : "bg-surface-container text-on-surface-variant"}`}>
         {count}
       </span>
     </div>

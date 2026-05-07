@@ -180,7 +180,7 @@ export function ProjectSettingsClient({
   }
 
   return (
-    <div className="bg-surface border rounded-xl overflow-hidden">
+    <div className="border border-outline-variant/40 rounded-xl overflow-hidden">
       <Tabs defaultValue="profile" className="w-full">
         <div className="bg-surface-variant/30 border-b border-outline-variant/40 px-4">
           <TabsList className="flex flex-row h-auto bg-transparent p-0 m-0 w-full justify-start overflow-x-auto no-scrollbar">

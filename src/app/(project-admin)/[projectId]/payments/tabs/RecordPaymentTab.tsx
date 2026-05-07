@@ -198,7 +198,7 @@ export function RecordPaymentTab({
             </div>
             <div className="p-4 text-center">
               <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Penalties</p>
-              <p className={`text-lg font-black ${waivePenalties ? 'text-outline-variant line-through' : 'text-destructive'}`}>
+              <p className={`text-lg font-black ${waivePenalties ? 'text-on-surface-variant-variant line-through' : 'text-destructive'}`}>
                 ৳{dueSummary.totalPenalty.toLocaleString('en-IN')}
               </p>
             </div>
@@ -237,7 +237,7 @@ export function RecordPaymentTab({
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-on-surface">৳{item.amount.toLocaleString('en-IN')}</span>
-                      <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded ${item.status === 'OVERDUE' ? 'bg-error-container/50 text-destructive' : 'bg-orange-100 text-orange-700'}`}>
+                      <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded ${item.status === 'OVERDUE' ? 'bg-error-container text-on-error-container' : 'bg-secondary-container text-on-secondary-container'}`}>
                         {item.status}
                       </span>
                     </div>

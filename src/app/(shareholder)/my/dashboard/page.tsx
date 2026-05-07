@@ -26,9 +26,9 @@ export default async function ShareholderDashboardPage() {
   if (!shareholder) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-8">
-        <Building2 className="w-12 h-12 text-outline-variant mb-4" />
+        <Building2 className="w-12 h-12 text-on-surface-variant-variant mb-4" />
         <h2 className="text-lg font-semibold text-on-surface">No Project Assigned</h2>
-        <p className="text-outline mt-2 text-sm">You have not been mapped to any project yet. Contact your project admin.</p>
+        <p className="text-on-surface-variant mt-2 text-sm">You have not been mapped to any project yet. Contact your project admin.</p>
       </div>
     )
   }
@@ -176,7 +176,7 @@ export default async function ShareholderDashboardPage() {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-on-surface">{p.method || "Payment"}</p>
-                      <p className="text-xs text-outline">{formatDate(p.created_at)}</p>
+                      <p className="text-xs text-on-surface-variant">{formatDate(p.created_at)}</p>
                     </div>
                   </div>
                   <span className="text-sm font-semibold text-primary">{formatBDT(p.amount)}</span>
@@ -184,7 +184,7 @@ export default async function ShareholderDashboardPage() {
               ))}
             </ul>
           ) : (
-            <div className="px-5 py-8 text-center text-sm text-outline">No payments recorded yet.</div>
+            <div className="px-5 py-8 text-center text-sm text-on-surface-variant">No payments recorded yet.</div>
           )}
         </div>
 
@@ -202,14 +202,14 @@ export default async function ShareholderDashboardPage() {
                 <li key={e.id} className="flex items-center justify-between px-5 py-3">
                   <div>
                     <p className="text-sm font-medium text-on-surface truncate max-w-[200px]">{e.title}</p>
-                    <p className="text-xs text-outline">{e.category?.name} · {formatDate(e.date)}</p>
+                    <p className="text-xs text-on-surface-variant">{e.category?.name} · {formatDate(e.date)}</p>
                   </div>
                   <span className="text-sm font-semibold text-on-surface">{formatBDT((e.amount || 0) + (e.vat_amount || 0))}</span>
                 </li>
               ))}
             </ul>
           ) : (
-            <div className="px-5 py-8 text-center text-sm text-outline">No published expenses yet.</div>
+            <div className="px-5 py-8 text-center text-sm text-on-surface-variant">No published expenses yet.</div>
           )}
         </div>
       </div>
@@ -225,7 +225,7 @@ function SummaryCard({ label, value, sub, icon, bg, accent }: {
       <div className={`w-12 h-12 rounded-[1.25rem] ${bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
         {icon}
       </div>
-      <p className="text-[11px] font-bold text-outline uppercase tracking-wider mb-1">{label}</p>
+      <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">{label}</p>
       <p className="text-2xl font-black text-on-surface leading-tight tracking-tight">{value}</p>
       <p className="text-xs text-on-surface-variant mt-1 font-medium">{sub}</p>
     </div>

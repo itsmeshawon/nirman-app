@@ -172,7 +172,7 @@ export function EditProfileModal({ open, onOpenChange, profile, onSuccess }: Pro
             <div className="space-y-1.5">
               <Label htmlFor="edit-name" className="text-on-surface">Full Name <span className="text-red-500">*</span></Label>
               <div className="relative">
-                <User className="w-4 h-4 absolute left-3 top-3 text-outline" />
+                <User className="w-4 h-4 absolute left-3 top-3 text-on-surface-variant" />
                 <Input id="edit-name" {...register("name")} className="pl-9 h-11 rounded-xl" placeholder="John Doe" />
               </div>
               {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
@@ -181,7 +181,7 @@ export function EditProfileModal({ open, onOpenChange, profile, onSuccess }: Pro
             <div className="space-y-1.5">
               <Label htmlFor="edit-email" className="text-on-surface">Email Address</Label>
               <div className="relative">
-                <Mail className="w-4 h-4 absolute left-3 top-3 text-outline" />
+                <Mail className="w-4 h-4 absolute left-3 top-3 text-on-surface-variant" />
                 <Input
                   id="edit-email"
                   value={profile?.email || ""}
@@ -189,7 +189,7 @@ export function EditProfileModal({ open, onOpenChange, profile, onSuccess }: Pro
                   className="pl-9 bg-surface-variant/20 text-on-surface-variant cursor-not-allowed font-medium h-11 rounded-xl"
                 />
               </div>
-              <p className="text-[10px] text-outline">Email cannot be changed.</p>
+              <p className="text-[10px] text-on-surface-variant">Email cannot be changed.</p>
             </div>
           </div>
 
@@ -197,7 +197,7 @@ export function EditProfileModal({ open, onOpenChange, profile, onSuccess }: Pro
             <div className="space-y-1.5">
               <Label htmlFor="edit-phone" className="text-on-surface">Mobile No.</Label>
               <div className="relative">
-                <Phone className="w-4 h-4 absolute left-3 top-3 text-outline" />
+                <Phone className="w-4 h-4 absolute left-3 top-3 text-on-surface-variant" />
                 <Input id="edit-phone" {...register("phone")} className="pl-9 h-11 rounded-xl" placeholder="+880..." />
               </div>
             </div>
@@ -205,7 +205,7 @@ export function EditProfileModal({ open, onOpenChange, profile, onSuccess }: Pro
             <div className="space-y-1.5">
               <Label htmlFor="edit-whatsapp" className="text-on-surface">WhatsApp No.</Label>
               <div className="relative">
-                <MessageCircle className="w-4 h-4 absolute left-3 top-3 text-outline" />
+                <MessageCircle className="w-4 h-4 absolute left-3 top-3 text-on-surface-variant" />
                 <Input id="edit-whatsapp" {...register("whatsapp_no")} className="pl-9 h-11 rounded-xl" placeholder="+880..." />
               </div>
             </div>
@@ -213,7 +213,7 @@ export function EditProfileModal({ open, onOpenChange, profile, onSuccess }: Pro
 
           <div className="border-t border-outline-variant/40 pt-4">
             <h3 className="text-sm font-semibold text-on-surface mb-3 flex items-center gap-2">
-              <Briefcase className="w-4 h-4 text-outline" />
+              <Briefcase className="w-4 h-4 text-on-surface-variant" />
               Professional Details
             </h3>
 
@@ -231,7 +231,7 @@ export function EditProfileModal({ open, onOpenChange, profile, onSuccess }: Pro
               <div className="space-y-1.5 sm:col-span-2">
                 <Label htmlFor="edit-organization" className="text-on-surface">Organization</Label>
                 <div className="relative">
-                  <Building2 className="w-4 h-4 absolute left-3 top-3 text-outline" />
+                  <Building2 className="w-4 h-4 absolute left-3 top-3 text-on-surface-variant" />
                   <Input id="edit-organization" {...register("organization")} className="pl-9 h-11 rounded-xl" placeholder="Company Name" />
                 </div>
               </div>
@@ -240,7 +240,7 @@ export function EditProfileModal({ open, onOpenChange, profile, onSuccess }: Pro
 
           <div className="border-t border-outline-variant/40 pt-4">
             <h3 className="text-sm font-semibold text-on-surface mb-3 flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-outline" />
+              <MapPin className="w-4 h-4 text-on-surface-variant" />
               Address
             </h3>
             <div className="space-y-1.5">

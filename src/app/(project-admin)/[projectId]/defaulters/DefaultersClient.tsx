@@ -236,7 +236,7 @@ export function DefaultersClient({ projectId, overdueItems, payments }: Defaulte
             {defaulters.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={8} className="text-center py-20">
-                  <div className="flex flex-col items-center justify-center text-outline">
+                  <div className="flex flex-col items-center justify-center text-on-surface-variant">
                     <AlertTriangle className="w-12 h-12 mb-4 opacity-10 text-primary" />
                     <p className="text-lg font-medium text-on-surface-variant">No active defaulters</p>
                     <p className="text-sm">Great! All shareholders are currently up to date on payments.</p>

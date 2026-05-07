@@ -34,7 +34,7 @@ export default async function ReceiptPrintPage(props: { params: Promise<{ projec
           <div className="flex justify-between items-start border-b-2 border-on-surface pb-6 mb-8">
              <div>
                 <h1 className="text-3xl font-black tracking-tight text-on-surface uppercase">OFFICIAL RECEIPT</h1>
-                <p className="text-on-surface-variant font-medium text-sm mt-1">{project?.name || "NirmaN Project"}</p>
+                <p className="text-on-surface-variant font-medium text-sm mt-1">{project?.name || "Truzo Project"}</p>
              </div>
              <div className="text-right">
                 <p className="font-mono text-sm font-semibold text-on-surface">No. {payment.receipt_no}</p>
@@ -45,13 +45,13 @@ export default async function ReceiptPrintPage(props: { params: Promise<{ projec
           {/* Core Info */}
           <div className="grid grid-cols-2 gap-8 mb-8">
              <div>
-                <p className="text-xs font-bold text-outline uppercase tracking-widest mb-1">Received From</p>
+                <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Received From</p>
                 <p className="font-bold text-on-surface">{payment.shareholder?.profiles?.name}</p>
                 <p className="text-sm text-on-surface-variant">Unit: {payment.shareholder?.unit_flat}</p>
                 {payment.shareholder?.profiles?.phone && <p className="text-sm text-on-surface-variant">{payment.shareholder.profiles.phone}</p>}
              </div>
              <div className="text-right">
-                <p className="text-xs font-bold text-outline uppercase tracking-widest mb-1">Payment Method</p>
+                <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Payment Method</p>
                 <p className="font-bold text-on-surface">{payment.method.replace("_", " ")}</p>
                 {payment.reference_no && <p className="text-sm text-on-surface-variant mt-1">Ref: {payment.reference_no}</p>}
              </div>
@@ -73,7 +73,7 @@ export default async function ReceiptPrintPage(props: { params: Promise<{ projec
                            ? `Payment towards: ${payment.schedule_item.milestone?.name || 'General Obligation'}`
                            : 'Manual Ad-hoc Payment'
                          }
-                         {payment.notes && <div className="text-xs text-outline mt-1">{payment.notes}</div>}
+                         {payment.notes && <div className="text-xs text-on-surface-variant mt-1">{payment.notes}</div>}
                       </td>
                       <td className="py-4 text-right font-medium text-on-surface">
                          ৳ {parseFloat(payment.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}

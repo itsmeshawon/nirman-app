@@ -228,14 +228,14 @@ export function CreatePostForm({ projectId, milestones, userName, onSuccess }: C
     <>
       {/* Trigger — looks like a compose input */}
       <div
-        className="bg-surface rounded-xl border border-outline-variant/40 p-4 cursor-text"
+        className="rounded-xl border border-outline-variant/60 p-4 cursor-text"
         onClick={() => setIsOpen(true)}
       >
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-primary-container/50 flex items-center justify-center text-primary font-semibold text-sm shrink-0">
             {getInitials(userName)}
           </div>
-          <div className="flex-1 bg-surface-variant/20 rounded-lg px-4 py-2.5 text-sm text-outline border border-outline-variant/40 hover:border-primary-container transition-colors">
+          <div className="flex-1 bg-surface-variant/20 rounded-lg px-4 py-2.5 text-sm text-on-surface-variant border border-outline-variant/40 hover:border-primary-container transition-colors">
             Share a project update...
           </div>
         </div>
@@ -276,7 +276,7 @@ export function CreatePostForm({ projectId, milestones, userName, onSuccess }: C
                 rows={4}
                 className="resize-none text-sm"
               />
-              <p className="text-xs text-outline">{description.length} characters (min. 5)</p>
+              <p className="text-xs text-on-surface-variant">{description.length} characters (min. 5)</p>
             </div>
 
             {/* Media Upload */}
@@ -308,9 +308,9 @@ export function CreatePostForm({ projectId, milestones, userName, onSuccess }: C
                         : "border-outline-variant/40 hover:border-primary hover:bg-surface-variant/20"
                     }`}
                   >
-                    <Upload className="w-6 h-6 text-outline mb-2" />
+                    <Upload className="w-6 h-6 text-on-surface-variant mb-2" />
                     <p className="text-sm text-on-surface-variant">Drag & drop or click to upload</p>
-                    <p className="text-xs text-outline mt-1">Images ≤10MB · Videos ≤50MB · Audio ≤20MB</p>
+                    <p className="text-xs text-on-surface-variant mt-1">Images ≤10MB · Videos ≤50MB · Audio ≤20MB</p>
                   </label>
                 </>
               ) : (
@@ -321,13 +321,13 @@ export function CreatePostForm({ projectId, milestones, userName, onSuccess }: C
                     <div className="flex items-center gap-2 text-sm text-on-surface">
                       <Video className="w-4 h-4 text-blue-500" />
                       <span className="font-medium truncate">{mediaFile.name}</span>
-                      <span className="text-outline text-xs shrink-0">{formatBytes(mediaFile.size)}</span>
+                      <span className="text-on-surface-variant text-xs shrink-0">{formatBytes(mediaFile.size)}</span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-2 text-sm text-on-surface">
                       <Music className="w-4 h-4 text-purple-500" />
                       <span className="font-medium truncate">{mediaFile.name}</span>
-                      <span className="text-outline text-xs shrink-0">{formatBytes(mediaFile.size)}</span>
+                      <span className="text-on-surface-variant text-xs shrink-0">{formatBytes(mediaFile.size)}</span>
                     </div>
                   )}
 
@@ -339,7 +339,7 @@ export function CreatePostForm({ projectId, milestones, userName, onSuccess }: C
                           style={{ width: `${uploadProgress}%` }}
                         />
                       </div>
-                      <p className="text-xs text-outline">Uploading... {uploadProgress}%</p>
+                      <p className="text-xs text-on-surface-variant">Uploading... {uploadProgress}%</p>
                     </div>
                   )}
 
@@ -398,7 +398,7 @@ export function CreatePostForm({ projectId, milestones, userName, onSuccess }: C
                   {tags.filter((t) => !PREDEFINED_TAGS.includes(t)).map((tag) => (
                     <span key={tag} className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface-variant/50 text-on-surface text-xs rounded-full">
                       {tag}
-                      <button type="button" onClick={() => removeTag(tag)} className="text-outline hover:text-red-500">
+                      <button type="button" onClick={() => removeTag(tag)} className="text-on-surface-variant hover:text-red-500">
                         <X className="w-3 h-3" />
                       </button>
                     </span>

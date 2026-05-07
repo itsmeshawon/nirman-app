@@ -117,7 +117,7 @@ export function ShareholderExpensesClient({ expenses, milestones }: ShareholderE
           <div className="w-12 h-12 rounded-[1.25rem] bg-primary-container/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
             <CheckCircle className="w-6 h-6 text-primary" />
           </div>
-          <p className="text-[11px] font-bold text-outline uppercase tracking-wider mb-1">Total Published Expenses</p>
+          <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Total Published Expenses</p>
           <p className="text-2xl font-black text-on-surface leading-tight tracking-tight">৳ {totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
           <p className="text-xs text-on-surface-variant mt-1 font-medium">Transparency guaranteed: All items fully approved.</p>
        </div>
@@ -125,7 +125,7 @@ export function ShareholderExpensesClient({ expenses, milestones }: ShareholderE
        {/* Search Bar */}
        <div className="py-4 pr-4">
           <div className="relative max-w-sm">
-             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
+             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-on-surface-variant" />
              <Input
                 placeholder="Search by title..."
                 value={searchTerm}
@@ -297,7 +297,7 @@ export function ShareholderExpensesClient({ expenses, milestones }: ShareholderE
                         <TableCell className="text-sm text-on-surface-variant">
                           {expense.milestone
                             ? <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary-container/20 text-on-primary-container border border-primary-container/30">{expense.milestone.name}</span>
-                            : <span className="text-outline">—</span>}
+                            : <span className="text-on-surface-variant">—</span>}
                         </TableCell>
                         <TableCell className="text-right font-medium text-on-surface">{extAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                         <TableCell className="text-center">
@@ -357,9 +357,9 @@ export function ShareholderExpensesClient({ expenses, milestones }: ShareholderE
                                  const { data: urlData } = supabase.storage.from("expense-proofs").getPublicUrl(att.file_path)
                                  return (
                                     <a key={att.id} href={urlData.publicUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-2 rounded border hover:bg-surface-variant/20 hover:border-primary/60 group">
-                                       <FileText className="w-5 h-5 text-outline group-hover:text-primary" />
+                                       <FileText className="w-5 h-5 text-on-surface-variant group-hover:text-primary" />
                                        <span className="text-sm font-medium truncate flex-1">{att.file_name}</span>
-                                       <Download className="w-4 h-4 text-outline" />
+                                       <Download className="w-4 h-4 text-on-surface-variant" />
                                     </a>
                                  )
                               })}

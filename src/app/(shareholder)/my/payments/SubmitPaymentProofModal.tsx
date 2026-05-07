@@ -105,7 +105,7 @@ export function SubmitPaymentProofModal({
     DUE: "text-tertiary bg-tertiary-container/40",
     OVERDUE: "text-destructive bg-error-container/40",
     UPCOMING: "text-on-surface-variant bg-surface-variant/50",
-    PARTIALLY_PAID: "text-orange-700 bg-orange-50",
+    PARTIALLY_PAID: "text-on-warning-container bg-warning-container",
   }
 
   return (

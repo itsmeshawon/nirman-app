@@ -20,12 +20,12 @@ interface ExpenseDetailModalProps {
 }
 
 const statusConfig: Record<string, { label: string; color: string }> = {
-  DRAFT: { label: "Draft", color: "bg-surface-variant/50 text-slate-700" },
-  SUBMITTED: { label: "Submitted for Review", color: "bg-tertiary-container/50 text-tertiary" },
-  CHANGES_REQUESTED: { label: "Changes Requested", color: "bg-orange-100 text-orange-700" },
-  APPROVED: { label: "Approved by Committee", color: "bg-primary-container/50 text-primary" },
-  PUBLISHED: { label: "Published Ledger", color: "bg-primary-container/50 text-on-primary-container" },
-  REJECTED: { label: "Rejected", color: "bg-error-container/50 text-destructive" },
+  DRAFT: { label: "Draft", color: "bg-surface-variant/50 text-on-surface-variant" },
+  SUBMITTED: { label: "Submitted for Review", color: "bg-secondary-container text-on-secondary-container" },
+  CHANGES_REQUESTED: { label: "Changes Requested", color: "bg-warning-container text-on-warning-container" },
+  APPROVED: { label: "Approved by Committee", color: "bg-success-container text-on-success-container" },
+  PUBLISHED: { label: "Published Ledger", color: "bg-primary-container text-on-primary-container" },
+  REJECTED: { label: "Rejected", color: "bg-error-container text-on-error-container" },
 }
 
 export function ExpenseDetailModal({
@@ -159,7 +159,7 @@ export function ExpenseDetailModal({
                     </Button>
                   )}
                   {expense.status === "CHANGES_REQUESTED" && (
-                    <Button onClick={handleSubmit} disabled={isProcessing} size="sm" className="bg-orange-600 hover:bg-orange-700">
+                    <Button onClick={handleSubmit} disabled={isProcessing} size="sm" className="bg-tertiary hover:bg-tertiary/90 text-on-tertiary">
                       <SendHorizontal className="w-4 h-4 mr-1.5" /> Resubmit
                     </Button>
                   )}
@@ -242,7 +242,7 @@ export function ExpenseDetailModal({
                               <p className="text-sm font-medium text-on-surface truncate">{att.file_name}</p>
                               <p className="text-xs text-on-surface-variant">{(att.file_size / 1024).toFixed(1)} KB</p>
                             </div>
-                            <Download className="w-4 h-4 text-outline group-hover:text-primary" />
+                            <Download className="w-4 h-4 text-on-surface-variant group-hover:text-primary" />
                           </a>
                         )
                       })}
@@ -270,9 +270,9 @@ export function ExpenseDetailModal({
                       </div>
                       {expense.approvals?.map((app: any) => {
                         const cfg: Record<string, { ring: string; label: string }> = {
-                          APPROVED: { ring: "bg-primary-container", label: "Approved" },
+                          APPROVED: { ring: "bg-success-container", label: "Approved" },
                           REJECTED: { ring: "bg-error-container", label: "Rejected" },
-                          CHANGES_REQUESTED: { ring: "bg-orange-400", label: "Changes Requested" },
+                          CHANGES_REQUESTED: { ring: "bg-warning-container", label: "Changes Requested" },
                         }
                         const ac = cfg[app.action] ?? { ring: "bg-outline", label: app.action }
                         return (

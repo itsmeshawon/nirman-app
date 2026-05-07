@@ -12,8 +12,11 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 
 
 export const metadata: Metadata = {
-  title: "NirmaN — Construction Transparency Platform",
-  description: "Transparent construction project management for Bangladesh",
+  title: {
+    default: "Truzo",
+    template: "Truzo | %s",
+  },
+  description: "Trust. Transparent. Built.",
 }
 
 export default function RootLayout({

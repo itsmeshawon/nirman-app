@@ -110,7 +110,7 @@ export function ReportsClient({ projectId, chartData, summary }: ReportsClientPr
           { label: "Collection Rate", value: `${summary.collectionRate}%`, color: summary.collectionRate >= 80 ? "text-emerald-700" : "text-rose-700" },
         ].map(s => (
           <div key={s.label} className="rounded-[1.25rem] border border-outline-variant/40 p-5 transition-all duration-300">
-            <p className="text-[10px] font-bold text-outline uppercase tracking-widest mb-1.5">{s.label}</p>
+            <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1.5">{s.label}</p>
             <p className={`text-2xl font-black tracking-tight ${s.color}`}>{s.value}</p>
           </div>
         ))}

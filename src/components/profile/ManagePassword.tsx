@@ -74,7 +74,7 @@ export function ManagePassword() {
     <div className="bg-surface rounded-[1.25rem] border border-outline-variant/40 overflow-hidden">
       <div className="px-8 md:px-12 pt-8 pb-4">
         <h3 className="text-sm font-semibold text-on-surface flex items-center gap-2">
-          <Lock className="w-4 h-4 text-outline" />
+          <Lock className="w-4 h-4 text-on-surface-variant" />
           Manage Password
         </h3>
         <p className="text-xs text-on-surface-variant mt-1">Update your account password. You must provide your current password to set a new one.</p>
@@ -85,7 +85,7 @@ export function ManagePassword() {
           <div className="space-y-2">
             <Label htmlFor="currentPassword" className="text-on-surface">Current Password</Label>
             <div className="relative">
-              <Lock className="w-4 h-4 absolute left-3 top-3 text-outline" />
+              <Lock className="w-4 h-4 absolute left-3 top-3 text-on-surface-variant" />
               <Input
                 id="currentPassword"
                 type={showCurrent ? "text" : "password"}
@@ -96,7 +96,7 @@ export function ManagePassword() {
               <button
                 type="button"
                 onClick={() => setShowCurrent(!showCurrent)}
-                className="absolute right-3 top-3 text-outline hover:text-on-surface-variant transition-colors"
+                className="absolute right-3 top-3 text-on-surface-variant hover:text-on-surface-variant transition-colors"
               >
                 {showCurrent ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -107,7 +107,7 @@ export function ManagePassword() {
           <div className="space-y-2">
             <Label htmlFor="newPassword" className="text-on-surface">New Password</Label>
             <div className="relative">
-              <Lock className="w-4 h-4 absolute left-3 top-3 text-outline" />
+              <Lock className="w-4 h-4 absolute left-3 top-3 text-on-surface-variant" />
               <Input
                 id="newPassword"
                 type={showNew ? "text" : "password"}
@@ -118,7 +118,7 @@ export function ManagePassword() {
               <button
                 type="button"
                 onClick={() => setShowNew(!showNew)}
-                className="absolute right-3 top-3 text-outline hover:text-on-surface-variant transition-colors"
+                className="absolute right-3 top-3 text-on-surface-variant hover:text-on-surface-variant transition-colors"
               >
                 {showNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -129,7 +129,7 @@ export function ManagePassword() {
           <div className="space-y-2">
             <Label htmlFor="confirmPassword" className="text-on-surface">Confirm New Password</Label>
             <div className="relative">
-              <Lock className="w-4 h-4 absolute left-3 top-3 text-outline" />
+              <Lock className="w-4 h-4 absolute left-3 top-3 text-on-surface-variant" />
               <Input
                 id="confirmPassword"
                 type={showConfirm ? "text" : "password"}
@@ -140,7 +140,7 @@ export function ManagePassword() {
               <button
                 type="button"
                 onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-3 top-3 text-outline hover:text-on-surface-variant transition-colors"
+                className="absolute right-3 top-3 text-on-surface-variant hover:text-on-surface-variant transition-colors"
               >
                 {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>

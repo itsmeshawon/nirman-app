@@ -165,7 +165,7 @@ export default function AdminsPage() {
               </span>
             ))
           ) : (
-            <span className="text-xs text-outline italic">None</span>
+            <span className="text-xs text-on-surface-variant italic">None</span>
           )}
         </div>
       ),
@@ -237,7 +237,7 @@ export default function AdminsPage() {
       <Card className="shadow-none border-0 bg-transparent uppercase-headers">
         <CardHeader className="pb-4 border-0">
           <div className="relative max-w-sm">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-on-surface-variant" />
             <Input
               placeholder="Search admins..."
               value={globalFilter}
@@ -271,7 +271,7 @@ export default function AdminsPage() {
                 <TableBody>
                   {table.getRowModel().rows.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={columns.length} className="text-center py-10 text-outline">
+                      <TableCell colSpan={columns.length} className="text-center py-10 text-on-surface-variant">
                         No administrators found matching your search.
                       </TableCell>
                     </TableRow>
@@ -316,7 +316,7 @@ export default function AdminsPage() {
                className="h-10"
                autoFocus
              />
-             <p className="text-[10px] text-outline mt-2 italic">Minimum 6 characters recommended.</p>
+             <p className="text-[10px] text-on-surface-variant mt-2 italic">Minimum 6 characters recommended.</p>
           </div>
 
           <DialogFooter>

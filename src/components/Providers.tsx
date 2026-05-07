@@ -9,7 +9,7 @@ export function Providers({ children }: { children: ReactNode }) {
       attribute="class"
       defaultTheme="light"
       enableSystem
-      storageKey="nirman-theme"
+      storageKey="truzo-theme"
     >
       {children}
     </ThemeProvider>

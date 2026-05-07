@@ -223,7 +223,7 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
       </div>
 
       <div className="flex items-center space-x-2 rounded-lg border px-3 py-2">
-        <Search className="w-4 h-4 text-outline" />
+        <Search className="w-4 h-4 text-on-surface-variant" />
         <input 
           type="text" 
           placeholder="Search by name or category..." 
@@ -297,7 +297,7 @@ export function DocumentsClient({ projectId, initialDocuments }: DocumentsClient
               <TableRow>
                 <TableCell colSpan={7} className="h-32 text-center text-on-surface-variant">
                   <div className="flex flex-col items-center justify-center space-y-2">
-                    <FileText className="w-8 h-8 text-outline-variant" />
+                    <FileText className="w-8 h-8 text-on-surface-variant-variant" />
                     <p>No documents found.</p>
                   </div>
                 </TableCell>

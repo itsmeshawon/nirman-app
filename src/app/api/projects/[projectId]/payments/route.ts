@@ -81,15 +81,15 @@ export async function POST(
       }
     }
 
-    // 2. Generate Receipt No (NRM-[PROJECT]-YYYYMMDD-[SEQ])
+    // 2. Generate Receipt No (TRZ-[PROJECT]-YYYYMMDD-[SEQ])
     const todayStr = new Date().toISOString().slice(0, 10).replace(/-/g, '')
     const { count } = await supabase
       .from('payments')
       .select('*', { count: 'exact', head: true })
-      .like('receipt_no', `NRM-${projectId.slice(0,4).toUpperCase()}-${todayStr}-%`)
+      .like('receipt_no', `TRZ-${projectId.slice(0,4).toUpperCase()}-${todayStr}-%`)
 
     const seq = String((count || 0) + 1).padStart(3, '0')
-    const receipt_no = `NRM-${projectId.slice(0,4).toUpperCase()}-${todayStr}-${seq}`
+    const receipt_no = `TRZ-${projectId.slice(0,4).toUpperCase()}-${todayStr}-${seq}`
 
     // 2. Insert Payment
     const { data: payment, error: pErr } = await supabase

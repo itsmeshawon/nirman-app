@@ -210,7 +210,7 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
           >
             <Clock className="w-4 h-4" /> Waiting for Approval
             {proofsCount > 0 && (
-              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none ${activeTab === "WAITING" ? "bg-primary text-white" : pendingProofsCount > 0 ? "bg-yellow-500 text-white" : "bg-surface-variant text-on-surface-variant"}`}>
+              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none ${activeTab === "WAITING" ? "bg-primary text-white" : pendingProofsCount > 0 ? "bg-warning text-white" : "bg-surface-variant text-on-surface-variant"}`}>
                 {pendingProofsCount > 0 ? pendingProofsCount : proofsCount}
               </span>
             )}

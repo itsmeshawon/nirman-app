@@ -69,12 +69,12 @@ export function ExpenseDetailClient({ projectId, expense, milestones, categories
   }
 
   const statusConfig: Record<string, { label: string, color: string }> = {
-    DRAFT: { label: "Draft", color: "bg-surface-variant/50 text-slate-700" },
-    SUBMITTED: { label: "Submitted for Review", color: "bg-tertiary-container/50 text-tertiary" },
-    CHANGES_REQUESTED: { label: "Changes Requested", color: "bg-orange-100 text-orange-700" },
-    APPROVED: { label: "Approved by Committee", color: "bg-primary-container/50 text-primary" },
-    PUBLISHED: { label: "Published Ledger", color: "bg-primary-container/50 text-on-primary-container" },
-    REJECTED: { label: "Rejected", color: "bg-error-container/50 text-destructive" }
+    DRAFT: { label: "Draft", color: "bg-surface-variant/50 text-on-surface-variant" },
+    SUBMITTED: { label: "Submitted for Review", color: "bg-secondary-container text-on-secondary-container" },
+    CHANGES_REQUESTED: { label: "Changes Requested", color: "bg-warning-container text-on-warning-container" },
+    APPROVED: { label: "Approved by Committee", color: "bg-success-container text-on-success-container" },
+    PUBLISHED: { label: "Published Ledger", color: "bg-primary-container text-on-primary-container" },
+    REJECTED: { label: "Rejected", color: "bg-error-container text-on-error-container" }
   }
 
   const statusUI = statusConfig[expense.status]
@@ -109,7 +109,7 @@ export function ExpenseDetailClient({ projectId, expense, milestones, categories
              </Button>
            )}
            {expense.status === "CHANGES_REQUESTED" && (
-              <Button onClick={handleSubmit} disabled={isProcessing} className="bg-orange-600 hover:bg-orange-700">
+              <Button onClick={handleSubmit} disabled={isProcessing} className="bg-tertiary hover:bg-tertiary/90 text-on-tertiary">
                  <SendHorizontal className="w-4 h-4 mr-2" /> Resubmit
                </Button>
            )}
@@ -189,7 +189,7 @@ export function ExpenseDetailClient({ projectId, expense, milestones, categories
                               <p className="text-sm font-medium text-on-surface truncate">{att.file_name}</p>
                               <p className="text-xs text-on-surface-variant">{(att.file_size / 1024).toFixed(1)} KB</p>
                            </div>
-                           <Download className="w-4 h-4 text-outline group-hover:text-primary" />
+                           <Download className="w-4 h-4 text-on-surface-variant group-hover:text-primary" />
                         </div>
                      </a>
                    )
@@ -223,9 +223,9 @@ export function ExpenseDetailClient({ projectId, expense, milestones, categories
                 {expense.approvals?.map((app: any) => {
                    let iconClass = "bg-outline"
                    let title = ""
-                   if (app.action === "APPROVED") { iconClass = "bg-primary-container/200"; title = "Approved" }
-                   if (app.action === "REJECTED") { iconClass = "bg-error-container/200"; title = "Rejected" }
-                   if (app.action === "CHANGES_REQUESTED") { iconClass = "bg-orange-500"; title = "Changes Requested" }
+                   if (app.action === "APPROVED") { iconClass = "bg-success-container"; title = "Approved" }
+                   if (app.action === "REJECTED") { iconClass = "bg-error-container"; title = "Rejected" }
+                   if (app.action === "CHANGES_REQUESTED") { iconClass = "bg-warning-container"; title = "Changes Requested" }
 
                    return (
                      <div key={app.id} className="relative pl-6">

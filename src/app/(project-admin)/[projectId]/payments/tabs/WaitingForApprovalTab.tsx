@@ -23,9 +23,9 @@ const PAYMENT_METHODS = [
 ]
 
 const STATUS_CONFIG: Record<string, { label: string; style: string }> = {
-  PENDING:  { label: "Pending",  style: "bg-yellow-100 text-yellow-800" },
-  APPROVED: { label: "Approved", style: "bg-primary-container/50 text-primary" },
-  REJECTED: { label: "Rejected", style: "bg-error-container/50 text-destructive" },
+  PENDING:  { label: "Pending",  style: "bg-warning-container text-on-warning-container" },
+  APPROVED: { label: "Approved", style: "bg-success-container text-on-success-container" },
+  REJECTED: { label: "Rejected", style: "bg-error-container text-on-error-container" },
 }
 
 interface WaitingForApprovalTabProps {

@@ -33,7 +33,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ proj
       .eq("status", "ACTIVE")
 
     const rows = [
-      ["NirmaN — Collection Summary Report"],
+      ["Truzo — Collection Summary Report"],
       [`Project: ${project?.name}`],
       [`Generated: ${new Date().toLocaleString()}`],
       [],

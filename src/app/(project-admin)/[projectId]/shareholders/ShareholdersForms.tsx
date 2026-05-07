@@ -228,7 +228,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder, onS
 
   async function copyCredentials() {
     if (!tempCredentials) return
-    const text = `NirmaN Login Credentials\nEmail: ${tempCredentials.email}\nPassword: ${tempCredentials.pass}\nURL: ${window.location.origin}/login`
+    const text = `Truzo Login Credentials\nEmail: ${tempCredentials.email}\nPassword: ${tempCredentials.pass}\nURL: ${window.location.origin}/login`
     await navigator.clipboard.writeText(text)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
@@ -312,7 +312,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder, onS
               <Label htmlFor="password">Password *</Label>
               <Input id="password" type="text" {...register("password")} disabled={isLoading} />
               {errors.password && <span className="text-xs text-red-500">{errors.password.message}</span>}
-              <p className="text-xs text-outline">Min 8 characters. Share this with the shareholder.</p>
+              <p className="text-xs text-on-surface-variant">Min 8 characters. Share this with the shareholder.</p>
             </div>
           )}
 
@@ -343,7 +343,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder, onS
           {/* Payment Model Section */}
           <div className="border-t pt-4">
             <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-wide mb-1">Payment Model *</p>
-            <p className="text-xs text-outline mb-4">Select how this shareholder will make payments. At least one option must be chosen before generating a schedule.</p>
+            <p className="text-xs text-on-surface-variant mb-4">Select how this shareholder will make payments. At least one option must be chosen before generating a schedule.</p>
 
             <div className="space-y-4">
               {/* Monthly Fixed Amount */}
@@ -387,7 +387,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder, onS
                         onChange={(e) => setPaymentModel(prev => ({ ...prev, monthly_due_day: e.target.value }))}
                         disabled={isLoading}
                       />
-                      <p className="text-xs text-outline">Day 1–28</p>
+                      <p className="text-xs text-on-surface-variant">Day 1–28</p>
                     </div>
                   </div>
                 )}
@@ -422,7 +422,7 @@ export function ShareholderDialog({ projectId, isOpen, onClose, shareholder, onS
                         onChange={(e) => setPaymentModel(prev => ({ ...prev, milestone_amount: e.target.value }))}
                         disabled={isLoading}
                       />
-                      <p className="text-xs text-outline">If set, this amount is used when generating milestone-linked items.</p>
+                      <p className="text-xs text-on-surface-variant">If set, this amount is used when generating milestone-linked items.</p>
                     </div>
                   </div>
                 )}

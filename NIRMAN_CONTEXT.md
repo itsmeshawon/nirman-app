@@ -1,5 +1,5 @@
 # NIRMAN — AI Agent Source of Truth
-> Version: 1.2 | Last Updated: May 2026
+> Version: 1.3 | Last Updated: May 2026
 > This file is the SINGLE SOURCE OF TRUTH for the NirmaN application.
 > Every AI agent MUST read this entire file before starting any task.
 > Every AI agent MUST update this file after completing any task.
@@ -76,35 +76,94 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ---
 
-## 4. DESIGN SYSTEM (Material Design 3 — Purple/Lavender)
+## 4. DESIGN SYSTEM (Truzo Brand Palette — May 2026)
 
-The app uses a custom MD3-based design system via CSS variables. Always use these tokens, never hardcode colors.
+The app uses a custom MD3-based design system via CSS variables defined in `src/app/globals.css` under `@theme inline {}`. Always use these tokens, never hardcode colors.
 
-### Core Tailwind Token Classes
+### Core Color Tokens (Light Mode)
 
-| Token | Light | Use For |
+| Token | Value | Use For |
 |-------|-------|---------|
-| `bg-primary` | #6750A4 (purple) | Primary buttons, active states |
-| `text-primary` | #6750A4 | Primary text, links |
-| `bg-primary-container` | #EADDFF | Subtle primary backgrounds |
-| `text-on-primary-container` | #21005D | Text on primary container |
-| `bg-surface` | #FEFAFF | Page background |
-| `text-on-surface` | #1D1B20 | Main body text |
-| `bg-surface-variant` | #F7F0F5 | Cards, sidebars |
-| `text-on-surface-variant` | #49454F | Secondary text |
-| `bg-surface-container-low` | #F7F2FA | Slightly raised surfaces |
-| `text-outline` | #79747E | Borders, placeholder text |
-| `text-outline-variant` | #CAC4D0 | Subtle borders |
-| `text-error` / `bg-error-container` | Red tones | Error states |
-| `text-tertiary` | #7D5260 | Accent/tertiary actions |
-| `bg-tertiary-container` | #FFD8E4 | Tertiary backgrounds |
+| `bg-primary` / `text-primary` | #1B4FFF (blue) | CTA buttons, links, active nav — **reserved for actions only, not icon backgrounds** |
+| `bg-primary-container` | #E8EDFF | Subtle primary tint |
+| `text-on-primary-container` | #0A3ACC | Text on primary container |
+| `bg-secondary` / `text-secondary` | #00C2A8 (teal) | Secondary actions |
+| `bg-secondary-container` | #E0F9F6 | Teal-tinted backgrounds (SUBMITTED, DUE status) |
+| `text-on-secondary-container` | #007A6B | Text on secondary container |
+| `bg-tertiary` | #FF6B2B (orange) | CTA submit buttons, accent actions |
+| `bg-tertiary-container` | #FFE8DB | Orange-tinted backgrounds (Expenses, Shareholders icons) |
+| `text-on-tertiary-container` | #B94310 | Text on tertiary container |
+| `bg-background` | #F5F7FF | Page background |
+| `bg-surface` | #FFFFFF | ⚠️ Pure white — avoid for large section wrappers, only use for small inline elements (selects, tag pills) |
+| `bg-card` | #FFFFFF | ⚠️ Same as surface — avoid for large card wrappers; remove `bg-card` from full-width section containers |
+| `text-on-surface` | #1A1A2E | Main body text |
+| `bg-surface-variant` | #EEF2FF | Subtle container tint |
+| `text-on-surface-variant` | #5C6494 | Secondary/muted text — use this, NOT `text-outline` |
+| `bg-surface-container-low` | #EEF2FF | Slightly raised surfaces |
+| `bg-surface-container` | #E8EDFF | Container |
+| `bg-surface-container-high` | #DDE5FF | Higher container |
+| `--m3-outline` / `border-outline-variant` | #E5E8F0 | Borders only — **never use `text-outline` as text color** |
+| `bg-success-container` | #DCFCE7 | APPROVED, COMPLETED, Paid status |
+| `text-on-success-container` | #166534 | Text on success container |
+| `bg-warning-container` | #FEF3C7 | CHANGES_REQUESTED, PENDING, upcoming dues |
+| `text-on-warning-container` | #92400E | Text on warning container |
+| `bg-error-container` | #FEE2E2 | REJECTED, OVERDUE, penalties, errors |
+| `text-on-error-container` | #991B1B | Text on error container |
+
+### Status Badge Semantic Mapping
+
+| Status | Classes |
+|--------|---------|
+| SUBMITTED / DUE | `bg-secondary-container text-on-secondary-container` |
+| CHANGES_REQUESTED / PENDING | `bg-warning-container text-on-warning-container` |
+| APPROVED / COMPLETED / PAID | `bg-success-container text-on-success-container` |
+| PUBLISHED / ACTIVE | `bg-primary-container text-on-primary-container` |
+| REJECTED / OVERDUE / ERROR | `bg-error-container text-on-error-container` |
+| DRAFT / UPCOMING | `bg-surface-variant/50 text-on-surface-variant` |
+| PARTIALLY_PAID | `bg-warning-container text-on-warning-container` |
+
+### Dashboard Icon Background Convention (no blue)
+
+| Context | `iconBg` | `iconColor` |
+|---------|----------|-------------|
+| Expenses / Shareholders | `bg-tertiary-container` | `text-on-tertiary-container` |
+| Payments / Schedule | `bg-secondary-container` | `text-on-secondary-container` |
+| Reports / Financial | `bg-success-container` | `text-on-success-container` |
+| Errors / Penalties | `bg-error-container` | `text-on-error-container` |
+| Warnings / Dues | `bg-warning-container` | `text-on-warning-container` |
+
+Blue (`bg-primary-container`) is **reserved for CTA buttons and links**, not icon backgrounds.
+
+### Logo Standard
+
+The Truzo logo is always plain text — no SVG, no image. The canonical style across every surface:
+
+```tsx
+<span className="text-[22px] font-bold text-[#1B4FFF] tracking-tight">Truzo</span>
+```
+
+Exception — landing page `Nav.tsx` only: white on hero (transparent nav), blue on scroll (white nav background):
+```tsx
+className={`text-[22px] font-bold tracking-tight transition-colors duration-300 ${scrolled ? "text-[#1B4FFF]" : "text-white"}`}
+```
+
+Login page uses `text-[36px]` (larger display size) but same `font-bold text-[#1B4FFF] tracking-tight`.
+
+### ⚠️ White Background Anti-Patterns
+
+Pages use `bg-background` (#F5F7FF). Any container using `bg-surface` (#FFFFFF) or `bg-card` (#FFFFFF) creates a visible white box. Rules:
+
+- Large section wrappers (timeline containers, page-level cards): **no background class** — just use `border border-outline-variant/40 rounded-xl`
+- Feed cards and compose boxes: **no background** — just `border border-outline-variant/60 rounded-xl`
+- Settings, Milestone, Feed pages have all been fixed. If a page looks "extra white", remove `bg-surface` or `bg-card` from its outermost wrapper.
+- Small inline elements (select dropdowns, tag pills) may still use `bg-surface` — that's fine.
 
 ### Typography Scale
 ```
 h1: text-[28px] font-normal tracking-tight
 h2: text-[22px] font-medium tracking-tight
 h3: text-[16px] font-semibold
-p:  text-[14px] font-normal leading-relaxed text-muted-foreground
+p:  text-[14px] font-normal leading-relaxed text-on-surface-variant
 ```
 
 ### Border Radius Scale
@@ -118,18 +177,24 @@ rounded-full = pills
 
 ### Common Patterns
 ```tsx
-// Card
-<div className="p-6 rounded-[1.25rem] border border-outline-variant/40 bg-surface">
+// Card / section container (no white background)
+<div className="rounded-xl border border-outline-variant/40">
 
-// Primary button
+// Primary CTA button
 <Button className="bg-primary hover:bg-primary/90 text-white">
 
+// Submit / accent CTA button (orange)
+<Button className="bg-tertiary hover:bg-tertiary/90 text-on-tertiary">
+
 // Status badge
-<span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-primary-container/20 text-primary border border-primary-container">
+<span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-success-container text-on-success-container">
 
 // Section header
 <h1 className="text-2xl font-bold text-on-surface">
 <p className="text-sm text-on-surface-variant mt-0.5">
+
+// Secondary muted text — always use this, never text-outline
+<p className="text-xs text-on-surface-variant">
 ```
 
 ---
@@ -721,6 +786,15 @@ await createNotification({
 | May 2026 | Payments milestone filter — added multi-select "Milestones" dropdown filter to Payment History tab on Project Admin Payments page; matches Expenses page milestone filter pattern; options: All Milestones (default), No Milestone, plus all project milestones; uses checkbox pattern with "Clear filter" button; filters payments by their associated schedule item's milestone | `(project-admin)/[projectId]/payments/tabs/AllPaymentsTab.tsx` | None — UI only |
 | May 2026 | Collection Schedule milestone filter — added multi-select "Milestones" dropdown filter to Collection Schedule table on Project Admin Payments page; matches Expenses page milestone filter pattern; options: All Milestones (default), No Milestone, plus all project milestones; uses checkbox pattern with "Clear filter" button; filters schedule items by their milestone; filter placed next to Status filter | `(project-admin)/[projectId]/payments/tabs/ScheduleTab.tsx` | None — UI only |
 | May 2026 | Payment History milestone column — added "Payment Type / Milestone" column to Payment History table on Project Admin Payments page; displays milestone name from associated schedule item or "General (Monthly Payment)" if no milestone; positioned after Shareholder column, before Method column | `(project-admin)/[projectId]/payments/tabs/AllPaymentsTab.tsx` | None — UI only |
+| May 2026 | Truzo brand color palette — replaced entire MD3 purple palette with Truzo brand colors: primary #1B4FFF (blue CTA), secondary #00C2A8 (teal), tertiary #FF6B2B (orange CTA), background #F5F7FF, surface #FFFFFF, on-surface #1A1A2E, plus full semantic container tokens (success/warning/error) for both light and dark mode; `--accent` kept as #EEF2FF for shadcn/ui hover states (orange mapped to `--tertiary` instead to avoid breaking dropdowns) | `src/app/globals.css` | None — styling only |
+| May 2026 | Global text-outline fix — `--m3-outline: #E5E8F0` is a border color, completely unreadable as text; replaced all 33 occurrences of `text-outline` with `text-on-surface-variant` across all tsx files (excluding marketing/node_modules) | 33 files via sed | None — styling only |
+| May 2026 | Status badge semantic colors — updated all status badge classes across expenses, payments, shareholder pages to use proper semantic container tokens after palette change (APPROVED=success, SUBMITTED=secondary, CHANGES_REQUESTED=warning, REJECTED=error, PUBLISHED=primary, PARTIALLY_PAID=warning, PENDING=warning, DUE=secondary, OVERDUE=error, PAID=success) | `expenses/ExpensesClient.tsx`, `expenses/ExpenseDetailModal.tsx`, `expenses/[id]/ExpenseDetailClient.tsx`, `payments/tabs/WaitingForApprovalTab.tsx`, `payments/tabs/ScheduleTab.tsx`, `payments/tabs/RecordPaymentTab.tsx`, `payments/PaymentsClient.tsx`, `(shareholder)/my/payments/ShareholderPaymentsClient.tsx`, `(shareholder)/my/payments/SubmitPaymentProofModal.tsx`, `components/NotificationBell.tsx`, `(shareholder)/my/review/ReviewClient.tsx` | None — styling only |
+| May 2026 | Dashboard icon backgrounds — after palette change, icon containers using `bg-primary-container/20` became invisible (20% opacity of #E8EDFF on #F5F7FF background); replaced with distinct full-opacity semantic containers per icon type; blue (`bg-primary-container`) reserved for CTA buttons only, not icon backgrounds; quick actions, financial health cards, and pipeline rows all updated | `(project-admin)/[projectId]/dashboard/page.tsx` | None — styling only |
+| May 2026 | Fix "extra white background" on Milestone page — outer timeline container had `bg-[var(--surface)]` creating a white box on #F5F7FF page background; removed background, updated ring colors from `ring-[var(--surface)]` to `ring-background`, updated milestone dot/card colors to semantic tokens (completed=success-container, in-progress=secondary-container) | `milestones/MilestoneTimeline.tsx` | None — styling only |
+| May 2026 | Fix "extra white background" on Project Update Feed page — feed cards used `bg-surface`/`bg-card` (#FFFFFF) creating visible white boxes; removed background from AdminPostCard outer wrapper and CreatePostForm compose trigger; both now transparent with just border | `feed/AdminPostCard.tsx`, `feed/CreatePostForm.tsx` | None — styling only |
+| May 2026 | Fix "extra white background" on Settings page — outer tab container had `bg-surface border` creating white box; replaced with `border border-outline-variant/40` (no background) | `settings/ProjectSettingsClient.tsx` | None — styling only |
+| May 2026 | Fix ForShareholders landing page mockup — ৳18,50,000 amount text inside blue card had no explicit color class and was unreadable; added `text-white` explicitly | `src/components/marketing/ForShareholders.tsx` | None — styling only |
+| May 2026 | Logo consistency across entire app — landing page Nav logo: white on hero, blue (#1B4FFF) on scroll; all app shells/pages now use identical style `text-[22px] font-bold text-[#1B4FFF] tracking-tight`; replaced SVG logo in ProjectAdminShell and shareholder layout with text; fixed `font-normal` → `font-bold` on login page and SuperAdminShell | `src/components/marketing/Nav.tsx`, `src/components/layouts/ProjectAdminShell.tsx`, `src/app/(shareholder)/layout.tsx`, `src/components/layouts/SuperAdminShell.tsx`, `src/app/(auth)/login/page.tsx` | None — styling only |
 
 ---
 

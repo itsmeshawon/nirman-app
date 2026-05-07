@@ -48,7 +48,7 @@ export default function SuperAdminShell({ children, userName, avatarUrl }: Super
       {/* Logo — fixed h-16 matching ProjectAdminShell */}
       <div className="flex h-16 shrink-0 items-center justify-between px-6">
         <Link href="/dashboard">
-          <span className="text-[24px] font-normal text-primary tracking-tight">NirmaN</span>
+          <span className="text-[22px] font-bold text-[#1B4FFF] tracking-tight">Truzo</span>
         </Link>
         <button className="lg:hidden p-2 rounded-full hover:bg-surface-container-high" onClick={() => setMobileOpen(false)}>
           <X className="h-5 w-5 text-on-surface-variant" />

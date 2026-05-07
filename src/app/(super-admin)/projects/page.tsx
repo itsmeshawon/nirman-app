@@ -143,7 +143,7 @@ export default function ProjectsPage() {
             {row.original.name}
           </p>
           {(row.original.area || row.original.address) && (
-            <p className="text-xs text-outline mt-0.5">{row.original.area ?? row.original.address}</p>
+            <p className="text-xs text-on-surface-variant mt-0.5">{row.original.area ?? row.original.address}</p>
           )}
         </Link>
       ),
@@ -157,7 +157,7 @@ export default function ProjectsPage() {
             {row.original.package_name}
           </span>
         ) : (
-          <span className="text-xs text-outline">—</span>
+          <span className="text-xs text-on-surface-variant">—</span>
         )
       ),
     },
@@ -199,7 +199,7 @@ export default function ProjectsPage() {
         row.original.salesperson_name ? (
           <span className="text-sm text-on-surface">{row.original.salesperson_name}</span>
         ) : (
-          <span className="text-xs text-outline">—</span>
+          <span className="text-xs text-on-surface-variant">—</span>
         )
       ),
     },
@@ -242,7 +242,7 @@ export default function ProjectsPage() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-outline hover:text-on-surface-variant hover:bg-surface-variant/20"
+                className="h-8 w-8 text-on-surface-variant hover:text-on-surface-variant hover:bg-surface-variant/20"
                 onClick={() => handleStatusChange(project.id, "ACTIVE")}
                 title="Set Active"
               >
@@ -365,7 +365,7 @@ export default function ProjectsPage() {
           {/* Search */}
           <CardHeader className="pb-4 border-0">
             <div className="relative max-w-sm">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-on-surface-variant" />
               <Input
                 placeholder="Search projects..."
                 value={globalFilter}
@@ -384,9 +384,9 @@ export default function ProjectsPage() {
               </div>
             ) : projects.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center px-4">
-                <Building2 className="h-14 w-14 text-outline-variant mb-4" />
+                <Building2 className="h-14 w-14 text-on-surface-variant-variant mb-4" />
                 <p className="text-lg font-semibold text-on-surface">No projects yet</p>
-                <p className="text-sm text-outline mt-1 max-w-xs">
+                <p className="text-sm text-on-surface-variant mt-1 max-w-xs">
                   Create your first construction project to get started.
                 </p>
                 <Button
@@ -417,7 +417,7 @@ export default function ProjectsPage() {
                   <TableBody>
                     {table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} className="text-center py-10 text-outline">
+                        <TableCell colSpan={columns.length} className="text-center py-10 text-on-surface-variant">
                           No projects match your search.
                         </TableCell>
                       </TableRow>

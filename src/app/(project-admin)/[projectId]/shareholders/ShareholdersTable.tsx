@@ -271,7 +271,7 @@ export function ShareholdersTable({ projectId, data: initialData, committeeShare
         </div>
 
         <div className="relative max-w-sm">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-on-surface-variant" />
           <Input
             placeholder="Search by name, email or unit..."
             value={globalFilter ?? ""}
@@ -374,7 +374,7 @@ export function ShareholdersTable({ projectId, data: initialData, committeeShare
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-outline mt-0.5">Unit {detailShareholder.unit_flat || "—"}</p>
+                      <p className="text-sm text-on-surface-variant mt-0.5">Unit {detailShareholder.unit_flat || "—"}</p>
                       <span className={`mt-2 inline-block text-xs font-semibold px-2 py-0.5 rounded-full ${isActive ? "bg-primary-container/30 text-primary border border-primary-container" : "bg-surface-variant/50 text-on-surface-variant border border-outline-variant/40"}`}>
                         {isActive ? "Active" : "Inactive"}
                       </span>
@@ -386,12 +386,12 @@ export function ShareholdersTable({ projectId, data: initialData, committeeShare
                 <div className="px-6 py-5 space-y-6">
                   {/* Contact */}
                   <section>
-                    <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Contact</h3>
+                    <h3 className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest mb-3">Contact</h3>
                     <div className="space-y-3">
-                      <DetailRow icon={<Mail className="h-4 w-4 text-outline" />} label="Email" value={profile?.email} />
-                      <DetailRow icon={<Phone className="h-4 w-4 text-outline" />} label="Phone" value={profile?.phone} />
-                      <DetailRow icon={<Phone className="h-4 w-4 text-outline" />} label="WhatsApp" value={profile?.whatsapp_no} />
-                      <DetailRow icon={<MapPin className="h-4 w-4 text-outline" />} label="Present Address" value={profile?.present_address} />
+                      <DetailRow icon={<Mail className="h-4 w-4 text-on-surface-variant" />} label="Email" value={profile?.email} />
+                      <DetailRow icon={<Phone className="h-4 w-4 text-on-surface-variant" />} label="Phone" value={profile?.phone} />
+                      <DetailRow icon={<Phone className="h-4 w-4 text-on-surface-variant" />} label="WhatsApp" value={profile?.whatsapp_no} />
+                      <DetailRow icon={<MapPin className="h-4 w-4 text-on-surface-variant" />} label="Present Address" value={profile?.present_address} />
                     </div>
                   </section>
 
@@ -399,7 +399,7 @@ export function ShareholdersTable({ projectId, data: initialData, committeeShare
 
                   {/* Professional */}
                   <section>
-                    <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Professional</h3>
+                    <h3 className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest mb-3">Professional</h3>
                     <div className="grid grid-cols-2 gap-3">
                       <StatField label="Profession" value={profile?.profession} />
                       <StatField label="Designation" value={profile?.designation} />
@@ -411,7 +411,7 @@ export function ShareholdersTable({ projectId, data: initialData, committeeShare
 
                   {/* Shareholder Info */}
                   <section>
-                    <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Shareholding</h3>
+                    <h3 className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest mb-3">Shareholding</h3>
                     <div className="grid grid-cols-2 gap-3">
                       <StatField label="Unit / Flat" value={detailShareholder.unit_flat} />
                       <StatField label="Ownership" value={detailShareholder.ownership_pct != null ? `${detailShareholder.ownership_pct}%` : undefined} />
@@ -429,7 +429,7 @@ export function ShareholdersTable({ projectId, data: initialData, committeeShare
                       <>
                         <div className="border-t border-outline-variant/40" />
                         <section>
-                          <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Payment Model</h3>
+                          <h3 className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest mb-3">Payment Model</h3>
                           <div className="space-y-2">
                             {model.monthly_enabled && (
                               <div className="flex items-start gap-3 rounded-lg bg-primary-container/20 border border-primary-container/40 px-3 py-2.5">
@@ -495,7 +495,7 @@ function DetailRow({ icon, label, value }: { icon: React.ReactNode; label: strin
     <div className="flex items-start gap-3">
       <div className="mt-0.5 shrink-0">{icon}</div>
       <div className="min-w-0">
-        <p className="text-xs text-outline">{label}</p>
+        <p className="text-xs text-on-surface-variant">{label}</p>
         <p className="text-sm text-on-surface font-medium break-words">{value}</p>
       </div>
     </div>
@@ -506,7 +506,7 @@ function StatField({ label, value, className }: { label: string; value?: string 
   if (!value) return null
   return (
     <div className={className}>
-      <p className="text-xs text-outline uppercase tracking-wide mb-0.5">{label}</p>
+      <p className="text-xs text-on-surface-variant uppercase tracking-wide mb-0.5">{label}</p>
       <p className="text-sm font-semibold text-on-surface">{value}</p>
     </div>
   )

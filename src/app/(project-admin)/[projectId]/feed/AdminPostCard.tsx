@@ -236,7 +236,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
   return (
     <>
       {/* Card — always shows post content */}
-      <div ref={cardRef} className={`relative bg-surface rounded-xl border overflow-hidden ${isHidden ? "opacity-75" : ""}`}>
+      <div ref={cardRef} className={`relative rounded-xl border border-outline-variant/60 overflow-hidden ${isHidden ? "opacity-75" : ""}`}>
         {isHidden && (
           <div className="absolute top-3 left-3 z-10 pointer-events-none">
             <span className="bg-error-container/50 text-destructive text-xs font-semibold px-2 py-0.5 rounded-full border border-error-container">Hidden</span>
@@ -291,10 +291,10 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
               </div>
               <div>
                 <span className="text-xs font-medium text-on-surface">{post.author?.name || "Admin"}</span>
-                <span className="text-xs text-outline ml-2">{formatDateTime(post.created_at)}</span>
+                <span className="text-xs text-on-surface-variant ml-2">{formatDateTime(post.created_at)}</span>
               </div>
             </div>
-            <span className="text-xs text-outline flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> {localViewCount}</span>
+            <span className="text-xs text-on-surface-variant flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> {localViewCount}</span>
           </div>
 
           <div className="flex gap-4 mt-2">
@@ -353,9 +353,9 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
                     onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileSelect(f); e.target.value = "" }}
                   />
                   <label htmlFor="edit-post-media" className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:bg-surface-variant/20 transition-colors">
-                    <Upload className="w-5 h-5 text-outline mb-1" />
+                    <Upload className="w-5 h-5 text-on-surface-variant mb-1" />
                     <p className="text-xs text-on-surface-variant">Click to upload media</p>
-                    <p className="text-xs text-outline mt-0.5">Images ≤10MB · Videos ≤50MB · Audio ≤20MB</p>
+                    <p className="text-xs text-on-surface-variant mt-0.5">Images ≤10MB · Videos ≤50MB · Audio ≤20MB</p>
                   </label>
                 </>
               ) : (

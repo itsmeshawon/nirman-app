@@ -158,7 +158,7 @@ export function CommitteeClient({
                 <TableRow>
                   <TableCell colSpan={5} className="h-24 text-center">
                      <div className="flex flex-col items-center justify-center text-on-surface-variant">
-                      <Users className="h-8 w-8 text-outline mb-2" />
+                      <Users className="h-8 w-8 text-on-surface-variant mb-2" />
                       <p>No committee members yet.</p>
                     </div>
                   </TableCell>

@@ -291,11 +291,11 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
   }
 
   const statusConfig: Record<string, string> = {
-    UPCOMING:      "bg-surface-variant/50 text-on-surface",
-    DUE:           "bg-tertiary-container/50 text-tertiary",
-    OVERDUE:       "bg-error-container/50 text-destructive",
-    PAID:          "bg-primary-container/50 text-primary",
-    PARTIALLY_PAID:"bg-tertiary-container/40 text-on-tertiary-container",
+    UPCOMING:      "bg-surface-variant/50 text-on-surface-variant",
+    DUE:           "bg-secondary-container text-on-secondary-container",
+    OVERDUE:       "bg-error-container text-on-error-container",
+    PAID:          "bg-success-container text-on-success-container",
+    PARTIALLY_PAID:"bg-warning-container text-on-warning-container",
   }
 
   const [searchShareholder, setSearchShareholder] = useState("")

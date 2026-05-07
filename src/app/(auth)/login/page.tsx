@@ -76,8 +76,8 @@ export default function LoginPage() {
   return (
     <div className="w-full max-w-sm px-6">
       <div className="text-center mb-10">
-        <h1 className="text-[36px] font-normal text-[var(--primary)] tracking-tight">NirmaN</h1>
-        <p className="text-[14px] text-[var(--on-surface-variant)] mt-2">Construction Transparency Platform</p>
+        <h1 className="text-[36px] font-bold text-[#1B4FFF] tracking-tight">Truzo</h1>
+        <p className="text-[14px] text-[var(--on-surface-variant)] mt-2">Trust. Transparent. Built.</p>
       </div>
 
       <Card className="rounded-[28px] border border-[var(--surface-variant)] bg-white p-2">

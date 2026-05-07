@@ -49,16 +49,16 @@ const typeConfig: Record<
   NotificationType,
   { Icon: React.ElementType; bg: string; text: string }
 > = {
-  PAYMENT_REMINDER:          { Icon: Banknote,      bg: "bg-tertiary-container/40",  text: "text-tertiary"  },
-  PAYMENT_OVERDUE:           { Icon: AlertTriangle, bg: "bg-error-container/50",    text: "text-destructive"    },
-  PAYMENT_RECORDED:          { Icon: Banknote,      bg: "bg-primary-container/50",  text: "text-primary"  },
-  EXPENSE_SUBMITTED:         { Icon: ClipboardList, bg: "bg-tertiary-container/50",   text: "text-tertiary"   },
-  EXPENSE_APPROVED:          { Icon: CheckCircle,   bg: "bg-primary-container/50",  text: "text-primary"  },
-  EXPENSE_REJECTED:          { Icon: XCircle,       bg: "bg-error-container/50",    text: "text-destructive"    },
-  EXPENSE_CHANGES_REQUESTED: { Icon: RefreshCw,     bg: "bg-orange-100", text: "text-orange-600" },
+  PAYMENT_REMINDER:          { Icon: Banknote,      bg: "bg-warning-container",     text: "text-on-warning-container"  },
+  PAYMENT_OVERDUE:           { Icon: AlertTriangle, bg: "bg-error-container",       text: "text-on-error-container"    },
+  PAYMENT_RECORDED:          { Icon: Banknote,      bg: "bg-success-container",     text: "text-on-success-container"  },
+  EXPENSE_SUBMITTED:         { Icon: ClipboardList, bg: "bg-secondary-container",   text: "text-on-secondary-container"   },
+  EXPENSE_APPROVED:          { Icon: CheckCircle,   bg: "bg-success-container",     text: "text-on-success-container"  },
+  EXPENSE_REJECTED:          { Icon: XCircle,       bg: "bg-error-container",       text: "text-on-error-container"    },
+  EXPENSE_CHANGES_REQUESTED: { Icon: RefreshCw,     bg: "bg-warning-container", text: "text-on-warning-container" },
   EXPENSE_PUBLISHED:         { Icon: Megaphone,     bg: "bg-primary-container/50",   text: "text-primary"   },
   ACTIVITY_POST:             { Icon: Camera,        bg: "bg-primary-container/50",   text: "text-primary"   },
-  PENALTY_APPLIED:           { Icon: AlertTriangle, bg: "bg-orange-100", text: "text-orange-600" },
+  PENALTY_APPLIED:           { Icon: AlertTriangle, bg: "bg-warning-container", text: "text-on-warning-container" },
 }
 
 // ─── Relative time helper ─────────────────────────────────────────────────────
@@ -223,7 +223,7 @@ export default function NotificationBell({ projectId }: NotificationBellProps) {
 
           {/* List */}
           {notifications.length === 0 ? (
-            <div className="flex items-center justify-center py-12 text-sm text-outline">
+            <div className="flex items-center justify-center py-12 text-sm text-on-surface-variant">
               No notifications yet
             </div>
           ) : (
@@ -256,7 +256,7 @@ export default function NotificationBell({ projectId }: NotificationBellProps) {
                         <p className="text-xs text-on-surface-variant line-clamp-2 mt-0.5">
                           {notification.body}
                         </p>
-                        <p className="text-xs text-outline mt-1">
+                        <p className="text-xs text-on-surface-variant mt-1">
                           {relativeTime(notification.created_at)}
                         </p>
                       </div>

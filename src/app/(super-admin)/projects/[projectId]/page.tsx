@@ -110,7 +110,7 @@ interface ApiResponse {
 function Field({ label, value }: { label: string; value?: string | null }) {
   return (
     <div>
-      <p className="text-xs text-outline uppercase tracking-wide mb-0.5">{label}</p>
+      <p className="text-xs text-on-surface-variant uppercase tracking-wide mb-0.5">{label}</p>
       <p className="text-sm text-on-surface font-medium">{value || "—"}</p>
     </div>
   )
@@ -258,9 +258,9 @@ export default function SuperAdminProjectDetailPage() {
   if (error || !data) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
-        <Building2 className="h-12 w-12 text-outline-variant mb-4" />
+        <Building2 className="h-12 w-12 text-on-surface-variant-variant mb-4" />
         <p className="text-lg font-semibold text-on-surface">Failed to load project</p>
-        <p className="text-sm text-outline mt-1">{error}</p>
+        <p className="text-sm text-on-surface-variant mt-1">{error}</p>
       </div>
     )
   }
@@ -320,7 +320,7 @@ export default function SuperAdminProjectDetailPage() {
           <div className="flex items-center gap-2 mt-1">
             <StatusBadge status={project.status} />
             {project.created_at && (
-              <span className="text-xs text-outline">
+              <span className="text-xs text-on-surface-variant">
                 Created {formatDate(project.created_at)}
               </span>
             )}
@@ -341,7 +341,7 @@ export default function SuperAdminProjectDetailPage() {
           <Field label="Status" value={project.status.charAt(0) + project.status.slice(1).toLowerCase()} />
           {project.package && (
             <div className="sm:col-span-2">
-              <p className="text-xs text-outline uppercase tracking-wide mb-1.5">Package</p>
+              <p className="text-xs text-on-surface-variant uppercase tracking-wide mb-1.5">Package</p>
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-sm font-semibold text-on-surface bg-primary-container/20 border border-primary-container px-2.5 py-1 rounded-lg">
                   {project.package.name}
@@ -355,26 +355,26 @@ export default function SuperAdminProjectDetailPage() {
             </div>
           )}
           <div className="flex items-start gap-2">
-            <MapPin className="h-4 w-4 text-outline mt-0.5 shrink-0" />
+            <MapPin className="h-4 w-4 text-on-surface-variant mt-0.5 shrink-0" />
             <div>
-              <p className="text-xs text-outline uppercase tracking-wide mb-0.5">Address</p>
+              <p className="text-xs text-on-surface-variant uppercase tracking-wide mb-0.5">Address</p>
               <p className="text-sm text-on-surface font-medium">{project.address || "—"}</p>
             </div>
           </div>
           <Field label="Area" value={project.area} />
           <div className="flex items-start gap-2">
-            <Calendar className="h-4 w-4 text-outline mt-0.5 shrink-0" />
+            <Calendar className="h-4 w-4 text-on-surface-variant mt-0.5 shrink-0" />
             <div>
-              <p className="text-xs text-outline uppercase tracking-wide mb-0.5">Start Date</p>
+              <p className="text-xs text-on-surface-variant uppercase tracking-wide mb-0.5">Start Date</p>
               <p className="text-sm text-on-surface font-medium">
                 {project.start_date ? formatDate(project.start_date) : "—"}
               </p>
             </div>
           </div>
           <div className="flex items-start gap-2">
-            <Calendar className="h-4 w-4 text-outline mt-0.5 shrink-0" />
+            <Calendar className="h-4 w-4 text-on-surface-variant mt-0.5 shrink-0" />
             <div>
-              <p className="text-xs text-outline uppercase tracking-wide mb-0.5">Expected Handover</p>
+              <p className="text-xs text-on-surface-variant uppercase tracking-wide mb-0.5">Expected Handover</p>
               <p className="text-sm text-on-surface font-medium">
                 {project.expected_handover ? formatDate(project.expected_handover) : "TBD"}
               </p>
@@ -382,22 +382,22 @@ export default function SuperAdminProjectDetailPage() {
           </div>
           {project.building_meta && (
             <div className="sm:col-span-2 flex items-start gap-2">
-              <Layers className="h-4 w-4 text-outline mt-0.5 shrink-0" />
+              <Layers className="h-4 w-4 text-on-surface-variant mt-0.5 shrink-0" />
               <div className="flex-1">
-                <p className="text-xs text-outline uppercase tracking-wide mb-1">Building Structure</p>
+                <p className="text-xs text-on-surface-variant uppercase tracking-wide mb-1">Building Structure</p>
                 <div className="flex flex-wrap gap-6">
                   <div>
                     <p className="text-sm font-medium text-on-surface">{project.building_meta?.floors ?? "—"}</p>
-                    <p className="text-[11px] text-outline">Floors</p>
+                    <p className="text-[11px] text-on-surface-variant">Floors</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-on-surface">{project.building_meta?.units ?? "—"}</p>
-                    <p className="text-[11px] text-outline">Units</p>
+                    <p className="text-[11px] text-on-surface-variant">Units</p>
                   </div>
                   {project.building_meta?.salesperson_name && (
                     <div>
                       <p className="text-sm font-medium text-on-surface">{project.building_meta.salesperson_name}</p>
-                      <p className="text-[11px] text-outline">Salesperson</p>
+                      <p className="text-[11px] text-on-surface-variant">Salesperson</p>
                     </div>
                   )}
                 </div>
@@ -415,12 +415,12 @@ export default function SuperAdminProjectDetailPage() {
           <ShieldCheck className="h-4 w-4 text-primary" />
           <h2 className="text-base font-semibold text-on-surface">
             Project Admin
-            <span className="ml-2 text-xs font-normal text-outline">({admins.length})</span>
+            <span className="ml-2 text-xs font-normal text-on-surface-variant">({admins.length})</span>
           </h2>
         </div>
         <div className="p-5">
           {admins.length === 0 ? (
-            <p className="text-sm text-outline text-center py-8">No admins assigned to this project.</p>
+            <p className="text-sm text-on-surface-variant text-center py-8">No admins assigned to this project.</p>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {admins.map((admin) => (
@@ -446,11 +446,11 @@ export default function SuperAdminProjectDetailPage() {
             <Users className="h-4 w-4 text-primary" />
             <h2 className="text-base font-semibold text-on-surface">
               Shareholders
-              <span className="ml-2 text-xs font-normal text-outline">({shareholders.length})</span>
+              <span className="ml-2 text-xs font-normal text-on-surface-variant">({shareholders.length})</span>
             </h2>
           </div>
           <div className="relative w-full sm:w-64">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-outline pointer-events-none" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-on-surface-variant pointer-events-none" />
             <input
               type="text"
               placeholder="Search by name or unit…"
@@ -463,7 +463,7 @@ export default function SuperAdminProjectDetailPage() {
 
         <div className="overflow-x-auto">
           {shareholders.length === 0 ? (
-            <p className="text-sm text-outline text-center py-10">No shareholders found.</p>
+            <p className="text-sm text-on-surface-variant text-center py-10">No shareholders found.</p>
           ) : (
             <table className="w-full text-sm">
               <thead>
@@ -497,7 +497,7 @@ export default function SuperAdminProjectDetailPage() {
               <tbody className="divide-y divide-gray-50">
                 {filteredShareholders.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-4 py-10 text-center text-outline text-sm">
+                    <td colSpan={7} className="px-4 py-10 text-center text-on-surface-variant text-sm">
                       No shareholders match your search.
                     </td>
                   </tr>
@@ -570,7 +570,7 @@ export default function SuperAdminProjectDetailPage() {
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-outline mt-0.5">Unit {detailShareholder.unit_flat || "—"}</p>
+                      <p className="text-sm text-on-surface-variant mt-0.5">Unit {detailShareholder.unit_flat || "—"}</p>
                       <span className={`mt-2 inline-block text-xs font-semibold px-2 py-0.5 rounded-full ${isActive ? "bg-primary-container/30 text-primary border border-primary-container" : "bg-surface-variant/50 text-on-surface-variant border border-outline-variant/40"}`}>
                         {isActive ? "Active" : "Inactive"}
                       </span>
@@ -581,19 +581,19 @@ export default function SuperAdminProjectDetailPage() {
                 {/* Body */}
                 <div className="px-6 py-5 space-y-6">
                   <section>
-                    <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Contact</h3>
+                    <h3 className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest mb-3">Contact</h3>
                     <div className="space-y-3">
-                      <SheetDetailRow icon={<Mail className="h-4 w-4 text-outline" />} label="Email" value={p?.email} />
-                      <SheetDetailRow icon={<Phone className="h-4 w-4 text-outline" />} label="Phone" value={p?.phone} />
-                      <SheetDetailRow icon={<Phone className="h-4 w-4 text-outline" />} label="WhatsApp" value={p?.whatsapp_no} />
-                      <SheetDetailRow icon={<MapPin className="h-4 w-4 text-outline" />} label="Present Address" value={p?.present_address} />
+                      <SheetDetailRow icon={<Mail className="h-4 w-4 text-on-surface-variant" />} label="Email" value={p?.email} />
+                      <SheetDetailRow icon={<Phone className="h-4 w-4 text-on-surface-variant" />} label="Phone" value={p?.phone} />
+                      <SheetDetailRow icon={<Phone className="h-4 w-4 text-on-surface-variant" />} label="WhatsApp" value={p?.whatsapp_no} />
+                      <SheetDetailRow icon={<MapPin className="h-4 w-4 text-on-surface-variant" />} label="Present Address" value={p?.present_address} />
                     </div>
                   </section>
 
                   <div className="border-t border-outline-variant/40" />
 
                   <section>
-                    <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Professional</h3>
+                    <h3 className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest mb-3">Professional</h3>
                     <div className="grid grid-cols-2 gap-3">
                       <SheetStatField label="Profession" value={p?.profession} />
                       <SheetStatField label="Designation" value={p?.designation} />
@@ -604,7 +604,7 @@ export default function SuperAdminProjectDetailPage() {
                   <div className="border-t border-outline-variant/40" />
 
                   <section>
-                    <h3 className="text-xs font-semibold text-outline uppercase tracking-widest mb-3">Shareholding</h3>
+                    <h3 className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest mb-3">Shareholding</h3>
                     <div className="grid grid-cols-2 gap-3">
                       <SheetStatField label="Unit / Flat" value={detailShareholder.unit_flat} />
                       <SheetStatField label="Ownership" value={detailShareholder.ownership_pct != null ? `${detailShareholder.ownership_pct}%` : undefined} />
@@ -628,7 +628,7 @@ function SheetDetailRow({ icon, label, value }: { icon: React.ReactNode; label: 
     <div className="flex items-start gap-3">
       <div className="mt-0.5 shrink-0">{icon}</div>
       <div className="min-w-0">
-        <p className="text-xs text-outline">{label}</p>
+        <p className="text-xs text-on-surface-variant">{label}</p>
         <p className="text-sm text-on-surface font-medium break-words">{value}</p>
       </div>
     </div>
@@ -639,7 +639,7 @@ function SheetStatField({ label, value, className }: { label: string; value?: st
   if (!value) return null
   return (
     <div className={className}>
-      <p className="text-xs text-outline uppercase tracking-wide mb-0.5">{label}</p>
+      <p className="text-xs text-on-surface-variant uppercase tracking-wide mb-0.5">{label}</p>
       <p className="text-sm font-semibold text-on-surface">{value}</p>
     </div>
   )

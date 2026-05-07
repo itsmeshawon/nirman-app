@@ -109,7 +109,7 @@ export default function RecentProjectsTable({ data: initialData }: { data: Proje
             {row.original.name}
           </p>
           {(row.original.area || row.original.address) && (
-            <p className="text-xs text-outline mt-0.5">{row.original.area ?? row.original.address}</p>
+            <p className="text-xs text-on-surface-variant mt-0.5">{row.original.area ?? row.original.address}</p>
           )}
         </Link>
       ),
@@ -123,7 +123,7 @@ export default function RecentProjectsTable({ data: initialData }: { data: Proje
             {row.original.package_name}
           </span>
         ) : (
-          <span className="text-xs text-outline">—</span>
+          <span className="text-xs text-on-surface-variant">—</span>
         )
       ),
     },
@@ -167,7 +167,7 @@ export default function RecentProjectsTable({ data: initialData }: { data: Proje
         row.original.salesperson_name ? (
           <span className="text-sm text-on-surface">{row.original.salesperson_name}</span>
         ) : (
-          <span className="text-xs text-outline">—</span>
+          <span className="text-xs text-on-surface-variant">—</span>
         )
       ),
     },
@@ -216,7 +216,7 @@ export default function RecentProjectsTable({ data: initialData }: { data: Proje
             ) : !isArchived ? (
               <Button
                 variant="ghost" size="icon"
-                className="h-8 w-8 text-outline hover:text-on-surface-variant hover:bg-surface-variant/20"
+                className="h-8 w-8 text-on-surface-variant hover:text-on-surface-variant hover:bg-surface-variant/20"
                 onClick={() => handleStatusChange(project.id, "ACTIVE")}
                 title="Set Active"
               >
@@ -227,7 +227,7 @@ export default function RecentProjectsTable({ data: initialData }: { data: Proje
             )}
 
             {isArchived ? (
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-outline-variant cursor-not-allowed" disabled title="Already archived">
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-on-surface-variant-variant cursor-not-allowed" disabled title="Already archived">
                 <Archive className="h-3.5 w-3.5" />
               </Button>
             ) : (
@@ -267,9 +267,9 @@ export default function RecentProjectsTable({ data: initialData }: { data: Proje
   if (projects.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <Building2 className="h-12 w-12 text-outline-variant mb-3" />
+        <Building2 className="h-12 w-12 text-on-surface-variant-variant mb-3" />
         <p className="text-on-surface-variant font-medium">No projects yet</p>
-        <p className="text-outline text-sm mt-1">Create your first project to get started.</p>
+        <p className="text-on-surface-variant text-sm mt-1">Create your first project to get started.</p>
       </div>
     )
   }

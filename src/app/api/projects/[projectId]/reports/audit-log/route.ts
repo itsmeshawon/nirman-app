@@ -28,7 +28,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ proj
     const { data: logs } = await query
 
     const rows = [
-      ["NirmaN — Audit Log Report"],
+      ["Truzo — Audit Log Report"],
       [`Project: ${project?.name}`],
       [`Generated: ${new Date().toLocaleString()}`],
       [],

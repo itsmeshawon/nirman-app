@@ -52,7 +52,7 @@ export default async function StatementPrintPage() {
           <div className="flex justify-between items-start border-b-2 border-on-surface pb-6 mb-6">
              <div>
                 <h1 className="text-3xl font-black tracking-tight text-on-surface uppercase">Financial Statement</h1>
-                <p className="text-on-surface-variant font-medium text-sm mt-1">{shareholder.projects?.name || "NirmaN Project"}</p>
+                <p className="text-on-surface-variant font-medium text-sm mt-1">{shareholder.projects?.name || "Truzo Project"}</p>
              </div>
              <div className="text-right">
                 <p className="font-mono text-sm font-semibold text-on-surface">Date: {new Date().toLocaleDateString()}</p>
@@ -60,7 +60,7 @@ export default async function StatementPrintPage() {
           </div>
 
           <div className="mb-8">
-             <p className="text-xs font-bold text-outline uppercase tracking-widest mb-1">Prepared For</p>
+             <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Prepared For</p>
              <p className="font-bold text-on-surface text-lg">Unit: {shareholder.unit_flat}</p>
              <p className="text-sm text-on-surface-variant">Shareholder ID: {shareholder.id.slice(0,8).toUpperCase()}</p>
           </div>
@@ -80,7 +80,7 @@ export default async function StatementPrintPage() {
                <p className="font-bold text-destructive text-lg">৳ {totalPenalties.toLocaleString('en-IN')}</p>
              </div>
              <div className="border p-4 bg-on-surface text-center">
-               <p className="text-xs font-semibold text-outline-variant uppercase">Balance Due</p>
+               <p className="text-xs font-semibold text-on-surface-variant-variant uppercase">Balance Due</p>
                <p className="font-bold text-white text-xl">৳ {(totalDue + totalPenalties).toLocaleString('en-IN')}</p>
              </div>
           </div>
@@ -125,7 +125,7 @@ export default async function StatementPrintPage() {
                 </thead>
                 <tbody>
                    {py.length === 0 && (
-                     <tr><td colSpan={4} className="py-4 text-outline italic">No payments recorded.</td></tr>
+                     <tr><td colSpan={4} className="py-4 text-on-surface-variant italic">No payments recorded.</td></tr>
                    )}
                    {py.map(p => (
                      <tr key={p.id} className="border-b border-outline-variant/40">
@@ -140,7 +140,7 @@ export default async function StatementPrintPage() {
              </div>
           </div>
 
-          <div className="text-xs text-center text-outline mt-16 border-t pt-4">
+          <div className="text-xs text-center text-on-surface-variant mt-16 border-t pt-4">
              End of Statement.
           </div>
 

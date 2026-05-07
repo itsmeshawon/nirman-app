@@ -83,7 +83,7 @@ export default function CreateAdminDialog({ open, onOpenChange, projectId, proje
 
   async function copyCredentials() {
     if (!success) return
-    const text = `NirmaN Login Credentials\nEmail: ${success.email}\nPassword: ${success.password}\nURL: ${window.location.origin}/login`
+    const text = `Truzo Login Credentials\nEmail: ${success.email}\nPassword: ${success.password}\nURL: ${window.location.origin}/login`
     await navigator.clipboard.writeText(text)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
@@ -166,7 +166,7 @@ export default function CreateAdminDialog({ open, onOpenChange, projectId, proje
               </Label>
               <Input id="admin-password" type="text" {...register("password")} />
               {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
-              <p className="text-xs text-outline">Min 8 characters. Share this with the admin.</p>
+              <p className="text-xs text-on-surface-variant">Min 8 characters. Share this with the admin.</p>
             </div>
 
             <DialogFooter className="pt-2">

@@ -61,7 +61,7 @@ async function upsertProfile(id: string, name: string, role: string, email: stri
 }
 
 async function main() {
-  console.log("\n🌱 Starting NirmaN Pilot Seed...\n")
+  console.log("\n🌱 Starting Truzo Pilot Seed...\n")
 
   // 1. Create Users
   console.log("👤 Creating 22 users...")
@@ -226,7 +226,7 @@ async function main() {
         schedule_item_id: sched1.data.id,
         amount: 500000,
         method: "BANK_TRANSFER",
-        receipt_no: `NRM-SEED-2601-${shId.slice(0,4)}`,
+        receipt_no: `TRZ-SEED-2601-${shId.slice(0,4)}`,
         recorded_by_id: userIds["kamal@greenvalley.com"]
       })
     }
@@ -246,7 +246,7 @@ async function main() {
         schedule_item_id: sched2.id,
         amount: 300000,
         method: "BKASH",
-        receipt_no: `NRM-SEED-2603-${shId.slice(0,4)}`,
+        receipt_no: `TRZ-SEED-2603-${shId.slice(0,4)}`,
         recorded_by_id: userIds["kamal@greenvalley.com"]
       })
     }

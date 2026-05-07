@@ -37,10 +37,10 @@ export function formatDateTime(date: string | Date): string {
 
 /**
  * Generate a receipt number.
- * Example: generateReceiptNo("GVH", 0) → "NRM-GVH-20260415-001"
+ * Example: generateReceiptNo("GVH", 0) → "TRZ-GVH-20260415-001"
  */
 export function generateReceiptNo(projectCode: string, existingCount: number): string {
   const dateStr = format(new Date(), "yyyyMMdd")
   const seq = String(existingCount + 1).padStart(3, "0")
-  return `NRM-${projectCode}-${dateStr}-${seq}`
+  return `TRZ-${projectCode}-${dateStr}-${seq}`
 }

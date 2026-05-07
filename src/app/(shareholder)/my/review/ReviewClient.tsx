@@ -163,7 +163,7 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
                             variant="outline"
                             onClick={() => openModal(expense.id, expense.project_id, "CHANGES_REQUESTED")} 
                             disabled={isProcessing === expense.id}
-                            className="flex-1 bg-surface text-orange-700 hover:text-orange-800 border-orange-200 hover:bg-orange-50"
+                            className="flex-1 bg-surface text-on-warning-container hover:text-on-warning-container border-warning-container hover:bg-warning-container/20"
                           >
                             <RefreshCw className="w-4 h-4 mr-2" /> Modify
                           </Button>
@@ -189,7 +189,7 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
         <DialogContent className="sm:max-w-md">
            <DialogHeader>
              <DialogTitle className="flex items-center gap-2">
-                {modalAction === "REJECTED" ? <XCircle className="w-5 h-5 text-destructive" /> : <RefreshCw className="w-5 h-5 text-orange-600" />}
+                {modalAction === "REJECTED" ? <XCircle className="w-5 h-5 text-destructive" /> : <RefreshCw className="w-5 h-5 text-warning" />}
                 {modalAction === "REJECTED" ? "Reject Expense" : "Request Changes"}
              </DialogTitle>
              <DialogDescription>
@@ -208,7 +208,7 @@ export function ReviewClient({ expenses }: ReviewClientProps) {
               <Button variant="outline" onClick={() => setModalOpen(false)}>Cancel</Button>
               <Button 
                  onClick={confirmModalAction} 
-                 className={modalAction === "REJECTED" ? "bg-red-600 hover:bg-red-700" : "bg-orange-600 hover:bg-orange-700"}
+                 className={modalAction === "REJECTED" ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground" : "bg-tertiary hover:bg-tertiary/90 text-on-tertiary"}
               >
                  Submit Feedback
               </Button>

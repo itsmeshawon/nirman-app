@@ -130,9 +130,9 @@ export default function PackagesPage() {
               </div>
             ) : packages.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center px-4">
-                <Package className="h-14 w-14 text-outline-variant mb-4" />
+                <Package className="h-14 w-14 text-on-surface-variant-variant mb-4" />
                 <p className="text-lg font-semibold text-on-surface">No packages yet</p>
-                <p className="text-sm text-outline mt-1 max-w-xs">
+                <p className="text-sm text-on-surface-variant mt-1 max-w-xs">
                   Create your first feature package to assign to projects.
                 </p>
                 <Button
@@ -169,7 +169,7 @@ export default function PackagesPage() {
                           <TableCell>
                             <p className="font-bold text-on-surface">{pkg.name}</p>
                             {pkg.description && (
-                              <p className="text-xs text-outline mt-0.5 max-w-xs truncate">{pkg.description}</p>
+                              <p className="text-xs text-on-surface-variant mt-0.5 max-w-xs truncate">{pkg.description}</p>
                             )}
                           </TableCell>
                           <TableCell>

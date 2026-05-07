@@ -20,11 +20,11 @@ interface ExpensesClientProps {
 
 const statusConfig: Record<string, { label: string, color: string, icon: any }> = {
   DRAFT: { label: "Draft", color: "bg-surface-variant/50 text-on-surface-variant border-outline-variant", icon: FileText },
-  SUBMITTED: { label: "Submitted", color: "bg-tertiary-container/50 text-tertiary border-tertiary-container", icon: SendHorizontal },
-  CHANGES_REQUESTED: { label: "Changes Req.", color: "bg-tertiary-container/50 text-tertiary border-tertiary-container", icon: RefreshCw },
-  APPROVED: { label: "Approved", color: "bg-primary-container/50 text-primary border-primary-container", icon: CheckCircle },
-  PUBLISHED: { label: "Published", color: "bg-primary-container/50 text-on-primary-container border-primary-container", icon: CheckCircle },
-  REJECTED: { label: "Rejected", color: "bg-error-container/50 text-destructive border-error-container", icon: XCircle }
+  SUBMITTED: { label: "Submitted", color: "bg-secondary-container text-on-secondary-container border-secondary-container", icon: SendHorizontal },
+  CHANGES_REQUESTED: { label: "Changes Req.", color: "bg-warning-container text-on-warning-container border-warning-container", icon: RefreshCw },
+  APPROVED: { label: "Approved", color: "bg-success-container text-on-success-container border-success-container", icon: CheckCircle },
+  PUBLISHED: { label: "Published", color: "bg-primary-container text-on-primary-container border-primary-container", icon: CheckCircle },
+  REJECTED: { label: "Rejected", color: "bg-error-container text-on-error-container border-error-container", icon: XCircle }
 }
 
 export function ExpensesClient({ projectId, expenses: initialExpenses, milestones, categories }: ExpensesClientProps) {
@@ -215,7 +215,7 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
 
       <div className="py-4 pr-4">
         <div className="relative max-w-sm">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-on-surface-variant" />
           <Input
             placeholder="Search by title..."
             value={searchTerm}
@@ -455,7 +455,7 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
                         <TableCell className="text-sm text-on-surface-variant">
                           {expense.milestone
                             ? <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary-container/20 text-on-primary-container border border-primary-container/30">{expense.milestone.name}</span>
-                            : <span className="text-outline">—</span>}
+                            : <span className="text-on-surface-variant">—</span>}
                         </TableCell>
                         <TableCell className="text-sm font-medium text-on-surface">
                            {(expense.amount + (expense.vat_amount || 0)).toLocaleString(undefined, { minimumFractionDigits: 2 })}

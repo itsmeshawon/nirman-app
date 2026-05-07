@@ -183,7 +183,7 @@ export default function ActivityLogClient({ logs }: ActivityLogClientProps) {
       {/* Log List */}
       <div className="rounded-xl border border-outline-variant/40 overflow-x-auto">
         {filtered.length === 0 ? (
-          <div className="px-5 py-16 text-center text-sm text-outline">
+          <div className="px-5 py-16 text-center text-sm text-on-surface-variant">
             {hasFilters ? "No entries match your filters." : "No activity logged yet."}
           </div>
         ) : (
@@ -205,14 +205,14 @@ export default function ActivityLogClient({ logs }: ActivityLogClientProps) {
                     )}
                   </div>
                   {log.details && Object.keys(log.details).length > 0 && (
-                    <p className="text-xs text-outline break-words">
+                    <p className="text-xs text-on-surface-variant break-words">
                       {Object.entries(log.details)
                         .filter(([k, v]) => v !== null && v !== undefined && !SKIP_KEYS.has(k))
                         .map(([k, v]) => `${DETAIL_LABELS[k] ?? k}: ${formatDetailValue(k, v)}`)
                         .join(" · ")}
                     </p>
                   )}
-                  <p className="text-xs text-outline mt-1">{formatDateTime(log.created_at)}</p>
+                  <p className="text-xs text-on-surface-variant mt-1">{formatDateTime(log.created_at)}</p>
                 </div>
               </li>
             ))}

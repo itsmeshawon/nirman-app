@@ -24,7 +24,7 @@ export default async function ShareholderFeedPage() {
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-8">
         <p className="text-2xl mb-3">🏗️</p>
         <h2 className="text-lg font-semibold text-on-surface">No Project Assigned</h2>
-        <p className="text-outline text-sm mt-2">
+        <p className="text-on-surface-variant text-sm mt-2">
           You have not been mapped to any project yet. Contact your project admin.
         </p>
       </div>

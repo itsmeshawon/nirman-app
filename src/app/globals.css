@@ -35,11 +35,17 @@
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
 
-  /* M3 Extended Colors mapped to specific user tokens */
+  /* Extended Color Tokens */
   --color-primary-container: var(--primary-container);
   --color-on-primary-container: var(--on-primary-container);
   --color-secondary-container: var(--secondary-container);
   --color-on-secondary-container: var(--on-secondary-container);
+  --color-tertiary: var(--tertiary);
+  --color-on-tertiary: var(--on-tertiary);
+  --color-tertiary-container: var(--tertiary-container);
+  --color-on-tertiary-container: var(--on-tertiary-container);
+  --color-error-container: var(--error-container);
+  --color-on-error-container: var(--on-error-container);
   --color-surface-container-low: var(--surface-container-low);
   --color-surface-container: var(--surface-container);
   --color-surface-container-high: var(--surface-container-high);
@@ -51,6 +57,14 @@
   --color-on-surface: var(--on-surface);
   --color-surface-variant: var(--surface-variant);
   --color-on-surface-variant: var(--on-surface-variant);
+
+  /* Functional tokens */
+  --color-success: var(--success);
+  --color-success-container: var(--success-container);
+  --color-on-success-container: var(--on-success-container);
+  --color-warning: var(--warning);
+  --color-warning-container: var(--warning-container);
+  --color-on-warning-container: var(--on-warning-container);
 
   /* Radius tokens */
   --radius-xs: 4px;
@@ -68,74 +82,87 @@
 
 :root {
   /* ═══════════════════════════════════════════════
-     NirmaN Design System — Material Design 3
-     Light Mode Palette (Purple/Lavender)
+     Truzo Design System — Light Mode
      ═══════════════════════════════════════════════ */
 
   /* Surface & Background */
-  --background: #FEFAFF;
-  --foreground: #1D1B20;
+  --background: #F5F7FF;
+  --foreground: #1A1A2E;
   --card: #FFFFFF;
-  --card-foreground: #1D1B20;
+  --card-foreground: #1A1A2E;
   --popover: #FFFFFF;
-  --popover-foreground: #1D1B20;
+  --popover-foreground: #1A1A2E;
 
-  --surface: #FEFAFF;
-  --on-surface: #1D1B20;
-  --surface-variant: #F7F0F5;
-  --on-surface-variant: #49454F;
+  --surface: #FFFFFF;
+  --on-surface: #1A1A2E;
+  --surface-variant: #F5F7FF;
+  --on-surface-variant: #6B7280;
 
-  --surface-container-low: #F7F2FA;
-  --surface-container: #F3EDF7;
-  --surface-container-high: #ECE6F0;
+  --surface-container-low: #EEF2FF;
+  --surface-container: #E8EDFF;
+  --surface-container-high: #DDE5FF;
 
-  /* Primary: Purple */
-  --primary: #6750A4;
+  /* Primary — Truzo Blue */
+  --primary: #1B4FFF;
+  --on-primary: #FFFFFF;
   --primary-foreground: #FFFFFF;
-  --primary-container: #EADDFF;
-  --on-primary-container: #21005D;
+  --primary-container: #E8EDFF;
+  --on-primary-container: #0A3ACC;
 
-  /* Secondary: Purple-ish */
-  --secondary: #625B71;
+  /* Secondary — Truzo Teal */
+  --secondary: #00C2A8;
+  --on-secondary: #FFFFFF;
   --secondary-foreground: #FFFFFF;
-  --secondary-container: #E8DEF8;
-  --on-secondary-container: #1D192B;
+  --secondary-container: #E0F9F6;
+  --on-secondary-container: #007A6B;
 
-  /* Tertiary: Rose/Pink */
-  --tertiary: #7D5260;
+  /* Tertiary — Truzo Orange (CTA accent) */
+  --tertiary: #FF6B2B;
+  --on-tertiary: #FFFFFF;
   --tertiary-foreground: #FFFFFF;
-  --tertiary-container: #FFD8E4;
-  --on-tertiary-container: #31111D;
-
-  /* Muted */
-  --muted: #F3EDF7;
-  --muted-foreground: #49454F;
-
-  /* Accent */
-  --accent: #EADDFF;
-  --accent-foreground: #21005D;
+  --tertiary-container: #FFE8DB;
+  --on-tertiary-container: #B94310;
 
   /* Error */
-  --destructive: #B3261E;
-  --error-container: #F9DEDC;
-  --on-error-container: #410E0B;
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
+  --error-container: #FEE2E2;
+  --on-error-container: #991B1B;
+
+  /* Muted */
+  --muted: #F5F7FF;
+  --muted-foreground: #6B7280;
+
+  /* Accent — hover/selected states in UI components */
+  --accent: #EEF2FF;
+  --accent-foreground: #1B4FFF;
 
   /* Utility */
-  --m3-outline: #79747E;
-  --outline-variant: #CAC4D0;
-  --border: #CAC4D0;
-  --input: #79747E;
-  --ring: #6750A4;
+  --m3-outline: #E5E8F0;
+  --outline-variant: #D1D5DB;
+  --border: #E5E8F0;
+  --input: #D1D5DB;
+  --ring: #1B4FFF;
+
+  /* Success */
+  --success: #16A34A;
+  --success-container: #DCFCE7;
+  --on-success-container: #166534;
+
+  /* Warning */
+  --warning: #F59E0B;
+  --warning-container: #FEF3C7;
+  --on-warning-container: #92400E;
 
   /* Sidebar */
-  --sidebar: #F7F2FA;
-  --sidebar-foreground: #49454F;
-  --sidebar-primary: #6750A4;
+  --sidebar: #EEF2FF;
+  --sidebar-foreground: #374151;
+  --sidebar-primary: #1B4FFF;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #EADDFF;
-  --sidebar-accent-foreground: #21005D;
-  --sidebar-border: #CAC4D0;
-  --sidebar-ring: #6750A4;
+  --sidebar-accent: #E8EDFF;
+  --sidebar-accent-foreground: #0A3ACC;
+  --sidebar-border: #E5E8F0;
+  --sidebar-ring: #1B4FFF;
 
   --radius: 0.75rem;
 }
@@ -143,127 +170,151 @@
 /* Dark mode using .dark class (next-themes) */
 .dark {
   /* ═══════════════════════════════════════════════
-     NirmaN Design System — Material Design 3
-     Dark Mode Palette (Purple/Lavender)
+     Truzo Design System — Dark Mode
      ═══════════════════════════════════════════════ */
 
   /* Surface & Background */
-  --background: #1C1B1F;
-  --foreground: #E6E1E5;
-  --card: #323233;
-  --card-foreground: #E6E1E5;
-  --popover: #323233;
-  --popover-foreground: #E6E1E5;
+  --background: #1A1A2E;
+  --foreground: #F0F4FF;
+  --card: #1E2245;
+  --card-foreground: #F0F4FF;
+  --popover: #1E2245;
+  --popover-foreground: #F0F4FF;
 
-  --surface: #1C1B1F;
-  --on-surface: #E6E1E5;
-  --surface-variant: #49454F;
-  --on-surface-variant: #CAC4D0;
+  --surface: #1A1A2E;
+  --on-surface: #F0F4FF;
+  --surface-variant: #242650;
+  --on-surface-variant: #9CA3AF;
 
-  --surface-container-low: #2B2930;
-  --surface-container: #322F35;
-  --surface-container-high: #3C393F;
+  --surface-container-low: #1E2245;
+  --surface-container: #232650;
+  --surface-container-high: #2A2E5E;
 
-  /* Primary: Purple */
-  --primary: #C0B1E6;
-  --primary-foreground: #21005D;
-  --primary-container: #4F378A;
-  --on-primary-container: #EADDFF;
+  /* Primary */
+  --primary: #6B8FFF;
+  --on-primary: #0A1A66;
+  --primary-foreground: #0A1A66;
+  --primary-container: #0A3ACC;
+  --on-primary-container: #E8EDFF;
 
-  /* Secondary: Purple-ish */
-  --secondary: #D8D2E6;
-  --secondary-foreground: #1D192B;
-  --secondary-container: #503C55;
-  --on-secondary-container: #E8DEF8;
+  /* Secondary */
+  --secondary: #00D4B8;
+  --on-secondary: #003A33;
+  --secondary-foreground: #003A33;
+  --secondary-container: #004D40;
+  --on-secondary-container: #E0F9F6;
 
-  /* Tertiary: Rose/Pink */
-  --tertiary: #E6C3CE;
-  --tertiary-foreground: #31111D;
-  --tertiary-container: #635046;
-  --on-tertiary-container: #FFD8E4;
-
-  /* Muted */
-  --muted: #3C393F;
-  --muted-foreground: #CAC4D0;
-
-  /* Accent */
-  --accent: #4F378A;
-  --accent-foreground: #EADDFF;
+  /* Tertiary */
+  --tertiary: #FF8F5E;
+  --on-tertiary: #5A1A00;
+  --tertiary-foreground: #5A1A00;
+  --tertiary-container: #8B2E00;
+  --on-tertiary-container: #FFE8DB;
 
   /* Error */
-  --destructive: #E69490;
-  --error-container: #601410;
-  --on-error-container: #F9DEDC;
+  --destructive: #F87171;
+  --destructive-foreground: #450A0A;
+  --error-container: #450A0A;
+  --on-error-container: #FEE2E2;
+
+  /* Muted */
+  --muted: #242650;
+  --muted-foreground: #9CA3AF;
+
+  /* Accent */
+  --accent: #1B2E6E;
+  --accent-foreground: #6B8FFF;
 
   /* Utility */
-  --m3-outline: #938F99;
-  --outline-variant: #49454F;
-  --border: #49454F;
-  --input: #938F99;
-  --ring: #C0B1E6;
+  --m3-outline: #374151;
+  --outline-variant: #2D3748;
+  --border: #2D3748;
+  --input: #374151;
+  --ring: #6B8FFF;
+
+  /* Success */
+  --success: #4ADE80;
+  --success-container: #052E16;
+  --on-success-container: #DCFCE7;
+
+  /* Warning */
+  --warning: #FBBF24;
+  --warning-container: #451A03;
+  --on-warning-container: #FEF3C7;
 
   /* Sidebar */
-  --sidebar: #2B2930;
-  --sidebar-foreground: #CAC4D0;
-  --sidebar-primary: #C0B1E6;
-  --sidebar-primary-foreground: #21005D;
-  --sidebar-accent: #4F378A;
-  --sidebar-accent-foreground: #EADDFF;
-  --sidebar-border: #49454F;
-  --sidebar-ring: #C0B1E6;
+  --sidebar: #1E2245;
+  --sidebar-foreground: #9CA3AF;
+  --sidebar-primary: #6B8FFF;
+  --sidebar-primary-foreground: #0A1A66;
+  --sidebar-accent: #0A3ACC;
+  --sidebar-accent-foreground: #E8EDFF;
+  --sidebar-border: #2D3748;
+  --sidebar-ring: #6B8FFF;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    /* ═══════════════════════════════════════════════
-       System Dark Mode Fallback
-       ═══════════════════════════════════════════════ */
-    --background: #1C1B1F;
-    --foreground: #E6E1E5;
-    --card: #323233;
-    --card-foreground: #E6E1E5;
-    --popover: #323233;
-    --popover-foreground: #E6E1E5;
-    --surface: #1C1B1F;
-    --on-surface: #E6E1E5;
-    --surface-variant: #49454F;
-    --on-surface-variant: #CAC4D0;
-    --surface-container-low: #2B2930;
-    --surface-container: #322F35;
-    --surface-container-high: #3C393F;
-    --primary: #C0B1E6;
-    --primary-foreground: #21005D;
-    --primary-container: #4F378A;
-    --on-primary-container: #EADDFF;
-    --secondary: #D8D2E6;
-    --secondary-foreground: #1D192B;
-    --secondary-container: #503C55;
-    --on-secondary-container: #E8DEF8;
-    --tertiary: #E6C3CE;
-    --tertiary-foreground: #31111D;
-    --tertiary-container: #635046;
-    --on-tertiary-container: #FFD8E4;
-    --muted: #3C393F;
-    --muted-foreground: #CAC4D0;
-    --accent: #4F378A;
-    --accent-foreground: #EADDFF;
-    --destructive: #E69490;
-    --error-container: #601410;
-    --on-error-container: #F9DEDC;
-    --m3-outline: #938F99;
-    --outline-variant: #49454F;
-    --border: #49454F;
-    --input: #938F99;
-    --ring: #C0B1E6;
-    --sidebar: #2B2930;
-    --sidebar-foreground: #CAC4D0;
-    --sidebar-primary: #C0B1E6;
-    --sidebar-primary-foreground: #21005D;
-    --sidebar-accent: #4F378A;
-    --sidebar-accent-foreground: #EADDFF;
-    --sidebar-border: #49454F;
-    --sidebar-ring: #C0B1E6;
+    --background: #1A1A2E;
+    --foreground: #F0F4FF;
+    --card: #1E2245;
+    --card-foreground: #F0F4FF;
+    --popover: #1E2245;
+    --popover-foreground: #F0F4FF;
+    --surface: #1A1A2E;
+    --on-surface: #F0F4FF;
+    --surface-variant: #242650;
+    --on-surface-variant: #9CA3AF;
+    --surface-container-low: #1E2245;
+    --surface-container: #232650;
+    --surface-container-high: #2A2E5E;
+    --primary: #6B8FFF;
+    --on-primary: #0A1A66;
+    --primary-foreground: #0A1A66;
+    --primary-container: #0A3ACC;
+    --on-primary-container: #E8EDFF;
+    --secondary: #00D4B8;
+    --on-secondary: #003A33;
+    --secondary-foreground: #003A33;
+    --secondary-container: #004D40;
+    --on-secondary-container: #E0F9F6;
+    --tertiary: #FF8F5E;
+    --on-tertiary: #5A1A00;
+    --tertiary-foreground: #5A1A00;
+    --tertiary-container: #8B2E00;
+    --on-tertiary-container: #FFE8DB;
+    --destructive: #F87171;
+    --destructive-foreground: #450A0A;
+    --error-container: #450A0A;
+    --on-error-container: #FEE2E2;
+    --muted: #242650;
+    --muted-foreground: #9CA3AF;
+    --accent: #1B2E6E;
+    --accent-foreground: #6B8FFF;
+    --m3-outline: #374151;
+    --outline-variant: #2D3748;
+    --border: #2D3748;
+    --input: #374151;
+    --ring: #6B8FFF;
+    --success: #4ADE80;
+    --success-container: #052E16;
+    --on-success-container: #DCFCE7;
+    --warning: #FBBF24;
+    --warning-container: #451A03;
+    --on-warning-container: #FEF3C7;
+    --sidebar: #1E2245;
+    --sidebar-foreground: #9CA3AF;
+    --sidebar-primary: #6B8FFF;
+    --sidebar-primary-foreground: #0A1A66;
+    --sidebar-accent: #0A3ACC;
+    --sidebar-accent-foreground: #E8EDFF;
+    --sidebar-border: #2D3748;
+    --sidebar-ring: #6B8FFF;
   }
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 @layer base {
@@ -279,7 +330,7 @@
   html {
     @apply font-sans;
   }
-  
+
   /* Typography Overrides */
   h1 { @apply text-[28px] font-normal tracking-tight text-foreground; }
   h2 { @apply text-[22px] font-medium tracking-tight text-foreground; }
@@ -289,7 +340,7 @@
 
 @layer utilities {
   .pill-radius { border-radius: 9999px; }
-  
+
   /* Table Overrides */
   .m3-table-container {
      @apply rounded-xl border border-outline-variant overflow-hidden;

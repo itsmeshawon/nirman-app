@@ -20,7 +20,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ proj
       .limit(100)
 
     const rows = [
-      ["NirmaN — Expense Ledger Report"],
+      ["Truzo — Expense Ledger Report"],
       [`Project: ${project?.name}`],
       [`Generated: ${new Date().toLocaleString()}`],
       [],

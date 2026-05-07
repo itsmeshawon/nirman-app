@@ -39,9 +39,9 @@ export async function POST(
     const { count } = await getSupabaseAdmin()
       .from("payments")
       .select("*", { count: "exact", head: true })
-      .like("receipt_no", `NRM-${projectId.slice(0, 4).toUpperCase()}-${todayStr}-%`)
+      .like("receipt_no", `TRZ-${projectId.slice(0, 4).toUpperCase()}-${todayStr}-%`)
     const seq = String((count || 0) + 1).padStart(3, "0")
-    const receipt_no = `NRM-${projectId.slice(0, 4).toUpperCase()}-${todayStr}-${seq}`
+    const receipt_no = `TRZ-${projectId.slice(0, 4).toUpperCase()}-${todayStr}-${seq}`
 
     // Create the payment record
     const { data: payment, error: paymentError } = await getSupabaseAdmin()

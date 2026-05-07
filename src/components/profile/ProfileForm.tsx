@@ -13,7 +13,7 @@ function InfoRow({ icon: Icon, label, value }: { icon: any; label: string; value
   return (
     <div className="flex items-start gap-3">
       <div className="mt-0.5 flex-shrink-0">
-        <Icon className="w-4 h-4 text-outline" />
+        <Icon className="w-4 h-4 text-on-surface-variant" />
       </div>
       <div className="min-w-0">
         <p className="text-[11px] uppercase tracking-wider text-on-surface-variant font-medium">{label}</p>
@@ -98,7 +98,7 @@ export function ProfileForm() {
         <div className="px-8 md:px-12 pb-8">
           <div className="border-t border-outline-variant/40 pt-6">
             <h3 className="text-sm font-semibold text-on-surface mb-5 flex items-center gap-2">
-              <User className="w-4 h-4 text-outline" />
+              <User className="w-4 h-4 text-on-surface-variant" />
               Personal Information
             </h3>
             <div className="grid gap-5 sm:grid-cols-2">
@@ -111,7 +111,7 @@ export function ProfileForm() {
 
           <div className="border-t border-outline-variant/40 pt-6 mt-6">
             <h3 className="text-sm font-semibold text-on-surface mb-5 flex items-center gap-2">
-              <Briefcase className="w-4 h-4 text-outline" />
+              <Briefcase className="w-4 h-4 text-on-surface-variant" />
               Professional Details
             </h3>
             <div className="grid gap-5 sm:grid-cols-2">
@@ -123,7 +123,7 @@ export function ProfileForm() {
 
           <div className="border-t border-outline-variant/40 pt-6 mt-6">
             <h3 className="text-sm font-semibold text-on-surface mb-5 flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-outline" />
+              <MapPin className="w-4 h-4 text-on-surface-variant" />
               Address
             </h3>
             <InfoRow icon={MapPin} label="Present Address" value={profile.present_address} />
