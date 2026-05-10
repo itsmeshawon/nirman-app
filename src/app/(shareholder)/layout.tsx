@@ -162,6 +162,7 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={true}
                 className={cn(
                   "group flex h-12 items-center rounded-full px-4 text-sm transition-all duration-200",
                   isActive
@@ -188,6 +189,7 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
               <p className="px-4 text-[10px] font-bold text-[var(--on-surface-variant)] uppercase tracking-widest mb-2">Governance</p>
               <Link
                 href="/my/review"
+                prefetch={true}
                 className={cn(
                   "group flex h-12 items-center justify-between rounded-full px-4 text-sm font-medium transition-all duration-200",
                   pathname === "/my/review"
@@ -219,6 +221,7 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
               </Link>
               <Link
                 href="/my/defaulters"
+                prefetch={true}
                 className={cn(
                   "group flex h-12 items-center rounded-full px-4 text-sm font-medium transition-all duration-200 mt-1",
                   pathname === "/my/defaulters"
@@ -258,7 +261,7 @@ export default function ShareholderLayout({ children }: { children: React.ReactN
         {/* Sidebar Footer (User Info) */}
         <div className="mx-3 p-4 border-t border-[var(--outline-variant)]/30">
           <div className="flex items-center justify-between">
-            <Link href="/my/profile" className="flex items-center gap-3 truncate group cursor-pointer p-1.5 rounded-xl hover:bg-[var(--surface-container-high)] transition-all duration-200 flex-1 min-w-0">
+            <Link href="/my/profile" prefetch={true} className="flex items-center gap-3 truncate group cursor-pointer p-1.5 rounded-xl hover:bg-[var(--surface-container-high)] transition-all duration-200 flex-1 min-w-0">
               <div className="w-10 h-10 rounded-full bg-[var(--secondary-container)] flex items-center justify-center text-[var(--on-secondary-container)] text-sm font-bold shrink-0 overflow-hidden">
                 {profile?.avatar_url ? (
                   <img src={profile.avatar_url} alt={profile?.name} className="w-full h-full object-cover" />

@@ -21,14 +21,10 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Calendar, Crown, Mail, MapPin, Pencil, Phone, Search, ToggleLeft, ToggleRight, Trash2, UserPlus, Users } from "lucide-react"
-import { ShareholderDialog } from "./ShareholdersForms"
+import dynamic from "next/dynamic"
+
+const ShareholderDialog = dynamic(() => import("./ShareholdersForms").then(m => m.ShareholderDialog), { ssr: false })
 import { toast } from "sonner"
 import { mutate } from "swr"
 import { EmptyState } from "@/components/EmptyState"
@@ -155,29 +151,16 @@ export function ShareholdersTable({ projectId, data: initialData, committeeShare
       ),
     },
     {
-      accessorFn: (row) => getProfile(row)?.email,
-      id: "email",
-      header: "Email",
-      cell: (info) => <div className="text-on-surface-variant">{info.getValue() as string}</div>,
-    },
-    {
       accessorFn: (row) => getProfile(row)?.phone,
       id: "phone",
       header: "Phone",
       cell: (info) => <div className="text-on-surface-variant">{info.getValue() as string || "—"}</div>,
     },
     {
-      accessorKey: "unit_flat",
-      header: "Unit/Flat",
-      cell: (info) => <div className="font-medium">{info.getValue() as string}</div>,
-    },
-    {
-      accessorKey: "ownership_pct",
-      header: "Ownership",
-      cell: (info) => {
-        const val = info.getValue() as number
-        return val ? <div className="text-on-surface-variant">{val}%</div> : "—"
-      },
+      accessorFn: (row) => getProfile(row)?.email,
+      id: "email",
+      header: "Email",
+      cell: (info) => <div className="text-on-surface-variant">{info.getValue() as string}</div>,
     },
     {
       accessorKey: "status",

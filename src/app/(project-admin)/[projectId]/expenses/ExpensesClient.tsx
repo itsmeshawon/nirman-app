@@ -1,15 +1,17 @@
 "use client"
 
 import { useState } from "react"
+import dynamic from "next/dynamic"
 import { mutate } from "swr"
 import { Plus, CheckCircle, FileText, SendHorizontal, RefreshCw, XCircle, Trash2, Eye, Edit2, Receipt as ReceiptIcon, Search, Download } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { toast } from "sonner"
-import { ExpenseForm } from "./ExpenseForm"
-import { ExpenseDetailModal } from "./ExpenseDetailModal"
 import { EmptyState } from "@/components/EmptyState"
+
+const ExpenseForm = dynamic(() => import("./ExpenseForm").then(m => m.ExpenseForm), { ssr: false })
+const ExpenseDetailModal = dynamic(() => import("./ExpenseDetailModal").then(m => m.ExpenseDetailModal), { ssr: false })
 
 interface ExpensesClientProps {
   projectId: string
@@ -119,19 +121,15 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
 
   const handlePublishOne = async (id: string) => {
     setPublishingId(id)
+    setExpenses(prev => prev.map(exp => exp.id === id ? { ...exp, status: "PUBLISHED" } : exp))
     try {
       const res = await fetch(`/api/projects/${projectId}/expenses/${id}/publish`, { method: "POST" })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
-
-      // Update the expense in the list to PUBLISHED status instantly
-      setExpenses(prev => prev.map(exp =>
-        exp.id === id ? { ...exp, status: "PUBLISHED" } : exp
-      ))
-
       toast.success("Expense published successfully.")
       mutate(`/api/projects/${projectId}/page-data/expenses`)
     } catch (err: any) {
+      setExpenses(prev => prev.map(exp => exp.id === id ? { ...exp, status: "APPROVED" } : exp))
       toast.error(err.message)
     } finally {
       setPublishingId(null)
@@ -141,23 +139,26 @@ export function ExpensesClient({ projectId, expenses: initialExpenses, milestone
   const handleBulkPublish = async () => {
      if (selectedIds.size === 0) return
      if (!confirm(`Are you sure you want to publish ${selectedIds.size} approved expense(s)?`)) return
-     
+
+     const publishedIds = new Set(selectedIds)
      setIsPublishing(true)
+     setExpenses(prev => prev.map(e => publishedIds.has(e.id) ? { ...e, status: "PUBLISHED" } : e))
+     setSelectedIds(new Set())
      try {
        const res = await fetch(`/api/projects/${projectId}/expenses/bulk-publish`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ expenseIds: Array.from(selectedIds) })
+          body: JSON.stringify({ expenseIds: Array.from(publishedIds) })
        })
        if (!res.ok) {
          const data = await res.json()
          throw new Error(data.error)
        }
        toast.success("Expenses published successfully!")
-       setSelectedIds(new Set())
-       setExpenses(prev => prev.map(e => selectedIds.has(e.id) ? { ...e, status: "PUBLISHED" } : e))
        mutate(`/api/projects/${projectId}/page-data/expenses`)
      } catch (err: any) {
+       setExpenses(prev => prev.map(e => publishedIds.has(e.id) ? { ...e, status: "APPROVED" } : e))
+       setSelectedIds(publishedIds)
        toast.error(err.message)
      } finally {
        setIsPublishing(false)

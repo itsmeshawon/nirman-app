@@ -3,6 +3,7 @@ import { z } from "zod"
 import { createClient } from "@/lib/supabase/server"
 import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
+import { cacheInvalidatePrefix } from "@/lib/cache"
 
 const updatePackageSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -58,6 +59,7 @@ export async function PUT(
       details: { name },
     })
 
+    cacheInvalidatePrefix("packages:")
     return NextResponse.json(pkg)
   } catch (err) {
     console.error("[PUT /api/packages/[id]]", err)

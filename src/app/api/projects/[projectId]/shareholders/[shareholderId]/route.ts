@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
 import { requireProjectAdmin } from "@/lib/permissions"
+import { cacheInvalidate } from "@/lib/cache"
 
 export async function PATCH(
   request: Request,
@@ -107,6 +108,7 @@ export async function PATCH(
       details: { unit_flat, status }
     })
 
+    cacheInvalidate(`committee:${projectId}`)
     return NextResponse.json({ success: true }, { status: 200 })
 
   } catch (err: any) {
@@ -165,6 +167,7 @@ export async function DELETE(
       details: { deleted_at: new Date().toISOString() }
     })
 
+    cacheInvalidate(`committee:${projectId}`)
     return NextResponse.json({ success: true }, { status: 200 })
 
   } catch (err: any) {

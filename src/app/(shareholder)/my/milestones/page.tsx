@@ -28,19 +28,18 @@ export default async function ShareholderMilestonesPage() {
     )
   }
 
-  // 2. Fetch all milestones for that project
-  const { data: milestones } = await supabase
-    .from("milestones")
-    .select("*")
-    .eq("project_id", shareholder.project_id)
-    .order("sort_order", { ascending: true })
-
-  // 3. Fetch PUBLISHED expense totals per milestone
-  const { data: expenses } = await supabase
-    .from("expenses")
-    .select("milestone_id, amount, vat_amount")
-    .eq("project_id", shareholder.project_id)
-    .eq("status", "PUBLISHED")
+  const [{ data: milestones }, { data: expenses }] = await Promise.all([
+    supabase
+      .from("milestones")
+      .select("*")
+      .eq("project_id", shareholder.project_id)
+      .order("sort_order", { ascending: true }),
+    supabase
+      .from("expenses")
+      .select("milestone_id, amount, vat_amount")
+      .eq("project_id", shareholder.project_id)
+      .eq("status", "PUBLISHED"),
+  ])
 
   const expenseTotals: Record<string, { total: number; count: number }> = {}
   for (const e of expenses || []) {

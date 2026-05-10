@@ -3,8 +3,10 @@
 import { useState } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { Download, FileText, FileDown, Upload, Clock, Paperclip } from "lucide-react"
-import { SubmitPaymentProofModal } from "./SubmitPaymentProofModal"
+import { Download, FileDown, Upload, Clock, Paperclip } from "lucide-react"
+import dynamic from "next/dynamic"
+
+const SubmitPaymentProofModal = dynamic(() => import("./SubmitPaymentProofModal").then(m => m.SubmitPaymentProofModal), { ssr: false })
 
 interface ShareholderPaymentsClientProps {
   scheduleItems: any[]
@@ -156,10 +158,16 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
                   </TableRow>
                 ) : (
                   scheduleItems.map((item) => {
-                    const uiStyle = statusConfig[item.status] || statusConfig.UPCOMING
                     const paid = payments.filter(p => p.schedule_item_id === item.id).reduce((s, p) => s + parseFloat(p.amount), 0)
                     const pen = item.penalties?.filter((p:any) => !p.is_waived).reduce((s:number, p:any) => s + parseFloat(p.amount), 0) || 0
                     const associatedPayment = payments.find(p => p.schedule_item_id === item.id)
+                    const expected = parseFloat(item.amount) || 0
+                    const computedStatus = (() => {
+                      if (expected > 0 && paid >= expected) return "PAID"
+                      const daysDiff = (new Date(item.due_date).getTime() - Date.now()) / (1000 * 3600 * 24)
+                      return daysDiff < 0 ? "OVERDUE" : daysDiff <= 7 ? "DUE" : "UPCOMING"
+                    })()
+                    const uiStyle = statusConfig[computedStatus] || statusConfig.UPCOMING
 
                     return (
                       <TableRow key={item.id}>
@@ -170,7 +178,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
                         <TableCell className="text-right text-sm text-destructive">{pen.toLocaleString('en-IN')}</TableCell>
                         <TableCell>
                           <span className={`px-2 py-0.5 rounded text-xs font-semibold ${uiStyle}`}>
-                            {item.status.replace("_", " ")}
+                            {computedStatus.replace("_", " ")}
                           </span>
                         </TableCell>
                         <TableCell className="text-right">
@@ -195,9 +203,7 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
               <TableHeader>
                 <TableRow>
                   <TableHead>Date Recorded</TableHead>
-                  <TableHead>Receipt #</TableHead>
-                  <TableHead>Method</TableHead>
-                  <TableHead>Reference</TableHead>
+                  <TableHead>Payment Type / Milestone</TableHead>
                   <TableHead className="text-right">Amount (৳)</TableHead>
                   <TableHead>Proof</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
@@ -206,31 +212,33 @@ export function ShareholderPaymentsClient({ scheduleItems, payments, shareholder
               <TableBody>
                 {payments.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-on-surface-variant">No payments recorded yet.</TableCell>
+                    <TableCell colSpan={5} className="text-center py-8 text-on-surface-variant">No payments recorded yet.</TableCell>
                   </TableRow>
                 ) : (
-                  payments.map((p) => (
-                    <TableRow key={p.id}>
-                      <TableCell className="text-sm">{new Date(p.created_at).toLocaleDateString()}</TableCell>
-                      <TableCell className="font-mono text-xs font-semibold text-on-surface">{p.receipt_no}</TableCell>
-                      <TableCell className="text-sm">{p.method.replace("_", " ")}</TableCell>
-                      <TableCell className="text-sm text-on-surface-variant font-mono text-xs">{p.reference_no || "N/A"}</TableCell>
-                      <TableCell className="text-right font-medium text-primary">{parseFloat(p.amount).toLocaleString('en-IN')}</TableCell>
-                      <TableCell>
-                        {p.proof?.[0]?.attachment_url
-                          ? <a href={p.proof[0].attachment_url} target="_blank" rel="noopener noreferrer" title={p.proof[0].attachment_name}
-                              className="inline-flex items-center justify-center h-8 w-8 rounded-md text-primary hover:bg-primary-container/20 transition-colors">
-                              <Paperclip className="w-4 h-4" />
-                            </a>
-                          : <span className="text-xs text-on-surface-variant">—</span>}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button variant="ghost" size="sm" onClick={() => handleDownloadReceipt(p.id)} className="text-primary hover:text-on-primary-container hover:bg-primary-container/20">
-                          <FileText className="w-4 h-4 mr-2" /> Receipt
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))
+                  payments.map((p) => {
+                    const scheduleItem = scheduleItems.find((si: any) => si.id === p.schedule_item_id)
+                    const milestoneName = scheduleItem?.milestone?.name || "General (Monthly Payment)"
+                    return (
+                      <TableRow key={p.id}>
+                        <TableCell className="text-sm text-on-surface-variant">{new Date(p.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell className="text-sm text-on-surface-variant">{milestoneName}</TableCell>
+                        <TableCell className="text-right font-bold text-primary">৳{parseFloat(p.amount).toLocaleString('en-IN')}</TableCell>
+                        <TableCell>
+                          {p.proof?.[0]?.attachment_url
+                            ? <a href={p.proof[0].attachment_url} target="_blank" rel="noopener noreferrer" title={p.proof[0].attachment_name}
+                                className="inline-flex items-center justify-center h-8 w-8 rounded-md text-primary hover:bg-primary-container/20 transition-colors">
+                                <Paperclip className="w-4 h-4" />
+                              </a>
+                            : <span className="text-xs text-on-surface-variant">—</span>}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="ghost" size="sm" onClick={() => handleDownloadReceipt(p.id)} className="text-primary hover:bg-primary-container/20 gap-1.5">
+                            <Download className="w-4 h-4" /> Download Receipt
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })
                 )}
               </TableBody>
             </Table>

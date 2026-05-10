@@ -1,8 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { CreatePostForm } from "./CreatePostForm"
+import dynamic from "next/dynamic"
 import { AdminPostCard } from "./AdminPostCard"
+
+const CreatePostForm = dynamic(() => import("./CreatePostForm").then(m => m.CreatePostForm), { ssr: false })
 import { EmptyState } from "@/components/EmptyState"
 import { Bell as BellIcon } from "lucide-react"
 

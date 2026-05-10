@@ -115,6 +115,7 @@ export default function ProjectAdminShell({
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={true}
                 className={cn(
                   "group flex h-12 items-center rounded-full px-4 text-sm transition-all duration-200",
                   isActive
@@ -154,7 +155,7 @@ export default function ProjectAdminShell({
         {/* Sidebar Footer (User Info) */}
         <div className="mx-3 p-4 border-t border-outline-variant/40">
           <div className="flex items-center justify-between">
-            <Link href={`/${projectId}/profile`} className="flex items-center gap-3 truncate group cursor-pointer p-1.5 rounded-xl hover:bg-[var(--surface-container-high)] transition-all duration-200 flex-1 min-w-0">
+            <Link href={`/${projectId}/profile`} prefetch={true} className="flex items-center gap-3 truncate group cursor-pointer p-1.5 rounded-xl hover:bg-[var(--surface-container-high)] transition-all duration-200 flex-1 min-w-0">
               <div className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container text-sm font-bold shrink-0 overflow-hidden">
                 {avatarUrl ? (
                   <img src={avatarUrl} alt={profileName} className="w-full h-full object-cover" />

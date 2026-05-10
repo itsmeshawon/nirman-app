@@ -3,7 +3,7 @@ import { z } from "zod"
 import { createClient } from "@/lib/supabase/server"
 import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
-import { cacheGet, cacheSet } from "@/lib/cache"
+import { cacheGet, cacheSet, cacheInvalidatePrefix } from "@/lib/cache"
 
 const createPackageSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -89,6 +89,7 @@ export async function POST(request: NextRequest) {
       details: { name },
     })
 
+    cacheInvalidatePrefix("packages:")
     return NextResponse.json(pkg, { status: 201 })
   } catch (err) {
     console.error("[POST /api/packages]", err)

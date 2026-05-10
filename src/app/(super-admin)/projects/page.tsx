@@ -26,8 +26,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import ProjectDialog from "@/components/super-admin/CreateProjectDialog"
-import CreateAdminDialog from "@/components/super-admin/CreateAdminDialog"
+import dynamic from "next/dynamic"
+
+const ProjectDialog = dynamic(() => import("@/components/super-admin/CreateProjectDialog"), { ssr: false })
+const CreateAdminDialog = dynamic(() => import("@/components/super-admin/CreateAdminDialog"), { ssr: false })
 
 interface Project {
   id: string

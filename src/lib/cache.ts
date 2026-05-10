@@ -24,3 +24,9 @@ export function cacheSet<T>(key: string, value: T): void {
 export function cacheInvalidate(key: string): void {
   store.delete(key)
 }
+
+export function cacheInvalidatePrefix(prefix: string): void {
+  for (const key of store.keys()) {
+    if (key.startsWith(prefix)) store.delete(key)
+  }
+}

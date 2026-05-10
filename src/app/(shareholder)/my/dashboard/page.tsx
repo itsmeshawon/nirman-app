@@ -16,12 +16,14 @@ export default async function ShareholderDashboardPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
-  const { data: shareholder } = await getSupabaseAdmin()
-    .from("shareholders")
-    .select("*, project:projects(id, name, status, address, expected_handover)")
-    .eq("user_id", user.id)
-    .single()
+  const [{ data: profile }, { data: shareholder }] = await Promise.all([
+    supabase.from("profiles").select("*").eq("id", user.id).single(),
+    getSupabaseAdmin()
+      .from("shareholders")
+      .select("*, project:projects(id, name, status, address, expected_handover)")
+      .eq("user_id", user.id)
+      .single(),
+  ])
 
   if (!shareholder) {
     return (
@@ -33,36 +35,36 @@ export default async function ShareholderDashboardPage() {
     )
   }
 
-  // My schedule items
-  const { data: scheduleItems } = await supabase
-    .from("schedule_items")
-    .select("*, milestone:milestones(name)")
-    .eq("shareholder_id", shareholder.id)
-    .order("due_date", { ascending: true })
-
-  // My payments
-  const { data: payments } = await supabase
-    .from("payments")
-    .select("id, amount, created_at, method")
-    .eq("shareholder_id", shareholder.id)
-    .order("created_at", { ascending: false })
-    .limit(5)
-
-  // My active penalties
-  const { data: penalties } = await supabase
-    .from("penalties")
-    .select("id, amount, reason, created_at, status")
-    .eq("shareholder_id", shareholder.id)
-    .eq("status", "ACTIVE")
-
-  // My published expenses (project level - visible to shareholders)
-  const { data: recentExpenses } = await supabase
-    .from("expenses")
-    .select("id, title, amount, vat_amount, date, category:expense_categories(name)")
-    .eq("project_id", shareholder.project?.id)
-    .eq("status", "PUBLISHED")
-    .order("date", { ascending: false })
-    .limit(5)
+  const [
+    { data: scheduleItems },
+    { data: payments },
+    { data: penalties },
+    { data: recentExpenses },
+  ] = await Promise.all([
+    supabase
+      .from("schedule_items")
+      .select("*, milestone:milestones(name)")
+      .eq("shareholder_id", shareholder.id)
+      .order("due_date", { ascending: true }),
+    supabase
+      .from("payments")
+      .select("id, amount, created_at, method")
+      .eq("shareholder_id", shareholder.id)
+      .order("created_at", { ascending: false })
+      .limit(5),
+    supabase
+      .from("penalties")
+      .select("id, amount, reason, created_at, status")
+      .eq("shareholder_id", shareholder.id)
+      .eq("status", "ACTIVE"),
+    supabase
+      .from("expenses")
+      .select("id, title, amount, vat_amount, date, category:expense_categories(name)")
+      .eq("project_id", shareholder.project?.id)
+      .eq("status", "PUBLISHED")
+      .order("date", { ascending: false })
+      .limit(5),
+  ])
 
   // Compute totals
   const totalDue = scheduleItems?.reduce((sum, i) => sum + (i.amount || 0), 0) || 0

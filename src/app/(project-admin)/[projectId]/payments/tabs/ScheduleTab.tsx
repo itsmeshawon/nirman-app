@@ -142,7 +142,11 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
       .filter(p => p.schedule_item_id === capturedItem.id)
       .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
     const totalPaid = alreadyPaid + paid
-    const optimisticStatus = totalPaid >= parseFloat(capturedItem.amount) ? "PAID" : "PARTIALLY_PAID"
+    const optimisticStatus = (() => {
+      if (totalPaid >= parseFloat(capturedItem.amount)) return "PAID"
+      const daysDiff = (new Date(capturedItem.due_date).getTime() - Date.now()) / (1000 * 3600 * 24)
+      return daysDiff < 0 ? "OVERDUE" : daysDiff <= 7 ? "DUE" : "UPCOMING"
+    })()
 
     // Update UI immediately
     setLocalPayments(prev => [...prev, { id: tempId, schedule_item_id: capturedItem.id, amount: paid }])
@@ -178,6 +182,14 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
   const getPaidAmount = (scheduleId: string) =>
     localPayments.filter(p => p.schedule_item_id === scheduleId)
       .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
+
+  const getComputedStatus = (item: any) => {
+    const paid = getPaidAmount(item.id)
+    const expected = parseFloat(item.amount) || 0
+    if (expected > 0 && paid >= expected) return "PAID"
+    const daysDiff = (new Date(item.due_date).getTime() - Date.now()) / (1000 * 3600 * 24)
+    return daysDiff < 0 ? "OVERDUE" : daysDiff <= 7 ? "DUE" : "UPCOMING"
+  }
 
   const getPenalty = (item: any) => {
     if (!item?.penalties) return 0
@@ -301,7 +313,7 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
   const [searchShareholder, setSearchShareholder] = useState("")
 
   const filteredItems = localScheduleItems.filter(item => {
-    const matchStatus = !filterStatus || item.status === filterStatus
+    const matchStatus = !filterStatus || getComputedStatus(item) === filterStatus
     const q = searchShareholder.toLowerCase()
     const name = item.shareholder?.profiles?.name?.toLowerCase() || ""
     const unit = item.shareholder?.unit_flat?.toLowerCase() || ""
@@ -444,9 +456,10 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
             </TableRow>
           ) : (
             filteredItems.map(item => {
-              const uiStyle = statusConfig[item.status] || statusConfig.UPCOMING
+              const computedStatus = getComputedStatus(item)
+              const uiStyle = statusConfig[computedStatus] || statusConfig.UPCOMING
               return (
-                <TableRow key={item.id} className={item.status === 'OVERDUE' ? "border-l-4 border-l-red-500" : ""}>
+                <TableRow key={item.id} className={computedStatus === 'OVERDUE' ? "border-l-4 border-l-red-500" : ""}>
                   <TableCell className="text-sm font-medium">{new Date(item.due_date).toLocaleDateString()}</TableCell>
                   <TableCell>
                     <div className="text-sm font-medium text-on-surface">{item.shareholder?.profiles?.name}</div>
@@ -458,12 +471,12 @@ export function ScheduleTab({ projectId, scheduleItems, payments, milestones, sh
                   <TableCell className="text-right text-sm text-destructive">{getPenalty(item).toLocaleString('en-IN')}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${uiStyle}`}>
-                      {item.status.replace("_", " ")}
+                      {computedStatus.replace("_", " ")}
                     </span>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
-                      {item.status !== 'PAID' && (
+                      {computedStatus !== 'PAID' && (
                         <Button variant="ghost" size="sm" onClick={() => openPayDialog(item)} className="size-8 p-0 text-primary hover:text-primary">
                           <Banknote className="h-4 w-4" />
                         </Button>

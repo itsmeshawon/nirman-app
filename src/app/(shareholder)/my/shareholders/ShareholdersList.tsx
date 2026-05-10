@@ -65,10 +65,8 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
-              <TableHead>Unit/Flat</TableHead>
-              <TableHead>Ownership</TableHead>
+              <TableHead>Email</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -94,23 +92,17 @@ export function ShareholdersList({ data, committeeShareholderIds }: Shareholders
                       </button>
                     </TableCell>
                     <TableCell>
-                      <div className="text-on-surface-variant">{profile?.email || "—"}</div>
-                    </TableCell>
-                    <TableCell>
                       <div className="text-on-surface-variant">{profile?.phone || "—"}</div>
                     </TableCell>
                     <TableCell>
-                      <div className="font-medium">{item.unit_flat}</div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-on-surface-variant">{item.ownership_pct ? `${item.ownership_pct}%` : "—"}</div>
+                      <div className="text-on-surface-variant">{profile?.email || "—"}</div>
                     </TableCell>
                   </TableRow>
                 )
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="h-auto p-0 border-0">
+                <TableCell colSpan={3} className="h-auto p-0 border-0">
                   <EmptyState
                     icon={Crown}
                     title="No shareholders found"

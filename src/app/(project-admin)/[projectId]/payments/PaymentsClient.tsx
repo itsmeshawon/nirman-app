@@ -84,7 +84,9 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
         const totalPaid = parseFloat(payment.amount) + allPayments
           .filter(p => p.schedule_item_id === si.id)
           .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
-        const newStatus = totalPaid >= parseFloat(si.amount) ? "PAID" : "PARTIALLY_PAID"
+        if (totalPaid >= parseFloat(si.amount)) return { ...si, status: "PAID" }
+        const daysDiff = (new Date(si.due_date).getTime() - Date.now()) / (1000 * 3600 * 24)
+        const newStatus = daysDiff < 0 ? "OVERDUE" : daysDiff <= 7 ? "DUE" : "UPCOMING"
         return { ...si, status: newStatus }
       }))
     }
@@ -118,8 +120,28 @@ export function PaymentsClient({ projectId, scheduleItems, payments, shareholder
     setAllPayments(prev => prev.map(p => p.id === updated.id ? { ...p, ...updated } : p))
   }
 
-  const handleProofApproved = (proofId: string, payment: any) => {
-    setAllPayments(prev => [payment, ...prev])
+  const handleProofApproved = (proofId: string, payment: any, proof: any) => {
+    const enrichedPayment = {
+      ...payment,
+      shareholder: proof?.shareholder,
+      proof: proof?.attachment_url
+        ? [{ attachment_url: proof.attachment_url, attachment_name: proof.attachment_name }]
+        : [],
+    }
+    setAllPayments(prev => [enrichedPayment, ...prev])
+    if (payment.schedule_item_id) {
+      setAllScheduleItems(prev => prev.map(si => {
+        if (si.id !== payment.schedule_item_id) return si
+        const existingPaid = allPayments
+          .filter(p => p.schedule_item_id === si.id)
+          .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)
+        const totalPaid = existingPaid + parseFloat(payment.amount)
+        if (totalPaid >= parseFloat(si.amount)) return { ...si, status: "PAID" }
+        const daysDiff = (new Date(si.due_date).getTime() - Date.now()) / (1000 * 3600 * 24)
+        const newStatus = daysDiff < 0 ? "OVERDUE" : daysDiff <= 7 ? "DUE" : "UPCOMING"
+        return { ...si, status: newStatus }
+      }))
+    }
   }
 
   const handleProofRejected = (_: string) => {

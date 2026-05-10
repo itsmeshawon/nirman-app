@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { logAction } from "@/lib/audit"
 import { requireProjectAdmin } from "@/lib/permissions"
+import { cacheInvalidate } from "@/lib/cache"
 
 export async function POST(
   request: Request,
@@ -32,7 +33,19 @@ export async function POST(
        return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
-    // 2. Add / Reactivate Committee Member
+    // 2. Verify shareholder belongs to this project
+    const { data: shareholderExists } = await getSupabaseAdmin()
+      .from("shareholders")
+      .select("id")
+      .eq("id", shareholder_id)
+      .eq("project_id", projectId)
+      .maybeSingle()
+
+    if (!shareholderExists) {
+      return NextResponse.json({ error: "Shareholder not found in this project" }, { status: 404 })
+    }
+
+    // 3. Add / Reactivate Committee Member
     const { data: existing } = await getSupabaseAdmin()
       .from("committee_members")
       .select("id")
@@ -64,15 +77,17 @@ export async function POST(
       return NextResponse.json({ error: insertError.message }, { status: 400 })
     }
 
-    // 3. Audit Log
+    // 4. Audit Log
     await logAction({
       projectId,
       userId: user.id,
       action: "ADD_COMMITTEE_MEMBER",
       entityType: "committee_member",
+      entityId: shareholder_id,
       details: { shareholder_id }
     })
 
+    cacheInvalidate(`committee:${projectId}`)
     return NextResponse.json({ success: true }, { status: 201 })
 
   } catch (err: any) {

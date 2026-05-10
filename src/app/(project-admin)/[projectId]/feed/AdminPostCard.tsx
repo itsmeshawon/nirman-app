@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useCallback, useRef, useEffect } from "react"
+import Image from "next/image"
 import { mutate } from "swr"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
@@ -101,6 +102,9 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
   }
 
   const handleHideToggle = async () => {
+    const originalStatus = post.status
+    const optimisticStatus = isHidden ? "PUBLISHED" : "HIDDEN"
+    onHide(post.id, optimisticStatus)
     setIsToggling(true)
     try {
       const res = await fetch(`/api/projects/${projectId}/posts/${post.id}/hide`, { method: "PATCH" })
@@ -110,6 +114,7 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
       toast.success(data.post.status === "HIDDEN" ? "Post hidden from shareholders." : "Post is now visible to shareholders.")
       mutate(`/api/projects/${projectId}/page-data/feed`)
     } catch (err: any) {
+      onHide(post.id, originalStatus)
       toast.error(err.message)
     } finally {
       setIsToggling(false)
@@ -259,7 +264,16 @@ export function AdminPostCard({ post, projectId, onHide, onEdit, onDelete }: Adm
         {/* Media */}
         {mediaUrl && (
           <div className="w-full">
-            {post.media_type === "IMAGE" && <img src={mediaUrl} alt={post.title || "Post media"} className="w-full max-h-72 object-cover rounded-t-xl" />}
+            {post.media_type === "IMAGE" && (
+              <Image
+                src={mediaUrl}
+                alt={post.title || "Post media"}
+                width={800}
+                height={450}
+                className="w-full max-h-72 object-cover rounded-t-xl"
+                sizes="(max-width: 768px) 100vw, 700px"
+              />
+            )}
             {post.media_type === "VIDEO" && <video controls className="w-full rounded-t-xl bg-black max-h-72"><source src={mediaUrl} /></video>}
             {post.media_type === "AUDIO" && <div className="px-5 pt-4"><audio controls className="w-full"><source src={mediaUrl} /></audio></div>}
           </div>

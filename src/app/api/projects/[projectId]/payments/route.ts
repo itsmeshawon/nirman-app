@@ -120,19 +120,22 @@ export async function POST(
          
        const totalPaid = allPayments?.reduce((sum, p) => sum + parseFloat(p.amount), 0) || payAmount
 
-       // get expected amount to determine new status
+       // get expected amount + due_date to determine new status
        const { data: scheduleItem } = await supabase
          .from("schedule_items")
-         .select("amount")
+         .select("amount, due_date")
          .eq("id", schedule_item_id)
          .single()
 
-       let newStatus = "PARTIALLY_PAID"
+       let newStatus = "OVERDUE"
        if (scheduleItem && totalPaid >= parseFloat(scheduleItem.amount)) {
           newStatus = "PAID"
+       } else if (scheduleItem) {
+          const daysDiff = (new Date(scheduleItem.due_date).getTime() - Date.now()) / (1000 * 3600 * 24)
+          newStatus = daysDiff < 0 ? "OVERDUE" : daysDiff <= 7 ? "DUE" : "UPCOMING"
        }
 
-       await supabase
+       await getSupabaseAdmin()
          .from("schedule_items")
          .update({ status: newStatus })
          .eq("id", schedule_item_id)

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import Image from "next/image"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
 import { ThumbsUp, Heart, Meh, Frown, Eye, Edit2, EyeOff, Trash2, X, Tag, Upload } from "lucide-react"
@@ -339,7 +340,17 @@ export function PostCard({
 
         {mediaUrl && (
           <div className="mt-3">
-            {post.media_type === "IMAGE" && <img src={mediaUrl} alt={post.title || "Post image"} loading="lazy" className="w-full max-h-96 object-cover cursor-zoom-in" onClick={() => setLightboxOpen(true)} />}
+            {post.media_type === "IMAGE" && (
+              <Image
+                src={mediaUrl}
+                alt={post.title || "Post image"}
+                width={800}
+                height={500}
+                className="w-full max-h-96 object-cover cursor-zoom-in"
+                sizes="(max-width: 768px) 100vw, 640px"
+                onClick={() => setLightboxOpen(true)}
+              />
+            )}
             {post.media_type === "VIDEO" && <video controls className="w-full" style={{ maxHeight: "24rem" }}><source src={mediaUrl} /></video>}
             {post.media_type === "AUDIO" && <div className="px-4"><audio controls className="w-full rounded-[1.25rem]"><source src={mediaUrl} /></audio></div>}
           </div>
@@ -460,7 +471,7 @@ export function PostCard({
       {/* Image lightbox */}
       {lightboxOpen && mediaUrl && post.media_type === "IMAGE" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 cursor-zoom-out p-4" onClick={() => setLightboxOpen(false)}>
-          <img src={mediaUrl} alt={post.title || "Full size"} className="max-w-full max-h-full rounded-[1.25rem] object-contain" onClick={(e) => e.stopPropagation()} />
+          <img src={mediaUrl} alt={post.title || "Full size"} className="max-w-full max-h-full rounded-[1.25rem] object-contain" onClick={(e) => e.stopPropagation()} loading="lazy" />
           <button onClick={() => setLightboxOpen(false)} className="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface/20 hover:bg-surface/30 text-white flex items-center justify-center text-xl" aria-label="Close">×</button>
         </div>
       )}

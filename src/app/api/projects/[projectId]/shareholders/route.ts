@@ -89,7 +89,7 @@ export async function POST(
       .insert({
         project_id: projectId,
         user_id: newUserId,
-        unit_flat,
+        unit_flat: unit_flat || null,
         ownership_pct: ownership_pct ? parseFloat(ownership_pct) : null,
         opening_balance: opening_balance ? parseFloat(opening_balance) : 0,
         status: "ACTIVE"

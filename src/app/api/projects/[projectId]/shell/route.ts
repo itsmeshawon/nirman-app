@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { requireProjectAdmin } from "@/lib/permissions"
+import { cacheGet, cacheSet } from "@/lib/cache"
 
 export async function GET(
   _request: Request,
@@ -19,10 +20,16 @@ export async function GET(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
+  const cacheKey = `shell:${projectId}:${user.id}`
+  const cached = cacheGet<unknown>(cacheKey)
+  if (cached) return NextResponse.json(cached)
+
   const [{ data: project }, { data: profile }] = await Promise.all([
     getSupabaseAdmin().from("projects").select("name, status").eq("id", projectId).single(),
     supabase.from("profiles").select("name, avatar_url").eq("id", user.id).single(),
   ])
 
-  return NextResponse.json({ project, profile })
+  const payload = { project, profile }
+  cacheSet(cacheKey, payload)
+  return NextResponse.json(payload)
 }

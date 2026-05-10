@@ -31,7 +31,7 @@ const STATUS_CONFIG: Record<string, { label: string; style: string }> = {
 interface WaitingForApprovalTabProps {
   projectId: string
   proofs: any[]
-  onProofApproved: (proofId: string, payment: any) => void
+  onProofApproved: (proofId: string, payment: any, proof: any) => void
   onProofRejected: (proofId: string) => void
 }
 
@@ -91,7 +91,7 @@ export function WaitingForApprovalTab({
       toast.success(`Payment recorded! Receipt: ${data.payment.receipt_no}`)
       mutate(`/api/projects/${projectId}/page-data/payments`)
       setProofs(prev => prev.map(p => p.id === approveModal.proof!.id ? { ...p, status: "APPROVED" } : p))
-      onProofApproved(approveModal.proof.id, data.payment)
+      onProofApproved(approveModal.proof.id, data.payment, approveModal.proof)
       setApproveModal({ open: false, proof: null })
     } catch (err: any) {
       toast.error(err.message)

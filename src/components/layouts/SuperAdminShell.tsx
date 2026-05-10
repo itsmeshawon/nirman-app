@@ -72,6 +72,7 @@ export default function SuperAdminShell({ children, userName, avatarUrl }: Super
             <Link
               key={item.href}
               href={item.href}
+              prefetch={true}
               onClick={() => setMobileOpen(false)}
               className={cn(
                 "group flex h-12 items-center rounded-full px-4 text-sm transition-all duration-200",
@@ -95,6 +96,7 @@ export default function SuperAdminShell({ children, userName, avatarUrl }: Super
         <div className="flex items-center justify-between">
           <Link
             href="/profile"
+            prefetch={true}
             className="flex items-center gap-3 truncate group cursor-pointer p-1.5 rounded-xl hover:bg-[var(--surface-container-high)] transition-all duration-200 flex-1 min-w-0"
           >
             <div className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container text-sm font-bold shrink-0 overflow-hidden">

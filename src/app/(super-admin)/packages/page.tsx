@@ -15,7 +15,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import PackageDialog from "@/components/super-admin/PackageDialog"
+import dynamic from "next/dynamic"
+
+const PackageDialog = dynamic(() => import("@/components/super-admin/PackageDialog"), { ssr: false })
 
 interface Package {
   id: string
